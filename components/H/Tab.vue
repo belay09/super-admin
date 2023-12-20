@@ -38,9 +38,13 @@ const moveIndicator = () => {
   const element = document.getElementById(`tab-${selectedTab.value}`);
   const rect = element.getBoundingClientRect();
   const position = rect.left + window.pageXOffset;
-  indicator.value.style.left = `${
-    position - indicatorContainer.value.getBoundingClientRect().left
-  }px`;
+
+  if (indicatorContainer.value) {
+    indicator.value.style.left = `${
+      position - indicatorContainer.value.getBoundingClientRect().left
+    }px`;
+  }
+
   indicator.value.style.width = `${tabWidth()}px`;
 };
 

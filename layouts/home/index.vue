@@ -28,7 +28,7 @@
 
     <main class="w-full">
       <div
-        class="flex items-center justify-between mx-7 py-4 border-b border-sheger-gray-300"
+        class="flex items-center justify-between py-4 border-b border-sheger-gray-300 pl-10 pr-16"
       >
         <div class="text-xl text-primary-600 font-semibold">Dashboard</div>
 
@@ -45,7 +45,6 @@
 
           <!-- -----------------Clickable Profile Data with chevron icon------------------------- -->
           <div
-            @click="toggleUserSetting"
             class="cursor-pointer flex py-2 px-3 justify-between items-center space-x-4 bg-primary-100 dark:text-white dark:bg-sheger_brown-100 rounded-full"
           >
             <!-- -----------------Default profile image------------------------- -->
@@ -67,13 +66,3 @@
     </main>
   </div>
 </template>
-
-<script setup>
-import { ref } from "vue";
-import {
-  Dialog,
-  DialogPanel,
-  TransitionChild,
-  TransitionRoot,
-} from "@headlessui/vue";
-</script>

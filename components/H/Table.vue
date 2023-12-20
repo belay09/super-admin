@@ -33,10 +33,6 @@ const props = defineProps({
     type: String,
     default: "",
   },
-  rowBodyStyle: {
-    type: String,
-    default: "",
-  },
   sort: {
     type: Array,
   },
@@ -48,10 +44,19 @@ const props = defineProps({
   color2: String,
   color3: String,
   supporterClass: {
-    type: String,
+    type: [String, Array],
   },
   supportHeaderClass: {
     type: String,
+  },
+  tableHeaderStyle: {
+    type: String,
+    default: "",
+  },
+
+  tableBodyRowStyle: {
+    type: String,
+    default: "",
   },
 });
 
@@ -152,9 +157,12 @@ function rowCheckedAll() {
       :color2="color2"
       :color3="color3"
     />
-    <table class="w-full font-body">
-      <thead :class="supportHeaderClass" class="">
-        <tr>
+    <table
+      class="w-full font-body"
+      :class="[items?.length ? 'divide-y divide-secondary-4' : '']"
+    >
+      <thead class="bg-white">
+        <tr :class="tableHeaderStyle">
           <th
             v-if="hasCheckBox"
             class="text-xs 2xl:px-4 px-2 font-bold text-left items-center text-black hidden py-3 lg:table-cell tracking-wider uppercase"
@@ -165,14 +173,14 @@ function rowCheckedAll() {
               type="checkbox"
               @click.prevent="rowCheckedAll()"
               :checked="checkCheckedAll"
-              class="accent-teal-800 focus:ring-primary-600 h-4 w-4 text-primary-600 border-primary-600/50 rounded text-md cursor-pointer"
+              class="accent-teal-800 focus:ring-primary h-4 w-4 text-primary border-primary/50 rounded text-md cursor-pointer"
             />
             <input
               v-else
               type="checkbox"
               @click.prevent="rowCheckedAll()"
               :checked="checkCheckedAll"
-              class="accent-teal-800 focus:ring-primary-600 h-4 w-4 text-primary-600 border-primary-600/50 rounded text-md cursor-pointer"
+              class="accent-teal-800 focus:ring-primary h-4 w-4 text-primary border-primary/50 rounded text-md cursor-pointer"
             />
           </th>
           <th
@@ -190,7 +198,7 @@ function rowCheckedAll() {
                 v-if="
                   _sort[header.value] === 'asc' && header.sortable !== false
                 "
-                class="inline-block text-primary-600"
+                class="inline-block text-primary"
               />
               <Icon
                 name="bi:sort-down"
@@ -199,7 +207,7 @@ function rowCheckedAll() {
                 v-if="
                   _sort[header.value] === 'desc' && header.sortable !== false
                 "
-                class="inline-block text-primary-600"
+                class="inline-block text-primary"
               />
             </span>
           </th>
@@ -214,10 +222,7 @@ function rowCheckedAll() {
       </span>
       <tbody>
         <tr
-          :class="[
-            '  rounded last:border-0 hover:bg-gray-50 cursor-pointer',
-            rowBodyStyle,
-          ]"
+          :class="[rowStyle, tableBodyRowStyle]"
           v-for="(item, idx) in items"
           :key="item.id"
           @click="
@@ -225,30 +230,29 @@ function rowCheckedAll() {
               $emit('click:row', item);
             }
           "
-          class="lg:hover:bg-blue-50 table-row flex-row lg:flex-no-wrap lg:shadow-none shadow mb-0"
+          class="group hover:bg-primary/5 table-row flex-row lg:flex-no-wrap lg:shadow-none shadow mb-0 border-gray-200 rounded last:border-0 cursor-pointer"
         >
+          <td
+            v-if="hasCheckBox"
+            class="w-full lg:w-auto table-cell relative lg:static border-b rounded py-4 2xl:px-4 px-2 2xl:text-sm text-xs"
+            :class="rowStyle"
+          >
+            <input
+              v-if="checkedItems.includes(item.id)"
+              type="checkbox"
+              :checked="checkedItems.includes(item.id)"
+              @click.stop="rowChecked(item, item.id)"
+              class="accent-teal-800 focus:ring-primary h-4 w-4 text-primary border-primary/50 rounded text-md cursor-pointer"
+            />
+            <input
+              v-else
+              type="checkbox"
+              :checked="checkedItems.includes(item.id)"
+              @click.stop="rowChecked(item, item.id)"
+              class="accent-accent-teal-800 focus:ring-primary h-4 w-4 text-primary border-primary/50 rounded text-md cursor-pointer"
+            />
+          </td>
           <slot name="row" :item="item" :headers="headers" :get="_get">
-            <td
-              v-if="hasCheckBox"
-              class="w-full lg:w-auto table-cell relative lg:static border-b rounded py-4 2xl:px-4 px-2 2xl:text-sm text-xs"
-              :class="rowStyle"
-            >
-              <input
-                v-if="checkedItems.includes(item.id)"
-                type="checkbox"
-                :checked="checkedItems.includes(item.id)"
-                @click.stop="rowChecked(item, item.id)"
-                class="accent-teal-800 focus:ring-primary-600 h-4 w-4 text-primary-600 border-primary-600/50 rounded text-md cursor-pointer"
-              />
-              <input
-                v-else
-                type="checkbox"
-                :checked="checkedItems.includes(item.id)"
-                @click.stop="rowChecked(item, item.id)"
-                class="accent-accent-teal-800 focus:ring-primary-600 h-4 w-4 text-primary-600 border-primary-600/50 rounded text-md cursor-pointer"
-              />
-            </td>
-
             <td
               v-for="header in headers"
               :key="header.value"
@@ -256,7 +260,7 @@ function rowCheckedAll() {
               class="w-full font-body lg:w-auto block lg:table-cell relative lg:static text-left text-gray-900 rounded py-4 2xl:px-4 px-2 2xl:text-sm text-xs"
             >
               <span
-                class="lg:hidden text-left w-1/3 align-middle inline-block text-sm font-normal text-secondary-2 font-body"
+                class="lg:hidden text-left w-1/3 align-middle inline-block text-sm font-normal text-secondary font-body"
                 >{{ header.text }}
               </span>
               <slot :item="item" :name="header.value">
@@ -270,6 +274,8 @@ function rowCheckedAll() {
                   class="align-middle inline-block overflow-ellipsis overflow-hidden whitespace-nowrap font-body lg:w-7/12 xl:w-9/12 truncate"
                   v-else-if="header.value == 'full_name'"
                 >
+                  <!-- <PersonTypeIndicator :type="item.type" /> -->
+
                   {{ _get(item, header.value) || "-" }}
                 </span>
                 <span
