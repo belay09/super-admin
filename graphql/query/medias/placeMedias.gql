@@ -1,0 +1,12 @@
+query placeMedias(
+  $filter: PlaceMediasBoolExp
+  $order: [PlaceMediasOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  placeMedias(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+    media {
+      url
+    }
+  }
+}

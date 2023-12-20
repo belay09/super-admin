@@ -1,0 +1,7 @@
+query getCategory($id: bigint!) {
+  basicsCategoriesByPk(id: $id) {
+    title
+    id
+    description
+  }
+}

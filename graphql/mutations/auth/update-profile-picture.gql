@@ -1,0 +1,6 @@
+mutation($profilePictureUrl:String){
+  update_profile(params: {picture: $profilePictureUrl})
+  {
+    message
+  }
+}

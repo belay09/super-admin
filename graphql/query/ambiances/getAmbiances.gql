@@ -1,0 +1,16 @@
+query getPlaceAmenities(
+  $filter: BasicsAmbiancesBoolExp
+  $order: [BasicsAmbiancesOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  ambiances: basicsAmbiances(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    title
+  }
+}

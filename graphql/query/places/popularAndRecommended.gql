@@ -1,0 +1,51 @@
+query getPlaces(
+  $popularPlacesFilter: PlacesBoolExp
+  $recommendedPlacesFilter: PlacesBoolExp
+  $order: [PlacesOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  popularPlaces: places(
+    where: $popularPlacesFilter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    name
+    id
+    placeTags {
+      id
+      tag {
+        title
+        id
+      }
+    }
+    placeMedias {
+      media {
+        url
+      }
+    }
+  }
+
+  recommendedPlaces: places(
+    where: $recommendedPlacesFilter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    name
+    id
+    placeTags {
+      id
+      tag {
+        title
+        id
+      }
+    }
+    placeMedias {
+      media {
+        url
+      }
+    }
+  }
+}

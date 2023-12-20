@@ -1,0 +1,15 @@
+mutation MyMutation(
+  $email: String!
+  $fullName: String!
+  $message: String!
+  $phoneNumber: String!
+) {
+  contact_us(
+    email: $email
+    fullName: $fullName
+    message: $message
+    phoneNumber: $phoneNumber
+  ) {
+    success
+  }
+}

@@ -1,0 +1,118 @@
+query getReviewReviews(
+    $id: bigint
+
+){
+  totalReviewedHotels: placeReviewsAggregate(
+    where:{
+      _and:{
+        userId:{
+          _eq: $id
+        }
+        place:{
+          placeType:{
+            value:{
+              _eq:"Hotels"
+            }
+          }
+        }
+      }
+    }
+  ){
+    aggregate{
+      count
+    }
+  }
+  
+  totalReviewedRestaurants: placeReviewsAggregate(
+    where:{
+      _and:{
+        userId:{
+          _eq: $id
+        }
+        place:{
+          placeType:{
+            value:{
+              _eq:"Restaurants"
+            }
+          }
+        }
+      }
+    }
+  ){
+    aggregate{
+      count
+    }
+  }
+    totalReviewedCafes: placeReviewsAggregate(
+    where:{
+      _and:{
+        userId:{
+          _eq: $id
+        }
+        place:{
+          placeType:{
+            value:{
+              _eq:"Cafes"
+            }
+          }
+        }
+      }
+    }
+  ){
+    aggregate{
+      count
+    }
+  }
+  
+  totalReviewedCaterings: placeReviewsAggregate(
+    where:{
+      _and:{
+        userId:{
+          _eq: $id
+        }
+        place:{
+          placeType:{
+            value:{
+              _eq:"Caterings"
+            }
+          }
+        }
+      }
+    }
+  ){
+    aggregate{
+      count
+    }
+  }
+  
+  totalReviewedReviews: reviewReviewsAggregate
+  (
+    where:{
+      _and:{
+        userId:{
+          _eq:$id
+        }
+      }
+    }
+  )
+  {
+    aggregate{
+      count
+    }
+  }
+  totalReviewedPlace:  placeReviewsAggregate(
+    where:{
+      _and:{
+        userId:{
+          _eq: $id
+        }
+      }
+    }
+  ){
+    aggregate{
+      count
+    }
+  }
+  
+  
+}

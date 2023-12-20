@@ -1,0 +1,17 @@
+mutation MyMutation(
+  $company: String!
+  $email: String!
+  $fullName: String!
+  $message: String!
+  $phoneNumber: String!
+) {
+  list_my_business(
+    company: $company
+    email: $email
+    fullName: $fullName
+    message: $message
+    phoneNumber: $phoneNumber
+  ) {
+    success
+  }
+}

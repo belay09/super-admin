@@ -1,0 +1,11 @@
+mutation MyMutation($input: VerifyOTPRequest!) {
+  verify_otp(params: $input){
+    id_token,
+    access_token,
+    message,
+    refresh_token,
+    user {
+      id
+    }
+  }
+}

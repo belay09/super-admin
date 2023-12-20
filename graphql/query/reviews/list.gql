@@ -1,0 +1,73 @@
+query getReviews(
+  $filter: ReviewsBoolExp
+  $order: [ReviewsOrderBy!]
+  $limit: Int
+  $offset: Int
+  $include: Boolean = false
+) {
+  reviews(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+    id
+    title
+    price
+
+    # is Bookmarked and liked
+    is_review_book_marked @include(if: $include)
+    is_review_liked @include(if: $include)
+
+    # review place
+    place {
+      id
+      name
+      light_logo {
+        url
+      }
+      dark_logo {
+        url
+      }
+    }
+
+    # review tags
+    review_tags {
+      id
+      tag {
+        id
+        title
+        icon {
+          darkIconUrl
+          lightIconUrl
+        }
+      }
+    }
+    # review aggregate
+    review_aggregate_summary {
+      avgRating
+      sumLikes
+    }
+    reviewAggregate: reviewReviewsAggregate {
+      aggregate {
+        count
+      }
+    }
+
+    # review feautured media
+
+    featured_media {
+      url
+    }
+    # review medias
+
+    review_medias {
+      media {
+        url
+      }
+    }
+  }
+
+  # Review aggregate
+
+  reviewsAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
+}

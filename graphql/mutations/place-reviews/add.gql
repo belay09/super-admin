@@ -1,0 +1,5 @@
+mutation addReview($input: PlaceReviewsInsertInput!) {
+  insertPlaceReviewsOne(object: $input) {
+    id
+  }
+}

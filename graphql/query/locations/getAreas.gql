@@ -1,0 +1,15 @@
+query getLocations(
+  $filter: BasicsAreasBoolExp
+  $order: [BasicsAreasOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  basicsAreas(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+    id
+    name
+    city {
+      id
+      name
+    }
+  }
+}

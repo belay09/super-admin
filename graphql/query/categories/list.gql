@@ -1,0 +1,32 @@
+query getCategories(
+  $filter: BasicsCategoriesBoolExp
+  $order: [BasicsCategoriesOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  basicsCategories(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    title
+    placesAggregate {
+      aggregate {
+        count
+      }
+    }
+
+    menusAggregate {
+      aggregate {
+        count
+      }
+    }
+    icon {
+      id
+      darkIconUrl
+      lightIconUrl
+    }
+  }
+}

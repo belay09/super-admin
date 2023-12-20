@@ -1,0 +1,30 @@
+mutation mobile_login($input: MobileLoginInput!) {
+  mobile_login(params: $input) {
+    access_token
+    expires_in
+    id_token
+    message
+    refresh_token
+    should_show_email_otp_screen
+    should_show_mobile_otp_screen
+    user {
+      email
+      email_verified
+      birthdate
+      created_at
+      app_data
+      family_name
+      gender
+      given_name
+      id
+      is_multi_factor_auth_enabled
+      middle_name
+      nickname
+      phone_number
+      picture
+      phone_number_verified
+      signup_methods
+      updated_at
+    }
+  }
+}

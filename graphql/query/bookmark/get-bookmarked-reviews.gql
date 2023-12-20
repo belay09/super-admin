@@ -1,0 +1,39 @@
+query (
+  $filter: UserReviewBookMarksBoolExp
+  $order_by: [UserReviewBookMarksOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  userReviewBookMarks(
+    where: $filter
+    orderBy: $order_by
+    limit: $limit
+    offset: $offset
+  ) {
+    review {
+      id
+      review_medias {
+        media {
+          url
+        }
+      }
+      is_review_book_marked
+      is_review_liked
+      price
+      title
+      review_tags {
+        id
+        tag {
+          title
+        }
+      }
+      review_aggregate_summary {
+        sumLikes
+        avgRating
+      }
+      place {
+        name
+      }
+    }
+  }
+}

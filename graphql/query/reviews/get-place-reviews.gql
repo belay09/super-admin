@@ -1,0 +1,42 @@
+query getPlaceReviews(
+  $filter: PlaceReviewsBoolExp
+  $order: [PlaceReviewsOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  placeReviews(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    placeId
+    id
+    comment
+    rating
+    updatedAt
+    createdAt
+
+    # user
+    user {
+      fullName
+    }
+
+    # place
+    place {
+      id
+      name
+      placeMedias(limit: 1) {
+        media {
+          url
+        }
+      }
+    }
+  }
+
+  reviewAggregate: placeReviewsAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
+}

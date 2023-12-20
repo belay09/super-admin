@@ -1,0 +1,77 @@
+query getReview($id: bigint!, $include:Boolean = false) {
+  reviewsByPk(id: $id) {
+    id
+    title
+    price
+    sides
+    description
+    view_count
+    timeToPrepare
+    sides
+    
+    is_review_liked @include(if:$include)
+    is_review_book_marked @include(if:$include)
+
+    # place
+    place {
+      shegerRecommendationId
+      id
+      name
+      dark_logo {
+        url
+      }
+      light_logo {
+        url
+      }
+      featuredReviewMediaUrl {
+        url
+      }
+    }
+
+    # tags
+    review_tags {
+      tag {
+        id
+        title
+        icon {
+          darkIconUrl
+          lightIconUrl
+        }
+      }
+    }
+
+    # review aggregate
+    review_aggregate_summary {
+      avgRating
+      sumLikes
+    }
+
+    reviewAggregate: reviewReviewsAggregate {
+      aggregate {
+        count
+      }
+    }
+
+    # medias
+    review_medias {
+      media {
+        url
+      }
+    }
+
+    # review drink
+    review_drink {
+      id
+      drink {
+        description
+        id
+        image
+        price
+        title
+        media {
+          url
+        }
+      }
+    }
+  }
+}

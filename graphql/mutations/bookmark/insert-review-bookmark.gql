@@ -1,0 +1,5 @@
+mutation($input:UserReviewBookMarksInsertInput!){
+  insertUserReviewBookMarksOne(object:$input){
+  	id
+  }
+}

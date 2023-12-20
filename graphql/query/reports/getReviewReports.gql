@@ -1,0 +1,6 @@
+query getReviewReports {
+  basicsReviewReportTypes {
+    value
+    description
+  }
+}

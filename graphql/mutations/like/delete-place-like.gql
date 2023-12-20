@@ -1,0 +1,5 @@
+mutation($filter:PlaceLikesBoolExp!){
+  deletePlaceLikes(where:$filter){
+    affectedRows
+  }
+}

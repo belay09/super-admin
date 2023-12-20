@@ -1,0 +1,11 @@
+mutation signup($input: SignUpInput!) {
+  signup(params: $input) {
+    access_token
+    expires_in
+    id_token
+    message
+    refresh_token
+    should_show_email_otp_screen
+    should_show_mobile_otp_screen
+  }
+}

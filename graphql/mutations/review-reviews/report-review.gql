@@ -1,0 +1,5 @@
+mutation reportReviewUserReview($input: ReviewReviewReportsInsertInput!) {
+  insertReviewReviewReportOne(object: $input) {
+    id
+  }
+}

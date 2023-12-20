@@ -1,0 +1,5 @@
+mutation($input:UpdateProfileInput!){
+  update_profile(params:$input){
+    message
+  }
+}

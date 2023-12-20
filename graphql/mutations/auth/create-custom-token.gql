@@ -1,0 +1,5 @@
+mutation createCustomToken($idToken: String!) {
+  create_custom_token(id_token: $idToken) {
+    hasura_access_token
+  }
+}

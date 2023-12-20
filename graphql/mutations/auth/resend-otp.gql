@@ -1,0 +1,6 @@
+mutation($input:ResendOTPRequest!){
+  resend_otp(params:$input)
+  {
+    message
+  }
+}

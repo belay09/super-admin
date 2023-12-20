@@ -1,0 +1,47 @@
+query getLocations(
+  $filter: PlaceLocationsBoolExp
+  $order: [PlaceLocationsOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  placeLocations(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    location
+    isMainLocation
+    city {
+      name
+    }
+    area {
+      name
+    }
+    location
+    place {
+      type
+      id
+      contactPhoneNumber
+      placeTags {
+        tag {
+          id
+          title
+          icon {
+            darkIconUrl
+            lightIconUrl
+          }
+        }
+      }
+
+      name
+    }
+  }
+
+  placeLocationsAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
+}

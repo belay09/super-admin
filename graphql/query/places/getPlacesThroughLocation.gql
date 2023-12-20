@@ -1,0 +1,23 @@
+query getPlacesThroughLocations {
+  placeLocations(
+    $distinctOn: [PlacesLocationsSelectColumn!], 
+  $filter: PlacesLocationsBoolExp
+  $order: [PlacesLocationsOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+    placeId
+    place {
+      contactEmail
+      categoryId
+      contactAltPhoneNumber
+      contactPhoneNumber
+      contactWebsite
+      description
+      logo {
+        url
+      }
+      name
+    }
+  }
+}

@@ -1,0 +1,5 @@
+mutation($input:PlaceLikesInsertInput!){
+  insertPlaceLikesOne(object:$input){
+    id
+  }
+}

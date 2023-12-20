@@ -1,0 +1,41 @@
+query (
+  $filter: UserPlaceBookMarksBoolExp
+  $order_by: [UserPlaceBookMarksOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  userPlaceBookMarks(
+    where: $filter
+    orderBy: $order_by
+    limit: $limit
+    offset: $offset
+  ) {
+    place {
+      id
+      type
+      name
+      # is Bookmarked and liked
+      is_place_book_marked
+      is_place_liked
+
+      placeMedias {
+        media {
+          url
+        }
+      }
+      placeType {
+        value
+      }
+      place_aggregate_summary {
+        avgRating
+        sumLikes
+      }
+      placeTags {
+        tag {
+          id
+          title
+        }
+      }
+    }
+  }
+}

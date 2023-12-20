@@ -1,0 +1,22 @@
+query ($filter: PlaceAdsBoolExp) {
+  placeAds(where: $filter) {
+    media {
+      url
+    }
+    description
+    slogan
+    place {
+      id
+      contactAltPhoneNumber
+      contactEmail
+      contactWebsite
+      dark_logo {
+        id
+      }
+      light_logo {
+        id
+        url
+      }
+    }
+  }
+}

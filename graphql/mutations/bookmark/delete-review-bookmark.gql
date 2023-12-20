@@ -1,0 +1,7 @@
+mutation(
+  $filter: UserReviewBookMarksBoolExp!
+){
+  deleteUserReviewBookMarks(where:$filter){
+    affectedRows
+  }
+}

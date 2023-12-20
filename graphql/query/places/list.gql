@@ -1,0 +1,50 @@
+query getPlaces(
+  $filter: PlacesBoolExp
+  $order: [PlacesOrderBy!]
+  $limit: Int
+  $offset: Int
+  $include: Boolean = false
+) {
+  places(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+    name
+    id
+
+    # is Bookmarked and liked
+    is_place_book_marked @include(if: $include)
+    is_place_liked @include(if: $include)
+
+    # place tags
+    placeTags {
+      id
+      tag {
+        title
+        id
+      }
+    }
+    # place medias
+    placeMedias {
+      media {
+        url
+      }
+    }
+    # place aggregate
+    place_aggregate_summary {
+      avgDishPrice
+      avgRating
+      sumLikes
+      minDishPrice
+    }
+    # review aggregate
+    placeReviewsAggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+
+  placesAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
+}

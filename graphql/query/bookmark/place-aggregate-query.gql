@@ -1,0 +1,46 @@
+query {
+  totalBookmarkedHotels: userPlaceBookMarksAggregate(
+    where: { place: { placeType: { value: { _eq: "Hotels" } } } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  totalBookmarkedRestaurants: userPlaceBookMarksAggregate(
+    where: { place: { placeType: { value: { _eq: "Restaurants" } } } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  totalBookmarkedCafes: userPlaceBookMarksAggregate(
+    where: { place: { placeType: { value: { _eq: "Cafes" } } } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  totalBookmarkedCaterings: userPlaceBookMarksAggregate(
+    where: { place: { placeType: { value: { _eq: "Caterings" } } } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  totalBookmarkedReviews: userReviewBookMarksAggregate {
+    aggregate {
+      count
+    }
+  }
+
+  totalPlaceBookmarkedAggregate: userPlaceBookMarksAggregate {
+    aggregate {
+      count
+    }
+  }
+  totalReviewBookmarkedAggregate: userReviewBookMarksAggregate {
+    aggregate {
+      count
+    }
+  }
+}

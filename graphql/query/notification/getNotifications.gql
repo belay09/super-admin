@@ -1,0 +1,10 @@
+query{
+  notifications{
+    icon{
+      url
+    }
+    message 
+  	createdAt
+    payload
+  }
+}

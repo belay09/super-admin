@@ -1,0 +1,44 @@
+query getReviewReviews(
+  $filter: ReviewReviewsBoolExp
+  $order: [ReviewReviewsOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  reviewReviews(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    comment
+    rating
+    updatedAt
+    createdAt
+
+    # user
+    user {
+      fullName
+    }
+
+    # review
+    review {
+      id
+      title
+      review_medias(limit: 1) {
+        media {
+          url
+        }
+      }
+      featured_media {
+        url
+      }
+    }
+  }
+
+  reviewAggregate: reviewReviewsAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
+}
