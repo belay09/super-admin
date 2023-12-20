@@ -33,6 +33,10 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  rowBodyStyle: {
+    type: String,
+    default: "",
+  },
   sort: {
     type: Array,
   },
@@ -140,10 +144,7 @@ function rowCheckedAll() {
 <template>
   <div class="h-[6px]"></div>
   <!-- component -->
-  <div
-    :class="supporterClass"
-    class="sm:rounded-lg relative border border-table-border"
-  >
+  <div :class="supporterClass" class="sm:rounded-lg relative">
     <HProgress
       v-if="loading"
       height="h-[6px]"
@@ -151,11 +152,8 @@ function rowCheckedAll() {
       :color2="color2"
       :color3="color3"
     />
-    <table
-      class="w-full font-body"
-      :class="[items?.length ? 'divide-y divide-secondary-4' : '']"
-    >
-      <thead class="bg-white">
+    <table class="w-full font-body">
+      <thead :class="supportHeaderClass" class="">
         <tr>
           <th
             v-if="hasCheckBox"
@@ -217,7 +215,8 @@ function rowCheckedAll() {
       <tbody>
         <tr
           :class="[
-            ' border-gray-200 rounded last:border-0 hover:bg-gray-50 cursor-pointer',
+            '  rounded last:border-0 hover:bg-gray-50 cursor-pointer',
+            rowBodyStyle,
           ]"
           v-for="(item, idx) in items"
           :key="item.id"
@@ -271,8 +270,6 @@ function rowCheckedAll() {
                   class="align-middle inline-block overflow-ellipsis overflow-hidden whitespace-nowrap font-body lg:w-7/12 xl:w-9/12 truncate"
                   v-else-if="header.value == 'full_name'"
                 >
-                  <!-- <PersonTypeIndicator :type="item.type" /> -->
-
                   {{ _get(item, header.value) || "-" }}
                 </span>
                 <span

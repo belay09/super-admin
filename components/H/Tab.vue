@@ -13,6 +13,10 @@ const props = defineProps({
     default: 0,
     required: false,
   },
+  tabClass: {
+    type: String,
+    default: "",
+  },
 });
 
 /*............Tab ............*/
@@ -66,16 +70,24 @@ onMounted(() => {
         <HeadlessTab
           :id="`tab-${index}`"
           :class="[
-            selectedTab === index
-              ? 'text-primary-600 '
-              : 'text-gray-400 dark:text-white',
+            selectedTab === index ? 'text-primary-600 ' : '',
             'outline-none focus:outline-none duration-500 ease-in-out leading-none  md:text-xl cursor-pointer whitespace-nowrap',
+            tabClass,
           ]"
           as="div"
           v-for="(tab, index) in tabs"
           :key="tab.value"
-          >{{ tab.name }}</HeadlessTab
         >
+          <slot
+            name="tab"
+            :tabData="{
+              tab: tab,
+              isActive: selectedTab === index,
+            }"
+          >
+            {{ tab.name }}
+          </slot>
+        </HeadlessTab>
       </HeadlessTabList>
       <div
         ref="indicatorContainer"

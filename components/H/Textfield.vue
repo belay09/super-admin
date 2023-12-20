@@ -46,21 +46,7 @@ const props = defineProps({
     default: undefined,
     required: false,
   },
-  leadingText: {
-    type: String,
-    default: "",
-    required: false,
-  },
-  leadingTextClass: {
-    type: String,
-    default: "",
-    required: false,
-  },
-  leadingIcon: {
-    type: [String],
-    default: undefined,
-    required: false,
-  },
+
   min: String,
   max: String,
   rules: {
@@ -72,14 +58,73 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  class: String,
-  iconLeadingClass: String,
-  iconTrailingClass: String,
+
+  /*-------------------- leading icon-----------------------*/
+  /*--------------------When using leading by slot pl have to given to bodyClass-----------------------*/
+
+  leadingIcon: {
+    type: String,
+    required: false,
+    default: undefined,
+  },
+
+  leadingIconClass: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  leadingIconContainerClass: {
+    type: String,
+    required: false,
+    default: "",
+  },
+
+  /*-------------------- Trailing icon-----------------------*/
+  trailingIcon: {
+    type: String,
+    required: false,
+    default: undefined,
+  },
+
+  trailingIconClass: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  trailingIconContainerClass: {
+    type: String,
+    required: false,
+    default: "",
+  },
+
   placeholderStyle: String,
   iconBackground: Boolean,
-  mainDiv: String,
+
+  /*-----------------------Container Class-------------------------*/
+
+  /*------------- The whole element container--------------*/
+  mainDivClass: {
+    type: String,
+    required: false,
+    default: "",
+  },
+
+  /*------------- Leading icon, input field and Traling icon container--------------*/
+  bodyClass: {
+    type: String,
+    required: false,
+    default: "",
+  },
+
+  /*------------- Input field class--------------*/
+
+  fieldClass: {
+    type: String,
+    required: false,
+    default: "",
+  },
 });
-const emit = defineEmits(["update:modelValue", "onFocus", "onBlur", "search"]);
+const emit = defineEmits(["update:modelValue", "trailingIconClick"]);
 
 const {
   errorMessage,
@@ -113,41 +158,46 @@ watch(
 );
 </script>
 <template>
-  <div :class="mainDiv">
-    <div class="flex gap-x-1">
+  <div :class="mainDivClass">
+    <!-- -------------------Label----------------- -->
+    <div class="mb-2">
       <slot name="label"></slot>
+      <label
+        :class="[props.labelClass, 'text-sheger-gray-100  ']"
+        v-if="props.label"
+        :for="props.id ? props.id : ''"
+      >
+        {{ props.label }}
+      </label>
     </div>
+
     <div
       class="relative rounded-md overflow-clip font-body shadow-sm group"
-      :class="props.class"
+      :class="props.bodyClass"
     >
+      <!-- -----------------Leading Class--------------- -->
       <slot name="leading" />
-      <slot name="trailing" />
-      <Icon
-        v-if="props.leadingIcon"
-        :name="leadingIcon"
-        class="absolute px-3 text-gray-500"
-        size="45"
-      />
-      <p
-        v-if="props.leadingText != ''"
-        :class="[
-          props.leadingTextClass != ''
-            ? props.leadingTextClass
-            : 'text-sheger_brown-200 dark:text-sheger_light_gray-400 text-sm',
-        ]"
-        class="absolute top-[13px] left-4"
-      >
-        {{ props.leadingText }}
-      </p>
 
+      <div
+        v-if="props.leadingIcon"
+        class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-4"
+        :class="[
+          props.leadingIconContainerClass,
+          iconBackground && !errorMessage
+            ? 'rounded-l-lg border border-gray-300 bg-gray-50'
+            : 'rounded-l-lg border border-red-500 hover:border-red-500 focus:border-red-500 focus:ring-red-500',
+        ]"
+      >
+        <Icon
+          :name="props.leadingIcon"
+          :class="props.leadingIconClass"
+          class="text-gray-700"
+        />
+      </div>
       <input
         v-model="inputValue"
         @input="set($event)"
         @change="set($event)"
-        @focus="emit('onFocus')"
-        @blur="emit('onBlur')"
-        @keyup.enter="emit('search')"
         :min="min"
         :max="max"
         :type="type"
@@ -157,44 +207,49 @@ watch(
         :class="[
           errorMessage
             ? 'border-red-500 hover:border-red-500 focus:border-red-500 focus:ring-red-500'
-            : 'border-[1px]  border-gray-300  focus:border-primary-300 focus:ring-0 disabled:bg-gray-100 disabled:cursor-not-allowed',
-          props.iconLeadingClass ? props.iconLeadingClass : '',
-          props.leadingIcon ? 'pl-10' : '',
-          props.leadingText != '' ? 'pl-14' : '',
+            : ' group-hover:border-new-tale focus:border-new-tale focus:ring-new-tale disabled:bg-gray-100 disabled:cursor-not-allowed',
+          props.fieldClass ? props.fieldClass : '',
           props.trailingIcon ? 'pr-0' : '',
-          props.class ? props.class : '',
           props.placeholderStyle
             ? props.placeholderStyle
-            : ' placeholder-sheger_brown-200 dark:placeholder-sheger_light_gray-400 ',
+            : ' placeholder-gray-500',
           props.trailingIcon ? 'pr-7' : '',
           props.type == 'password' ? 'pr-7' : '',
-          'block w-full rounded-md font-body py-3  focus:outline-none ',
+          props.leadingIcon ? 'pl-14' : '',
         ]"
-        class="block w-full rounded-md font-body py-3 focus:outline-none secondary-text primary-background"
+        class="secondary-border block w-full rounded-md font-body text-base placeholder-gray-500 focus:outline-none py-3 focus:border-gray-800 focus:ring-0"
         :placeholder="props.placeholder"
         aria-invalid="true"
         aria-describedby="email-error"
         :disabled="props.disabled"
       />
+
+      <!-- -----------------Trailing--------------- -->
+      <slot name="trailing" />
+
       <div
-        v-if="props.type == 'password'"
+        v-if="props.trailingIcon && props.type == 'password'"
         class="absolute inset-y-0 right-0 flex items-center pr-3 hover:cursor-pointer"
         @click="togglePassword()"
       >
         <Icon
           class="h-5 w-5"
-          :class="
-            props.iconTrailingClass ? props.iconTrailingClass : 'secondary-text'
-          "
+          :class="[type === 'password' ? 'text-gray-400' : 'text-new-tale']"
           :name="props.trailingIcon"
         ></Icon>
       </div>
+
       <div
-        v-else-if="props.trailingIcon"
-        @click="emit('search')"
+        v-if="props.trailingIcon && props.type != 'password'"
         class="absolute inset-y-0 right-0 flex items-center pr-3 hover:cursor-pointer"
+        :class="props.trailingIconContainerClass"
+        @click="emit('trailingIconClick')"
       >
-        <Icon class="text-gray-500" :name="props.trailingIcon" size="20"></Icon>
+        <Icon
+          class="text-xl"
+          :class="props.trailingIconClass"
+          :name="props.trailingIcon"
+        ></Icon>
       </div>
     </div>
     <p
