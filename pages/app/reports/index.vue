@@ -3,19 +3,14 @@
 
 const tabs = [
   {
-    name: "Active",
-    value: "Active",
+    name: "Pending",
+    value: "Pending",
     length: 12,
   },
   {
-    name: "Suspended",
-    value: "Suspended",
+    name: "Addressed",
+    value: "Addressed",
     length: 5,
-  },
-  {
-    name: "Deleted",
-    value: "Deleted",
-    length: 2,
   },
 ];
 
@@ -61,19 +56,14 @@ definePageMeta({
         </div>
       </template>
 
-      <template #Active>
+      <template #Addressed>
         <div>
-          <Users-List></Users-List>
+          <Reports-List></Reports-List>
         </div>
       </template>
-      <template #Suspended>
+      <template #Pending>
         <div>
-          <Users-List></Users-List>
-        </div>
-      </template>
-      <template #Deleted>
-        <div>
-          <Users-List></Users-List>
+          <Reports-List></Reports-List>
         </div>
       </template>
     </H-Tab>

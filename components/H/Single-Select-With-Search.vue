@@ -15,6 +15,10 @@ const props = defineProps({
   label: {
     type: String,
   },
+  labelClass: {
+    type: String,
+    default: "",
+  },
   name: {
     type: String,
     required: true,

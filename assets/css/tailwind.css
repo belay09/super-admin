@@ -75,7 +75,7 @@ body::-webkit-scrollbar-thumb:hover {
 /* ---------------------------Button---------------------- */
 
 .primary-button {
-  @apply px-4 py-3 rounded-md flex items-center space-x-2;
+  @apply px-4 py-3 rounded-md flex items-center space-x-2 justify-center;
 }
 
 /* ---------------------------Border---------------------- */

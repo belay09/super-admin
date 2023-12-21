@@ -45,6 +45,24 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+
+  /*-------------------- Trailing icon-----------------------*/
+  trailingIcon: {
+    type: String,
+    required: false,
+    default: undefined,
+  },
+
+  trailingIconClass: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  trailingIconContainerClass: {
+    type: String,
+    required: false,
+    default: "",
+  },
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -74,13 +92,17 @@ const input = (e) => {
 
 <template>
   <div>
-    <label :class="labelClass" :for="id" class="block"
-      >{{ label }}
-      <span v-show="rules !== '' && props.showStar" class="text-red-500"
-        >*</span
-      ></label
-    >
-    <div class="relative rounded-md shadow-sm">
+    <div class="mb-2 w-full">
+      <slot name="label"></slot>
+      <label
+        :class="[props.labelClass, 'text-sheger-gray-100  ']"
+        v-if="props.label"
+        :for="props.id ? props.id : ''"
+      >
+        {{ props.label }}
+      </label>
+    </div>
+    <div class="relative rounded-md shadow-sm w-full">
       <input
         v-model="inputValue"
         :disabled="disabled"
@@ -94,16 +116,30 @@ const input = (e) => {
         :class="[
           errorMessage
             ? 'focus:ring-red-500 focus:border-red-500 hover:border-red-500 border-red-500'
-            : 'focus:ring-primary-600  focus:border-primary-600 hover:border-primary-600-2 border-gray-300 border-1',
+            : 'focus:ring-primary-600  focus:border-primary-600 hover:border-primary-600-2 secondary-border',
           props.disabled
             ? 'bg-gray-100 border-gray-200 hover:border-gray-200 text-gray-400 pointer-events-none shadow-none'
             : ' focus:ring-1',
         ]"
-        class="block w-full text-secondary placeholder-primary-600 focus:outline-none text-base rounded-md"
+        class="block w-full text-secondary placeholder-primary-600 focus:outline-none py-3 focus:border-gray-800 focus:ring-0 text-base rounded-md"
         aria-invalid="true"
         aria-describedby="date-error"
       />
+
+      <!-- --------------------Trailing icon-------------------- -->
+      <div
+        v-if="props.trailingIcon"
+        class="absolute inset-y-0 right-0 flex items-center pr-3 hover:cursor-pointer"
+        :class="props.trailingIconContainerClass"
+      >
+        <Icon
+          class="text-xl"
+          :class="props.trailingIconClass"
+          :name="props.trailingIcon"
+        ></Icon>
+      </div>
     </div>
+
     <p
       :visible="errorMessage"
       class="mt-2 text-sm text-red-600"

@@ -14,30 +14,32 @@ const headers = [
     value: "name",
   },
   {
-    text: "Phone number",
-    value: "phone_number",
+    text: "Place Name",
+    value: "place_name",
   },
 
   {
-    text: "Status",
-    value: "status",
-  },
-  {
-    text: "Reviews",
-    value: "reviews",
-  },
-  {
-    text: "Bookmarks",
-    value: "bookmarks",
-  },
-  {
-    text: "Sign up method",
-    value: "sign_up_method",
+    text: "Review content",
+    value: "review_content",
   },
 
   {
-    text: "created At",
-    value: "created_at",
+    text: "Report category",
+    value: "report_category",
+  },
+  {
+    text: "Report description",
+    value: "report_description",
+  },
+
+  {
+    text: "Reported by",
+    value: "reported_by",
+  },
+
+  {
+    text: "Reported At",
+    value: "reported_at",
   },
   {
     text: "Action",
@@ -49,82 +51,98 @@ items.value = [
   {
     id: 1,
     name: "Selamu dawit",
-    phone_number: "+25191234567",
+    place_name: "Hilton hotel",
+    review_content: "asfgdaedgewt",
+    report_category: "False information",
+    reported_by: "Samuel Noah",
+
     status: "Active",
-    reviews: 12,
-    bookmarks: 5,
-    sign_up_method: "Email",
-    created_at: "2022 Jan 22",
+
+    reported_at: "2022 Jan 22",
   },
   {
     id: 2,
     name: "Selamu dawit",
-    phone_number: "+25191234567",
+    place_name: "Hilton hotel",
+    review_content: "asfgdaedgewt",
+    report_category: "False information",
+    reported_by: "Samuel Noah",
+
     status: "Active",
-    reviews: 12,
-    bookmarks: 5,
-    sign_up_method: "Email",
-    created_at: "2022 Jan 22",
+
+    reported_at: "2022 Jan 22",
   },
   {
     id: 3,
     name: "Selamu dawit",
-    phone_number: "+25191234567",
+    place_name: "Hilton hotel",
+    review_content: "asfgdaedgewt",
+    report_category: "False information",
+    reported_by: "Samuel Noah",
+
     status: "Active",
-    reviews: 12,
-    bookmarks: 5,
-    sign_up_method: "Email",
-    created_at: "2022 Jan 22",
+
+    reported_at: "2022 Jan 22",
   },
   {
     id: 4,
     name: "Selamu dawit",
-    phone_number: "+25191234567",
+    place_name: "Hilton hotel",
+    review_content: "asfgdaedgewt",
+    report_category: "False information",
+    reported_by: "Samuel Noah",
+
     status: "Active",
-    reviews: 12,
-    bookmarks: 5,
-    sign_up_method: "Email",
-    created_at: "2022 Jan 22",
+
+    reported_at: "2022 Jan 22",
   },
   {
     id: 5,
     name: "Selamu dawit",
-    phone_number: "+25191234567",
+    place_name: "Hilton hotel",
+    review_content: "asfgdaedgewt",
+    report_category: "False information",
+    reported_by: "Samuel Noah",
+
     status: "Active",
-    reviews: 12,
-    bookmarks: 5,
-    sign_up_method: "Email",
-    created_at: "2022 Jan 22",
+
+    reported_at: "2022 Jan 22",
   },
   {
     id: 6,
     name: "Selamu dawit",
-    phone_number: "+25191234567",
+    place_name: "Hilton hotel",
+    review_content: "asfgdaedgewt",
+    report_category: "False information",
+    reported_by: "Samuel Noah",
+
     status: "Active",
-    reviews: 12,
-    bookmarks: 5,
-    sign_up_method: "Email",
-    created_at: "2022 Jan 22",
+
+    reported_at: "2022 Jan 22",
   },
   {
     id: 7,
     name: "Selamu dawit",
-    phone_number: "+25191234567",
+    place_name: "Hilton hotel",
+    review_content: "asfgdaedgewt",
+    report_category: "False information",
+    reported_by: "Samuel Noah",
+
     status: "Active",
-    reviews: 12,
-    bookmarks: 5,
-    sign_up_method: "Email",
-    created_at: "2022 Jan 22",
+
+    reported_at: "2022 Jan 22",
   },
   {
     id: 8,
     name: "Selamu dawit",
-    phone_number: "+25191234567",
+    place_name: "Hilton hotel",
+    review_content: "asfgdaedgewt",
+    report_category: "False information",
+    reported_by: "Samuel Noah",
+
     status: "Active",
-    reviews: 12,
-    bookmarks: 5,
-    sign_up_method: "Email",
-    created_at: "2022 Jan 22",
+
+    reported_at: "2022 Jan 22",
   },
 ];
 
@@ -141,8 +159,7 @@ const clickRow = (item) => {
 <template>
   <div class="flex flex-col space-y-8 py-6">
     <div class="flex items-center justify-between">
-      <p class="text-xl font-medium">Showing 9/12 users</p>
-      <H-Limit></H-Limit>
+      <p class="text-xl font-medium">Showing 9/12 reports</p>
     </div>
 
     <div class="">
@@ -179,15 +196,12 @@ const clickRow = (item) => {
             active
           </p>
         </template>
-        <template v-slot:reviews="{ item }">
-          <p class="tertiary-text">
-            {{ item.reviews }}
-          </p>
+
+        <template v-slot:review_content="{ item }">
+          <p class="tertiary-text">Lorem ipsum dolor, sit amet</p>
         </template>
-        <template v-slot:bookmarks="{ item }">
-          <p class="tertiary-text">
-            {{ item.bookmarks }}
-          </p>
+        <template v-slot:report_description="{ item }">
+          <p class="tertiary-text">Lorem ipsum dolor, sit amet</p>
         </template>
         <template v-slot:sign_up_method="{ item }">
           <p class="tertiary-text">
@@ -195,9 +209,9 @@ const clickRow = (item) => {
           </p>
           <p>Verified</p>
         </template>
-        <template v-slot:created_at="{ item }">
+        <template v-slot:reported_at="{ item }">
           <p class="tertiary-text">
-            {{ item.created_at }}
+            {{ item.reported_at }}
           </p>
         </template>
         <template v-slot:action="{ item }">

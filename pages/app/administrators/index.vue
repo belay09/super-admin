@@ -63,7 +63,6 @@ items.value = [
     email: "selamudev@gmail.com",
     status: "active",
     role: "Data encoder",
-
     created_at: "2022 Jan 22",
   },
 ];
@@ -105,7 +104,6 @@ definePageMeta({
           :loading="loading"
           @click:row="clickRow"
           supporterClass="shadow-md  overflow-x-auto overflow-y-hidden rounded-md border border-gray-200"
-          rowBodyStyle="border-b border-gray-300"
           supportHeaderClass="bg-gray-100 border"
           tableHeaderStyle=" bg-gray-200  "
           tableBodyRowStyle="border py-6"
