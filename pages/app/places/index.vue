@@ -3,7 +3,6 @@ definePageMeta({
   layout: "home",
 });
 </script>
-
 <template>
   <div class="px-4">
     <div class="grid grid-cols-3 w-[80%]">
@@ -17,7 +16,7 @@ definePageMeta({
       v-modeloffset="0"
       :items-per-page="8"
       :total-data="100"
-      class="w-full pt-16 "
+      class="w-full pt-16"
     ></HPaginate>
   </div>
 </template>
