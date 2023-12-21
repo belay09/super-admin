@@ -55,7 +55,7 @@ const placeTypeItems = ref([
           <!-- -----------------Image section------------------------ -->
 
           <img
-            src="@/images/temprary/ad-space-default.png"
+            src="/images/temporary/ad-space-default.png"
             alt="ad-space-default image"
             class="w-full object-cover object-center rounded-t-lg"
           />
@@ -67,7 +67,7 @@ const placeTypeItems = ref([
               <div>
                 <img
                   class="w-8 h-8 object-cover"
-                  src="@/images/temprary/default-place-logo.png"
+                  src="/images/temporary/default-place-logo.png"
                   alt="place logo"
                 />
               </div>

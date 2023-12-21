@@ -51,7 +51,7 @@ const offset = ref(0);
           <div class="flex items-center space-x-5 px-5">
             <!-- ------------------Image section -->
             <img
-              src="@/images/temprary/default-drink-image.png"
+              src="/images/temporary/default-drink-image.png"
               alt="ad-space-default image"
               class="w-[40%] object-cover object-center rounded-t-lg"
             />

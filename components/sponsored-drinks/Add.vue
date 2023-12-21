@@ -85,18 +85,18 @@ const place = ref("");
     <!-- ----------------------Upload Image 1------------------- -->
     <div>
       <img
-        src="@/images/temprary/upload-image.png"
+        src="/images/temporary/upload-image.png"
         class="w-full py-2"
-        alt="upload temprary image"
+        alt="upload temporary image"
       />
     </div>
 
     <!-- ----------------------Upload Image 2------------------- -->
     <div>
       <img
-        src="@/images/temprary/upload-image.png"
+        src="/images/temporary/upload-image.png"
         class="w-full py-2"
-        alt="upload temprary image"
+        alt="upload temporary image"
       />
     </div>
 
