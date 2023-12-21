@@ -62,8 +62,12 @@ const props = defineProps({
     default: "",
     required: false,
   },
+
+  showLength: {
+    type: Boolean,
+    default: false,
+  },
 });
-console.log(props.modelValue);
 const {
   errorMessage,
   value: inputValue,
@@ -84,14 +88,17 @@ watch(
 </script>
 <template>
   <div>
-    <slot name="label">
-      <label :for="id" :class="labelClass" class="flex"
-        >{{ label }}
-        <span :class="rules == 'required' ? 'text-red-600' : 'invisible'">
-          &nbsp;*</span
-        ></label
+    <!-- -------------------Label----------------- -->
+    <div class="mb-2">
+      <slot name="label"></slot>
+      <label
+        :class="[props.labelClass, 'text-sheger-gray-100  ']"
+        v-if="props.label"
+        :for="props.id ? props.id : ''"
       >
-    </slot>
+        {{ props.label }}
+      </label>
+    </div>
     <div class="mt-1 relative rounded-md shadow-sm">
       <textarea
         v-model="inputValue"
@@ -109,12 +116,16 @@ watch(
             ? props.placeholderStyle
             : ' placeholder-sheger_brown-200 dark:placeholder-sheger_light_gray-400',
         ]"
-        class="block w-full p-2 text-sheger_brown-200 placeholder-graytext-sheger_brown-200 focus:outline-none focus:border-primary-600 text-base rounded-md dark:text-sheger_light_gray-400 bg-transparent dark:border"
+        class="block w-full rounded-md p-2 secondary-border placeholder-gray-500 focus:outline-none py-3 focus:border-gray-800 focus:ring-0"
         :placeholder="placeholder"
         aria-invalid="true"
         aria-describedby="email-error"
       />
-      <p class="absolute right-0 mt-2 text-sm text-gray-400" id="email-error">
+      <p
+        v-if="showLength"
+        class="absolute right-0 mt-2 text-sm text-gray-400"
+        id="email-error"
+      >
         {{ (inputValue?.length || 0) + "/" + maxlength }} &nbsp;
       </p>
     </div>
