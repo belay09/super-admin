@@ -1,5 +1,5 @@
 <template>
-  <div class="text-sheger-gray-100">
+  <div class="text-sheger-gray-100 flex flex-col space-y-4">
     <!-- Dashbord -->
     <UiSidebarItem name="/">
       <template #icon>

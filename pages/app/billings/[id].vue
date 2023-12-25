@@ -14,8 +14,8 @@ const headers = [
     value: "invoice_number",
   },
   {
-    text: "Company Name",
-    value: "company_name",
+    text: "Reason",
+    value: "reason",
   },
 
   {
@@ -49,7 +49,7 @@ const headers = [
 items.value = [
   {
     id: 1,
-    company_name: "Minab It Solution",
+    reason: "Subscription fee for the  Shager Plus of Shager Gebeta",
     invoice_number: "0001",
     payment_type: "Bank transfer",
 
@@ -63,7 +63,7 @@ items.value = [
   },
   {
     id: 2,
-    company_name: "Minab It Solution",
+    reason: "Subscription fee for the  Shager Plus of Shager Gebeta",
     invoice_number: "0001",
     payment_type: "Bank transfer",
 
@@ -77,7 +77,7 @@ items.value = [
   },
   {
     id: 3,
-    company_name: "Minab It Solution",
+    reason: "Subscription fee for the  Shager Plus of Shager Gebeta",
     invoice_number: "0001",
     payment_type: "Bank transfer",
 
@@ -91,7 +91,7 @@ items.value = [
   },
   {
     id: 4,
-    company_name: "Minab It Solution",
+    reason: "Subscription fee for the  Shager Plus of Shager Gebeta",
     invoice_number: "0001",
     payment_type: "Bank transfer",
 
@@ -105,7 +105,7 @@ items.value = [
   },
   {
     id: 5,
-    company_name: "Minab It Solution",
+    reason: "Subscription fee for the  Shager Plus of Shager Gebeta",
     invoice_number: "0001",
     payment_type: "Bank transfer",
 
@@ -119,7 +119,7 @@ items.value = [
   },
   {
     id: 6,
-    company_name: "Minab It Solution",
+    reason: "Subscription fee for the  Shager Plus of Shager Gebeta",
     invoice_number: "0001",
     payment_type: "Bank transfer",
 
@@ -133,7 +133,7 @@ items.value = [
   },
   {
     id: 7,
-    company_name: "Minab It Solution",
+    reason: "Subscription fee for the  Shager Plus of Shager Gebeta",
     invoice_number: "0001",
     payment_type: "Bank transfer",
 
@@ -147,7 +147,7 @@ items.value = [
   },
   {
     id: 8,
-    company_name: "Minab It Solution",
+    reason: "Subscription fee for the  Shager Plus of Shager Gebeta",
     invoice_number: "0001",
     payment_type: "Bank transfer",
 
@@ -164,19 +164,68 @@ items.value = [
 const loading = ref(true);
 loading.value = false;
 const clickRow = (item) => {
-  console.log("clicked");
-  router.push("/app/billings/12");
+  router.push({
+    name: "app-users-roles-edit",
+    params: { edit: item.id },
+  });
 };
 
-/**----------------Billing status--------------------------- */
-const currentStatus = ref("All");
-const status = ref(["All", "Pending", "Paid", "Verified"]);
+function gotoBillingDetail(event, item) {
+  event.stopPropagation();
+
+  router.push("/app/billings/billing_payment_detail/12");
+}
+
+definePageMeta({
+  layout: "home",
+});
 </script>
 
 <template>
-  <div class="flex flex-col space-y-8 py-6">
-    <Billings-Filter v-model:model-value="currentStatus" :status="status" />
+  <div class="w-full pl-10 pr-16 py-6">
+    <!-- -----------------------Place name---------------- -->
+    <div
+      @click="router.back()"
+      class="secondary-flex-row text-sheger-gray-100 hover:cursor-pointer py-4"
+    >
+      <Icon name="heroicons:arrow-left-20-solid" class="text-2xl"></Icon>
+      <p class="text-4xl font-semibold">Hilton Hotel</p>
+    </div>
+    <!-- -------------------------Subscription------------------ -->
 
+    <div
+      class="bg-primary-50 grid grid-cols-2 items-center px-12 py-8 mt-3 mb-8"
+    >
+      <div class="flex flex-col space-y-6">
+        <p class="secondary-text">Current Plan</p>
+
+        <p class="text-sheger-gray-100 font-semibold">
+          <span class="text-2xl"> SHEGER PRO</span>
+          <span class="px-6 mx-5 bg-primary-600 rounded-full text-white"
+            >Monthly</span
+          >
+        </p>
+        <p class="secondary-text">
+          Nulla ultricies dolor scelerisque quam. Dolor sodales tortor
+          pellentesque augue. Eget sem ipsum magna sit enim maecenas. Parturient
+          tincidunt sit rhoncus pellentesque pretium mollis.
+        </p>
+
+        <p class="text-sheger-gray-100">
+          <span class="font-medium">Next Payment</span> : Birr 2,300 |
+          <span class="font-medium">Due on</span>:Feb 12,2023
+        </p>
+      </div>
+
+      <div class="flex flex-col space-y-6 items-end">
+        <button class="primary-button bg-primary-600 text-white w-56">
+          Upgrade Plan
+        </button>
+        <button class="primary-button bg-white secondary-border w-56">
+          Cancel Subscription
+        </button>
+      </div>
+    </div>
     <div class="">
       <h-table
         :headers="headers"
@@ -228,7 +277,7 @@ const status = ref(["All", "Pending", "Paid", "Verified"]);
         </template>
 
         <template v-slot:action="{ item }">
-          <button>
+          <button @click="gotoBillingDetail($event, item)">
             <Icon name="fontisto:more-v" class="text-xl dark:text-white" />
           </button>
         </template>

@@ -3,7 +3,9 @@
 <template>
   <div class="">
     <div class="flex">
-      <div class="hidden h-screen lg:inset-y-0 lg:z-50 lg:flex lg:w-96 lg:flex-col">
+      <div
+        class="hidden h-screen lg:inset-y-0 lg:z-50 lg:flex lg:w-96 lg:flex-col"
+      >
         <!-- Sidebar component, swap this element with another sidebar if you like -->
         <div
           class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-primary-50 px-6"
@@ -30,7 +32,7 @@
       <main class="w-full relative">
         <!-- top bar -->
         <div
-          class="flex items-center justify-between px-7 py-4 border-b border-sheger-gray-300 sticky top-0 bg-white z-50"
+          class="flex items-center justify-between ml-10 mr-16 py-4 border-b border-sheger-gray-300 sticky top-0 bg-white z-50"
         >
           <div class="text-xl text-primary-600 font-semibold">Dashboard</div>
 
