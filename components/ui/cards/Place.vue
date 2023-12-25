@@ -8,7 +8,7 @@ defineProps({
 </script>
 <template>
   <div
-    class="flex flex-col border w-[397px] h-[362px] p-[25px] rounded-xl m-4 text-sm"
+    class="flex flex-col border w-[397px] h-[362px] p-[25px] rounded-xl my-4 text-sm"
   >
     <!-- Header -->
     <div class="flex items-start justify-between">
@@ -38,7 +38,7 @@ defineProps({
               <p class="text-sheger-green-600 font-medium">Active</p>
             </div>
             <div class="bg-primary-100 px-2 py-1">
-              <p class="text-primary-600 font-medium">Hotel</p>
+              <p class="text-primary-600 font-medium">Restorant</p>
             </div>
             <div v-if="featured" class="bg-purple-100 px-2 py-1">
               <p class="text-purple-600 font-medium">Recommended</p>

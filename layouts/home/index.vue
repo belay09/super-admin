@@ -64,7 +64,7 @@
             </div>
           </div>
         </div>
-        <div class="overflow-y-scroll">
+        <div class="overflow-y-scroll px-8">
           <!-- Main area -->
           <slot />
         </div>
