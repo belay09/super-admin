@@ -39,12 +39,12 @@ definePageMeta({
           />
         </div>
 
-        <div>
+        <NuxtLink to="/app/billings/pricing">
           <Icon
             name="system-uicons:settings"
             class="text-3xl cursor-pointer z-30"
           />
-        </div>
+        </NuxtLink>
       </div>
     </div>
 
