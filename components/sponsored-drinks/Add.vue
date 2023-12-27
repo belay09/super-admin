@@ -102,7 +102,7 @@ const place = ref("");
 
     <!-- ----------------------Submit------------------- -->
     <button type="submit" class="primary-button secondary-border py-3 mt-4">
-      <Icon name="heroicons:plus-small-solid" class="text-2 xl"></Icon>
+      <Icon name="heroicons:plus-small-solid" class="text-2xl"></Icon>
 
       <span>Add</span>
     </button>

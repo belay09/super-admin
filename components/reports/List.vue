@@ -159,7 +159,9 @@ const clickRow = (item) => {
 <template>
   <div class="flex flex-col space-y-8 py-6">
     <div class="flex items-center justify-between">
-      <p class="text-xl font-medium">Showing 9/12 reports</p>
+      <p class="text-xl font-medium text-sheger-gray-100">
+        Showing 9/12 reports
+      </p>
     </div>
 
     <div class="">

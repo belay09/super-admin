@@ -50,11 +50,9 @@ const open = computed({
           />
         </HeadlessTransitionChild>
 
-        <div
-          class="fixed inset-0 z-50 overflow-y-auto dark:bg-sheger_brown-300"
-        >
+        <div class="fixed inset-0 z-50 overflow-y-auto w-full">
           <div
-            class="flex min-h-full items-end justify-center pt-4 text-center sm:items-center sm:p-0"
+            class="flex justify-center pt-4 text-center sm:items-center sm:p-0 mt-16"
           >
             <HeadlessTransitionChild
               as="template"
@@ -66,11 +64,13 @@ const open = computed({
               leave-to="opacity-0 translate-y-24 sm:translate-y-0 sm:scale-95"
             >
               <HeadlessDialogPanel
-                class="relative z-50 transform rounded-lg bg-white text-left transition-all min-w-[100vw] lg:min-w-[auto] sm:my-8 sm:max-w-4xl dark:bg-sheger_brown-100"
+                class="relative z-50 transform rounded-lg text-left transition-all w-full max-w-lg bg-white p-12"
                 :class="
                   overflowVisible ? 'overflow-visible' : 'overflow-hidden '
                 "
               >
+                <slot name="header" />
+
                 <slot name="content" />
               </HeadlessDialogPanel>
             </HeadlessTransitionChild>

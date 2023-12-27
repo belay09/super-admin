@@ -76,16 +76,40 @@ const clickRow = (item) => {
   //   });
 };
 
+/***--------------------------------Add administrators modal---------------- */
+const showAddAdministratorModal = ref(false);
+
 definePageMeta({
   layout: "home",
 });
 </script>
 
 <template>
+  <!-- -----------------Add administrator modal--------- -->
+  <Modals-Modal :autoClose="true" :modelValue="showAddAdministratorModal">
+    <template #header>
+      <div class="flex items-center justify-between pb-4">
+        <h3 class="text-lg font-medium text-gray-900">Invite Administrator</h3>
+        <button>
+          <Icon
+            name="system-uicons:close"
+            class="text-4xl"
+            @click="showAddAdministratorModal = false"
+          />
+        </button>
+      </div>
+    </template>
+    <template #content>
+      <Administrators-Add />
+    </template>
+  </Modals-Modal>
   <div class="w-full pl-10 pr-16 py-6">
     <div class="flex items-center justify-between">
       <p class="text-2xl text-sheger-gray-600 font-medium">2 Administrators</p>
-      <button class="primary-button block bg-primary-600">
+      <button
+        @click="showAddAdministratorModal = true"
+        class="primary-button block bg-primary-600"
+      >
         <Icon
           name="mingcute:user-add-line"
           class="text-xl text-white"

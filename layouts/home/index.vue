@@ -1,4 +1,10 @@
-<script setup></script>
+<script setup>
+const router = useRouter();
+function gotoMessage() {
+  console.log("Goto Message");
+  router.push("/app/supports");
+}
+</script>
 
 <template>
   <div class="">
@@ -8,13 +14,13 @@
       >
         <!-- Sidebar component, swap this element with another sidebar if you like -->
         <div
-          class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-primary-50 px-6"
+          class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-primary-50 px-6 fixed top-0 left-0 h-screen scroll"
         >
           <div class="flex h-16 shrink-0 items-center">
             <img
               class="h-8 w-auto"
               src="/images/static/sheger-admin-logo.png"
-              alt="Shager Admin Logo"
+              alt="Sheger Admin Logo"
             />
           </div>
           <nav class="flex flex-1 flex-col">
@@ -39,7 +45,10 @@
           <!----------------------------- Right----------------------- -->
           <div class="flex items-center gap-4">
             <!-- -----------------Message ---------------------------- -->
-            <div class="flex items-center space-x-4 cursor-pointer">
+            <div
+              @click="gotoMessage"
+              class="flex items-center space-x-4 cursor-pointer"
+            >
               <Icon name="ant-design:message-outlined" class="text-2xl" />
             </div>
             <!-- -----------------Notifcation ---------------------------- -->
@@ -64,7 +73,7 @@
             </div>
           </div>
         </div>
-        <div class="overflow-y-scroll px-8">
+        <div class="overflow-y-scroll px-10 pr-16 py-6">
           <!-- Main area -->
           <slot />
         </div>
