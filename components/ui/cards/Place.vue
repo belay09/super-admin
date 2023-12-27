@@ -8,13 +8,13 @@ defineProps({
 </script>
 <template>
   <div
-    class="flex flex-col border w-[397px] h-[362px] p-[25px] rounded-xl my-4 text-sm"
+    class="flex flex-col border max-w-[397px] p-[25px] rounded-xl my-4 text-sm"
   >
     <!-- Header -->
     <div class="flex items-start justify-between">
       <div class="flex gap-3  w-full">
         <!-- Logo -->
-        <div class="w-20 h-20 mr-1">
+        <div class="w-20 h-20 self-start shrink-0 mr-1">
           <!-- Image -->
           <img
             src="/images/temporary/Hotel_Logo.png"
@@ -33,7 +33,7 @@ defineProps({
             </div>
           </div>
           <!-- status -->
-          <div class="flex gap-4">
+          <div class="flex flex-wrap gap-x-4 gap-y-2">
             <div class="bg-sheger-green-100 px-2 py-1">
               <p class="text-sheger-green-600 font-medium">Active</p>
             </div>
