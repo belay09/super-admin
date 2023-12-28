@@ -47,6 +47,7 @@ export default {
           400: "#6B7280",
           500: "#E5E5E5",
           600: "#4F4F4F",
+          700: "#F3F4F6",
         },
 
         "sheger-green": {

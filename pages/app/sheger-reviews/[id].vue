@@ -44,16 +44,8 @@ const tabs = [
   },
 
   {
-    name: "Menu",
-    value: "menu",
-  },
-  {
     name: "Reviews",
     value: "reviews",
-  },
-  {
-    name: "Administrators",
-    value: "administrators",
   },
 ];
 
@@ -65,18 +57,12 @@ definePageMeta({
 <template>
   <div>
     <!-- Top -->
-    <PlacesAnalytics />
+    <Reviews-Analytics />
     <!-- Tab -->
     <div class="py-8">
       <H-Tab :tabs="tabs" tab-class="text-xl " tab-container-class="gap-x-12">
         <template #overview>
-          <div class="py-8"><Places-Overview /></div>
-        </template>
-        <template #menu>
-          <div class="py-8"><Places-Menus /></div>
-        </template>
-        <template #administrators>
-          <Administrators-List></Administrators-List>
+          <div class="py-8"><Reviews-Overview /></div>
         </template>
 
         <template #reviews>

@@ -54,25 +54,17 @@ onMounted(() => {
       <div class="py-4 flex flex-col gap-3">
         <!-- top -->
         <div class="flex space-x-4">
-          <!-- Logo -->
-          <div class="w-20 h-20 mr-1">
-            <!-- Image -->
-            <img
-              src="/images/temporary/Hotel_Logo.png"
-              alt=""
-              class="object-cover w-full h-full rounded-xl"
-            />
-          </div>
           <!-- Description -->
-          <div class="flex flex-col gap-6">
+          <div class="flex flex-col gap-4">
             <!-- Name and status -->
+            <p class="secondary-text">ETB 350</p>
             <div class="flex gap-3">
               <!-- Name -->
-              <h1 class="text-xl font-medium">Addis Coffee House</h1>
+              <h1 class="text-xl font-medium">Chicken Burger</h1>
               <!-- status -->
               <div>
                 <div class="bg-sheger-green-100 px-2 py-0.5 rounded-md">
-                  <p class="text-sheger-green-600 font-medium">Active</p>
+                  <p class="text-sheger-green-600 font-medium">Published</p>
                 </div>
               </div>
             </div>
@@ -115,6 +107,60 @@ onMounted(() => {
 
       <!-- Featured on -->
       <div class="px-9 py-3 flex flex-col gap-4 border-x relative">
+        <!-- Header -->
+        <div class="flex items-start justify-between">
+          <div class="flex gap-3 w-full">
+            <!-- Logo -->
+            <div class="w-20 h-20 self-start shrink-0 mr-1">
+              <!-- Image -->
+              <img
+                src="/images/temporary/Hotel_Logo.png"
+                alt=""
+                class="object-cover w-full h-full rounded-xl"
+              />
+            </div>
+            <!-- Middle -->
+            <div class="flex flex-col gap-2 w-full">
+              <!-- Name -->
+              <div class="flex justify-between">
+                <h1 class="text-xl font-medium">Hilton Hotel</h1>
+              </div>
+              <!-- status -->
+              <div class="flex flex-wrap gap-x-4 gap-y-2">
+                <div class="bg-sheger-green-100 px-2 py-1 rounded-md">
+                  <p class="text-sheger-green-600 font-medium">Active</p>
+                </div>
+                <div class="bg-primary-100 px-2 py-1 rounded-md">
+                  <p class="text-primary-600 font-medium">Restaurant</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rating and like -->
+        <div class="flex items-center gap-x-4 text-sheger-gray-100">
+          <!-- Rating -->
+          <div class="flex items-center gap-2">
+            <Icon name="iwwa:star" class="w-6 h-6" />
+            <p class="">3/5 <span class="">(1,234 reviews)</span></p>
+          </div>
+          <!-- dash -->
+          <div>
+            <p class="">|</p>
+          </div>
+          <!-- Like -->
+          <div class="flex items-center gap-2">
+            <Icon name="tdesign:heart-filled" class="w-6 h-6" />
+            <p class="">2.5K <span class="">Likes</span></p>
+          </div>
+        </div>
+        <!-- Location -->
+        <div class="flex items-center gap-3">
+          <Icon name="carbon:map" class="h-5 w-5" />
+          <p class="text-sheger-gray-100">22 Mazoriya, Addis Ababa</p>
+        </div>
+
         <!-- -----------Flag icon----------- -->
         <div
           class="absolute top-0 -left-4 rounded-full border bg-gray-300 w-7 h-7 flex justify-center items-center"
@@ -127,45 +173,6 @@ onMounted(() => {
           class="absolute top-0 -right-4 rounded-full border bg-gray-300 w-7 h-7 flex justify-center items-center"
         >
           <Icon name="heroicons:eye-16-solid" class="" />
-        </div>
-
-        <div class="flex items-center justify-between">
-          <p class="text-sm text-sheger-gray-100">Featured on</p>
-          <p class="text-primary-600 cursor-pointer underline font-medium">
-            Configure
-          </p>
-        </div>
-        <div class="flex items-center justify-between border p-3 rounded-lg">
-          <div class="flex gap-3">
-            <div
-              class="w-6 h-6 p-5 border-[3px] border-green-600 flex items-center rounded-full justify-center"
-            >
-              5
-            </div>
-            <div>
-              <p class="text-lg font-medium">Weekly Recommendation</p>
-              <p class="text-sheger-gray-100">Featured : 2 days ago</p>
-            </div>
-          </div>
-          <div>
-            <Icon name="fluent:location-16-regular" class="w-8 h-8" />
-          </div>
-        </div>
-        <div class="flex items-center justify-between border p-3 rounded-lg">
-          <div class="flex gap-3">
-            <div
-              class="w-6 h-6 p-5 border-[3px] border-primary-500 text-primary-500 flex items-center rounded-full justify-center"
-            >
-              -27
-            </div>
-            <div>
-              <p class="text-lg font-medium">Seasonal Places</p>
-              <p class="text-sheger-gray-100">Featured : 32 days ago</p>
-            </div>
-          </div>
-          <div>
-            <Icon name="lets-icons:return" class="w-8 h-8" />
-          </div>
         </div>
       </div>
     </div>

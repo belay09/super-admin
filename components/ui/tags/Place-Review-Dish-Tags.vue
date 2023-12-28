@@ -24,7 +24,7 @@ const props = defineProps({
       <button
         v-for="tag in tags"
         :key="tag"
-        class="flex items-center px-4 secondary-text space-x-2 py-2 secondary-background rounded-full bg-sheger-gray-500"
+        class="flex items-center px-4 secondary-text space-x-2 py-1 secondary-background rounded-full bg-sheger-gray-700"
         :class="itemClass"
       >
         <Icon name="uil:location-point" class="text-inherit lg:text-xl" />

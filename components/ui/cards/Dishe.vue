@@ -16,7 +16,6 @@ const tags = ["Meat Lover", "Spicy", "Chicken"];
     </div>
     <div class="flex flex-col space-y-2 p-5">
       <div>
-
         <div class="flex justify-between items-center">
           <p class="text-lg font-medium secondary-text">ETB 300</p>
         </div>
@@ -25,35 +24,7 @@ const tags = ["Meat Lover", "Spicy", "Chicken"];
 
       <UiTagsPlaceReviewDishTags :tags="tags" />
 
-      <div class="flex items-center space-x-1"></div>
-      <div class="flex items-center space-x-4">
-        <div class="flex gap-1 items-center">
-          <div class="text-xl flex gap-1 text-primary-600">
-            <Icon name="uil:star" />
-            <Icon name="uil:star" />
-            <Icon name="uil:star" />
-            <Icon name="uil:star" />
-            <Icon name="uil:star" />
-          </div>
-          <div>(0 / 5)</div>
-        </div>
-
-        <!-- dash -->
-        <div>
-          <p class="text-sheger-gray-100">|</p>
-        </div>
-        <!-- Like -->
-        <div class="flex items-center gap-2 ">
-          <Icon name="uil:heart-sign" class="w-6 h-6 text-primary-600" />
-          <p class="text-sheger-gray-400">2.5K <span class="">Likes</span></p>
-        </div>
-        <!-- <img
-          class="w-8 h-8 object-contain object-center"
-          src="/images/temporary/kuriftu.png"
-          alt="place logo"
-        /> -->
-        <!-- <p cslass="md:text-xl">{{ review.place?.name }}</p> -->
-      </div>
+      <!-- <div class="flex items-center space-x-1"></div> -->
     </div>
   </div>
 </template>

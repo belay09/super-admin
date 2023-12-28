@@ -86,5 +86,13 @@
         <p>Billings</p>
       </template>
     </UiSidebarItem>
+    <UiSidebarItem name="/app/configurations">
+      <template #icon>
+        <Icon name="streamline:insert-side" size="24" color="" />
+      </template>
+      <template #title>
+        <p>Configurations</p>
+      </template>
+    </UiSidebarItem>
   </div>
 </template>

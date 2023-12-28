@@ -7,12 +7,13 @@ defineProps({
 });
 </script>
 <template>
-  <div
+  <NuxtLink
+    to="/app/places/1"
     class="flex flex-col border max-w-[397px] p-[25px] rounded-xl my-4 text-sm"
   >
     <!-- Header -->
     <div class="flex items-start justify-between">
-      <div class="flex gap-3  w-full">
+      <div class="flex gap-3 w-full">
         <!-- Logo -->
         <div class="w-20 h-20 self-start shrink-0 mr-1">
           <!-- Image -->
@@ -34,13 +35,13 @@ defineProps({
           </div>
           <!-- status -->
           <div class="flex flex-wrap gap-x-4 gap-y-2">
-            <div class="bg-sheger-green-100 px-2 py-1">
+            <div class="bg-sheger-green-100 px-2 py-1 rounded-sm">
               <p class="text-sheger-green-600 font-medium">Active</p>
             </div>
-            <div class="bg-primary-100 px-2 py-1">
-              <p class="text-primary-600 font-medium">Restorant</p>
+            <div class="bg-primary-100 px-2 py-1 rounded-sm">
+              <p class="text-primary-600 font-medium">Restaurant</p>
             </div>
-            <div v-if="featured" class="bg-purple-100 px-2 py-1">
+            <div v-if="featured" class="bg-purple-100 px-2 py-1 rounded-sm">
               <p class="text-purple-600 font-medium">Recommended</p>
             </div>
           </div>
@@ -48,47 +49,45 @@ defineProps({
       </div>
     </div>
     <!-- Body -->
-    <div class="flex flex-col gap-4 my-2">
+    <div class="flex flex-col gap-4 my-2 text-sheger-gray-100">
       <!-- Rating and like -->
       <div class="flex items-center justify-between">
         <!-- Rating -->
         <div class="flex items-center gap-2">
           <Icon name="iwwa:star" class="w-6 h-6" />
-          <p class="">
-            3/5 <span class="text-sheger-gray-400">(1,234 reviews)</span>
-          </p>
+          <p class="">3/5 <span class="">(1,234 reviews)</span></p>
         </div>
         <!-- dash -->
         <div>
-          <p class="text-sheger-gray-300">|</p>
+          <p class="">|</p>
         </div>
         <!-- Like -->
         <div class="flex items-center gap-2">
           <Icon name="icon-park-solid:like" class="w-6 h-6" />
-          <p class="">2.5K <span class="text-sheger-gray-400">Likes</span></p>
+          <p class="">2.5K <span class="">Likes</span></p>
         </div>
       </div>
       <!-- Location -->
       <div class="flex items-center gap-3">
         <Icon name="carbon:map" class="h-5 w-5" />
-        <p class="text-sheger-gray-400">22 Mazoriya, Addis Ababa</p>
+        <p class="">22 Mazoriya, Addis Ababa</p>
       </div>
       <!-- Tags -->
-      <div class="text-sheger-gray-400">
+      <div class="">
         <p>#Hotel #Restaurant #Bar #Pool #Gym #Spa #Sauna #Massage #Parking</p>
       </div>
       <!-- menu update -->
 
       <div class="flex items-center gap-3">
         <Icon name="carbon:calendar" class="h-5 w-5" />
-        <p class="text-sheger-gray-400">Menu last updated: 2 days ago</p>
+        <p class="">Menu last updated: 2 days ago</p>
       </div>
 
       <!-- last payed -->
       <div class="flex items-center gap-3">
         <Icon name="carbon:calendar" class="h-5 w-5" />
-        <p class="text-sheger-gray-400">Last payed: 2 days ago</p>
+        <p class="">Last payed: 2 days ago</p>
       </div>
     </div>
-  </div>
+  </NuxtLink>
 </template>

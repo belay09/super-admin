@@ -17,6 +17,11 @@ const props = defineProps({
     type: String,
     default: "",
   },
+
+  tabContainerClass: {
+    type: String,
+    default: "",
+  },
 });
 
 /*............Tab ............*/
@@ -70,6 +75,7 @@ onMounted(() => {
         @scroll="moveIndicator"
         as="div"
         class="flex space-x-6 lg:justify-start scroll overflow-x-scroll"
+        :class="tabContainerClass"
       >
         <HeadlessTab
           :id="`tab-${index}`"

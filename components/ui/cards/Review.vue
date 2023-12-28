@@ -7,11 +7,14 @@ defineProps({
 });
 </script>
 <template>
-  <div class="flex flex-col border w-[397px] p-[25px] rounded-xl m-4 text-sm">
+  <NuxtLink
+    to="/app/sheger-reviews/1"
+    class="flex flex-col border w-[397px] p-[25px] rounded-xl m-4 text-sm"
+  >
     <!-- Header -->
     <div class="flex items-start justify-between">
       <div>
-        <p class="text-sheger-gray-100">ETB 350</p>
+        <p class="">ETB 350</p>
         <p class="text-xl font-medium">Chicken Burger</p>
       </div>
       <!-- Option Icon -->
@@ -20,43 +23,41 @@ defineProps({
       </div>
     </div>
     <!-- Body -->
-    <div class="flex flex-col gap-4 my-2">
+    <div class="flex flex-col gap-4 my-2 text-sheger-gray-100">
       <!-- Rating and like -->
       <div class="flex items-center justify-between">
         <!-- Rating -->
         <div class="flex items-center gap-2">
-          <Icon name="iwwa:star" class="w-6 h-6" />
-          <p class="">
-            3/5 <span class="text-sheger-gray-400">(1,234 reviews)</span>
-          </p>
+          <Icon name="iwwa:star" class="w-6 h-6 text-black" />
+          <p class="">3/5 <span class="">(1,234 reviews)</span></p>
         </div>
         <!-- dash -->
         <div>
-          <p class="text-sheger-gray-300">|</p>
+          <p class="">|</p>
         </div>
         <!-- Like -->
         <div class="flex items-center gap-2">
-          <Icon name="icon-park-solid:like" class="w-6 h-6" />
-          <p class="">2.5K <span class="text-sheger-gray-400">Likes</span></p>
+          <Icon name="icon-park-solid:like" class="w-6 h-6 text-black" />
+          <p class="">2.5K <span class="">Likes</span></p>
         </div>
       </div>
       <div class="flex items-center gap-5">
         <!-- time to prepare  -->
         <div class="flex items-center gap-3">
           <Icon name="wi:time-3" class="h-5 w-5" />
-          <p class="text-sheger-gray-400">30 Minutes</p>
+          <p class="">30 Minutes</p>
         </div>
         <div class="flex items-center gap-3">
           <Icon name="quill:paper" class="h-5 w-5" />
-          <p class="text-sheger-gray-400">Food</p>
+          <p class="">Food</p>
         </div>
       </div>
       <!-- Tags -->
-      <div class="text-sheger-gray-400">
+      <div class="">
         <p>#Hotel #Restaurant #Bar #Pool #Gym #Spa #Sauna #Massage #Parking</p>
       </div>
       <!-- Description -->
-      <div class="text-sm text-sheger-gray-100">
+      <div class="text-sm">
         Mauris ac id malesuada sed vulputate. Viverra in tristique fauci velit
         sem lacus ...
       </div>
@@ -94,12 +95,12 @@ defineProps({
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
           <Icon name="carbon:calendar" class="h-5 w-5" />
-          <p class="text-sheger-gray-400">Last updated: 2 days ago</p>
+          <p class="">Last updated: 2 days ago</p>
         </div>
         <div class="cursor-pointer">
           <Icon name="lets-icons:video-light" class="h-8 w-8" />
         </div>
       </div>
     </div>
-  </div>
+  </NuxtLink>
 </template>

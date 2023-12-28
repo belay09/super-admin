@@ -44,7 +44,7 @@ const openDirectionOnMap = async (coordinates) => {
 </script>
 
 <template>
-  <div class="w-full h-[42vh] z-0">
+  <div class="w-full h-[26rem] z-0">
     <LMap
       ref="map"
       :use-global-leaflet="true"

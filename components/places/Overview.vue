@@ -1,4 +1,43 @@
 <script setup>
+/**----------------------------Default place--------------------------------- */
+
+const place = ref({
+  id: 1,
+  name: "Hilton Hotel",
+  placeAmenities: [
+    {
+      id: 1,
+      amenity: {
+        title: "Free Wifi",
+      },
+    },
+    {
+      id: 2,
+      amenity: {
+        title: "Free Parking",
+      },
+    },
+    {
+      id: 3,
+      amenity: {
+        title: "Outdoor service",
+      },
+    },
+    {
+      id: 4,
+      amenity: {
+        title: "Take Option",
+      },
+    },
+    {
+      id: 5,
+      amenity: {
+        title: "Children Friendly",
+      },
+    },
+  ],
+});
+
 /*------------------------------Map-----------------------------*/
 const placeLocations = ref([
   {
@@ -7,13 +46,12 @@ const placeLocations = ref([
       coordinates: [9.010631945576197, 38.76055205651439],
     },
     area: {
-      name: "Bole",
+      name: "Megegnana",
     },
     isMainLocation: true,
   },
 ]);
 
-console.log("object", placeLocations.value[0]);
 const center = ref([9.010631945576197, 38.76055205651439]);
 const zoom = ref(12);
 
@@ -45,13 +83,17 @@ const flyTo = async (cordinates, index) => {
   zoom.value = 14;
   center.value = cordinates;
 };
+
+/** --------------------------Mouse hover----------------------- */
 </script>
 
 <template>
-  <div class="flex justify-between space-x-6">
+  <div class="grid grid-cols-4">
     <!-- --------------Overview  header---------------- -->
     <!-- Left -->
-    <div class="flex flex-col space-y-4 pt-6 flex-[70%]">
+    <div
+      class="flex flex-col space-y-4 pr-8 col-span-3 h-screen overflow-scroll scroll"
+    >
       <div class="flex items-start justify-between">
         <!-- Cuisines -->
         <div>
@@ -84,46 +126,46 @@ const flyTo = async (cordinates, index) => {
       </div>
       <div class="flex flex-col gap-4">
         <p class="text-xl font-medium">Recommended Dishes</p>
-        <div class="flex gap-7 overflow-x-scroll my-3">
-          <UiCardsDishe />
-          <UiCardsDishe />
+        <div class="flex gap-7 overflow-x-scroll my-3 scroll">
+          <Ui-Cards-Dishe />
+          <Ui-Cards-Dishe />
+          <Ui-Cards-Dishe />
+          <Ui-Cards-Dishe />
         </div>
         <div>
           <!-- ------------------Places contact us and location for large screens--------------------- -->
 
-          <div class="justify-between">
+          <div class="flex justify-between">
             <!-- --------------------------Contact us for large screens---------------- -->
             <div class="flex flex-col space-y-6 w-[40%]">
               <p class="font-medium text-2xl">Location</p>
               <div class="flex flex-wrap gap-2">
-                <PlacesLocations
+                <Places-Locations
                   :placeLocations="placeLocations"
                   @flyTo="flyTo"
                 />
               </div>
 
-              <PlacesContactUs />
+              <Places-ContactUs />
             </div>
 
             <!-- --------------------------Map for large screens---------------- -->
-            <!-- <div v-if="placeLocations?.length > 0" class="w-[60%]">
-              <PlaceMap
+            <div v-if="placeLocations?.length > 0" class="w-[60%]">
+              <Places-Map
                 :place-locations="placeLocations"
                 :center="center"
                 :zoom="zoom"
-              ></PlaceMap>
-            </div> -->
+              ></Places-Map>
+            </div>
           </div>
 
           <!-- -------------------Amenities and Open hours --------------------- -->
-          <div
-            class="flex flex-col space-y-6 xl:flex-row xl:space-x-6 xl:space-y-0 pt-4 xl:pt-16"
-          >
-            <!-- <div class="xl:pr-16 2xl:pr-20">
+          <div class="flex space-x-6 pt-16">
+            <div class="xl:pr-16 2xl:pr-20">
               <h3 class="text-lg font-medium dark:text-white xl:text-2xl">
                 Amenities & More
               </h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-2 lg:gap-x-4">
+              <div class="grid grid-cols-2 gap-x-6">
                 <div
                   v-for="placeAmenitie in place.placeAmenities"
                   :key="placeAmenitie.id"
@@ -140,9 +182,9 @@ const flyTo = async (cordinates, index) => {
                   </p>
                 </div>
               </div>
-            </div> -->
+            </div>
 
-            <!-- <div class="flex flex-col space-y-6 xl:pl-12 2xl:pl-24 xl:border-l">
+            <div class="flex flex-col space-y-6 xl:pl-12 2xl:pl-24 xl:border-l">
               <h3 class="text-lg font-medium dark:text-white lg:text-2xl">
                 Open Hours
               </h3>
@@ -163,13 +205,42 @@ const flyTo = async (cordinates, index) => {
                   07:00 AM - 12 PM
                 </p>
               </div>
-            </div> -->
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- right -->
-    <div class="flex-[30%]"></div>
+    <div class="col-span-1 pl-8 border-l">
+      <div class="flex items-center justify-between">
+        <p class="text-xl">Sheger Review</p>
+        <button class="secondary-border py-2 px-4 rounded-md">View Menu</button>
+      </div>
+      <!-- ------------------Sheger video------------------ -->
+      <div>
+        <img
+          src="@/images/temporary/sheger-review-video-small.png"
+          class="w-full object-cover object-center"
+          alt="Video image"
+        />
+      </div>
+
+      <!-- --------------Gallery and upload image---------------- -->
+      <div>
+        <div class="flex items-center justify-between py-6">
+          <p class="text-xl">
+            Galler <span class="text-sheger-gray-100">(30 Pictures)</span>
+          </p>
+          <button class="secondary-border py-2 px-4 rounded-md">Upload</button>
+        </div>
+
+        <div
+          class="flex flex-col space-y-2 max-h-screen overflow-scroll scroll"
+        >
+          <Places-Gallery v-for="i in 8" :key="i"> </Places-Gallery>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
