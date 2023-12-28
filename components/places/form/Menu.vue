@@ -53,8 +53,8 @@ const menuTypeItems = ref([
 
       <!----------------------------------------Menu Type---------------------------------------->
       <H-SingleSelect
-        name="place_type"
-        id="place_type"
+        name="menu_type"
+        id="menu_type"
         label="Menu Type"
         :items="menuTypeItems"
         v-model="menuType"
@@ -69,7 +69,7 @@ const menuTypeItems = ref([
         rules="required"
       >
         <template #label>
-          <p class="text-sheger-gray-100">Ingredient ( Use comma to seprate)</p>
+          <p class="text-sheger-gray-100 mb-2">Ingredient ( Use comma to seprate)</p>
         </template>
       </HTextfield>
 
