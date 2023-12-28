@@ -47,14 +47,14 @@ definePageMeta({
               class="text-2xl cursor-pointer z-30"
             />
           </div>
-          <button class="primary-button block bg-primary-600">
+          <nuxt-link to="/app/sheger-reviews/post-new-review" class="primary-button block bg-primary-600">
             <Icon
               name="lucide:building-2"
               class="text-xl text-white"
               color=""
             />
             <span class="text-white">Post New Review</span>
-          </button>
+          </nuxt-link>
         </div>
       </div>
     </div>

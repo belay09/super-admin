@@ -49,6 +49,14 @@ const props = defineProps({
     type: String,
     default: "ion:chevron-down-outline",
   },
+  label: {
+    type: String,
+    required: false,
+  },
+  labelClass: {
+    type: String,
+    default: "",
+  },
   rules: {
     type: String,
     default: "",
@@ -151,16 +159,34 @@ onClickOutside(list_select, (e) => (show.value = false));
 
 <template>
   <div class="w-full relative">
+   <div class="flex gap-x-2">
+      <!-- -----------------Label----------------- -->
+
+      <slot name="label"> </slot>
+      <label
+        class="text-sheger-gray-100 pb-2"
+        :class="labelClass"
+        v-if="props.label"
+        :for="props.id ? props.id : ''"
+        >{{ props.label }}</label
+      >
+      <span
+        v-if="rules.includes('required') && !props.disabled"
+        class="text-red-600"
+        >*</span
+      >
+    </div>
     <div
       :class="[
         errorMessage
           ? 'focus:ring-red-500 focus:border-red-500 hover:border-red-500 border-red-500'
           : 'focus:ring-primary-600  focus:border-primary-600 hover:border-primary-600 border-primary-600Sb-lite-1 border-1 ',
         'flex flex-wrap items-center bg-white relative pr-7 rounded-md py-1 px-2 gap-1 border-[1px]',
-        chips.length ? '' : 'h-10',
+        chips.length ? '' : 'h-12',
       ]"
       @click="show = true"
     >
+    
       <div
         class="flex justify-center items-center break-words"
         :class="[chipsStyle || 'px-1 bg-gray-200']"

@@ -75,7 +75,7 @@ body::-webkit-scrollbar-thumb:hover {
 /* ---------------------------Button---------------------- */
 
 .primary-button {
-  @apply px-4 py-3 rounded-md flex items-center space-x-2 justify-center;
+  @apply px-4 py-3 rounded-md flex items-center space-x-2 justify-center cursor-pointer;
 }
 
 /* ---------------------------Border---------------------- */
@@ -103,4 +103,8 @@ body::-webkit-scrollbar-thumb:hover {
 
 .border-outline-ring-removal {
   @apply border-none hover:border-none focus:border-none focus:ring-0 focus:outline-none;
+}
+
+.steper-button {
+  @apply bg-sheger-gray-500 w-full flex items-center justify-center text-lg border-r border-sheger-gray-200
 }
