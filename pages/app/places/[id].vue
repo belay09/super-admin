@@ -70,8 +70,7 @@ definePageMeta({
     <div class="py-2">
       <H-Tab :tabs="tabs">
         <template #overview>
-          <div><PlacesOverview />
-          </div>
+          <div><PlacesOverview /></div>
         </template>
       </H-Tab>
     </div>

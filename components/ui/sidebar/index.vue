@@ -86,5 +86,12 @@
         <p>Billings</p>
       </template>
     </UiSidebarItem>
+
+    <nuxt-link to="/app/places/register-new-place" class="flex flex-col items-center w-fit mx-auto px-6 py-8 border rounded-lg cursor-pointer hover:bg-primary-600 hover:text-white">
+      <Icon name="lucide:building-2" class="text-xl" color="" />
+      <div>
+        <p>Register New Place</p>
+      </div>
+    </nuxt-link>
   </div>
 </template>
