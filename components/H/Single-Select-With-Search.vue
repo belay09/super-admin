@@ -158,7 +158,6 @@ watch(
     } else {
       inputValue.value = newVal;
       selectedItem.value = props.items.find((item) => item.id == newVal);
-
     }
   }
 );
@@ -269,16 +268,13 @@ onMounted(() => {
       </li>
 
       <!-- ----------------------Loading-------------------- -->
-      <!-- <li class="h-1">
-        <InputsProgress
+      <li class="h-1">
+        <HProgress
           v-if="loading"
           class="rounded-xl w-full"
-          color1="bg-new-tale/40"
-          color2="bg-new-tale"
-          color3="bg-dark-blue"
           height="h-1"
-        ></InputsProgress>
-      </li> -->
+        ></HProgress>
+      </li>
 
       <!-- -----------------------List items---------------- -->
       <li

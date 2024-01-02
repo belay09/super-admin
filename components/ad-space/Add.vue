@@ -49,6 +49,19 @@ const places = ref([
     id: "6",
   },
 ]);
+
+const placesToShow = ref(places.value);
+
+function filterPlaces(value) {
+  const temp = [];
+  for (const item of places.value) {
+    if (item.name.toLowerCase().includes(value.toLowerCase())) {
+      temp.push(item);
+    }
+  }
+  placesToShow.value = temp;
+}
+
 const place = ref("");
 </script>
 
@@ -65,11 +78,13 @@ const place = ref("");
 
     <!-- ------------------Place---------------- -->
     <H-SingleSelectWithSearch
-      :items="places"
+      :items="placesToShow"
       v-model="place"
+      @search="filterPlaces"
       id="place"
       name="place"
       label="Place"
+      :loading="loading"
     ></H-SingleSelectWithSearch>
 
     <!-- -----------------Start and End Date -->
