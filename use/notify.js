@@ -36,7 +36,6 @@ export default function ({ timeout = 5000 } = {}) {
       cardClass,
       image,
     };
-    console.log("from notitfaction ");
 
     start();
   };

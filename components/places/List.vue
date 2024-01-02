@@ -3,7 +3,7 @@ defineProps({
   featured: {
     type: Boolean,
     default: false,
-  },  
+  },
 });
 </script>
 <template>
@@ -13,11 +13,11 @@ defineProps({
       <H-Limit></H-Limit>
     </div>
     <div class="grid grid-cols-3 w-[85%]">
-      <UiCardsPlace :featured="featured"/>
-      <UiCardsPlace :featured="featured"/>
-      <UiCardsPlace :featured="featured"/>
-      <UiCardsPlace :featured="featured"/>
-      <UiCardsPlace :featured="featured"/>
+      <UiCardsPlace />
+      <UiCardsPlace />
+      <UiCardsPlace />
+      <UiCardsPlace />
+      <UiCardsPlace />
     </div>
     <HPaginate
       v-modeloffset="0"

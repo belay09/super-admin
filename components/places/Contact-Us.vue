@@ -6,7 +6,6 @@
 //     required: true,
 //   },
 // });
-console.log("object");
 </script>
 
 <template>

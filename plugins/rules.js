@@ -5,7 +5,6 @@ export default defineNuxtPlugin((vueApp) => {
     return !!value || value?.length || "Field Required";
   }),
     defineRule("requiredN", (value, [], ctx) => {
-      console.log();
       return !!value || value?.length || `${ctx.name} Required`;
     }),
     defineRule("boolReq", (value, [], ctx) => {

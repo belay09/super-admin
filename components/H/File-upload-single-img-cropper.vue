@@ -121,7 +121,6 @@ const onFileSelect = async (event) => {
     fileInfo.value.name = file.name;
     fileInfo.value.size = getFileSize(file.size);
     fileInfo.value.type = file.type;
-    console.log(file.type);
     if (props.fileType == "pdf") {
       if (file.type != "application/pdf") {
         errorMessage2.value = "Please upload a pdf file";
@@ -139,7 +138,6 @@ const onFileSelect = async (event) => {
         return;
       }
     }
-    console.log(file.type);
     createImage(file);
     files.value[0] = file;
   }
@@ -151,7 +149,6 @@ function createImage(file) {
   reader.onload = (e) => {
     base64Files.value[0] = e.target.result;
     // props.modelValue = base64Files.value[0];
-    console.log(base64Files.value[0]);
     if (props.fileType != "image") {
       type.value = getMimeType(e.target.result, "image/jpeg");
       emit("upload", base64Files.value[0]);

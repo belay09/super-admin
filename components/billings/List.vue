@@ -164,7 +164,6 @@ items.value = [
 const loading = ref(true);
 loading.value = false;
 const clickRow = (item) => {
-  console.log("clicked");
   router.push("/app/billings/12");
 };
 

@@ -8,7 +8,6 @@ onMounted(() => {
       svgContent.value = response.data;
     })
     .catch((error) => {
-      console.log(error);
     });
 });
 </script>

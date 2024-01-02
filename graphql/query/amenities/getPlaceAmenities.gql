@@ -12,10 +12,7 @@ query getPlaceAmenities(
   ) {
     id
     amenity {
-      icon {
-        lightIconUrl
-        darkIconUrl
-      }
+     
       id
       title
     }

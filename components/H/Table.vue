@@ -83,31 +83,23 @@ const checkCheckedAll = computed(() => {
 });
 
 function sort_by(header) {
-  console.log("sort", _sort.value);
   if (header.sortable === false) return;
 
   let direction = _sort.value[header.value];
   if (direction && direction === "asc") {
-    console.log("if one", _sort.value);
     _sort.value[header.value] = "desc";
   } else if (direction && direction === "desc") {
-    console.log("if else", _sort.value);
     delete _sort.value[header.value];
   } else {
-    console.log("else", _sort.value, header.value);
     _sort.value[header.value] = "asc";
   }
 
   let sort = [];
-  console.log("before loop", _sort.value);
   Object.keys(_sort.value).forEach((key) => {
     let obj = {};
-    console.log("sortloop", key, "and", _sort.value[key]);
     _set(obj, key, _sort.value[key]);
-    console.log("obj", obj);
     sort.push(obj);
   });
-  console.log("final ", sort);
   emits("update:sort", sort);
 }
 

@@ -12,7 +12,6 @@ const props = defineProps({
 function percentage() {
   return (props.value / props.total) * 100;
 }
-console.log(percentage());
 percentage();
 </script>
 

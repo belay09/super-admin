@@ -34,7 +34,6 @@ const breakpoints = {
 let timer = null;
 const hovered = ref(false);
 const startTimer = () => {
-  console.log("object");
   hovered.value = true;
   timer = setInterval(() => {
     imageCarousel.value.next();

@@ -20,7 +20,7 @@ const tabs = [
 ];
 
 definePageMeta({
-  layout: "home",
+  layout: "home", 
 });
 </script>
 <template>
@@ -42,19 +42,13 @@ definePageMeta({
               class="text-2xl cursor-pointer z-30"
             />
           </div>
-          <button class="primary-button block bg-primary-600">
-            <Icon
-              name="lucide:building-2"
-              class="text-xl text-white"
-              color=""
-            />
-            <span class="text-white">Feature New</span>
-          </button>
+          
         </div>
       </div>
     </div>
 
     <div class="pt-10"></div>
+    
     <H-Tab :tabs="tabs">
       <template v-slot:tab="{ tabData }">
         <div class="secondary-flex-row">
@@ -66,19 +60,20 @@ definePageMeta({
           >
         </div>
       </template>
+      
       <template #WeeklyRecommended>
         <div>
-          <PlacesList featured />
+          <PlacesFeaturedList />
         </div>
       </template>
       <template #Seasonal>
         <div>
-          <PlacesList featured />
+          <PlacesFeaturedList />
         </div>
       </template>
       <template #RecentlyOpened>
         <div>
-          <PlacesList featured />
+          <PlacesFeaturedList />
         </div>
       </template>
     </H-Tab>

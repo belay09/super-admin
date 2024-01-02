@@ -1,7 +1,6 @@
 <script setup>
 const router = useRouter();
 function gotoMessage() {
-  console.log("Goto Message");
   router.push("/app/supports");
 }
 </script>

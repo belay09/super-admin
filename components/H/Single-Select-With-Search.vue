@@ -158,7 +158,7 @@ watch(
     } else {
       inputValue.value = newVal;
       selectedItem.value = props.items.find((item) => item.id == newVal);
-      console.log(selectedItem.value, "from watch props");
+
     }
   }
 );
@@ -175,7 +175,6 @@ watch(
       inputValue.value = selectedItem.id;
       selectedItem.value = props.modelValue;
       // placeHolder.value = selectedItem.name;
-      console.log(selectedItem.value, "from watch items");
     }
   }
 );
@@ -189,9 +188,7 @@ onMounted(() => {
     selectedItem.value = props.items.find(
       (item) => item.id == props.modelValue
     );
-    console.log(selectedItem.value, "from oumounted");
   }
-  console.log("Mounted", selectedItem.value);
 });
 </script>
 
