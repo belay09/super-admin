@@ -34,6 +34,10 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  sureQuestion: {
+    type: String,
+    default: "",
+  },
   description: {
     type: String,
     default: "",
@@ -94,61 +98,58 @@ const open = computed({
               leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <DialogPanel
-                class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
+                class="relative w-full max-w-md transform overflow-hidden rounded-lg bg-white p-6 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
               >
-                <div class="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
-                  <button
-                    type="button"
-                    class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:ring-offset-1"
-                    @click="open = false"
-                  >
-                    <span class="sr-only">Close</span>
-                    <Icon
-                      name="ion:close-outline"
-                      width="25"
-                      height="25"
-                      class="h-6 w-6"
-                    />
-                  </button>
-                </div>
-                <div class="sm:flex sm:items-start">
-                  <div :class="iconWrapperClass">
-                    <Icon
-                      :name="icon"
-                      :class="iconClass"
-                      width="35"
-                      height="35"
-                      aria-hidden="true"
-                    />
-                  </div>
-                  <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                    <DialogTitle
-                      as="h3"
-                      class="text-base font-semibold leading-6 text-gray-900"
-                      >{{ title }}</DialogTitle
-                    >
-                    <div class="mt-2">
-                      <p class="text-sm text-gray-500">
-                        {{ description }}
-                      </p>
+                <div class="flex flex-col space-y-4">
+                  <div class="flex items-center justify-between">
+                    <!-- title -->
+                    <div class="flex items-center space-x-3 text-primary-600">
+                      <Icon
+                        :name="icon"
+                        :class="iconClass"
+                        class="text-primary-600"
+                      />
+                      <DialogTitle
+                        as="h3"
+                        class="text-base font-semibold leading-6"
+                        >{{ title }}</DialogTitle
+                      >
                     </div>
+
+                    <!-- Close button -->
+                    <button
+                      type="button"
+                      class="text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-0"
+                      @click="open = false"
+                    >
+                      <Icon
+                        name="ion:close-outline"
+                        width="25"
+                        height="25"
+                        class="h-6 w-6"
+                      />
+                    </button>
                   </div>
-                </div>
-                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                  <button
-                    type="button"
-                    :class="confirmButtonClass"
-                    @click="emits('confirm')"
-                  >
-                    {{ confirmButton }}
-                  </button>
-                  <button
-                    type="button"
-                    class="mt-3 inline-flex w-full justify-center hover:shadow-lg rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                    @click="open = false"
-                  >
-                    Cancel
-                  </button>
+                  <h3 v-if="sureQuestion !== ''" class="font-medium">
+                    {{ sureQuestion }}
+                  </h3>
+                  <p v-if="description !== ''" class="secondary-text">
+                    {{ description }}
+                  </p>
+                  <div class="secondary-flex-row justify-between w-full">
+                    <button
+                      @click="open = false"
+                      class="primary-button block bg-primary-600 w-full text-white"
+                    >
+                      <span class="">Cancel</span>
+                    </button>
+                    <button
+                      @click="emits('confirm')"
+                      class="primary-button block secondary-border w-full"
+                    >
+                      <span class="">Confirm</span>
+                    </button>
+                  </div>
                 </div>
               </DialogPanel>
             </TransitionChild>
