@@ -1,56 +1,83 @@
 <script setup>
-/**----------------------------Default place--------------------------------- */
+import getPlacesMediasQuery from "@/graphql/query/medias/placeMedias.gql";
+import getPlacesMenuQuery from "@/graphql/query/menu/list.gql";
+import useNotify from "@/use/notify";
 
-const place = ref({
-  id: 1,
-  name: "Hilton Hotel",
-  placeAmenities: [
-    {
-      id: 1,
-      amenity: {
-        title: "Free Wifi",
-      },
-    },
-    {
-      id: 2,
-      amenity: {
-        title: "Free Parking",
-      },
-    },
-    {
-      id: 3,
-      amenity: {
-        title: "Outdoor service",
-      },
-    },
-    {
-      id: 4,
-      amenity: {
-        title: "Take Option",
-      },
-    },
-    {
-      id: 5,
-      amenity: {
-        title: "Children Friendly",
-      },
-    },
-  ],
+/**-------------------------Globals------------------------- */
+const props = defineProps({
+  place: {
+    type: Object,
+    required: true,
+  },
+});
+const { notify } = useNotify();
+
+/**----------------------------------Place menu-------------------- */
+const filter = ref({
+  placeId: {
+    _eq: props.place.id,
+  },
+});
+const limit = ref(6);
+const offset = ref(0);
+const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
+const menus = ref([]);
+const length = ref(0);
+
+const { onResult, onError, loading, fetchMore } = authListQuery(
+  getPlacesMenuQuery,
+  filter,
+  sort,
+  offset,
+  limit
+);
+
+onResult((result) => {
+  if (result.data?.menus) {
+    menus.value = result.data?.menus;
+    length.value = result.data?.menusAggregate?.aggregate?.count;
+  }
+});
+onError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-green-300",
+  });
 });
 
-/*------------------------------Map-----------------------------*/
-const placeLocations = ref([
-  {
-    id: 1,
-    location: {
-      coordinates: [9.010631945576197, 38.76055205651439],
-    },
-    area: {
-      name: "Megegnana",
-    },
-    isMainLocation: true,
+/*...................Place medias data fetch.............*/
+const mediasFilter = ref({
+  placeId: {
+    _eq: props.place.id,
   },
-]);
+});
+const mediasLimit = ref(100);
+const mediasOffset = ref(0);
+const mediasSort = ref([{}]);
+const medias = ref([]);
+const {
+  onResult: mediasOnResult,
+  onError: mediasOnError,
+  loading: mediasLoading,
+  refetch: mediasRefetch,
+} = authListQuery(
+  getPlacesMediasQuery,
+  mediasFilter,
+  mediasSort,
+  mediasOffset,
+  mediasLimit
+);
+
+mediasOnResult((result) => {
+  if (result.data?.placeMedias) {
+    medias.value = result.data?.placeMedias;
+  }
+});
+mediasOnError((error) => {});
+
+/*------------------------------Map-----------------------------*/
 
 const center = ref([9.010631945576197, 38.76055205651439]);
 const zoom = ref(12);
@@ -61,12 +88,12 @@ const zoom = ref(12);
  * @return {Array<number>} The center coordinates of the place.
  */
 const getPlaceCenter = () => {
-  let mainLocationIndex = placeLocations.value.findIndex(
+  let mainLocationIndex = props.place?.placeLocations.findIndex(
     (placeLocation) => placeLocation.isMainLocation
   );
 
   if (mainLocationIndex !== -1) {
-    return placeLocations.value[mainLocationIndex].location.coordinates;
+    return props.place.placeLocations[mainLocationIndex].location.coordinates;
   } else {
     return [9.010631945576197, 38.76055205651439];
   }
@@ -79,9 +106,10 @@ center.value = getPlaceCenter();
  * @param {Array} coordinates - The coordinates to center the map on.
  * @param {number} index - The index of the coordinates in the array.
  */
-const flyTo = async (cordinates, index) => {
+const flyTo = (coordinates) => {
+  console.log(coordinates);
   zoom.value = 14;
-  center.value = cordinates;
+  center.value = coordinates;
 };
 
 /** --------------------------Mouse hover----------------------- */
@@ -89,48 +117,118 @@ const flyTo = async (cordinates, index) => {
 
 <template>
   <div class="grid grid-cols-4">
-    <!-- --------------Overview  header---------------- -->
-    <!-- Left -->
+    <!----------------------------- Left Side--------------------- -->
     <div
       class="flex flex-col space-y-4 pr-8 col-span-3 h-screen overflow-scroll scroll"
     >
       <div class="flex items-start justify-between">
         <!-- Cuisines -->
-        <div>
-          <p class="text-lg font-medium uppercase xl:capitalize">Cuisines</p>
+        <div v-if="place.cousins">
+          <p
+            class="text-lg font-medium dark:text-white uppercase xl:capitalize"
+          >
+            Cuisines
+          </p>
 
           <p
             class="xl:text-lg text-sheger_brown-200 dark:text-sheger_light_gray-400 xl:text-black"
           >
-            Burger, French Fires, Pizza, Italian
+            {{ place.cousins }}
           </p>
         </div>
 
-        <!-- Recomendation Bage -->
-        <div
-          class="flex items-center w-[60%] border border-sheger-gray-500 p-3 rounded-lg"
-        >
-          <!-- Bage image -->
-          <div>
-            <img src="/images/static/sheger-recomedation-bage.png" />
-          </div>
-          <!-- description -->
+        <!-- -----------------------------Sheger recommendation, Takeout and House specail menu ---------------- -->
+        <div v-if="place.type == 'Hotels'">
+          <!----------------- Sheger gebeta recommendation -------------------------------->
           <div
-            class="w-[70%] text-sm font-light pl-7 border-l border-sheger-gray-500"
+            v-if="!place.shegerRecommendationId"
+            class="hidden lg:flex justify-between items-center space-x-6 border dark:border-sheger_brown-100 rounded-md pl-8 pr-4 py-4"
           >
-            Shager Gebeta recommands this place for sit suspendisse felis enim
-            purus. Phasellus pretium ut pharetra senectus. Hendrerit orci nunc
-            lorem enim et quis sed phasellus.
+            <div class="flex flex-col items-center space-y-2">
+              <p class="text-lg font-medium dark:text-white">
+                {{ place.shegerRecommendation?.title }}
+              </p>
+              <img
+                :src="
+                  place.shegerRecommendation?.shegerRecommendationBadge?.url
+                "
+                alt="sheger recommendation image  "
+                class="w-24 h-24 object-center object-cover"
+              />
+              <p class="text-lg font-medium dark:text-white">
+                Sheger <span class="text-primary-600">Gebeta</span>
+              </p>
+            </div>
+
+            <p
+              class="pl-6 text-sheger_brown-200 dark:text-sheger_light_gray-400 border-l max-w-sm"
+            >
+              {{ place.shegerRecommendation?.description }}
+            </p>
+          </div>
+          <!---------------------------- Offer takeouts  if there is no sheger recommendation---------------------->
+          <div
+            v-else-if="place.offerTakeouts"
+            class="hidden lg:flex justify-between space-x-6 border dark:border-sheger_brown-100 rounded-md pl-8 pr-4 py-4"
+          >
+            <div>
+              <img
+                src="/images/static/takeout-motor-pizza.png"
+                alt="takeout image"
+                class=""
+              />
+            </div>
+
+            <div class="flex flex-col space-y-4 pl-5 border-l">
+              <div class="flex justify-between items-center space-x-6">
+                <p class="primary-text text-lg font-medium">We offer Takeout</p>
+                <button
+                  @click="viewMenu"
+                  class="flex items-center space-x-2 px-2 py-1 border rounded-md"
+                >
+                  <Icon
+                    name="uil:book-alt"
+                    size="24"
+                    class="primary-text text-lg"
+                  />
+
+                  <p class="primary-text text-lg">View Menu</p>
+                </button>
+              </div>
+              <p class="secondary-text max-w-md">
+                Please use the following number to order a delivery from our
+                place
+              </p>
+
+              <div class="flex items-center space-x-6 flex-wrap">
+                <div class="flex items-center space-x-4 flex-wrap">
+                  <Icon
+                    name="uil:phone-volume"
+                    class="dark:text-white text-2xl"
+                  />
+                  <p>{{ place.orderPhoneNumber1 }}</p>
+                </div>
+                <div class="flex items-center space-x-4 flex-wrap">
+                  <Icon
+                    name="uil:phone-volume"
+                    class="dark:text-white text-2xl"
+                  />
+                  <p>{{ place.orderPhoneNumber2 }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ------------------------------House Special if there is no sheger recommendation and takeout---------------- -->
+          <div v-else-if="place.menus.length > 0">
+            <UiCardsMenu :menu="place.menus[0]"></UiCardsMenu>
           </div>
         </div>
       </div>
       <div class="flex flex-col gap-4">
         <p class="text-xl font-medium">Recommended Dishes</p>
+
         <div class="flex gap-7 overflow-x-scroll my-3 scroll">
-          <Ui-Cards-Dishe />
-          <Ui-Cards-Dishe />
-          <Ui-Cards-Dishe />
-          <Ui-Cards-Dishe />
+          <Ui-Cards-Dish v-for="menu in menus" :key="menu.id" :menu="menu" />
         </div>
         <div>
           <!-- ------------------Places contact us and location for large screens--------------------- -->
@@ -141,18 +239,18 @@ const flyTo = async (cordinates, index) => {
               <p class="font-medium text-2xl">Location</p>
               <div class="flex flex-wrap gap-2">
                 <Places-Locations
-                  :placeLocations="placeLocations"
-                  @flyTo="flyTo"
+                  :placeLocations="place.placeLocations"
+                  @fly-to="flyTo"
                 />
               </div>
 
-              <Places-ContactUs />
+              <Places-ContactUs :place="place" />
             </div>
 
             <!-- --------------------------Map for large screens---------------- -->
-            <div v-if="placeLocations?.length > 0" class="w-[60%]">
+            <div v-if="place.placeLocations?.length > 0" class="w-[60%]">
               <Places-Map
-                :place-locations="placeLocations"
+                :place-locations="place.placeLocations"
                 :center="center"
                 :zoom="zoom"
               ></Places-Map>
@@ -167,8 +265,8 @@ const flyTo = async (cordinates, index) => {
               </h3>
               <div class="grid grid-cols-2 gap-x-6">
                 <div
-                  v-for="placeAmenitie in place.placeAmenities"
-                  :key="placeAmenitie.id"
+                  v-for="placeAmenity in place.placeAmenities"
+                  :key="placeAmenity.id"
                   class="flex items-center space-x-2 py-3 text-sheger_brown-200 dark:text-sheger_light_gray-400"
                 >
                   <div class="">
@@ -178,7 +276,7 @@ const flyTo = async (cordinates, index) => {
                     />
                   </div>
                   <p class="text-sm xl:text-lg">
-                    {{ placeAmenitie.amenity?.title }}
+                    {{ placeAmenity.amenity?.title }}
                   </p>
                 </div>
               </div>
@@ -211,7 +309,8 @@ const flyTo = async (cordinates, index) => {
       </div>
     </div>
 
-    <!-- right -->
+    <!----------------------------- Right Side--------------------- -->
+
     <div class="col-span-1 pl-8 border-l">
       <div class="flex items-center justify-between">
         <p class="text-xl">Sheger Review</p>
@@ -230,15 +329,24 @@ const flyTo = async (cordinates, index) => {
       <div>
         <div class="flex items-center justify-between py-6">
           <p class="text-xl">
-            Galler <span class="text-sheger-gray-100">(30 Pictures)</span>
+            Gallery
+            <span class="text-sheger-gray-100"
+              >({{ medias.length }} Pictures)</span
+            >
           </p>
           <button class="secondary-border py-2 px-4 rounded-md">Upload</button>
         </div>
 
         <div
-          class="flex flex-col space-y-2 max-h-screen overflow-scroll scroll"
+          class="flex flex-col space-y-3 max-h-screen overflow-scroll scroll"
         >
-          <Places-Gallery v-for="i in 8" :key="i"> </Places-Gallery>
+          <Places-Gallery
+            v-for="placeMedia in medias"
+            :key="placeMedia.id"
+            :media="placeMedia"
+            @on-deleted="mediasRefetch()"
+          >
+          </Places-Gallery>
         </div>
       </div>
     </div>

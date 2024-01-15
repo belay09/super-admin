@@ -1,14 +1,39 @@
 <script setup>
-defineProps({
-  featured: {
-    type: Boolean,
-    default: false,
+const props = defineProps({
+  place: {
+    type: Object,
+    required: true,
   },
+});
+
+/**--------------------Featured place value------------- */
+function featuredPlaceValue(value) {
+  if (value === "RECENTLY_OPENED_PLACE") {
+    return {
+      name: "Recently Opened",
+      class: " text-[#47FF6F]",
+    };
+  } else if (value === "WEEKLY_RECOMMENDED_PLACE") {
+    return {
+      name: "Weekly Recommended",
+      class: "text-[#9747FF]",
+    };
+  } else if (value === "SEASONAL_PLACE") {
+    return {
+      name: "Seasonal",
+      class: "text-[#477BFF]",
+    };
+  }
+}
+
+/**----------------------Detail page link------- */
+const detailPageLink = computed(() => {
+  return `/app/places/${props.place.id}`;
 });
 </script>
 <template>
   <NuxtLink
-    to="/app/places/1"
+    :to="detailPageLink"
     class="flex flex-col border max-w-[397px] p-[25px] rounded-xl my-4 text-sm"
   >
     <!-- Header -->
@@ -27,7 +52,7 @@ defineProps({
         <div class="flex flex-col gap-2 w-full">
           <!-- Name -->
           <div class="flex justify-between">
-            <h1 class="text-xl font-medium">Hilton Hotel</h1>
+            <h1 class="text-xl font-medium">{{ place.name }}</h1>
             <!-- Option Icon -->
             <div class="hover:cursor-pointer">
               <Icon name="iwwa:option" class="w-8 h-8" />
@@ -41,8 +66,20 @@ defineProps({
             <div class="bg-primary-100 px-2 py-1 rounded-sm">
               <p class="text-primary-600 font-medium">Restaurant</p>
             </div>
-            <div v-if="featured" class="bg-purple-100 px-2 py-1 rounded-sm">
-              <p class="text-purple-600 font-medium">Recommended</p>
+            <div
+              v-for="featuredType in place.featured_places"
+              class="bg-gray-100 px-2 py-1 rounded-sm"
+              :class="
+                featuredPlaceValue(featuredType.featured_place_type?.value)
+                  .class
+              "
+            >
+              <p class="font-medium">
+                {{
+                  featuredPlaceValue(featuredType.featured_place_type?.value)
+                    .name
+                }}
+              </p>
             </div>
           </div>
         </div>
@@ -63,7 +100,7 @@ defineProps({
         </div>
         <!-- Like -->
         <div class="flex items-center gap-2">
-          <Icon name="icon-park-solid:like" class="w-6 h-6" />
+          <Icon name="heroicons:heart-solid" class="w-6 h-6" />
           <p class="">2.5K <span class="">Likes</span></p>
         </div>
       </div>
@@ -73,8 +110,14 @@ defineProps({
         <p class="">22 Mazoriya, Addis Ababa</p>
       </div>
       <!-- Tags -->
-      <div class="">
-        <p>#Hotel #Restaurant #Bar #Pool #Gym #Spa #Sauna #Massage #Parking</p>
+      <div class="flex flex-wrap secondary-text pb-4">
+        <p
+          v-for="placeTag in place.placeTags"
+          :key="placeTag.tag.id"
+          class="pr-2"
+        >
+          #{{ placeTag.tag.title }}
+        </p>
       </div>
       <!-- menu update -->
 

@@ -142,7 +142,7 @@ const clickRow = (item) => {
   <div class="flex flex-col space-y-8 py-6">
     <div class="flex items-center justify-between">
       <p class="text-xl font-medium">Showing 9/12 users</p>
-      <H-Limit></H-Limit>
+      <H-Page></H-Page>
     </div>
 
     <div class="">

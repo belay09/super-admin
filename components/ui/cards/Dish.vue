@@ -1,13 +1,15 @@
 <script setup>
+const props = defineProps({
+  menu: {
+    type: Object,
+    required: true,
+  },
+});
+
 const tags = ["Meat Lover", "Spicy", "Chicken"];
 </script>
 <template>
-  <div
-    @mouseenter="startTimer"
-    @mouseleave="cancelTimer"
-    to="#"
-    class="relative rounded-xl border block w-[395px] h-[395px]"
-  >
+  <div class="relative rounded-xl border block w-[395px] h-[395px]">
     <div class="w-full mx-auto">
       <img
         src="/images/temporary/default-food-image.png"

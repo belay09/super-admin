@@ -1,48 +1,23 @@
 <script setup>
-import ApexCharts from "apexcharts";
+/*----------------------------Imports---------------------------*/
 
-const series = [40];
-const chartOptions = {
-  chart: {
-    type: "radialBar",
-    foreColor: "#00ff00",
-    width: 380,
-    height: 380,
-    toolbar: {
-      show: false,
-    },
+import getPlaceQuery from "@/graphql/query/places/item.gql";
+import getPlacesMediasQuery from "@/graphql/query/medias/placeMedias.gql";
+import useNotify from "@/use/notify";
+import { useAuthStore } from "@/stores/auth";
 
-    sparkline: {
-      enabled: true,
-    },
-  },
-  plotOptions: {
-    radialBar: {
-      hollow: {
-        size: "70%",
-      },
-    },
-    bar: {
-      borderRadius: 10,
-      borderRadiusApplication: "around",
-    },
-  },
-  fill: {
-    type: "solid",
-    colors: ["#00ff00"],
-  },
-  stroke: {
-    lineCap: "round",
-  },
-  labels: ["40"],
-};
+/*----------------------------Global Variables---------------------------*/
+const { notify } = useNotify();
+const router = useRouter();
+const route = useRoute();
+const authStore = useAuthStore();
 
-const tabs = [
+/***---------------------Tab--------------------- */
+const tabs = ref([
   {
     name: "Overview",
     value: "overview",
   },
-
   {
     name: "Menu",
     value: "menu",
@@ -55,7 +30,32 @@ const tabs = [
     name: "Administrators",
     value: "administrators",
   },
-];
+]);
+
+/*...................Place detail data fetch.............*/
+const place = ref(null);
+const {
+  onResult: placeOnResult,
+  onError: placeOnError,
+  loading: placeLoading,
+} = authItemQuery(getPlaceQuery, route.params.id);
+
+placeOnResult((result) => {
+  if (result.data?.place) {
+    place.value = result.data.place;
+  }
+});
+
+placeOnError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-green-300",
+  });
+});
+
+/*.................... page meta data.............*/
 
 definePageMeta({
   layout: "home",
@@ -65,15 +65,16 @@ definePageMeta({
 <template>
   <div>
     <!-- Top -->
-    <PlacesAnalytics />
+    <Places-Analytics v-if="place" :place="place" />
+
     <!-- Tab -->
-    <div class="py-8">
+    <div class="py-8" v-if="place">
       <H-Tab :tabs="tabs" tab-class="text-xl " tab-container-class="gap-x-12">
         <template #overview>
-          <div class="py-8"><Places-Overview /></div>
+          <div class="py-8"><Places-Overview :place="place" /></div>
         </template>
         <template #menu>
-          <div class="py-8"><Places-Menus /></div>
+          <div class="py-8"><Places-Menus :place-id="place.id" /></div>
         </template>
         <template #administrators>
           <Administrators-List></Administrators-List>

@@ -1,47 +1,11 @@
 <script setup>
 import { format } from "date-fns";
 
-// const props = defineProps({
-//   menu: {
-//     type: Object,
-//     required: true,
-//   },
-// });
-
-const menu = ref({
-  id: 1,
-  title: "Dinech wot",
-  media: {
-    url: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D",
+const props = defineProps({
+  menu: {
+    type: Object,
+    required: true,
   },
-  price: 350,
-  timeToPrepare: 30,
-  menuTags: [
-    {
-      tag: {
-        id: 1,
-        title: "Spicy",
-      },
-    },
-    {
-      tag: {
-        id: 2,
-        title: "Vegan",
-      },
-    },
-    {
-      tag: {
-        id: 2,
-        title: "Cafe",
-      },
-    },
-    {
-      tag: {
-        id: 2,
-        title: "Breakfast",
-      },
-    },
-  ],
 });
 
 /*....................Window resize.............*/

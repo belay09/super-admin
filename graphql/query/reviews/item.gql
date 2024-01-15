@@ -1,4 +1,4 @@
-query getReview($id: bigint!, $include:Boolean = false) {
+query getReview($id: bigint!, $include: Boolean = false) {
   reviewsByPk(id: $id) {
     id
     title
@@ -8,9 +8,9 @@ query getReview($id: bigint!, $include:Boolean = false) {
     view_count
     timeToPrepare
     sides
-    
-    is_review_liked @include(if:$include)
-    is_review_book_marked @include(if:$include)
+
+    is_review_liked @include(if: $include)
+    is_review_book_marked @include(if: $include)
 
     # place
     place {
@@ -33,10 +33,10 @@ query getReview($id: bigint!, $include:Boolean = false) {
       tag {
         id
         title
-        icon {
-          darkIconUrl
-          lightIconUrl
-        }
+        # icon {
+        #   darkIconUrl
+        #   lightIconUrl
+        # }
       }
     }
 
@@ -54,6 +54,7 @@ query getReview($id: bigint!, $include:Boolean = false) {
 
     # medias
     review_medias {
+      id
       media {
         url
       }

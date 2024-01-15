@@ -6,6 +6,7 @@ function gotoMessage() {
 </script>
 
 <template>
+  <HNotification />
   <div class="">
     <div class="flex">
       <div

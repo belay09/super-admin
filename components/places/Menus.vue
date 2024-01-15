@@ -1,6 +1,14 @@
 <script setup>
-/***---------------------Tab--------------------- */
+import getPlacesMenuQuery from "@/graphql/query/menu/list.gql";
 
+const props = defineProps({
+  placeId: {
+    type: String,
+    required: true,
+  },
+});
+
+/***---------------------Tab--------------------- */
 const tabs = [
   {
     name: "Available",
@@ -11,13 +19,44 @@ const tabs = [
     value: "Unavailable",
   },
 ];
+
+/*...................Place menus data fetch.............*/
+const filter = ref({
+  placeId: {
+    _eq: props.placeId,
+  },
+});
+const limit = ref(6);
+const offset = ref(0);
+const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
+const menus = ref([]);
+const length = ref(0);
+
+const { onResult, onError, loading, fetchMore } = authListQuery(
+  getPlacesMenuQuery,
+  filter,
+  sort,
+  offset,
+  limit
+);
+
+onResult((result) => {
+  if (result.data?.menus) {
+    console.log("onResult: " + result.data.menus);
+    menus.value = result.data?.menus;
+    length.value = result.data?.menusAggregate?.aggregate?.count;
+  }
+});
+onError((error) => {
+  console.log("onError: " + error);
+});
 </script>
 
 <template>
   <div class="flex flex-col space-y-4">
     <!-- -----------------Header------------------- -->
     <div class="flex items-center justify-between">
-      <p class="text-xl font-medium">12 Menu Items</p>
+      <p class="text-xl font-medium">{{ length }} Menu Items</p>
       <button
         @click="showAddAdministratorModal = true"
         class="primary-button block secondary-border"
@@ -36,23 +75,20 @@ const tabs = [
     <H-Tab :tabs="tabs" tab-class="text-xl">
       <template #Available>
         <div class="grid grid-cols-2 gap-6 py-8">
-          <Ui-Cards-Menu> </Ui-Cards-Menu>
-          <Ui-Cards-Menu> </Ui-Cards-Menu>
-          <Ui-Cards-Menu> </Ui-Cards-Menu>
-          <Ui-Cards-Menu> </Ui-Cards-Menu>
-          <Ui-Cards-Menu> </Ui-Cards-Menu>
-          <Ui-Cards-Menu> </Ui-Cards-Menu>
+          <Ui-Cards-Menu
+            class="flex"
+            v-for="menu in menus"
+            :key="menu.id"
+            :menu="menu"
+          >
+          </Ui-Cards-Menu>
         </div>
       </template>
 
       <template #Unavailable>
         <div class="grid grid-cols-2 gap-6 py-8">
-          <Ui-Cards-Menu> </Ui-Cards-Menu>
-          <Ui-Cards-Menu> </Ui-Cards-Menu>
-          <Ui-Cards-Menu> </Ui-Cards-Menu>
-          <Ui-Cards-Menu> </Ui-Cards-Menu>
-          <Ui-Cards-Menu> </Ui-Cards-Menu>
-          <Ui-Cards-Menu> </Ui-Cards-Menu>
+          <Ui-Cards-Menu v-for="menu in menus" :key="menu.id" :menu="menu">
+          </Ui-Cards-Menu>
         </div>
       </template>
     </H-Tab>

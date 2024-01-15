@@ -6,7 +6,6 @@ import { useAuthStore } from "@/stores/auth.js";
 import { useForm } from "vee-validate";
 import useNotify from "@/use/notify";
 
-
 const xHasuraRole = useCookie("x-hasura-role");
 const emailOrPhone = ref("");
 const password = ref("");
@@ -96,11 +95,11 @@ createTokenDone((result) => {
   const userData = parseJwtToken(
     result.data?.create_custom_token?.hasura_access_token
   );
-  if(userData.metadata["x-hasura-allowed-roles"].includes("shegeradmin")){
+  if (userData.metadata["x-hasura-allowed-roles"].includes("shegeradmin")) {
     xHasuraRole.value = "shegeradmin";
     authStore.setXHasuraRole("shegeradmin");
   }
-  if(userData.metadata["x-hasura-allowed-roles"].includes("encoder")){
+  if (userData.metadata["x-hasura-allowed-roles"].includes("encoder")) {
     xHasuraRole.value = "encoder";
     authStore.setXHasuraRole("encoder");
   }
@@ -110,7 +109,7 @@ createTokenDone((result) => {
   onLogin(result.data?.create_custom_token?.hasura_access_token, "authClient");
 
   // Set hasura access token on cookie
-  router.push("/");
+  router.push("/app/places");
 });
 
 // On Error
@@ -136,7 +135,6 @@ const handleLogin = () => {
       input,
     });
   } else {
-
     let input = {
       email: emailOrPhone.value,
       password: password.value,

@@ -1,4 +1,42 @@
 <script setup>
+/**-------------------------Imports------------------------- */
+import formatNumberToShow from "~/helpers/format-number-to-show";
+import { formatRelative } from "date-fns";
+
+/**----------------------Globals-------------------------- */
+const router = useRouter();
+const props = defineProps({
+  place: {
+    type: Object,
+    required: true,
+  },
+});
+
+/**----------------------Place status---------------------- */
+function placeStatus(status) {
+  if (status == "ACTIVE") {
+    return {
+      name: "Active",
+      class: "bg-sheger-green-100 px-2 py-1",
+    };
+  } else if (status == "CLOSED") {
+    return {
+      name: "Closed",
+      class: "bg-red-100 px-2 py-1",
+    };
+  } else if (status == "PENDING") {
+    return {
+      name: "Pending",
+      class: "bg-yellow-100 px-2 py-1",
+    };
+  } else if (status == "SUSPENDED") {
+    return {
+      name: "Suspended",
+      class: "bg-sheger-gray-100 px-2 py-1",
+    };
+  }
+}
+
 const series = ref([
   {
     name: "Score",
@@ -68,32 +106,45 @@ onMounted(() => {
             <!-- Name and status -->
             <div class="flex gap-3">
               <!-- Name -->
-              <h1 class="text-xl font-medium">Addis Coffee House</h1>
+              <h1 class="text-xl font-medium">{{ place.name }}</h1>
               <!-- status -->
-              <div>
-                <div class="bg-sheger-green-100 px-2 py-0.5 rounded-md">
-                  <p class="text-sheger-green-600 font-medium">Active</p>
-                </div>
+              <div class="px-2 py-1" :class="placeStatus(place.status).class">
+                <p class="text-sheger-green-600 font-medium">
+                  {{ placeStatus(place.status).name }}
+                </p>
               </div>
             </div>
             <!-- review and like -->
-            <div class="flex items-center space-x-2 justify-between">
+            <!-- Rating and like -->
+            <div class="flex items-center space-x-4">
               <!-- Rating -->
               <div class="flex items-center gap-2">
-                <Icon name="uil:star" class="w-6 h-6" />
+                <Icon name="iwwa:star" class="text-xl text-black" />
                 <p class="">
-                  3/5 <span class="text-sheger-gray-100">(1,234 reviews)</span>
+                  3/5
+                  <span class=""
+                    >({{
+                      formatNumberToShow(
+                        place.placeReviewsAggregate?.aggregate?.count
+                      )
+                    }}
+                    reviews)</span
+                  >
                 </p>
               </div>
               <!-- dash -->
               <div>
-                <p class="text-sheger-gray-300">|</p>
+                <p class="">|</p>
               </div>
               <!-- Like -->
               <div class="flex items-center gap-2">
-                <Icon name="uil:heart" class="w-6 h-6" />
+                <Icon name="heroicons:heart-solid" class="w-6 h-6" />
+
                 <p class="">
-                  2.5K <span class="text-sheger-gray-100">Likes</span>
+                  {{
+                    formatNumberToShow(place.place_aggregate_summary?.sumLikes)
+                  }}
+                  <span class="">Likes</span>
                 </p>
               </div>
             </div>
@@ -106,9 +157,13 @@ onMounted(() => {
           </div>
         </div>
         <!-- Tags -->
-        <div class="text-sheger-gray-100">
-          <p class="text-sm">
-            #Hotel #Restaurant #Bar #Pool #Gym #Spa #Sauna #Massage #Parking
+        <div class="flex flex-wrap secondary-text pb-4">
+          <p
+            v-for="placeTag in place.placeTags"
+            :key="placeTag.tag.id"
+            class="pr-2"
+          >
+            #{{ placeTag.tag.title }}
           </p>
         </div>
       </div>
@@ -131,42 +186,21 @@ onMounted(() => {
 
         <div class="flex items-center justify-between">
           <p class="text-sm text-sheger-gray-100">Featured on</p>
-          <p class="text-primary-600 cursor-pointer underline font-medium">
+          <NuxtLink
+            to="/app/featured-places"
+            class="text-primary-600 cursor-pointer underline font-medium"
+          >
             Configure
-          </p>
+          </NuxtLink>
         </div>
-        <div class="flex items-center justify-between border p-3 rounded-lg">
-          <div class="flex gap-3">
-            <div
-              class="w-6 h-6 p-5 border-[3px] border-green-600 flex items-center rounded-full justify-center"
-            >
-              5
-            </div>
-            <div>
-              <p class="text-lg font-medium">Weekly Recommendation</p>
-              <p class="text-sheger-gray-100">Featured : 2 days ago</p>
-            </div>
-          </div>
-          <div>
-            <Icon name="fluent:location-16-regular" class="w-8 h-8" />
-          </div>
-        </div>
-        <div class="flex items-center justify-between border p-3 rounded-lg">
-          <div class="flex gap-3">
-            <div
-              class="w-6 h-6 p-5 border-[3px] border-primary-500 text-primary-500 flex items-center rounded-full justify-center"
-            >
-              -27
-            </div>
-            <div>
-              <p class="text-lg font-medium">Seasonal Places</p>
-              <p class="text-sheger-gray-100">Featured : 32 days ago</p>
-            </div>
-          </div>
-          <div>
-            <Icon name="lets-icons:return" class="w-8 h-8" />
-          </div>
-        </div>
+
+        <!------------------------ Featured on cards -------------->
+
+        <Places-FeaturedPlace-Card
+          v-for="item in place.featured_places"
+          :key="item.id"
+          :item="item"
+        ></Places-FeaturedPlace-Card>
       </div>
     </div>
 

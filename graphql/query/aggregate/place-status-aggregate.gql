@@ -1,0 +1,32 @@
+query placeAggregate {
+  totalPlaces: placesAggregate {
+    aggregate {
+      count
+    }
+  }
+  ACTIVE: placesAggregate(where: { status: { _eq: ACTIVE } }) {
+    aggregate {
+      count
+    }
+  }
+  CLOSED: placesAggregate(where: { status: { _eq: CLOSED } }) {
+    aggregate {
+      count
+    }
+  }
+  DRAFT: placesAggregate(where: { status: { _eq: DRAFT } }) {
+    aggregate {
+      count
+    }
+  }
+  PENDING: placesAggregate(where: { status: { _eq: PENDING } }) {
+    aggregate {
+      count
+    }
+  }
+  SUSPENDED: placesAggregate(where: { status: { _eq: SUSPENDED } }) {
+    aggregate {
+      count
+    }
+  }
+}

@@ -44,6 +44,7 @@
     "vue-advanced-cropper": "^2.8.8",
     "vue-apexcharts": "^1.6.2",
     "vue-composable": "^1.0.0-beta.24",
+    "vue-radial-progress": "^0.3.2",
     "vue-slider-component": "^4.1.0-beta.7",
     "vue3-apexcharts": "^1.4.4",
     "vue3-carousel": "^0.3.1"

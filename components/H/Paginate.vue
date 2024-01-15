@@ -145,6 +145,14 @@ const range = (start, end) => {
     .fill()
     .map((_, idx) => start + idx);
 };
+
+// watch model value
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    pageTracker.value = newVal;
+  }
+);
 </script>
 
 <template>
@@ -169,7 +177,7 @@ const range = (start, end) => {
         >
           <!-- <ArrowLongLeftIcon class="h-5 w-6" aria-hidden="true" /> -->
           <Icon name="bi:arrow-left" />
-          <span class="ml-5 hidden sm:block">Previous</span>
+          <span class="ml-5">Previous</span>
         </a>
       </div>
 
@@ -283,7 +291,7 @@ const range = (start, end) => {
             forward();
           "
         >
-          <span class="mr-5 hidden sm:block">Next</span>
+          <span class="mr-5">Next</span>
           <Icon name="bi:arrow-right" />
           <!-- <ArrowLongRightIcon class="h-5 w-6" aria-hidden="true" /> -->
         </a>

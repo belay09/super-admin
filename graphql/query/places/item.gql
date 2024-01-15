@@ -3,10 +3,8 @@ query getPlace($id: bigint!, $include: Boolean = false) {
     id
     name
     view_count
-
-    # is Bookmarked and liked
-    is_place_book_marked @include(if: $include)
-    is_place_liked @include(if: $include)
+    status
+    cousins
 
     # contact us
     contactEmail
@@ -51,10 +49,10 @@ query getPlace($id: bigint!, $include: Boolean = false) {
     placeTags {
       tag {
         title
-        icon {
-          lightIconUrl
-          darkIconUrl
-        }
+        # icon {
+        #   lightIconUrl
+        #   darkIconUrl
+        # }
       }
     }
 
@@ -76,10 +74,10 @@ query getPlace($id: bigint!, $include: Boolean = false) {
       id
       amenity {
         id
-        icon {
-          lightIconUrl
-          darkIconUrl
-        }
+        # icon {
+        #   lightIconUrl
+        #   darkIconUrl
+        # }
         title
       }
     }
@@ -123,6 +121,14 @@ query getPlace($id: bigint!, $include: Boolean = false) {
       description
     }
 
+    # featured place
+    featured_places {
+      startDate
+      endDate
+      isActive
+      type
+    }
+
     # special menu
     menus(
       where: { isHouseSpecial: { _eq: true } }
@@ -142,10 +148,10 @@ query getPlace($id: bigint!, $include: Boolean = false) {
       menuTags {
         tag {
           title
-          icon {
-            lightIconUrl
-            darkIconUrl
-          }
+          # icon {
+          #   lightIconUrl
+          #   darkIconUrl
+          # }
         }
       }
     }
