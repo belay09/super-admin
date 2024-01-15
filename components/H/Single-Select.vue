@@ -79,6 +79,14 @@ const props = defineProps({
     required: false,
     default: "",
   },
+  showBy: {
+    type: String,
+    default: "name",
+  },
+  returnBy: {
+    type: String,
+    default: "id",
+  },
 });
 
 const singleSelect = ref(null);
@@ -126,7 +134,7 @@ watchEffect(
 
 onClickOutside(singleSelect, (e) => (show.value = false));
 
-onMounted(() => {
+onMounted(() => { 
   if (props.returnObject) {
     inputValue.value = props.modelValue?.id;
     selectedItem.value = props.modelValue;
@@ -172,7 +180,7 @@ onMounted(() => {
       <div v-if="selectedItem" @click="show = true">
         <slot name="header" :item="selectedItem">
           <div class="">
-            {{ selectedItem.name }}
+            {{ selectedItem[showBy] }}
           </div>
         </slot>
       </div>
@@ -199,10 +207,10 @@ onMounted(() => {
             :class="[props.itemClass ? props.itemClass : '']"
             class="flex items-center justify-between border-b select-none relative py-3 px-3 hover:bg-blue-50 cursor-pointer overflow-auto"
           >
-            <span class="block capitalize break-words">{{ item.name }}</span>
+            <span class="block capitalize break-words">{{ item[showBy] }}</span>
 
             <!-- ---------------Check ------------>
-            <div class="flex space-x-1">
+            <!-- <div class="flex space-x-1">
               <Icon
                 v-if="inputValue == item.id"
                 name="ic:round-check"
@@ -211,7 +219,7 @@ onMounted(() => {
                 color="#003F7D"
                 class="cursor-pointer text-inherit"
               />
-            </div>
+            </div> -->
           </div>
         </slot>
       </li>

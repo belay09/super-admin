@@ -1,0 +1,21 @@
+query(
+  $filter: BasicsAmenitiesBoolExp
+  $order: [BasicsAmenitiesOrderBy!]
+  $limit: Int,
+  $offset: Int
+){
+  basicsAmenities(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ){
+    description
+    icon{
+      darkIconUrl
+      id
+    }
+    name:title
+    id
+  }
+}

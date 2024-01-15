@@ -1,6 +1,7 @@
 const xHasuraRole = useCookie("x-hasura-role");
 export default (query, filter, order, offset, limit) => {
-  const { onResult, onError, loading, refetch, fetchMore, result } = useQuery(
+  console.log(filter, 'filter');
+  const { onResult, onError, loading, refetch } = useQuery(
     query,
     () => ({
       offset: offset && offset.value,
@@ -24,6 +25,6 @@ export default (query, filter, order, offset, limit) => {
     onError,
     loading,
     refetch,
-    fetchMore,
+  
   };
 };

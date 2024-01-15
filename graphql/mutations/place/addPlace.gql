@@ -1,0 +1,6 @@
+mutation($obj:PlacesInsertInput!){
+  insertPlacesOne(object:$obj){
+    id,
+    name
+  }
+}

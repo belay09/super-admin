@@ -11,7 +11,7 @@
         <H-Limit></H-Limit>
       </div>
     </div>
-    <div class="grid grid-cols-3 w-[85%]">
+    <div class="grid grid-cols-3 gap-4 w-[85%]">
       <UiCardsPlace featured />
       <UiCardsPlace featured />
       <UiCardsPlace featured />

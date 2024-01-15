@@ -21,7 +21,7 @@
       <!-- Body -->
       <div class="flex flex-col gap-4 my-2">
         <!-- Tags -->
-        <div class="text-sheger-gray-400">
+        <div class="text-sheger-gray-400 text-sm font-light">
           <p>
             #Hotel #Restaurant #Bar #Pool #Gym #Spa #Sauna #Massage #Parking
           </p>
@@ -30,7 +30,7 @@
           <!-- time to prepare  -->
           <div class="flex items-center gap-3">
             <Icon name="wi:time-3" class="h-5 w-5" />
-            <p class="text-sheger-gray-400">Preparation Time :  <span class="text-black">30 Minutes</span></p>
+            <p class="text-sheger-gray-400 text-sm">Preparation Time :  <span class="text-black">30 Minutes</span></p>
           </div>
         </div>
         
@@ -44,11 +44,11 @@
       <div class="flex items-center gap-4">
         <div class="flex items-center gap-3">
           <Icon name="uit:calender" class="h-5 w-5" />
-          <p class="text-sheger-gray-400">Updated: 2d ago</p>
+          <p class="text-sheger-gray-400 text-sm font-light">Updated: 2d ago</p>
         </div>
         <div class="flex items-center gap-3">
           <Icon name="uit:calender" class="h-5 w-5" />
-          <p class="text-sheger-gray-400">Created: 2d ago</p>
+          <p class="text-sheger-gray-400 text-sm font-light">Created: 2d ago</p>
 
         </div>
       </div>

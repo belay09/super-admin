@@ -1,0 +1,30 @@
+query(
+  $filter: PlaceAmenitiesBoolExp,
+  $order: [PlaceAmenitiesOrderBy!],
+  $limit: Int,
+  $offset: Int,
+){
+  placeAmenities(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ){
+    description
+    id
+    amenity {
+      title
+      description
+      icon {
+        id
+         darkIconUrl
+      }
+    }
+    placeAmenityResources {
+      media {
+        url
+        id
+      }
+    }
+  }
+}

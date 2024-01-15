@@ -1,0 +1,16 @@
+query(
+  $filter: BasicsTagsBoolExp
+  $order: [BasicsTagsOrderBy!]
+  $limit: Int
+  $offset: Int
+){
+  basicsTags(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ){
+    id,
+    title
+  }
+}

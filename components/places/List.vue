@@ -12,7 +12,7 @@ defineProps({
       <p class="text-xl font-medium">Showing 9/12</p>
       <H-Limit></H-Limit>
     </div>
-    <div class="grid grid-cols-3 w-[85%]">
+    <div class="grid grid-cols-3 gap-4 w-[85%]">
       <UiCardsPlace />
       <UiCardsPlace />
       <UiCardsPlace />

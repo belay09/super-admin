@@ -1,18 +1,23 @@
-query getPlacesPortfolios(
-  $filter: PortfoliosBoolExp
-  $order: [PortfoliosOrderBy!]
-  $limit: Int
-  $offset: Int
-) {
-  portfolios(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+query(
+  $filter: PortfoliosBoolExp,
+  $order: [PortfoliosOrderBy!],
+  $limit: Int,
+  $offset: Int,
+){
+  portfolios(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ){
+    description
     id
     title
     date
-    portfolioMedias {
-      media {
+    portfolioMedias{
+      media{
         url
       }
     }
-    placeId
   }
 }
