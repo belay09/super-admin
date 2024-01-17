@@ -1,6 +1,6 @@
 <script setup>
 const emit = defineEmits([""]);
-defineProps({
+const props = defineProps({
   portfolio: {
     type: Object,
     required: true,
@@ -8,15 +8,15 @@ defineProps({
 });
 
 
-console.log("portfolio", props.portfolio);
-
 // =========================Handlers=========================
 const edit = () => {
   // Send a variable to the parent function
   emit("childEvent", props.portfolio);
 };
+
 const handleDelete = () => {
-  console.log(props.portfolio, "portfolio");
+  console.log("portfolio");
+  // console.log(props.portfolio, "portfolio");
   // Send a variable to the parent function
   emit("deleteEvent", props.portfolio.id);
 };
@@ -32,7 +32,7 @@ const handleDelete = () => {
       {{ portfolio.date }}
     </div>
 
-    <div class="flex gap-5">
+    <div class="flex gap-5 overflow-x-scroll">
       <img
         v-for="(image, index) in portfolio.portfolioMedias"
         :key="index"
@@ -50,13 +50,13 @@ const handleDelete = () => {
         <Icon name="material-symbols:edit" color="black" class="w-5 h-5" />
         Edit
       </button>
-      <button
+      <div
         @click="handleDelete"
-        class="ml-2 bg-white-500 border-[1px] hover:bg-gray-100 text-black font-normal px-2 py-1 rounded"
+        class="ml-2 bg-white-500 border-[1px] hover:bg-gray-100 text-black font-normal px-2 py-1 rounded cursor-pointer"
       >
         <Icon name="ph:trash" color="black" class="w-5 h-5" />
-        Delete
-      </button>
+        Deleteee
+      </div>
     </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <script setup>
-const curStep = ref(3);
+const curStep = ref(5);
 
 
 // ---------------------------- Go Back Handler ----------------------------

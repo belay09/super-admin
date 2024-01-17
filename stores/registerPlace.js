@@ -5,6 +5,7 @@ export const useRegisterPlaceStore = defineStore({
   state: () => {
     return {
       placeId: null,
+      stepId: 0
     };
   },
 
@@ -12,11 +13,17 @@ export const useRegisterPlaceStore = defineStore({
     getPlaceId() {
       return this.placeId;
     },
+    getStepId() {
+      return this.stepId;
+    },
   },
 
   actions: {
     setPlaceId(placeId) {
       this.placeId = placeId;
+    },
+    setStepId(stepId) {
+      this.stepId = stepId;
     },
   },
   persist: true,

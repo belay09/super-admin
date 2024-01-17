@@ -274,10 +274,11 @@ const handelDelete = (id) => {
 
     <!------------------------------------Right----------------------------------------->
 
-    <div v-if="portfolios.length > 0" class="flex-[50%]">
+    <div class="flex-[50%]">
       <!-------------------------------------- Preview------------------------------------------------- -->
 
       <UiCardsPortfolioItemCard
+        v-if="portfolios.length > 0"
         v-for="(portfolio, index) in portfolios"
         class="w-full"
         :key="index"
@@ -285,6 +286,9 @@ const handelDelete = (id) => {
         @childEvent="handleChildEvent"
         @deleteEvent="handelDelete"
       ></UiCardsPortfolioItemCard>
+      <div v-else class="flex flex-col items-center justify-center h-full">
+        <p class="text-lg text-sheger-gray-400">No Portfolio Added</p>
+      </div>
     </div>
   </div>
 </template>
