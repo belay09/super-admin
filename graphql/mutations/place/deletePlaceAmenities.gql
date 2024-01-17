@@ -1,0 +1,5 @@
+mutation($id:bigint!){
+  deletePlaceAmenitiesByPk(id:$id){
+    amenityId
+  }
+}

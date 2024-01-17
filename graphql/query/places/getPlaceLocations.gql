@@ -1,0 +1,25 @@
+query Location (
+  $filter:PlaceLocationsBoolExp
+  $order:[PlaceLocationsOrderBy!]
+  $limit: Int
+  $offset: Int
+){
+  placeLocations(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ){
+    city {
+      name
+      id
+    }
+    area {
+      name
+      id
+    }
+    isMainLocation
+    id
+    location
+  }
+}

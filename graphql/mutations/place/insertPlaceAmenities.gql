@@ -1,0 +1,5 @@
+mutation($obj:[PlaceAmenitiesInsertInput!]!){
+  insertPlaceAmenities(objects:$obj){
+    affectedRows
+  }
+}

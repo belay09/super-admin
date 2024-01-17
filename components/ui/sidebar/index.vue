@@ -1,7 +1,7 @@
 <template>
   <div class="text-sheger-gray-100 flex flex-col space-y-4">
     <!-- Dashbord -->
-    <UiSidebarItem name="/">
+    <UiSidebarItem name="/app">
       <template #icon>
         <Icon name="material-symbols:dashboard-outline" size="24" color="" />
       </template>
@@ -30,32 +30,33 @@
     <!-- Sheger Reviews -->
     <UiSidebarItem name="/app/sheger-reviews">
       <template #icon>
-        <Icon name="lucide:building" size="24" color="" />
+        <Icon name="ri:menu-unfold-fill" size="24" color="" />
       </template>
       <template #title>
         <p>Sheger Reviews</p>
       </template>
     </UiSidebarItem>
-    <UiSidebarItem name="/app/users">
-      <template #icon>
-        <Icon name="streamline:insert-side" size="24" color="" />
-      </template>
-      <template #title>
-        <p>User</p>
-      </template>
-    </UiSidebarItem>
     <UiSidebarItem name="/app/ad_space">
       <template #icon>
-        <Icon name="streamline:insert-side" size="24" color="" />
+        <Icon name="icons8:advertising" size="24" color="" />
       </template>
       <template #title>
         <p>Ad Space</p>
       </template>
     </UiSidebarItem>
 
+    <UiSidebarItem name="/app/users">
+      <template #icon>
+        <Icon name="tabler:users" size="24" color="" />
+      </template>
+      <template #title>
+        <p>User</p>
+      </template>
+    </UiSidebarItem>
+
     <UiSidebarItem name="/app/sponsored_drinks">
       <template #icon>
-        <Icon name="streamline:insert-side" size="24" color="" />
+        <Icon name="fa6-solid:martini-glass-empty" size="24" color="" />
       </template>
       <template #title>
         <p>Sponsored drinks</p>
@@ -64,7 +65,7 @@
 
     <UiSidebarItem name="/app/administrators">
       <template #icon>
-        <Icon name="streamline:insert-side" size="24" color="" />
+        <Icon name="bi:shield" size="24" color="" />
       </template>
       <template #title>
         <p>Administrators</p>
@@ -72,7 +73,7 @@
     </UiSidebarItem>
     <UiSidebarItem name="/app/reports">
       <template #icon>
-        <Icon name="streamline:insert-side" size="24" color="" />
+        <Icon name="ph:flag-light" size="24" color="" />
       </template>
       <template #title>
         <p>Reports</p>
@@ -80,7 +81,7 @@
     </UiSidebarItem>
     <UiSidebarItem name="/app/billings">
       <template #icon>
-        <Icon name="streamline:insert-side" size="24" color="" />
+        <Icon name="solar:bill-list-bold" size="24" color="" />
       </template>
       <template #title>
         <p>Billings</p>
