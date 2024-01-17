@@ -57,7 +57,7 @@ const props = defineProps({
     type: String,
   },
   modelValue: {
-    type: [String, Array, Object],
+    type: [Number, String, Array, Object],
     // default: () => [],
   },
   selected: {
@@ -70,13 +70,7 @@ const props = defineProps({
   errorMessages: {
     type: String,
   },
-  placeHolder: {
-    type: String,
-  },
-  class: {
-    type: String,
-    default: "",
-  },
+
   clearable: Boolean,
   trailingIcon: String,
   rules: {
@@ -98,7 +92,7 @@ const {
   value: inputValue,
   meta,
 } = useField(props.name, props.rules, {
-  initialValue: props.returnObject ? props.modelValue?.id : props.modelValue,
+  initialValue: props.returnObject ? props.modelValue.id : props.modelValue,
 });
 
 const show = ref(false);
@@ -137,6 +131,7 @@ const queryList = () => {
 
 // clear
 const clear = () => {
+  selectedItem.value = null;
   search.value = undefined;
   inputValue.value = "";
   selected.value = "";
@@ -172,15 +167,15 @@ watch(
 
     if (tempSelectedItem) {
       inputValue.value = selectedItem.id;
-      selectedItem.value = props.modelValue;
-      // placeHolder.value = selectedItem.name;
+      selectedItem.value = tempSelectedItem;
+      placeHolder.value = selectedItem.name;
     }
   }
 );
 
 onMounted(() => {
   if (props.returnObject) {
-    inputValue.value = props.modelValue;
+    inputValue.value = props.modelValue.id;
     selectedItem.value = props.modelValue;
   } else {
     inputValue.value = props.modelValue;
@@ -223,16 +218,13 @@ onMounted(() => {
           errorMessage
             ? 'focus:ring-red-500 focus:border-red-500 hover:border-red-500 border-red-500'
             : 'focus:ring-new-tale  focus:border-new-tale hover:border-new-tale border-gray-300 border-1 ',
-          props.class ? props.class : '',
           disabled ? ' bg-gray-100 !cursor-not-allowed' : '',
           placeholder && !inputValue ? 'text-gray-500' : '',
         ]"
       >
         <div v-if="selectedItem" @click="show = true">
           <slot name="header" :item="selectedItem">
-            <div class="">
-              {{ selectedItem.name }}
-            </div>
+            <div class="text-black">{{ selectedItem.name }}</div>
           </slot>
         </div>
         <div class="text-gray-500" :class="placeholderClass" v-else>
@@ -241,7 +233,15 @@ onMounted(() => {
       </button>
 
       <!-- -----------------------Chevron------------------- -->
-      <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+
+      <div
+        v-if="selectedItem"
+        @click="clear"
+        class="absolute hover:cursor-pointer inset-y-0 right-0 pr-3 flex items-center"
+      >
+        <Icon name="heroicons:x-mark-20-solid" color="gray" class="text-xl" />
+      </div>
+      <div v-else class="absolute inset-y-0 right-0 pr-3 flex items-center">
         <Icon name="tabler:chevron-down" color="gray" class="text-xl" />
       </div>
     </div>

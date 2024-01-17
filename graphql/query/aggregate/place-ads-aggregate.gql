@@ -1,0 +1,29 @@
+query placeAdsAggregate {
+  totalPlaces: placeAdsAggregate {
+    aggregate {
+      count
+    }
+  }
+  HOTELS: placeAdsAggregate(where: { place: { type: { _eq: HOTELS } } }) {
+    aggregate {
+      count
+    }
+  }
+  RESTAURANTS: placeAdsAggregate(
+    where: { place: { type: { _eq: RESTAURANTS } } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+  CAFES: placeAdsAggregate(where: { place: { type: { _eq: CAFES } } }) {
+    aggregate {
+      count
+    }
+  }
+  CATERINGS: placeAdsAggregate(where: { place: { type: { _eq: CATERINGS } } }) {
+    aggregate {
+      count
+    }
+  }
+}

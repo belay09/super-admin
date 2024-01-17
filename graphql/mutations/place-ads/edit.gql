@@ -1,0 +1,5 @@
+mutation editPlaceAd($input: PlaceAdsSetInput!, $id: bigint!) {
+  updatePlaceAdsByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+}

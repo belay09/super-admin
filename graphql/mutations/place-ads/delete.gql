@@ -1,0 +1,5 @@
+mutation deletePlaceAds($id: bigint!) {
+  deletePlaceAdsByPk(id: $id) {
+    id
+  }
+}

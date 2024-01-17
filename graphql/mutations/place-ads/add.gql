@@ -1,0 +1,5 @@
+mutation addPlaceAd($input: PlaceAdsInsertInput!) {
+  insertPlaceAdsOne(object: $input) {
+    id
+  }
+}

@@ -1,10 +1,19 @@
 <script setup>
-import addPlaceAdMutation from "@/graphql/mutations/place-ads/add.gql";
+import editPlaceAdMutation from "@/graphql/mutations/place-ads/edit.gql";
+import addMedia from "@/graphql/mutations/medias/add-media.gql";
+import getPlaceAdQuery from "@/graphql/query/place-ads/item.gql";
 import useNotify from "@/use/notify";
 
 const { notify } = useNotify();
-const emit = defineEmits(["add"]);
+const emit = defineEmits(["edit"]);
+const props = defineProps({
+  id: {
+    type: Number,
+    required: true,
+  },
+});
 
+/***---------------------Tab--------------------- */
 const { handleSubmit, isSubmitting } = useForm({});
 
 const placeTypeItems = ref([
@@ -26,34 +35,62 @@ const placeTypeItems = ref([
   },
 ]);
 
+/*...................Place detail data fetch.............*/
 const placeType = ref("");
-const place = ref("");
+const place = ref();
 const slogan = ref("");
 const description = ref("");
 const startDate = ref("");
 const endDate = ref("");
 const url = ref("");
+const placeAd = ref({});
 
+const {
+  onResult: placeAdOnResult,
+  onError: placeAdOnError,
+  loading: placeAdLoading,
+} = authItemQuery(getPlaceAdQuery, props.id);
+
+placeAdOnResult((result) => {
+  if (result.data?.placeAdsByPk) {
+    const placeAdsByPk = result.data.placeAdsByPk;
+    placeType.value = placeAdsByPk.place?.type;
+    place.value = placeAdsByPk.place?.id;
+    slogan.value = placeAdsByPk.slogan;
+    description.value = placeAdsByPk.description;
+    startDate.value = placeAdsByPk.startDate;
+    endDate.value = placeAdsByPk.endDate;
+    url.value = placeAdsByPk.media?.url;
+  }
+});
+
+placeAdOnError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-green-300",
+  });
+});
+
+/**----------------------------Add media--------------------- */
 const noImageIsSelected = ref(false);
 watch(
   () => url.value,
   (value) => {
     if (value != "") {
       noImageIsSelected.value = false;
-    } else {
-      noImageIsSelected.value = true;
     }
   }
 );
+const {
+  mutate: addMediaMutate,
+  onDone: addMediaOnDone,
+  onError: addMediaOnError,
+  loading: addMediaLoading,
+} = authMutation(addMedia);
 
-const { mutate, onDone, onError, loading } = authMutation(addPlaceAdMutation);
-
-/**-----------------------Handle add --------------------------- */
-const handleAdd = handleSubmit(() => {
-  if (url.value == "") {
-    noImageIsSelected.value = true;
-    return;
-  }
+addMediaOnDone((result) => {
   let input = {
     description: description.value,
     slogan: slogan.value,
@@ -61,23 +98,43 @@ const handleAdd = handleSubmit(() => {
     endDate: endDate.value,
     type: placeType.value,
     placeId: place.value,
-    media: {
-      data: {
+    mediaId: result.data?.insertBasicsMediaOne?.id,
+  };
+  mutate({ input, id: props.id });
+});
+
+addMediaOnError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+const { mutate, onDone, onError, loading } = authMutation(editPlaceAdMutation);
+/**-----------------------Handle add --------------------------- */
+const handleEdit = handleSubmit(() => {
+  if (url.value != "" && url.value != placeAd.value.media?.url) {
+    addMediaMutate({
+      input: {
         url: url.value,
       },
-    },
-  };
-  mutate({ input });
+    });
+  } else if (url.value == "") {
+    noImageIsSelected.value = true;
+    console.log("no image is selected");
+  }
 });
 
 onDone(() => {
   location.reload();
-  notify({
-    title: "Ad space added successfully",
-    description: "Ad space added successfully",
-    type: "error",
-    borderClass: "border-l-8 border-green-300",
-  });
+  // notify({
+  //   title: "Ad space edited successfully",
+  //   description: "Ad space edited successfully",
+  //   type: "error",
+  //   borderClass: "border-l-8 border-green-300",
+  // });
 });
 
 onError((error) => {
@@ -91,7 +148,7 @@ onError((error) => {
 </script>
 
 <template>
-  <form @submit.prevent="handleAdd" class="flex flex-col" action="">
+  <form @submit.prevent="handleEdit" class="flex flex-col space-y-2" action="">
     <!-- ----------------Add space or place type----- -->
     <H-SingleSelect
       name="ad_space"
@@ -101,7 +158,6 @@ onError((error) => {
       v-model="placeType"
       rules="required"
     ></H-SingleSelect>
-
     <!-- ------------------Place---------------- -->
 
     <AdSpace-PlaceSelector v-model="place"> </AdSpace-PlaceSelector>
@@ -165,8 +221,8 @@ onError((error) => {
       type="submit"
       class="primary-button secondary-border py-3 mt-4"
     >
-      <span>Add</span>
-      <Icon name="heroicons:plus-small-solid" class="text-2 xl"></Icon>
+      <span>Edit</span>
+      <Icon name="uil:edit" class="text-2 xl"></Icon>
       <Icon
         v-if="loading"
         name="eos-icons:bubble-loading"

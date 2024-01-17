@@ -2,6 +2,23 @@
 definePageMeta({
   layout: "home",
 });
+
+const showEditPlaceAd = ref(false);
+const placeAdId = ref(null);
+function showPlaceEdit(id) {
+  placeAdId.value = id;
+
+  if (showEditPlaceAd.value) {
+    showEditPlaceAd.value = false;
+    setTimeout(() => {
+      showEditPlaceAd.value = true;
+    }, 400);
+  } else {
+    showEditPlaceAd.value = true;
+  }
+}
+
+const makeRefetch = ref(false);
 </script>
 
 <template>
@@ -9,11 +26,15 @@ definePageMeta({
     <div class="grid grid-cols-3 items-start">
       <!-- -------------------Add ad space-------------------- -->
       <div class="col-span-1 pr-10 border-r">
-        <AdSpace-Add></AdSpace-Add>
+        <AdSpace-Add v-if="!showEditPlaceAd"></AdSpace-Add>
+        <AdSpace-Edit v-else :id="placeAdId"></AdSpace-Edit>
       </div>
 
       <!-- -------------------Ad space list-------------------- -->
-      <AdSpace-List></AdSpace-List>
+      <AdSpace-List
+        :makeRefetch="makeRefetch"
+        @edit="showPlaceEdit"
+      ></AdSpace-List>
     </div>
   </div>
 </template>

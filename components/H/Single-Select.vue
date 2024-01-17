@@ -110,8 +110,17 @@ const set = (item) => {
     emit("returnedObject", item);
   }
 };
+const clear = () => {
+  selectedItem.value = null;
+  inputValue.value = "";
+  selected.value = "";
+  show.value = false;
+  emit("update:modelValue", undefined);
+  emit("update:selected", undefined);
+  emit("onSelectionFound", undefined);
+};
 
-watchEffect(
+watch(
   () => props.modelValue,
   (newVal) => {
     if (props.returnObject) {
@@ -162,7 +171,7 @@ onMounted(() => {
 
     <div
       @click="show = !show"
-      class="flex items-center justify-between rounded-md shadow-sm font-body secondary-border px-3 mb-2 py-0.5"
+      class="flex items-center justify-between rounded-md shadow-sm font-body secondary-border px-3 mb-2 py-3"
       :class="[props.headerClass, errorMessage ? 'border-red-500' : '']"
     >
       <!------------------- Leading icon----------- -->
@@ -182,8 +191,15 @@ onMounted(() => {
 
       <!---------------- Chevron trailing icon ------------------->
 
-      <div class="flex items-center pointer-events-none py-3">
-        <Icon name="tabler:chevron-down" class="text-xl" color="gray" />
+      <div
+        v-if="selectedItem"
+        @click="clear"
+        class="absolute hover:cursor-pointer inset-y-0 right-0 pr-3 flex items-center"
+      >
+        <Icon name="heroicons:x-mark-20-solid" color="gray" class="text-xl" />
+      </div>
+      <div v-else class="absolute inset-y-0 right-0 pr-3 flex items-center">
+        <Icon name="tabler:chevron-down" color="gray" class="text-xl" />
       </div>
     </div>
 

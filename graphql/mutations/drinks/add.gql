@@ -1,0 +1,5 @@
+mutation addBasicDrink($input: BasicsDrinksInsertInput!!) {
+  insertBasicsDrinksOne(object: $input) {
+    id
+  }
+}
