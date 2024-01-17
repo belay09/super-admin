@@ -1,26 +1,126 @@
 <script setup>
-/***---------------------Tab--------------------- */
+/**-----------------------------------imports----------------------------- */
+import placeFeaturedAggregateQuery from "@/graphql/query/aggregate/place-featured-aggregate.gql";
+import placesQuery from "@/graphql/query/places/list.gql";
 
-const tabs = [
+import useNotify from "@/use/notify";
+
+/*----------------------------Global Variables---------------------------*/
+const { notify } = useNotify();
+
+/**--------------------Tab data-------------------- */
+const tabs = ref([
   {
     name: "Weekly Recommended",
-    value: "WeeklyRecommended",
-    length: 12,
+    value: "WEEKLY_RECOMMENDED_PLACE",
+    length: 0,
   },
   {
     name: "Seasonal",
-    value: "Seasonal",
-    length: 12,
+    value: "SEASONAL_PLACE",
+    length: 0,
   },
   {
     name: "Recently Opened",
-    value: "RecentlyOpened",
-    length: 1,
+    value: "RECENTLY_OPENED_PLACE",
+    length: 0,
   },
-];
+]);
+
+const currentTabIndex = ref(0);
+/*...................Aggregate data fetch.............*/
+const orderBy = ref([{}]);
+const {
+  onResult: aggregateOnResult,
+  onError: aggregateOnError,
+  loading: aggregateLoading,
+  refetch: aggregateReFetch,
+} = authListQuery(placeFeaturedAggregateQuery, {}, orderBy, 0, 7);
+
+aggregateOnResult((result) => {
+  if (result.data) {
+    tabs.value.forEach((tab) => {
+      tab.length = result.data?.[tab.value]?.aggregate?.count;
+    });
+  }
+});
+aggregateOnError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+/***---------------------Places data fetch--------------------- */
+const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
+const places = ref([]);
+const limit = ref(6);
+const length = ref(0);
+const pageTracker = ref(1);
+const search = ref("");
+
+/***-------------------------Compute offset------------------------- */
+const offset = computed(() => {
+  return (pageTracker.value - 1) * limit.value;
+});
+const totalPage = computed(() => {
+  return Math.ceil(length.value / limit.value);
+});
+
+watch(currentTabIndex, () => {
+  pageTracker.value = 1;
+});
+
+/**-------------------Compute filter when tab change and search---------------- */
+const filter = computed(() => {
+  let query = {};
+  query._and = [
+    {
+      featured_places: {
+        featured_place_type: {
+          value: {
+            _eq: tabs.value[currentTabIndex.value].value,
+          },
+        },
+      },
+    },
+    {
+      name: {
+        _ilike: `%${search.value}%`,
+      },
+    },
+  ];
+  return query;
+});
+
+// TODO order by
+const { onResult, onError, loading, refetch } = authListQuery(
+  placesQuery,
+  filter,
+  sort,
+  offset,
+  limit
+);
+onResult((result) => {
+  if (result.data?.places) {
+    places.value = result.data.places;
+    length.value = result.data.placesAggregate?.aggregate?.count;
+  }
+});
+
+onError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
 
 definePageMeta({
-  layout: "home", 
+  layout: "home",
 });
 </script>
 <template>
@@ -35,6 +135,7 @@ definePageMeta({
             type="text"
             placeholder="Search here"
             trailing-icon="uil:search"
+            v-model="search"
           ></H-Textfield>
           <div class="border rounded-md py-3 px-4">
             <Icon
@@ -42,14 +143,13 @@ definePageMeta({
               class="text-2xl cursor-pointer z-30"
             />
           </div>
-          
         </div>
       </div>
     </div>
 
     <div class="pt-10"></div>
-    
-    <H-Tab :tabs="tabs">
+
+    <H-Tab :tabs="tabs" v-model:current-tab-index="currentTabIndex">
       <template v-slot:tab="{ tabData }">
         <div class="secondary-flex-row">
           <span class="text-xl">{{ tabData.tab?.name }}</span>
@@ -60,20 +160,65 @@ definePageMeta({
           >
         </div>
       </template>
-      
-      <template #WeeklyRecommended>
+
+      <template #WEEKLY_RECOMMENDED_PLACE>
         <div>
-          <PlacesFeaturedList />
+          <PlacesList
+            :places="places"
+            :total-page="totalPage"
+            v-model:model-value="pageTracker"
+          />
+          <HPaginate
+            :items-per-page="limit"
+            v-model:offset="offset"
+            :total-data="length"
+            v-model="pageTracker"
+            class="w-full pt-16"
+          ></HPaginate>
+          <HZeroResult
+            class="py-8"
+            v-if="!loading && length == 0"
+          ></HZeroResult>
         </div>
       </template>
-      <template #Seasonal>
+      <template #SEASONAL_PLACE>
         <div>
-          <PlacesFeaturedList />
+          <PlacesList
+            :places="places"
+            :total-page="totalPage"
+            v-model:model-value="pageTracker"
+          />
+          <HPaginate
+            :items-per-page="limit"
+            v-model:offset="offset"
+            :total-data="length"
+            v-model="pageTracker"
+            class="w-full pt-16"
+          ></HPaginate>
+          <HZeroResult
+            class="py-8"
+            v-if="!loading && length == 0"
+          ></HZeroResult>
         </div>
       </template>
-      <template #RecentlyOpened>
+      <template #RECENTLY_OPENED_PLACE>
         <div>
-          <PlacesFeaturedList />
+          <PlacesList
+            :places="places"
+            :total-page="totalPage"
+            v-model:model-value="pageTracker"
+          />
+          <HPaginate
+            :items-per-page="limit"
+            v-model:offset="offset"
+            :total-data="length"
+            v-model="pageTracker"
+            class="w-full pt-16"
+          ></HPaginate>
+          <HZeroResult
+            class="py-8"
+            v-if="!loading && length == 0"
+          ></HZeroResult>
         </div>
       </template>
     </H-Tab>

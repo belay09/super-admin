@@ -1,0 +1,5 @@
+mutation deletePlaceMedia($id: bigint!) {
+  deletePlaceMediasByPk(id: $id) {
+    id
+  }
+}

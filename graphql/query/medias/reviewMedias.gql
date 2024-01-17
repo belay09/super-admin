@@ -1,0 +1,18 @@
+query reviewMedias(
+  $filter: ReviewMediasBoolExp
+  $order: [ReviewMediasOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  reviewMedias(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    media {
+      url
+    }
+  }
+}

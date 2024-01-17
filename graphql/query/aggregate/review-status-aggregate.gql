@@ -1,0 +1,27 @@
+query reviewAggregate {
+  totalReviews: reviewsAggregate {
+    aggregate {
+      count
+    }
+  }
+  REMOVED: reviewsAggregate(where: { status: { _eq: REMOVED } }) {
+    aggregate {
+      count
+    }
+  }
+  DRAFT: reviewsAggregate(where: { status: { _eq: DRAFT } }) {
+    aggregate {
+      count
+    }
+  }
+  PENDING: reviewsAggregate(where: { status: { _eq: PENDING } }) {
+    aggregate {
+      count
+    }
+  }
+  PUBLISHED: reviewsAggregate(where: { status: { _eq: PUBLISHED } }) {
+    aggregate {
+      count
+    }
+  }
+}

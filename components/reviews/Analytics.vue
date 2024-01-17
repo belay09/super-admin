@@ -1,4 +1,12 @@
 <script setup>
+/**-------------------------Globals---------------------- */
+const props = defineProps({
+  review: {
+    type: Object,
+    required: true,
+  },
+});
+
 const series = ref([
   {
     name: "Score",
@@ -57,10 +65,10 @@ onMounted(() => {
           <!-- Description -->
           <div class="flex flex-col gap-4">
             <!-- Name and status -->
-            <p class="secondary-text">ETB 350</p>
+            <p class="secondary-text">ETB {{ review.price }}</p>
             <div class="flex gap-3">
               <!-- Name -->
-              <h1 class="text-xl font-medium">Chicken Burger</h1>
+              <h1 class="text-xl font-medium">{{ review.title }}</h1>
               <!-- status -->
               <div>
                 <div class="bg-sheger-green-100 px-2 py-0.5 rounded-md">

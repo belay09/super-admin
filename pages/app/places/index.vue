@@ -1,33 +1,135 @@
 <script setup>
-/***---------------------Tab--------------------- */
+/**-----------------------------------imports----------------------------- */
+import placeStatusAggregateQuery from "@/graphql/query/aggregate/place-status-aggregate.gql";
+import placesQuery from "@/graphql/query/places/list.gql";
 
-const tabs = [
+import useNotify from "@/use/notify";
+
+/*----------------------------Global Variables---------------------------*/
+
+/**--------------------Tab data-------------------- */
+const { notify } = useNotify();
+const tabs = ref([
   {
     name: "Active",
-    value: "Active",
-    length: 121,
+    value: "ACTIVE",
+    length: 0,
   },
   {
     name: "Pending",
-    value: "Pending",
-    length: 12,
+    value: "PENDING",
+    length: 0,
   },
   {
     name: "Draft",
-    value: "Draft",
-    length: 1,
+    value: "DRAFT",
+    length: 0,
   },
   {
     name: "Closed",
-    value: "Closed",
-    length: 9,
+    value: "CLOSED",
+    length: 0,
   },
   {
     name: "Suspended",
-    value: "Suspended",
-    length: 9,
+    value: "SUSPENDED",
+    length: 0,
   },
-];
+]);
+
+const currentTabIndex = ref(0);
+
+/*...................Aggregate data fetch.............*/
+
+const orderBy = ref([{}]);
+const {
+  onResult: aggregateOnResult,
+  onError: aggregateOnError,
+  loading: aggregateLoading,
+  refetch: aggregateReFetch,
+} = authListQuery(placeStatusAggregateQuery, {}, orderBy, 0, 7);
+
+aggregateOnResult((result) => {
+  if (result.data) {
+    tabs.value.forEach((tab) => {
+      tab.length = result.data?.[tab.value]?.aggregate?.count;
+    });
+  }
+});
+aggregateOnError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+/***---------------------Place data fetch--------------------- */
+
+const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
+const places = ref([]);
+const limit = ref(6);
+const length = ref(0);
+const pageTracker = ref(1);
+
+const search = ref("");
+
+/***-------------------------Compute offset------------------------- */
+
+const offset = computed(() => {
+  return (pageTracker.value - 1) * limit.value;
+});
+const totalPage = computed(() => {
+  return Math.ceil(length.value / limit.value);
+});
+
+watch(currentTabIndex, () => {
+  pageTracker.value = 1;
+});
+
+/**-------------------Compute filter when tab change and search---------------- */
+const filter = computed(() => {
+  let query = {};
+  query._and = [
+    {
+      status: {
+        _eq: tabs.value[currentTabIndex.value].value,
+      },
+    },
+    {
+      name: {
+        _ilike: `%${search.value}%`,
+      },
+    },
+  ];
+
+  return query;
+});
+
+// TODO order by
+const { onResult, onError, loading, refetch } = authListQuery(
+  placesQuery,
+  filter,
+  sort,
+  offset,
+  limit
+);
+onResult((result) => {
+  if (result.data?.places) {
+    places.value = result.data.places;
+    length.value = result.data.placesAggregate?.aggregate?.count;
+  }
+});
+
+onError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
 
 definePageMeta({
   layout: "home",
@@ -41,6 +143,7 @@ definePageMeta({
       <div class="flex absolute top-2 right-0">
         <div class="secondary-flex-row">
           <H-Textfield
+            v-model="search"
             name="search"
             type="text"
             placeholder="Search here"
@@ -52,7 +155,10 @@ definePageMeta({
               class="text-2xl cursor-pointer z-30"
             />
           </div>
-          <nuxt-link to="places/register-new-place" class="primary-button block bg-primary-600">
+          <nuxt-link
+            to="places/register-new-place"
+            class="primary-button block bg-primary-600"
+          >
             <Icon
               name="lucide:building-2"
               class="text-xl text-white"
@@ -65,7 +171,7 @@ definePageMeta({
     </div>
 
     <div class="pt-10"></div>
-    <H-Tab :tabs="tabs">
+    <H-Tab :tabs="tabs" v-model:current-tab-index="currentTabIndex">
       <template v-slot:tab="{ tabData }">
         <div class="secondary-flex-row">
           <span class="text-xl">{{ tabData.tab?.name }}</span>
@@ -76,29 +182,100 @@ definePageMeta({
           >
         </div>
       </template>
-      <template #Active>
+      <template #ACTIVE>
         <div>
-          <PlacesList />
+          <PlacesList
+            :places="places"
+            :total-page="totalPage"
+            v-model:model-value="pageTracker"
+          />
+          <HPaginate
+            :items-per-page="limit"
+            v-model:offset="offset"
+            :total-data="length"
+            v-model="pageTracker"
+            class="w-full pt-16"
+          ></HPaginate>
+          <HZeroResult
+            class="py-8"
+            v-if="!loading && length == 0"
+          ></HZeroResult>
         </div>
       </template>
-      <template #Pending>
+      <template #PENDING>
         <div>
-          <PlacesList />
+          <PlacesList
+            :places="places"
+            :total-page="totalPage"
+            v-model:model-value="pageTracker"
+          />
+          <HPaginate
+            :items-per-page="limit"
+            v-model:offset="offset"
+            :total-data="length"
+            class="w-full pt-16"
+          ></HPaginate>
+          <HZeroResult
+            class="py-8"
+            v-if="!loading && length == 0"
+          ></HZeroResult>
         </div>
       </template>
-      <template #Draft>
+      <template #DRAFT>
         <div>
-          <PlacesList />
+          <PlacesList
+            :places="places"
+            :total-page="totalPage"
+            v-model:model-value="pageTracker"
+          />
+          <HPaginate
+            :items-per-page="limit"
+            v-model:offset="offset"
+            :total-data="length"
+            class="w-full pt-16"
+          ></HPaginate>
+          <HZeroResult
+            class="py-8"
+            v-if="!loading && length == 0"
+          ></HZeroResult>
         </div>
       </template>
-      <template #Closed>
+      <template #CLOSED>
         <div>
-          <PlacesList />
+          <PlacesList
+            :places="places"
+            :total-page="totalPage"
+            v-model:model-value="pageTracker"
+          />
+          <HPaginate
+            :items-per-page="limit"
+            v-model:offset="offset"
+            :total-data="length"
+            class="w-full pt-16"
+          ></HPaginate>
+          <HZeroResult
+            class="py-8"
+            v-if="!loading && length == 0"
+          ></HZeroResult>
         </div>
       </template>
-      <template #Suspended>
+      <template #SUSPENDED>
         <div>
-          <PlacesList />
+          <PlacesList
+            :places="places"
+            :total-page="totalPage"
+            v-model:model-value="pageTracker"
+          />
+          <HPaginate
+            :items-per-page="limit"
+            v-model:offset="offset"
+            :total-data="length"
+            class="w-full pt-16"
+          ></HPaginate>
+          <HZeroResult
+            class="py-8"
+            v-if="!loading && length == 0"
+          ></HZeroResult>
         </div>
       </template>
     </H-Tab>

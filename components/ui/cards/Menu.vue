@@ -14,34 +14,6 @@ const menu = ref({
   media: {
     url: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D",
   },
-  price: 350,
-  timeToPrepare: 30,
-  menuTags: [
-    {
-      tag: {
-        id: 1,
-        title: "Spicy",
-      },
-    },
-    {
-      tag: {
-        id: 2,
-        title: "Vegan",
-      },
-    },
-    {
-      tag: {
-        id: 2,
-        title: "Cafe",
-      },
-    },
-    {
-      tag: {
-        id: 2,
-        title: "Breakfast",
-      },
-    },
-  ],
 });
 
 /*....................Window resize.............*/

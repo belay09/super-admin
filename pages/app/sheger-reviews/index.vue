@@ -1,28 +1,127 @@
 <script setup>
 /***---------------------Tab--------------------- */
 
-const tabs = [
+/**-----------------------------------imports----------------------------- */
+import reviewStatusAggregateQuery from "@/graphql/query/aggregate/review-status-aggregate.gql";
+import reviewsQuery from "@/graphql/query/reviews/list.gql";
+
+import useNotify from "@/use/notify";
+
+/*----------------------------Global Variables---------------------------*/
+const { notify } = useNotify();
+
+/**--------------------Tab data-------------------- */
+const tabs = ref([
   {
     name: "Published",
-    value: "Published",
+    value: "PUBLISHED",
     length: 75,
   },
   {
     name: "Pending",
-    value: "Pending",
+    value: "PENDING",
     length: 12,
   },
   {
     name: "Draft",
-    value: "Draft",
+    value: "DRAFT",
     length: 1,
   },
   {
     name: "Removed",
-    value: "Removed",
+    value: "REMOVED",
     length: 0,
   },
-];
+]);
+const currentTabIndex = ref(0);
+
+/*...................Aggregate data fetch.............*/
+
+const orderBy = ref([{}]);
+const {
+  onResult: aggregateOnResult,
+  onError: aggregateOnError,
+  loading: aggregateLoading,
+  refetch: aggregateReFetch,
+} = authListQuery(reviewStatusAggregateQuery, {}, orderBy, 0, 7);
+
+aggregateOnResult((result) => {
+  if (result.data) {
+    tabs.value.forEach((tab) => {
+      tab.length = result.data?.[tab.value]?.aggregate?.count;
+    });
+  }
+});
+aggregateOnError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+/***---------------------Place data fetch--------------------- */
+const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
+const reviews = ref([]);
+const limit = ref(6);
+const length = ref(0);
+const pageTracker = ref(1);
+const search = ref("");
+
+/***-------------------------Compute offset------------------------- */
+
+const offset = computed(() => {
+  return (pageTracker.value - 1) * limit.value;
+});
+const totalPage = computed(() => {
+  return Math.ceil(length.value / limit.value);
+});
+
+watch(currentTabIndex, () => {
+  pageTracker.value = 1;
+});
+
+/**-------------------Compute filter when tab change---------------- */
+const filter = computed(() => {
+  let query = {};
+  query._and = [
+    {
+      status: {
+        _eq: tabs.value[currentTabIndex.value].value,
+      },
+    },
+    {
+      title: {
+        _ilike: `%${search.value}%`,
+      },
+    },
+  ];
+  return query;
+});
+const { onResult, onError, loading, refetch } = authListQuery(
+  reviewsQuery,
+  filter,
+  sort,
+  offset,
+  limit
+);
+onResult((result) => {
+  if (result.data?.reviews) {
+    reviews.value = result.data.reviews;
+    length.value = result.data.reviewsAggregate?.aggregate?.count;
+  }
+});
+
+onError((error) => {
+  console.log(error, "reviews error");
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
 
 definePageMeta({
   layout: "home",
@@ -40,6 +139,7 @@ definePageMeta({
             type="text"
             placeholder="Search here"
             trailing-icon="uil:search"
+            v-model="search"
           ></H-Textfield>
           <div class="border rounded-md py-3 px-4">
             <Icon
@@ -47,7 +147,10 @@ definePageMeta({
               class="text-2xl cursor-pointer z-30"
             />
           </div>
-          <nuxt-link to="/app/sheger-reviews/post-new-review" class="primary-button block bg-primary-600">
+          <nuxt-link
+            to="/app/sheger-reviews/post-new-review"
+            class="primary-button block bg-primary-600"
+          >
             <Icon
               name="lucide:building-2"
               class="text-xl text-white"
@@ -71,24 +174,84 @@ definePageMeta({
           >
         </div>
       </template>
-      <template #Published>
+      <template #PUBLISHED>
         <div>
-          <ReviewsList />
+          <Reviews-List
+            :reviews="reviews"
+            :total-page="totalPage"
+            v-model:model-value="pageTracker"
+          />
+          <HPaginate
+            :items-per-page="limit"
+            v-model:offset="offset"
+            :total-data="length"
+            v-model="pageTracker"
+            class="w-full pt-16"
+          ></HPaginate>
+          <HZeroResult
+            class="py-8"
+            v-if="!loading && length == 0"
+          ></HZeroResult>
         </div>
       </template>
-      <template #Pending>
+      <template #PENDING>
         <div>
-          <ReviewsList />
+          <Reviews-List
+            :reviews="reviews"
+            :total-page="totalPage"
+            v-model:model-value="pageTracker"
+          />
+          <HPaginate
+            :items-per-page="limit"
+            v-model:offset="offset"
+            :total-data="length"
+            v-model="pageTracker"
+            class="w-full pt-16"
+          ></HPaginate>
+          <HZeroResult
+            class="py-8"
+            v-if="!loading && length == 0"
+          ></HZeroResult>
         </div>
       </template>
-      <template #Draft>
+      <template #DRAFT>
         <div>
-          <ReviewsList />
+          <Reviews-List
+            :reviews="reviews"
+            :total-page="totalPage"
+            v-model:model-value="pageTracker"
+          />
+          <HPaginate
+            :items-per-page="limit"
+            v-model:offset="offset"
+            :total-data="length"
+            v-model="pageTracker"
+            class="w-full pt-16"
+          ></HPaginate>
+          <HZeroResult
+            class="py-8"
+            v-if="!loading && length == 0"
+          ></HZeroResult>
         </div>
       </template>
-      <template #Removed>
+      <template #REMOVED>
         <div>
-          <ReviewsList />
+          <Reviews-List
+            :reviews="reviews"
+            :total-page="totalPage"
+            v-model:model-value="pageTracker"
+          />
+          <HPaginate
+            :items-per-page="limit"
+            v-model:offset="offset"
+            :total-data="length"
+            v-model="pageTracker"
+            class="w-full pt-16"
+          ></HPaginate>
+          <HZeroResult
+            class="py-8"
+            v-if="!loading && length == 0"
+          ></HZeroResult>
         </div>
       </template>
     </H-Tab>

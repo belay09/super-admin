@@ -80,7 +80,7 @@ const clickRow = (item) => {
       <p class="text-xl font-medium text-sheger-gray-100">
         Showing 9/12 entries
       </p>
-      <H-Limit></H-Limit>
+      <H-Page></H-Page>
     </div>
 
     <div class="">

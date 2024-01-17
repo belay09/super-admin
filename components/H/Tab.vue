@@ -41,7 +41,8 @@ function changeTab(index) {
 
 const moveIndicator = () => {
   const element = document.getElementById(`tab-${selectedTab.value}`);
-  const rect = element.getBoundingClientRect();
+  if (!element) return;
+  let rect = element.getBoundingClientRect();
   const position = rect.left + window.pageXOffset;
 
   if (indicatorContainer.value) {

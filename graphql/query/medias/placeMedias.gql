@@ -5,6 +5,7 @@ query placeMedias(
   $offset: Int
 ) {
   placeMedias(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+    id
     media {
       url
     }

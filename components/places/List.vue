@@ -1,29 +1,46 @@
 <script setup>
-defineProps({
-  featured: {
-    type: Boolean,
-    default: false,
+const emit = defineEmits(["update:modelValue"]);
+const props = defineProps({
+  modelValue: {
+    type: Number,
+    default: () => 1,
   },
+  places: {
+    type: Array,
+    required: true,
+    default: () => [],
+  },
+  totalPage: {
+    type: Number,
+    required: true,
+    default: () => 1,
+  },
+});
+
+const pageTracker = ref(props.modelValue);
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    pageTracker.value = newVal;
+  }
+);
+watch(pageTracker, (newVal) => {
+  emit("update:modelValue", newVal);
 });
 </script>
 <template>
   <div class="flex flex-col space-y-8 py-6">
     <div class="flex items-center justify-between">
-      <p class="text-xl font-medium">Showing 9/12</p>
-      <H-Limit></H-Limit>
+      <p class="text-xl font-medium">
+        Showing {{ totalPage > 0 ? pageTracker : 0 }} /{{ totalPage }}
+      </p>
+      <H-Page
+        v-model:model-value="pageTracker"
+        :total-page="totalPage"
+      ></H-Page>
     </div>
-    <div class="grid grid-cols-3 gap-4 w-[85%]">
-      <UiCardsPlace />
-      <UiCardsPlace />
-      <UiCardsPlace />
-      <UiCardsPlace />
-      <UiCardsPlace />
+    <div class="grid grid-cols-3 w-[85%]">
+      <Ui-Cards-Place v-for="place in places" :place="place" :key="place.id" />
     </div>
-    <HPaginate
-      v-modeloffset="0"
-      :items-per-page="8"
-      :total-data="100"
-      class="w-full pt-16"
-    ></HPaginate>
   </div>
 </template>

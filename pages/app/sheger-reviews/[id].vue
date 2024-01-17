@@ -1,41 +1,34 @@
 <script setup>
-import ApexCharts from "apexcharts";
+import getReviewQuery from "@/graphql/query/reviews/item.gql";
+import useNotify from "@/use/notify";
 
-const series = [40];
-const chartOptions = {
-  chart: {
-    type: "radialBar",
-    foreColor: "#00ff00",
-    width: 380,
-    height: 380,
-    toolbar: {
-      show: false,
-    },
+/**----------------------------Globals--------------------------- */
+const { notify } = useNotify();
+const route = useRoute();
 
-    sparkline: {
-      enabled: true,
-    },
-  },
-  plotOptions: {
-    radialBar: {
-      hollow: {
-        size: "70%",
-      },
-    },
-    bar: {
-      borderRadius: 10,
-      borderRadiusApplication: "around",
-    },
-  },
-  fill: {
-    type: "solid",
-    colors: ["#00ff00"],
-  },
-  stroke: {
-    lineCap: "round",
-  },
-  labels: ["40"],
-};
+/*...................Review detail data fetch.............*/
+const review = ref(null);
+
+const {
+  onResult: reviewOnResult,
+  onError: reviewOnError,
+  loading: reviewLoading,
+} = authItemQuery(getReviewQuery, route.params.id);
+
+reviewOnResult((result) => {
+  if (result.data?.reviewsByPk) {
+    review.value = result.data.reviewsByPk;
+  }
+});
+
+reviewOnError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-green-300",
+  });
+});
 
 const tabs = [
   {
@@ -55,14 +48,14 @@ definePageMeta({
 </script>
 
 <template>
-  <div>
+  <div v-if="review">
     <!-- Top -->
-    <Reviews-Analytics />
+    <Reviews-Analytics :review="review" />
     <!-- Tab -->
-    <div class="py-8">
+    <div v-if="review" class="py-8">
       <H-Tab :tabs="tabs" tab-class="text-xl " tab-container-class="gap-x-12">
         <template #overview>
-          <div class="py-8"><Reviews-Overview /></div>
+          <div class="py-8"><Reviews-Overview :review="review" /></div>
         </template>
 
         <template #reviews>

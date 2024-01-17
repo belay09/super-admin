@@ -3,15 +3,13 @@ query getPlaces(
   $order: [PlacesOrderBy!]
   $limit: Int
   $offset: Int
-  $include: Boolean = false
 ) {
   places(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
     name
     id
 
-    # is Bookmarked and liked
-    is_place_book_marked @include(if: $include)
-    is_place_liked @include(if: $include)
+    status
+    type
 
     # place tags
     placeTags {
@@ -38,6 +36,13 @@ query getPlaces(
     placeReviewsAggregate {
       aggregate {
         count
+      }
+    }
+
+    # featured places
+    featured_places {
+      featured_place_type {
+        value
       }
     }
   }
