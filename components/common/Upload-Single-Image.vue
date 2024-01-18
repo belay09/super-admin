@@ -44,6 +44,7 @@ const {
 
 uploadDone((result) => {
   isUploaded.value = true;
+  isError.value = false;
   emit("update:modelValue", result.data?.uploadFiles.fileUrls[0]);
 });
 
@@ -58,6 +59,7 @@ uploadError((error) => {
 });
 
 function uploadImage(image) {
+  isError.value = false;
   showUploadImageModal.value = false;
   base64Image.value = image;
   uploadMutate({ base64Image: image, folder: "shegergebeta" + props.folder });
@@ -97,7 +99,7 @@ const showUploadImageModal = ref(false);
         <p>Upload</p>
       </button>
     </div>
-    <div v-if="isImageSelected" class="flex items-center space-x-6">
+    <div v-if="isImageSelected && !isError" class="flex items-center space-x-6">
       <img
         class="w-16 h-16 object-center"
         :src="selectedImage"

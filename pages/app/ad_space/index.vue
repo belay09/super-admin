@@ -19,6 +19,12 @@ function showPlaceEdit(id) {
 }
 
 const makeRefetch = ref(false);
+function changeRefetch() {
+  makeRefetch.value = true;
+  setTimeout(() => {
+    makeRefetch.value = false;
+  }, 100);
+}
 </script>
 
 <template>
@@ -26,8 +32,12 @@ const makeRefetch = ref(false);
     <div class="grid grid-cols-3 items-start">
       <!-- -------------------Add ad space-------------------- -->
       <div class="col-span-1 pr-10 border-r">
-        <AdSpace-Add v-if="!showEditPlaceAd"></AdSpace-Add>
-        <AdSpace-Edit v-else :id="placeAdId"></AdSpace-Edit>
+        <AdSpace-Add @add="changeRefetch" v-if="!showEditPlaceAd"></AdSpace-Add>
+        <AdSpace-Edit
+          v-else
+          :id="placeAdId"
+          @edit="changeRefetch"
+        ></AdSpace-Edit>
       </div>
 
       <!-- -------------------Ad space list-------------------- -->

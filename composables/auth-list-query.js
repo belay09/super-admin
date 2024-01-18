@@ -1,6 +1,5 @@
 const xHasuraRole = useCookie("x-hasura-role");
 export default (query, filter, order, offset, limit) => {
-  console.log(filter, 'filter');
   const { onResult, onError, loading, refetch } = useQuery(
     query,
     () => ({
@@ -12,11 +11,11 @@ export default (query, filter, order, offset, limit) => {
     () => ({
       fetchPolicy: "network-only",
       clientId: "authClient",
-      context:{
-        headers:{
-          "x-hasura-role":xHasuraRole.value
-        }
-      }
+      context: {
+        headers: {
+          "x-hasura-role": xHasuraRole.value,
+        },
+      },
     })
   );
 
@@ -25,6 +24,5 @@ export default (query, filter, order, offset, limit) => {
     onError,
     loading,
     refetch,
-  
   };
 };

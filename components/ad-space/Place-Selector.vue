@@ -15,7 +15,7 @@ const { notify } = useNotify();
 /***---------------------Place data fetch--------------------- */
 const places = ref([]);
 const place = ref(props.modelValue);
-const limit = ref(1000);
+const limit = ref(100);
 const length = ref(0);
 const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
 const offset = ref(0);

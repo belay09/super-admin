@@ -71,7 +71,7 @@ const handleAdd = handleSubmit(() => {
 });
 
 onDone(() => {
-  location.reload();
+  emit("add");
   notify({
     title: "Ad space added successfully",
     description: "Ad space added successfully",

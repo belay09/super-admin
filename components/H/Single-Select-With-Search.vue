@@ -148,7 +148,7 @@ watch(
   () => props.modelValue,
   (newVal) => {
     if (props.returnObject) {
-      inputValue.value = newVal?.id;
+      inputValue.value = newVal.id;
       selectedItem.value = newVal;
     } else {
       inputValue.value = newVal;
@@ -166,7 +166,6 @@ watch(
     );
 
     if (tempSelectedItem) {
-      inputValue.value = selectedItem.id;
       selectedItem.value = tempSelectedItem;
       placeHolder.value = selectedItem.name;
     }

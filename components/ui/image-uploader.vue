@@ -1,6 +1,6 @@
 <script setup>
 import { useAuthStore } from "@/stores/auth.js";
-import UploadProfilePictureMutation from "@/graphql/mutations/file-upload/upload-profile-picture.gql";
+import UploadProfilePictureMutation from "@/graphql/mutations/file-upload/upload.gql";
 import useNotify from "@/use/notify";
 
 defineProps({

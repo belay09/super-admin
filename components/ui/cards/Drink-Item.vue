@@ -1,40 +1,39 @@
 <script setup>
-import deletePlaceAdMutation from "@/graphql/mutations/place-ads/delete.gql";
+import deleteDrinkMutation from "@/graphql/mutations/drinks/delete.gql";
 import useNotify from "@/use/notify";
 
 /**-------------------------Globals------------------------- */
 
 const { notify } = useNotify();
-const emit = defineEmits(["onDelete", "edit"]);
+const emit = defineEmits(["onDeleted", "edit"]);
 const props = defineProps({
-  placeAd: {
+  drink: {
     type: Object,
     required: true,
   },
 });
 
 /**------------------------Handle delete--------------------- */
-const { mutate, onDone, onError, loading } = authMutation(
-  deletePlaceAdMutation
-);
+const { mutate, onDone, onError, loading } = authMutation(deleteDrinkMutation);
 
 function handleDelete() {
   mutate({
-    id: props.placeAd.id,
+    id: props.drink.id,
   });
 }
 onDone((result) => {
   showConfirmationModal.value = false;
-  emit("onDelete");
+  emit("onDeleted");
   notify({
     title: "Success",
-    description: "Place  deleted successfully",
+    description: "Drink  deleted successfully",
     type: "success",
     borderClass: "border-l-8 border-green-300",
   });
 });
 
 onError((error) => {
+  z;
   showConfirmationModal.value = false;
   notify({
     title: "Error",
@@ -52,57 +51,29 @@ const showConfirmationModal = ref(false);
   <ModalsConfirmation
     @confirm="handleDelete"
     v-model="showConfirmationModal"
-    title="Delete AD"
-    sure-question="Are you sure you want to delete this Ad ?"
-    description="This action is irreversible and will permanently remove the advertisement and all associated data."
+    title="Delete Sponsored Drink"
+    sure-question="Are you sure you want to delete this drink ?"
+    description="This action is irreversible and will permanently remove the drink and all associated data."
   ></ModalsConfirmation>
   <div class="rounded-lg border">
-    <!-- -----------------Image section------------------------ -->
-
-    <img
-      :src="placeAd.media?.url"
-      alt="ad-space-default image"
-      class="w-full object-cover object-center rounded-t-lg h-32"
-    />
-
     <!-- --------------------Card body------------------------ -->
-    <div class="flex flex-col space-y-4 py-4 px-5">
+    <div class="flex items-center space-x-5 px-5">
+      <!-- ------------------Image section -->
+      <img
+        :src="drink.media?.url"
+        alt="ad-space-default image"
+        class="w-[40%] object-cover object-center rounded-t-lg h-36 py-4"
+      />
+
       <!-- ------------------Place name and logo------------------ -->
-      <div class="secondary-flex-row">
-        <div>
-          <img
-            class="w-8 h-8 object-cover"
-            src="/images/temporary/default-place-logo.png"
-            alt="place logo"
-          />
-        </div>
-        <p class="text-xl font-medium">{{ placeAd.place?.name }}</p>
-      </div>
-      <!-- -------------------Place type----------------------- -->
-      <p
-        class="bg-primary-100 px-4 rounded-md self-start text-primary-600 capitalize"
-      >
-        {{ placeAd.place?.type.toLowerCase() }}
-      </p>
-
-      <!-- ------------------Slogan title------------ -->
-      <p class="text-xl font-medium">{{ placeAd.slogan }}</p>
-
-      <!-- ------------------Description------------- -->
-      <p class="secondary-text">
-        {{ placeAd.description }}
-      </p>
-
-      <!-- -----------------Date------------------- -->
-
-      <div class="primary-flex-row">
-        <Icon class="text-xl" name="uil:calendar-alt"></Icon>
-        <p class="secondary-text">{{ placeAd.endDate }}</p>
+      <div class="flex flex-col space-y-4 w-[60%]">
+        <p class="text-xl font-medium">{{ drink.title }}</p>
+        <p class="">{{ drink.description }}</p>
+        <p class="">ETB {{ drink.price }}</p>
       </div>
     </div>
 
     <!-- -------------------Card footer------------------------ -->
-
     <div class="grid grid-cols-2 px-10 py-4 gap-x-4 border-t">
       <!-- ------------------Edit ad space---------------- -->
       <button
