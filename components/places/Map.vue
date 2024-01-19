@@ -23,7 +23,9 @@ const props = defineProps({
 /*-----------------------------------Map data---------------------------- */
 
 const map = ref(null);
-
+console.log('props center', props.center)
+console.log('props zoom', props.zoom)
+console.log('props place locations', props.placeLocations)
 const openDirectionOnMap = async (coordinates) => {
   let currentUserLocation;
   if (window.localStorage.getItem("currentLocation")) {

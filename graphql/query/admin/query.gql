@@ -1,0 +1,24 @@
+query MyQuery {
+  usersUsers(
+    where: {userRoles: {_or: [{userRole: {value: {_eq: "SHEGERADMIN"}}}, {userRole: {value: {_eq: "ENCODER"}}}]}}
+  ) {
+    fullName
+    id
+    status
+    createdAt
+    email
+    userRoles {
+      userRole {
+        value
+      }
+      
+    }
+  }
+  usersUsersAggregate(
+    where: {userRoles: {_or: [{userRole: {value: {_eq: "SHEGERADMIN"}}}, {userRole: {value: {_eq: "ENCODER"}}}]}}
+  ) {
+    aggregate {
+      count
+    }
+  }
+}

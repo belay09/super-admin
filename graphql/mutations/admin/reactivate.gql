@@ -1,0 +1,10 @@
+mutation MyMutation($_eq: bigint!) {
+  updatePlaceUsers(where: {userId: {_eq: $_eq}}, _set: {status: true})
+   {
+    returning {
+      user {
+        fullName
+      }
+    }
+  }
+}

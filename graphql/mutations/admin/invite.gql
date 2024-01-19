@@ -1,0 +1,15 @@
+mutation MyMutation($email: String!,$family_name:String!,$GivenName: String!,$MiddleName:String!, $phone_number: String!, $place_id: Int!, $role: String!) {
+  invite_place_admin(
+    email: $email
+    GivenName: $GivenName
+    FamilyName: $family_name
+    MiddleName: $MiddleName
+    phone_number: $phone_number
+    place_id: $place_id
+    role: $role
+    invitation_uri: "https://preview.places.shegergebeta.com/password"
+    redirect_uri: "https://preview.places.shegergebeta.com/"
+  ) {
+    success
+  }
+}
