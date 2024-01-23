@@ -166,7 +166,7 @@ onError((error) => {
       class="primary-button secondary-border py-3 mt-4"
     >
       <span>Add</span>
-      <Icon name="heroicons:plus-small-solid" class="text-2 xl"></Icon>
+      <Icon name="heroicons:plus-small-solid" class="text-2xl"></Icon>
       <Icon
         v-if="loading"
         name="eos-icons:bubble-loading"

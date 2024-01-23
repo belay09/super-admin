@@ -1,0 +1,5 @@
+mutation editCategory($input: BasicsCategoriesSetInput!, $id: bigint!) {
+  updateBasicsCategoriesByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+}

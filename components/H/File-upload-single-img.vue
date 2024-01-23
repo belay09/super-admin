@@ -76,6 +76,17 @@ const props = defineProps({
     required: false,
   },
 
+  allowedTypes: {
+    type: Array,
+    default: [
+      "image/jpeg",
+      "image/png",
+      "image/svg+xml",
+      "image/gif",
+      "application/pdf",
+    ],
+  },
+
   text: { type: String },
   fileTypes: { type: String },
   wrapperClass: String,
@@ -121,6 +132,12 @@ const onFileSelect = async (event) => {
     fileInfo.value.name = file.name;
     fileInfo.value.size = getFileSize(file.size);
     fileInfo.value.type = file.type;
+
+    if (props.allowedTypes.includes(file.type) == false) {
+      errorMessage2.value = "Please upload a valid file type";
+      return;
+    }
+
     if (props.fileType == "pdf") {
       if (file.type != "application/pdf") {
         errorMessage2.value = "Please upload a pdf file";
@@ -147,8 +164,8 @@ const onFileSelect = async (event) => {
 function createImage(file) {
   var reader = new FileReader();
   reader.onload = (e) => {
+    base64String.value = reader.result; // This is the base64-encoded string
     base64Files.value[0] = e.target.result;
-    // props.modelValue = base64Files.value[0];
     if (props.fileType != "image") {
       type.value = getMimeType(e.target.result, "image/jpeg");
       emit("upload", base64Files.value[0]);
@@ -194,19 +211,7 @@ function getMimeType(file, fallback = null) {
       return fallback;
   }
 }
-function change({ coordinates, image, visibleArea, canvas }) {
-  canvas.toBlob((blob) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      base64String.value = reader.result; // This is the base64-encoded string
-      // You can now do something with the base64 string, like uploading it to a server or using it in your application.
-    };
-
-    reader.readAsDataURL(blob);
-    // Do something with blob: upload to a server, download and etc.
-  }, type.value);
-}
-const crop = () => {
+const uploadFile = () => {
   openModal.value = false;
   emit("upload", base64String.value);
 };
@@ -217,27 +222,29 @@ const crop = () => {
     :model-value="openModal && fileType == 'image'"
   >
     <template #content>
-      <cropper
-        :class="['h-[600px] w-[600px] bg-slate-100', props.cropperClass]"
-        :src="files[0].objectURL"
-        :stencil-component="
-          stencilComponent == 'rectangle' ? RectangleStencil : CircleStencil
-        "
-        @change="change"
-      />
+      <div class="border border-dashed p-6 rounded-lg">
+        <div class="flex justify-end">
+          <button @click="openModal = false">
+            <Icon name="uil:trash-alt" class="text-2xl text-gray-400" />
+          </button>
+        </div>
+        <div class="flex items-center justify-center flex-col">
+          <img
+            class="w-16 h-16 object-center"
+            :src="files[0].objectURL"
+            alt="My Image"
+          />
+
+          <p class="text-sm text-gray-600 py-4">{{ files[0].name }}</p>
+        </div>
+      </div>
+
       <div class="flex justify-center space-x-10 py-5">
         <button
-          @click="crop"
-          class="flex items-center space-x-2 py-2 px-5 bg-primary text-primary-600 rounded-md shadow-full hover:shadow-lg duration-200"
+          @click="uploadFile"
+          class="flex items-center justify-center space-x-2 py-2 px-5 w-full bg-primary-600 text-white rounded-md"
         >
-          <Icon name="material-symbols:crop" class="text-2xl"></Icon>
-          <p>Crop and Upload</p>
-        </button>
-        <button
-          @click="openModal = false"
-          class="shadow-full hover:shadow-lg duration-200 flex items-center space-x-1 py-2 px-5 text-primary bg-gray-100 ring-1 ring-gray-300 rounded-md"
-        >
-          <p>Cancel</p>
+          Add Icon
         </button>
       </div>
     </template>
@@ -322,16 +329,14 @@ const crop = () => {
     >
       <Icon name="iconoir:add-media-image" class="text-4xl dark:text-white" />
       <p class="px-5 w-full text-center text-new-tale pt-3">
-        <span @click="open" class="cursor-pointer text-blue-600"
-          >upload Image
-        </span>
         <span class="text-secondary-text dark:text-white">
-          or Drag and Drop</span
-        >
+          Drag and drop here or
+        </span>
+        <span @click="open" class="cursor-pointer text-primary-600"
+          >Browse
+        </span>
       </p>
-      <p
-        class="font-poppins font-thin text-sm text-secondary-text dark:text-white"
-      >
+      <p class="font-poppins font-thin text-sm text-gray-800">
         {{ fileTypesMessage }}
       </p>
     </div>

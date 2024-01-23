@@ -143,7 +143,7 @@ watch(
 
 onClickOutside(singleSelect, (e) => (show.value = false));
 
-onMounted(() => { 
+onMounted(() => {
   if (props.returnObject) {
     inputValue.value = props.modelValue?.id;
     selectedItem.value = props.modelValue;

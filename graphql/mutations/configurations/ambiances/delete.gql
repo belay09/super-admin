@@ -1,0 +1,5 @@
+mutation deleteAmbiance($id: bigint!) {
+  deleteBasicsAmbiancesByPk(id: $id) {
+    id
+  }
+}

@@ -5,13 +5,10 @@ const contents = ref([
     id: "categories",
   },
   {
-    name: "Place Tag",
-    id: "placeTag",
+    name: "Tags",
+    id: "tag",
   },
-  {
-    name: "Menu Tag",
-    id: "menuTag",
-  },
+
   {
     name: "Ambiance",
     id: "ambiance",
@@ -118,14 +115,21 @@ definePageMeta({
 
     <div class="col-span-4">
       <div id="content" class="pb-44">
-        <!-- Use Nuxt dynamic route to display content -->
-        <div
-          v-for="(content, index) in contents"
-          :key="index"
-          :id="'content-' + index"
-          class="content my-6"
-        >
-          <Configurations-AddTag :content="content" />
+        <!-- ------------------Categories section---------------- -->
+        <div :id="'content-' + 0" class="content my-6">
+          <Configurations-Categories />
+        </div>
+        <div :id="'content-' + 1" class="content my-6">
+          <Configurations-Tags />
+        </div>
+        <!-- ------------------Ambiance section---------------- -->
+        <div :id="'content-' + 2" class="content my-6">
+          <Configurations-Ambiances />
+        </div>
+
+        <!-- ------------------Amenities section---------------- -->
+        <div :id="'content-' + 3" class="content my-6">
+          <Configurations-Amenities />
         </div>
       </div>
     </div>

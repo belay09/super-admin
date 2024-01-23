@@ -1,0 +1,19 @@
+query getAmenities(
+  $filter: BasicsAmenitiesBoolExp
+  $order: [BasicsAmenitiesOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  basicsAmenities(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    title
+    icon {
+      lightIconUrl
+    }
+  }
+}

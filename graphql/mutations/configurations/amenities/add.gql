@@ -1,0 +1,5 @@
+mutation addAmenity($input: BasicsAmenitiesInsertInput!) {
+  insertBasicsAmenitiesOne(object: $input) {
+    id
+  }
+}

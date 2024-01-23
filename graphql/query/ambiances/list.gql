@@ -1,0 +1,16 @@
+query getAmbiances(
+  $filter: BasicsAmbiancesBoolExp
+  $order: [BasicsAmbiancesOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  basicsAmbiances(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    title
+  }
+}

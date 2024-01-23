@@ -1,0 +1,5 @@
+mutation addAmbiance($input: BasicsAmbiancesInsertInput!) {
+  insertBasicsAmbiancesOne(object: $input) {
+    id
+  }
+}

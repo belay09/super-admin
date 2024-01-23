@@ -1,19 +1,21 @@
 <script setup>
-const svgContent = ref(null);
-import axios from "axios";
-onMounted(() => {
-  axios
-    .get("https://upload.wikimedia.org/wikipedia/commons/0/02/SVG_logo.svg")
-    .then((response) => {
-      svgContent.value = response.data;
-    })
-    .catch((error) => {
-    });
-});
+const url = ref(
+  "https://upload.wikimedia.org/wikipedia/commons/0/02/SVG_logo.svg"
+);
+const showUploadImageModal = ref(false);
 </script>
 
 <template>
-  <div class="w-12 fill-green-500" v-html="svgContent" />
+  <!-- <HFileUploadSingleImg name="upload" @upload="uploadImage" :loading="false" /> -->
+
+  <CommonUploadSvg
+    v-if="showUploadImageModal"
+    folder=""
+    v-model:model-value="url"
+    v-model:showModal="showUploadImageModal"
+  ></CommonUploadSvg>
+  <CommonSVG :url="url" default="uil:trash"></CommonSVG>
+  <button @click="showUploadImageModal = true" class="border p-6">click</button>
 </template>
 
 <style>

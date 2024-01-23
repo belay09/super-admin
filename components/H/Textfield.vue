@@ -78,6 +78,11 @@ const props = defineProps({
     required: false,
     default: "",
   },
+  iconLeadingClass: {
+    type: String,
+    required: false,
+    default: "",
+  },
 
   /*-------------------- Trailing icon-----------------------*/
   trailingIcon: {
@@ -119,6 +124,13 @@ const props = defineProps({
   /*------------- Input field class--------------*/
 
   fieldClass: {
+    type: String,
+    required: false,
+    default: "",
+  },
+
+  /***-----------------------Error class----------------------- */
+  errorClass: {
     type: String,
     required: false,
     default: "",
@@ -216,6 +228,7 @@ watch(
           props.trailingIcon ? 'pr-7' : '',
           props.type == 'password' ? 'pr-7' : '',
           props.leadingIcon ? 'pl-14' : '',
+          props.iconLeadingClass ? props.iconLeadingClass : '',
         ]"
         class="secondary-border block w-full rounded-md font-body text-base placeholder-gray-500 focus:outline-none py-3 focus:border-gray-800 focus:ring-0"
         :placeholder="props.placeholder"
@@ -254,7 +267,7 @@ watch(
     </div>
     <p
       class="col-span-5 mt-1 font-body text-sm text-red-600 duration-300 transition-all"
-      :class="errorMessage ? 'h-5' : 'h-0'"
+      :class="[errorMessage ? 'h-5' : 'h-0', errorClass]"
       id="email-error"
       :visible="errorMessage"
     >
