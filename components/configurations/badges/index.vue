@@ -1,15 +1,15 @@
 <script setup>
-const showEditDrink = ref(false);
-const drinkId = ref(null);
+const showEditBadge = ref(false);
+const recommendationId = ref(null);
 function showDrinkEdit(id) {
-  drinkId.value = id;
-  if (showEditDrink.value) {
-    showEditDrink.value = false;
+  recommendationId.value = id;
+  if (showEditBadge.value) {
+    showEditBadge.value = false;
     setTimeout(() => {
-      showEditDrink.value = true;
+      showEditBadge.value = true;
     }, 400);
   } else {
-    showEditDrink.value = true;
+    showEditBadge.value = true;
   }
 }
 
@@ -21,31 +21,27 @@ function changeRefetch() {
     makeRefetch.value = false;
   }, 100);
 }
-
-definePageMeta({
-  layout: "home",
-});
 </script>
 
 <template>
-  <div class="w-full pl-10 pr-16 py-6">
-    <div class="grid grid-cols-3 items-start">
+  <div class="w-full py-6">
+    <div class="grid grid-cols-5 items-start">
       <!-- -------------------Drinks add and edit-------------------- -->
-      <div class="col-span-1 pr-10 border-r">
-        <SponsoredDrinks-Add
-          v-if="!showEditDrink"
+      <div class="col-span-2 pr-10 border-r">
+        <Configurations-Badges-Add
+          v-if="!showEditBadge"
           @add="changeRefetch"
-        ></SponsoredDrinks-Add>
-        <SponsoredDrinks-Edit
+        ></Configurations-Badges-Add>
+        <Configurations-Badges-Edit
           v-else
-          :id="drinkId"
+          :id="recommendationId"
           @edit="changeRefetch"
-        ></SponsoredDrinks-Edit>
+        ></Configurations-Badges-Edit>
 
         <!-- ----------------------Add new button------------------- -->
         <button
-          v-if="showEditDrink"
-          @click="showEditDrink = false"
+          v-if="showEditBadge"
+          @click="showEditBadge = false"
           class="primary-button bg-primary-600 text-white secondary-border py-3 mt-4 w-full"
         >
           <span>Add New</span>
@@ -54,10 +50,13 @@ definePageMeta({
       </div>
 
       <!-- -------------------Drinks list-------------------- -->
-      <SponsoredDrinks-List
-        :make-refetch="makeRefetch"
-        @edit="showDrinkEdit"
-      ></SponsoredDrinks-List>
+
+      <div class="col-span-3 pl-10">
+        <Configurations-Badges-List
+          :make-refetch="makeRefetch"
+          @edit="showDrinkEdit"
+        ></Configurations-Badges-List>
+      </div>
     </div>
   </div>
 </template>

@@ -1,0 +1,7 @@
+mutation addBasicShegerRecommendation(
+  $input: BasicsShegerRecommendationsInsertInput!
+) {
+  insertBasicsShegerRecommendationsOne(object: $input) {
+    id
+  }
+}

@@ -1,0 +1,11 @@
+query getShegerRecommendation($id: bigint!) {
+  basicsShegerRecommendationsByPk(id: $id) {
+    id
+    badge
+    title
+    description
+    shegerRecommendationBadge {
+      url
+    }
+  }
+}

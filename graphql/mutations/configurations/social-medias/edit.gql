@@ -1,0 +1,5 @@
+mutation editSocialMedia($input: BasicsSocialMediasSetInput!, $id: bigint!) {
+  updateBasicsSocialMediasByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+}

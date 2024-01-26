@@ -1,0 +1,5 @@
+mutation deleteSocialMedia($id: bigint!) {
+  deleteBasicsSocialMediasByPk(id: $id) {
+    id
+  }
+}

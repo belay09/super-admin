@@ -1,0 +1,21 @@
+query getSocialMedias(
+  $filter: BasicsSocialMediasBoolExp
+  $order: [BasicsSocialMediasOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  basicsSocialMedias(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    icon {
+      lightIconUrl
+    }
+    title: name
+    order
+    url
+  }
+}

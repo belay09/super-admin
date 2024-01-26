@@ -1,0 +1,5 @@
+mutation addSocialMedia($input: BasicsSocialMediasInsertInput!) {
+  insertBasicsSocialMediasOne(object: $input) {
+    id
+  }
+}

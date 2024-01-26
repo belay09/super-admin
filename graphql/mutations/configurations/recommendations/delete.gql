@@ -1,0 +1,5 @@
+mutation deleteRecommendation($id: bigint!) {
+  deleteBasicsShegerRecommendationsByPk(id: $id) {
+    id
+  }
+}
