@@ -1,0 +1,5 @@
+mutation addArea($input: BasicsAreasInsertInput!) {
+  insertBasicsAreasOne(object: $input) {
+    id
+  }
+}

@@ -1,0 +1,22 @@
+query getLocations(
+  $filter: BasicsCitiesBoolExp
+  $order: [BasicsCitiesOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  basicsCities(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    name
+  }
+
+  basicsCitiesAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
+}

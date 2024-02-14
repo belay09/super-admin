@@ -150,6 +150,15 @@ definePageMeta({
         >
           <Configurations-Badges />
         </div>
+
+        <!-- ------------------Location---------------- -->
+        <div
+          v-else-if="activeIndex == 6"
+          :id="'content-' + 6"
+          class="content my-6"
+        >
+          <Configurations-Locations />
+        </div>
       </div>
     </div>
   </div>

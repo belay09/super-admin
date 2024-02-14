@@ -12,4 +12,10 @@ query getLocations(
       name
     }
   }
+
+  basicsAreasAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
 }

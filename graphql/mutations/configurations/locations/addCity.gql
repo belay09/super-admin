@@ -1,0 +1,5 @@
+mutation addCity($input: BasicsCitiesInsertInput!) {
+  insertBasicsCitiesOne(object: $input) {
+    id
+  }
+}

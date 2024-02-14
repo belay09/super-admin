@@ -21,9 +21,9 @@ watch(
   }
 );
 
+/**-----------------------Handle add --------------------------- */
 const { mutate, onDone, onError, loading } = authMutation(addMutation);
 
-/**-----------------------Handle add --------------------------- */
 const handleAdd = handleSubmit(() => {
   if (url.value == "") {
     noImageIsSelected.value = true;

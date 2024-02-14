@@ -1,0 +1,5 @@
+mutation deleteCity($id: bigint!) {
+  deleteBasicsCitiesByPk(id: $id) {
+    id
+  }
+}
