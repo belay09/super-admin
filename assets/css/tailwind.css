@@ -111,7 +111,9 @@ body::-webkit-scrollbar-thumb:hover {
 .teritary-flex-row {
   @apply flex flex-row items-center space-x-6;
 }
-
+.form-input{
+  @apply py-2 border-gray-200 border px-4
+}
 /* ---------------------------No edge---------------------- */
 
 .border-outline-ring-removal {

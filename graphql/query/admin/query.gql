@@ -1,0 +1,19 @@
+query MyQuery($filter: UsersUsersBoolExp!) {
+  usersUsers(where: $filter, orderBy: {id: DESC}) {
+    fullName
+    id
+    status
+    createdAt
+    email
+    userRoles {
+      userRole {
+        value
+      }
+    }
+  }
+  usersUsersAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
+}

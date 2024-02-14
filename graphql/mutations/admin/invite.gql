@@ -1,0 +1,15 @@
+mutation MyMutation($email: String!, $family_name: String!, $GivenName: String!, $MiddleName: String!, $phone_number: String!, $role: String!) {
+  invite_admin(
+    email: $email
+    GivenName: $GivenName
+    FamilyName: $family_name
+    MiddleName: $MiddleName
+    phone_number: $phone_number
+    profile_picture:"profile_picture"
+    role: $role
+    invitation_uri: "http://localhost:3000/password"
+    redirect_uri: "http://localhost:3000/"
+  ) {
+    success
+  }
+}

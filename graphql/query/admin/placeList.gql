@@ -1,0 +1,21 @@
+query MyQuery($filter: PlaceUsersBoolExp!) {
+  placeUsers(where: $filter) {
+    role
+    status
+    user {
+      id
+      fullName
+      photoUrl
+      status
+      email
+      createdBy
+      createdAt
+      phoneNumber
+    }
+  }
+  placeUsersAggregate(where: $filter) {
+    aggregate {
+      count(columns: id)
+    }
+  }
+}

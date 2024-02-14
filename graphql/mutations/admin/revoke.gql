@@ -1,0 +1,7 @@
+mutation MyMutation($_eq: bigint!) {
+  updateUsersUsers(where: {id: {_eq: $_eq}}, _set: {status: "SUSPENDED"}) {
+    returning {
+      fullName
+    }
+  }
+}

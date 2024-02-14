@@ -3,9 +3,7 @@
 import placeStatusAggregateQuery from "@/graphql/query/aggregate/place-status-aggregate.gql";
 import placesQuery from "@/graphql/query/places/list.gql";
 import useNotify from "@/use/notify";
-
 /*----------------------------Global Variables---------------------------*/
-
 /**--------------------Tab data-------------------- */
 const { notify } = useNotify();
 const tabs = ref([
@@ -266,7 +264,6 @@ definePageMeta({
       <template #SUSPENDED>
         <div>
           <PlacesList
-            :places="places"
             :total-page="totalPage"
             v-model:model-value="pageTracker"
           />

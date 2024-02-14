@@ -3,7 +3,7 @@ definePageMeta({
   layout: "base",
 });
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
-import admin from "@/graphql/query/admin/query.gql";
+import admin from "@/graphql/query/admin/placeList.gql";
 import list from "@/composables/auth-list-query.js";
 import { format, parseISO } from "date-fns";
 import mutator from "@/composables/auth-mutation";
@@ -13,7 +13,6 @@ import { useAuthStore } from "@/stores/auth.js";
 import revokeMutate from "@/graphql/mutations/admin/revoke.gql";
 import reactivateMutate from "@/graphql/mutations/admin/reactivate.gql";
 import deleteMutate from "@/graphql/mutations/admin/delete.gql";
-
 const authStore = useAuthStore();
 const { notify } = useNotify();
 const { handleSubmit, resetForm } = useForm({});
@@ -39,16 +38,12 @@ const router = useRouter();
 // if (!authStore.place_hasura_access_token) {
 //   router.push('/')
 // }
+const route = useRoute();
 const filter = computed(() => {
   return {
-    userRoles: {
-      _or: [
-        { userRole: { value: { _eq: "SHEGERADMIN" } } },
-        { userRole: { value: { _eq: "ENCODER" } } },
-      ],
-    },
-    status: { _neq: "DELETED" },
-  };
+    placeId: {_eq: route.params.id}
+  }
+
 });
 const {
   onResult: adminDone,
@@ -58,8 +53,8 @@ const {
 
 adminDone((result) => {
   // selectTags.value=result.data.basicsTags;
-  people.value = result?.data?.usersUsers;
-  count.value = result?.data?.usersUsersAggregate.aggregate.count;
+  people.value = result?.data?.placeUsers;
+  count.value = result?.data?.placeUsersAggregate.aggregate.count;
   console.log("admin", people.value);
   loading.value = false;
 });
@@ -433,14 +428,16 @@ const validatePhone = () => {
                   </th>
                 </tr>
               </thead>
+              {{ people }}
               <tbody class="divide-y divide-gray-200 bg-white">
                 <tr v-for="person in people" :key="person.email">
+                 {{   person}}
                   <td class="whitespace-nowrap py-5 pr-3 text-sm sm:pl-0">
                     <div class="h-7 w-7 flex-shrink-0">
                       <img
-                        v-if="person.image"
+                        v-if="person.user?.photoUrl"
                         class="h-7 w-7 rounded-full ml-2"
-                        :src="person.image"
+                        :src="person.user?.photoUrl"
                         alt=""
                       />
                       <img
@@ -454,10 +451,10 @@ const validatePhone = () => {
                   <td
                     class="whitesfullNamepace-nowrap px-3 py-5 text-sm text-gray-500"
                   >
-                    <div class="text-gray-900">{{ person.fullName }}</div>
+                    <div class="text-gray-900">{{ person.user?.fullName }}</div>
                   </td>
                   <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                    <div class="text-gray-900">{{ person.email }}</div>
+                    <div class="text-gray-900">{{ person.user?.email }}</div>
                   </td>
                   <td class="whitespace-nowrap px-3 py-5 text-sm">
                     <span
@@ -470,10 +467,10 @@ const validatePhone = () => {
                   </td>
 
                   <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                    {{ determineUserStatus(person.userRoles) }}
+                    {{ determineUserStatus(person.role) }}
                   </td>
                   <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                    {{ format(parseISO(person.createdAt), "dd/MM/yyyy") }}
+                    {{ format(parseISO(person.user?.createdAt), "dd/MM/yyyy") }}
                   </td>
                   <td
                     class="relative whitespace-nowrap py-5 pl-6 pr-4 text-right text-sm font-medium sm:pr-0"
@@ -506,7 +503,7 @@ const validatePhone = () => {
                         >
                           <MenuItem v-slot="{ active }">
                             <button
-                              @click="toggleReactivate(person.id)"
+                              @click="toggleReactivate(person.user.id)"
                               :class="[
                                 active
                                   ? 'bg-primary-100 text-black'
@@ -526,7 +523,7 @@ const validatePhone = () => {
                           </MenuItem>
                           <MenuItem v-slot="{ active }">
                             <button
-                              @click="toggleRevoke(person.id)"
+                              @click="toggleRevoke(person.user.id)"
                               :class="[
                                 active
                                   ? 'bg-primary-50 text-black'
@@ -546,7 +543,7 @@ const validatePhone = () => {
                           </MenuItem>
                           <MenuItem v-slot="{ active }">
                             <button
-                              @click="toggleDelete(person.id)"
+                              @click="toggleDelete(person.user.id)"
                               :class="[
                                 active
                                   ? 'bg-primary-50 text-black'
