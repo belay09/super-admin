@@ -1,0 +1,5 @@
+mutation editAmenity($input: BasicsAmenitiesSetInput!, $id: bigint!) {
+  updateBasicsAmenitiesByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+}

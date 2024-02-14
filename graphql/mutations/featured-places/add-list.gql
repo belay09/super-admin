@@ -1,0 +1,5 @@
+mutation featurePlaces($input: [FeaturedPlacesInsertInput!]!) {
+  insertFeaturedPlaces(objects: $input) {
+    affectedRows
+  }
+}

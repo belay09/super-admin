@@ -199,7 +199,6 @@ function change({ coordinates, image, visibleArea, canvas }) {
     const reader = new FileReader();
     reader.onload = () => {
       base64String.value = reader.result; // This is the base64-encoded string
-
       // You can now do something with the base64 string, like uploading it to a server or using it in your application.
     };
 

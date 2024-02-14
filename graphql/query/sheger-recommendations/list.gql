@@ -1,0 +1,21 @@
+query getShegerRecommendations(
+  $filter: BasicsShegerRecommendationsBoolExp
+  $order: [BasicsShegerRecommendationsOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  basicsShegerRecommendations(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    badge
+    title
+    description
+    shegerRecommendationBadge {
+      url
+    }
+  }
+}

@@ -1,72 +1,97 @@
 <script setup>
-/***---------------------Tab--------------------- */
+import addPlaceAdMutation from "@/graphql/mutations/place-ads/add.gql";
+import useNotify from "@/use/notify";
+
+const { notify } = useNotify();
+const emit = defineEmits(["add"]);
+
+const { handleSubmit, isSubmitting } = useForm({});
 
 const placeTypeItems = ref([
   {
     name: "Hotels",
-    id: "Hotels",
+    id: "HOTELS",
   },
   {
     name: "Restaurants",
-    id: "Restaurants",
+    id: "RESTAURANTS",
   },
   {
     name: "Cafes",
-    id: "Cafes",
+    id: "CAFES",
   },
   {
     name: "Caterings",
-    id: "Caterings",
+    id: "CATERINGS",
   },
 ]);
+
 const placeType = ref("");
+const place = ref("");
+const slogan = ref("");
+const description = ref("");
+const startDate = ref("");
+const endDate = ref("");
+const url = ref("");
 
-/**------------------------Place select--------------------- */
-const places = ref([
-  {
-    name: "Hilton Hotel",
-    id: "1",
-  },
-  {
-    name: "Addis Coffe house",
-    id: "2",
-  },
-  {
-    name: "Blue Sky Hotel",
-    id: "3",
-  },
-  {
-    name: "Ethiopia Hotel",
-    id: "4",
-  },
-
-  {
-    name: "Harmony Hotel",
-    id: "5",
-  },
-  {
-    name: "Bahir dar Hotel",
-    id: "6",
-  },
-]);
-
-const placesToShow = ref(places.value);
-
-function filterPlaces(value) {
-  const temp = [];
-  for (const item of places.value) {
-    if (item.name.toLowerCase().includes(value.toLowerCase())) {
-      temp.push(item);
+const noImageIsSelected = ref(false);
+watch(
+  () => url.value,
+  (value) => {
+    if (value != "") {
+      noImageIsSelected.value = false;
+    } else {
+      noImageIsSelected.value = true;
     }
   }
-  placesToShow.value = temp;
-}
+);
 
-const place = ref("");
+const { mutate, onDone, onError, loading } = authMutation(addPlaceAdMutation);
+
+/**-----------------------Handle add --------------------------- */
+const handleAdd = handleSubmit(() => {
+  if (url.value == "") {
+    noImageIsSelected.value = true;
+    return;
+  }
+  let input = {
+    description: description.value,
+    slogan: slogan.value,
+    startDate: startDate.value,
+    endDate: endDate.value,
+    type: placeType.value,
+    placeId: place.value,
+    media: {
+      data: {
+        url: url.value,
+      },
+    },
+  };
+  mutate({ input });
+});
+
+onDone(() => {
+  emit("add");
+  notify({
+    title: "Ad space added successfully",
+    description: "Ad space added successfully",
+    type: "error",
+    borderClass: "border-l-8 border-green-300",
+  });
+});
+
+onError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
 </script>
 
 <template>
-  <form class="flex flex-col" action="">
+  <form @submit.prevent="handleAdd" class="flex flex-col" action="">
     <!-- ----------------Add space or place type----- -->
     <H-SingleSelect
       name="ad_space"
@@ -74,18 +99,12 @@ const place = ref("");
       label="AD Space"
       :items="placeTypeItems"
       v-model="placeType"
+      rules="required"
     ></H-SingleSelect>
 
     <!-- ------------------Place---------------- -->
-    <H-SingleSelectWithSearch
-      :items="placesToShow"
-      v-model="place"
-      @search="filterPlaces"
-      id="place"
-      name="place"
-      label="Place"
-      :loading="loading"
-    ></H-SingleSelectWithSearch>
+
+    <AdSpace-PlaceSelector v-model="place"> </AdSpace-PlaceSelector>
 
     <!-- -----------------Start and End Date -->
     <div class="flex items-center justify-between pt-6 gap-x-6">
@@ -94,16 +113,20 @@ const place = ref("");
         name="start_date"
         label="Start Date"
         class="w-full"
+        rules="required"
         trailing-icon="uil:calender"
         trailing-icon-class="lg:text-sheger-gray-100"
+        v-model="startDate"
       ></HDatePicker>
       <HDatePicker
         id="end_date"
         name="end_date"
+        rules="required"
         label="End Date"
         trailing-icon="uil:calender"
         trailing-icon-class="lg:text-sheger-gray-100"
         class="w-full"
+        v-model="endDate"
       ></HDatePicker>
     </div>
 
@@ -114,6 +137,8 @@ const place = ref("");
       name="slogan"
       label="Slogan"
       placeholder="Write here"
+      v-model="slogan"
+      rules="required"
     ></H-Textfield>
 
     <!-- ---------------------Description---------------- -->
@@ -123,22 +148,30 @@ const place = ref("");
       name="description"
       label="Description"
       class="pt-4"
+      rules="required"
+      v-model="description"
     ></H-Textarea>
 
     <!-- ----------------------Upload Image------------------- -->
-    <div>
-      <img
-        src="/images/temporary/upload-image.png"
-        class="w-full py-2"
-        alt="upload temprary image"
-      />
-    </div>
+    <CommonUploadSingleImage
+      folder=""
+      v-model:model-value="url"
+    ></CommonUploadSingleImage>
+    <p v-if="noImageIsSelected" class="text-red-500">No image is selected</p>
 
     <!-- ----------------------Submit------------------- -->
-    <button type="submit" class="primary-button secondary-border py-3 mt-4">
-      <Icon name="heroicons:plus-small-solid" class="text-2 xl"></Icon>
-
+    <button
+      :disabled="loading"
+      type="submit"
+      class="primary-button secondary-border py-3 mt-4"
+    >
       <span>Add</span>
+      <Icon name="heroicons:plus-small-solid" class="text-2xl"></Icon>
+      <Icon
+        v-if="loading"
+        name="eos-icons:bubble-loading"
+        class="text-3xl text-red-600"
+      />
     </button>
   </form>
 </template>

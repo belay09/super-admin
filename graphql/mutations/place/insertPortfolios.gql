@@ -1,0 +1,6 @@
+mutation($obj:[PortfoliosInsertInput!]!){
+  insertPortfolios(objects:$obj)
+  {
+    affectedRows
+  }
+}

@@ -28,6 +28,9 @@ const tabs = ref([
 ]);
 
 const currentTabIndex = ref(0);
+const currentTab = computed(() => {
+  return tabs.value[currentTabIndex.value];
+});
 /*...................Aggregate data fetch.............*/
 const orderBy = ref([{}]);
 const {
@@ -79,11 +82,20 @@ const filter = computed(() => {
   query._and = [
     {
       featured_places: {
-        featured_place_type: {
-          value: {
-            _eq: tabs.value[currentTabIndex.value].value,
+        _and: [
+          {
+            isActive: {
+              _eq: true,
+            },
           },
-        },
+          {
+            featured_place_type: {
+              value: {
+                _eq: tabs.value[currentTabIndex.value].value,
+              },
+            },
+          },
+        ],
       },
     },
     {
@@ -163,10 +175,12 @@ definePageMeta({
 
       <template #WEEKLY_RECOMMENDED_PLACE>
         <div>
-          <PlacesList
+          <FeaturedPlaces-List
             :places="places"
             :total-page="totalPage"
             v-model:model-value="pageTracker"
+            :current-tab="currentTab"
+            @refetch="refetch()"
           />
           <HPaginate
             :items-per-page="limit"
@@ -183,10 +197,12 @@ definePageMeta({
       </template>
       <template #SEASONAL_PLACE>
         <div>
-          <PlacesList
+          <FeaturedPlaces-List
             :places="places"
             :total-page="totalPage"
             v-model:model-value="pageTracker"
+            :current-tab="currentTab"
+            @refetch="refetch()"
           />
           <HPaginate
             :items-per-page="limit"
@@ -203,10 +219,12 @@ definePageMeta({
       </template>
       <template #RECENTLY_OPENED_PLACE>
         <div>
-          <PlacesList
+          <FeaturedPlaces-List
             :places="places"
             :total-page="totalPage"
             v-model:model-value="pageTracker"
+            :current-tab="currentTab"
+            @refetch="refetch()"
           />
           <HPaginate
             :items-per-page="limit"

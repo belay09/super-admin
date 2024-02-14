@@ -1,0 +1,5 @@
+mutation editBasicDrink($input: BasicsDrinksSetInput!, $id: bigint!) {
+  updateBasicsDrinksByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+}

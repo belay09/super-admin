@@ -1,0 +1,5 @@
+mutation editAmbiance($input: BasicsAmbiancesSetInput!, $id: bigint!) {
+  updateBasicsAmbiancesByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+}

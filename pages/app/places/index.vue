@@ -2,7 +2,6 @@
 /**-----------------------------------imports----------------------------- */
 import placeStatusAggregateQuery from "@/graphql/query/aggregate/place-status-aggregate.gql";
 import placesQuery from "@/graphql/query/places/list.gql";
-
 import useNotify from "@/use/notify";
 /*----------------------------Global Variables---------------------------*/
 /**--------------------Tab data-------------------- */
@@ -127,6 +126,11 @@ onError((error) => {
     type: "error",
     borderClass: "border-l-8 border-red-300",
   });
+});
+
+provide("refetch", () => {
+  refetch();
+  aggregateReFetch();
 });
 
 definePageMeta({

@@ -1,0 +1,5 @@
+mutation ($base64Image: String, $folder: String!) {
+  uploadFiles(folder: $folder, files: { base64: $base64Image }) {
+    fileUrls
+  }
+}

@@ -1,5 +1,0 @@
-mutation ($base64Image: String) {
-  uploadFiles(folder: "", files: {base64: $base64Image}) {
-    fileUrls
-  }
-}

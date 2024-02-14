@@ -1,0 +1,5 @@
+mutation($id:bigint!){
+  deletePortfoliosByPk(id:$id){
+    id
+  }
+}

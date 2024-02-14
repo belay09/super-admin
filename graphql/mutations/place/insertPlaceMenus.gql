@@ -1,0 +1,5 @@
+mutation($obj:[MenusInsertInput!]!){
+  insertMenus(objects:$obj){
+    affectedRows
+  }
+}

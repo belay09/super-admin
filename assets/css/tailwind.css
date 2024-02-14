@@ -37,6 +37,19 @@ body::-webkit-scrollbar,
   border-radius: 0.25em;
 }
 
+.scroll-bar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scroll-bar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.scroll-bar::-webkit-scrollbar-thumb {
+  background-color: #d34553;
+  border-radius: 2em;
+}
+
 body::-webkit-scrollbar-thumb:hover {
   background-color: #555;
 }
@@ -108,5 +121,5 @@ body::-webkit-scrollbar-thumb:hover {
 }
 
 .steper-button {
-  @apply bg-sheger-gray-500 w-full flex items-center justify-center text-lg border-r border-sheger-gray-200
+  @apply bg-sheger-gray-500 w-full flex items-center justify-center text-lg border-r border-sheger-gray-200;
 }

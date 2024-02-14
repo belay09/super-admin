@@ -1,0 +1,8 @@
+mutation editRecommendationBadge(
+  $input: BasicsShegerRecommendationsSetInput!
+  $id: bigint!
+) {
+  updateBasicsShegerRecommendationsByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+}

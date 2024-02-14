@@ -1,5 +1,5 @@
 <script setup>
-const curStep = ref(0);
+const curStep = ref(5);
 
 
 // ---------------------------- Go Back Handler ----------------------------
@@ -15,6 +15,7 @@ const goNext = () => {
     curStep.value += 1;
   }
 };
+
 </script>
 <template>
   <div class="h-screen">
@@ -119,7 +120,7 @@ const goNext = () => {
     </div>
     <div class=" min-h-[70%] border flex flex-col justify-between px-5 py-2">
       <div class="h-full">
-        <PlacesFormBasicInfo v-if="curStep == 0" />
+        <PlacesFormBasicInfo v-if="curStep == 0"/>
         <PlacesFormLocation v-if="curStep == 1" />
         <PlacesFormAmenities v-if="curStep == 2" />
         <PlacesFormPortfolio v-if="curStep == 3" />

@@ -1,30 +1,73 @@
 <script setup>
-const placeTypeItems = ref([
-  {
-    name: "Hotels",
-    id: "Hotels",
-    total: 3,
-  },
-  {
-    name: "Restaurants",
-    id: "Restaurants",
-    total: 2,
-  },
-  {
-    name: "Cafes",
-    id: "Cafes",
-    total: 2,
-  },
-  {
-    name: "Caterings",
-    id: "Caterings",
-    total: 4,
-  },
-]);
+import basicDrinksQuery from "@/graphql/query/drinks/list.gql";
+import useNotify from "@/use/notify";
 
-const length = ref(20);
+const { notify } = useNotify();
+const emit = defineEmits(["edit"]);
+const props = defineProps({
+  makeRefetch: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+/***---------------------Drinks data fetch--------------------- */
+const sort = ref([{ price: "ASC_NULLS_LAST" }]);
+const drinks = ref([]);
 const limit = ref(6);
+const length = ref(0);
+const search = ref("");
 const offset = ref(0);
+
+/***-------------------------Compute offset------------------------- */
+
+/**-------------------Compute filter when tab change and search---------------- */
+const filter = computed(() => {
+  let query = {};
+  query._and = [
+    {
+      title: {
+        _ilike: `%${search.value}%`,
+      },
+    },
+  ];
+  return query;
+});
+
+const { onResult, onError, loading, refetch } = authListQuery(
+  basicDrinksQuery,
+  filter,
+  sort,
+  offset,
+  limit
+);
+onResult((result) => {
+  if (result.data?.basicsDrinks) {
+    drinks.value = result.data.basicsDrinks;
+    length.value = result.data.basicsDrinksAggregate?.aggregate?.count;
+  }
+});
+
+onError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+watch(
+  () => props.makeRefetch,
+  (newVal) => {
+    if (newVal) {
+      refetch();
+    }
+  }
+);
+function onDeleted() {
+  refetch();
+}
 </script>
 
 <template>
@@ -36,50 +79,24 @@ const offset = ref(0);
           type="text"
           placeholder="Search here"
           trailing-icon="uil:search"
+          v-model="search"
         ></H-Textfield>
       </div>
     </div>
 
     <!-- -------------------Ad space place type total places ------------- -->
-
     <!-- -------------------Add ad space list-------------------- -->
     <!-- ad-space-default -->
     <div class="pt-6">
       <div class="grid grid-cols-2 gap-6">
-        <div class="rounded-lg border" v-for="(item, index) in 6" :key="index">
-          <!-- --------------------Card body------------------------ -->
-          <div class="flex items-center space-x-5 px-5">
-            <!-- ------------------Image section -->
-            <img
-              src="/images/temporary/default-drink-image.png"
-              alt="ad-space-default image"
-              class="w-[40%] object-cover object-center rounded-t-lg"
-            />
-
-            <!-- ------------------Place name and logo------------------ -->
-            <div class="flex flex-col space-y-4 w-[60%]">
-              <p class="text-xl font-medium">Negus</p>
-              <p class="">None Alcoholic Drink</p>
-              <p class="">ETB 50</p>
-            </div>
-          </div>
-
-          <!-- -------------------Card footer------------------------ -->
-
-          <div class="grid grid-cols-2 px-10 py-4 gap-x-4 border-t">
-            <!-- ------------------Edit ad space---------------- -->
-            <button class="primary-button border justify-center secondary-text">
-              <Icon name="ic:round-edit" class="text-xl"></Icon>
-              <span> Edit</span>
-            </button>
-
-            <!-- ------------------Delete ad space---------------- -->
-            <button class="primary-button border justify-center secondary-text">
-              <Icon name="uil:trash-alt" class="text-xl"></Icon>
-              <span> Delete</span>
-            </button>
-          </div>
-        </div>
+        <Ui-Cards-DrinkItem
+          v-for="drink in drinks"
+          :key="drink.id"
+          :drink="drink"
+          @onDeleted="onDeleted"
+          @edit="emit('edit', drink.id)"
+        >
+        </Ui-Cards-DrinkItem>
       </div>
     </div>
 

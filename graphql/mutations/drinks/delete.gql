@@ -1,0 +1,5 @@
+mutation deleteBasicDrinks($id: bigint!) {
+  deleteBasicsDrinksByPk(id: $id) {
+    id
+  }
+}

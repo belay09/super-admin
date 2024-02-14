@@ -1,0 +1,5 @@
+mutation deleteAmenity($id: bigint!) {
+  deleteBasicsAmenitiesByPk(id: $id) {
+    id
+  }
+}

@@ -1,0 +1,5 @@
+mutation editTag($input: BasicsTagsSetInput!, $id: bigint!) {
+  updateBasicsTagsByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+}

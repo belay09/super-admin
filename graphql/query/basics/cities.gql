@@ -1,0 +1,6 @@
+query MyQuery($filter: BasicsCitiesBoolExp ) {
+  basicsCities(where: $filter) {
+    name
+    id
+  }
+}

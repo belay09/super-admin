@@ -1,0 +1,12 @@
+query getDrink($id: bigint!) {
+  basicsDrinksByPk(id: $id) {
+    id
+    title
+    price
+    title
+    description
+    media {
+      url
+    }
+  }
+}

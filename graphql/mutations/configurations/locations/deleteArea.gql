@@ -1,0 +1,5 @@
+mutation deleteArea($id: bigint!) {
+  deleteBasicsAreasByPk(id: $id) {
+    id
+  }
+}

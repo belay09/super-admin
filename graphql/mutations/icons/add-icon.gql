@@ -1,0 +1,5 @@
+mutation addBasicIcon($input: BasicsIconsInsertInput!) {
+  insertBasicsIconsOne(object: $input) {
+    id
+  }
+}

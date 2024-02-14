@@ -5,13 +5,10 @@ const contents = ref([
     id: "categories",
   },
   {
-    name: "Place Tag",
-    id: "placeTag",
+    name: "Tags",
+    id: "tag",
   },
-  {
-    name: "Menu Tag",
-    id: "menuTag",
-  },
+
   {
     name: "Ambiance",
     id: "ambiance",
@@ -24,14 +21,14 @@ const contents = ref([
     name: "Social Media",
     id: "socialMedia",
   },
-  {
-    name: "Report Type",
-    id: "reportType",
-  },
-  {
-    name: "Support Type",
-    id: "supportType",
-  },
+  // {
+  //   name: "Report Type",
+  //   id: "reportType",
+  // },
+  // {
+  //   name: "Support Type",
+  //   id: "supportType",
+  // },
   {
     name: "Badge",
     id: "badge",
@@ -57,6 +54,9 @@ const scrollIntoView = (index) => {
 let windowHeight = 0; // Initialize with zero
 
 const handleScroll = () => {
+  if (activeIndex.value == 5 || activeIndex.value == 6) {
+    return;
+  }
   // Update the windowHeight on each scroll event
   windowHeight = window.innerHeight;
   const contentElements = document.querySelectorAll(".content");
@@ -118,14 +118,46 @@ definePageMeta({
 
     <div class="col-span-4">
       <div id="content" class="pb-44">
-        <!-- Use Nuxt dynamic route to display content -->
+        <!-- ------------------Section 1 for scroll---------- -->
+        <div v-if="activeIndex != 5 && activeIndex != 6">
+          <!-- ------------------Categories section---------------- -->
+          <div :id="'content-' + 0" class="content my-6">
+            <Configurations-Categories />
+          </div>
+          <div :id="'content-' + 1" class="content my-6">
+            <Configurations-Tags />
+          </div>
+          <!-- ------------------Ambiance section---------------- -->
+          <div :id="'content-' + 2" class="content my-6">
+            <Configurations-Ambiances />
+          </div>
+
+          <!-- ------------------Amenity section---------------- -->
+          <div :id="'content-' + 3" class="content my-6">
+            <Configurations-Amenities />
+          </div>
+
+          <!-- ------------------Social Medias section---------------- -->
+          <div :id="'content-' + 4" class="content my-6">
+            <Configurations-SocialMedias />
+          </div>
+        </div>
+        <!-- ------------------Badges---------------- -->
         <div
-          v-for="(content, index) in contents"
-          :key="index"
-          :id="'content-' + index"
+          v-else-if="activeIndex == 5"
+          :id="'content-' + 5"
           class="content my-6"
         >
-          <Configurations-AddTag :content="content" />
+          <Configurations-Badges />
+        </div>
+
+        <!-- ------------------Location---------------- -->
+        <div
+          v-else-if="activeIndex == 6"
+          :id="'content-' + 6"
+          class="content my-6"
+        >
+          <Configurations-Locations />
         </div>
       </div>
     </div>

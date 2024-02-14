@@ -116,7 +116,7 @@ watch(
             ? props.placeholderStyle
             : ' placeholder-sheger_brown-200 dark:placeholder-sheger_light_gray-400',
         ]"
-        class="block w-full rounded-md p-2 secondary-border placeholder-gray-500 focus:outline-none py-3 focus:border-gray-800 focus:ring-0"
+        class="block w-full rounded-md p-2 secondary-border placeholder-gray-500 focus:outline-none py-3 focus:border-gray-800 focus:ring-0 scroll-bar"
         :placeholder="placeholder"
         aria-invalid="true"
         aria-describedby="email-error"

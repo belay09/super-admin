@@ -1,59 +1,70 @@
 <script setup>
-/***---------------------Tab--------------------- */
+import addDrinkMutation from "@/graphql/mutations/drinks/add.gql";
+import useNotify from "@/use/notify";
+const { notify } = useNotify();
+const emit = defineEmits(["add"]);
+const { handleSubmit, isSubmitting } = useForm({});
 
-const placeTypeItems = ref([
-  {
-    name: "Hotels",
-    id: "Hotels",
-  },
-  {
-    name: "Restaurants",
-    id: "Restaurants",
-  },
-  {
-    name: "Cafes",
-    id: "Cafes",
-  },
-  {
-    name: "Caterings",
-    id: "Caterings",
-  },
-]);
-const placeType = ref("");
+const title = ref("");
+const price = ref();
+const description = ref("");
+const url = ref("");
 
-/**------------------------Place select--------------------- */
-const places = ref([
-  {
-    name: "Hilton Hotel",
-    id: "1",
-  },
-  {
-    name: "Addis Coffe house",
-    id: "2",
-  },
-  {
-    name: "Blue Sky Hotel",
-    id: "3",
-  },
-  {
-    name: "Ethiopia Hotel",
-    id: "4",
-  },
+const noImageIsSelected = ref(false);
+watch(
+  () => url.value,
+  (value) => {
+    if (value != "") {
+      noImageIsSelected.value = false;
+    } else {
+      noImageIsSelected.value = true;
+    }
+  }
+);
 
-  {
-    name: "Harmony Hotel",
-    id: "5",
-  },
-  {
-    name: "Bahir dar Hotel",
-    id: "6",
-  },
-]);
-const place = ref("");
+const { mutate, onDone, onError, loading } = authMutation(addDrinkMutation);
+
+/**-----------------------Handle add --------------------------- */
+const handleAdd = handleSubmit(() => {
+  if (url.value == "") {
+    noImageIsSelected.value = true;
+    return;
+  }
+  let input = {
+    description: description.value,
+    title: title.value,
+    price: price.value,
+    media: {
+      data: {
+        url: url.value,
+      },
+    },
+  };
+  mutate({ input });
+});
+
+onDone(() => {
+  emit("add");
+  notify({
+    title: "Drink added successfully",
+    description: "Drink added successfully",
+    type: "error",
+    borderClass: "border-l-8 border-green-300",
+  });
+});
+
+onError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
 </script>
 
 <template>
-  <form class="flex flex-col" action="">
+  <form @submit.prevent="handleAdd" class="flex flex-col" action="">
     <!-- ----------------------Title------------------- -->
 
     <H-Textfield
@@ -62,6 +73,8 @@ const place = ref("");
       label="Drink title"
       placeholder="Title"
       type="text"
+      v-model="title"
+      rules="required"
     ></H-Textfield>
 
     <!-- ----------------------Price------------------- -->
@@ -71,6 +84,8 @@ const place = ref("");
       name="price"
       label="Price"
       type="number"
+      v-model="price"
+      rules="required"
     ></H-Textfield>
 
     <!-- ---------------------Description---------------- -->
@@ -80,31 +95,30 @@ const place = ref("");
       name="description"
       label="Description"
       class="pt-4"
+      rules="required"
+      v-model="description"
     ></H-Textarea>
 
-    <!-- ----------------------Upload Image 1------------------- -->
-    <div>
-      <img
-        src="/images/temporary/upload-image.png"
-        class="w-full py-2"
-        alt="upload temporary image"
-      />
-    </div>
-
-    <!-- ----------------------Upload Image 2------------------- -->
-    <div>
-      <img
-        src="/images/temporary/upload-image.png"
-        class="w-full py-2"
-        alt="upload temporary image"
-      />
-    </div>
+    <!-- ----------------------Upload Image------------------- -->
+    <CommonUploadSingleImage
+      folder=""
+      v-model:model-value="url"
+    ></CommonUploadSingleImage>
+    <p v-if="noImageIsSelected" class="text-red-500">No image is selected</p>
 
     <!-- ----------------------Submit------------------- -->
-    <button type="submit" class="primary-button secondary-border py-3 mt-4">
-      <Icon name="heroicons:plus-small-solid" class="text-2xl"></Icon>
-
+    <button
+      :disabled="loading"
+      type="submit"
+      class="primary-button secondary-border py-3 mt-4"
+    >
       <span>Add</span>
+      <Icon name="heroicons:plus-small-solid" class="text-2 xl"></Icon>
+      <Icon
+        v-if="loading"
+        name="eos-icons:bubble-loading"
+        class="text-3xl text-red-600"
+      />
     </button>
   </form>
 </template>

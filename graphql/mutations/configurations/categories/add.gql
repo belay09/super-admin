@@ -1,0 +1,5 @@
+mutation addCategory($input: BasicsCategoriesInsertInput!) {
+  insertBasicsCategoriesOne(object: $input) {
+    id
+  }
+}

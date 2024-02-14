@@ -1,0 +1,20 @@
+query getPlaceAd($id: bigint!) {
+  placeAdsByPk(id: $id) {
+    id
+    media {
+      url
+    }
+    description
+    slogan
+    startDate
+    endDate
+    place {
+      type
+      name
+      id
+      contactAltPhoneNumber
+      contactEmail
+      contactWebsite
+    }
+  }
+}

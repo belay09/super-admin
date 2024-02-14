@@ -79,6 +79,14 @@ const props = defineProps({
     required: false,
     default: "",
   },
+  showBy: {
+    type: String,
+    default: "name",
+  },
+  returnBy: {
+    type: String,
+    default: "id",
+  },
 });
 
 const singleSelect = ref(null);
@@ -110,8 +118,17 @@ const set = (item) => {
     emit("returnedObject", item);
   }
 };
+const clear = () => {
+  selectedItem.value = null;
+  inputValue.value = "";
+  selected.value = "";
+  show.value = false;
+  emit("update:modelValue", undefined);
+  emit("update:selected", undefined);
+  emit("onSelectionFound", undefined);
+};
 
-watchEffect(
+watch(
   () => props.modelValue,
   (newVal) => {
     if (props.returnObject) {
@@ -162,7 +179,7 @@ onMounted(() => {
 
     <div
       @click="show = !show"
-      class="flex items-center justify-between rounded-md shadow-sm font-body secondary-border px-3 mb-2 py-0.5"
+      class="flex items-center justify-between rounded-md shadow-sm font-body secondary-border px-3 mb-2 py-3"
       :class="[props.headerClass, errorMessage ? 'border-red-500' : '']"
     >
       <!------------------- Leading icon----------- -->
@@ -172,7 +189,7 @@ onMounted(() => {
       <div v-if="selectedItem" @click="show = true">
         <slot name="header" :item="selectedItem">
           <div class="">
-            {{ selectedItem.name }}
+            {{ selectedItem[showBy] }}
           </div>
         </slot>
       </div>
@@ -182,8 +199,15 @@ onMounted(() => {
 
       <!---------------- Chevron trailing icon ------------------->
 
-      <div class="flex items-center pointer-events-none py-3">
-        <Icon name="tabler:chevron-down" class="text-xl" color="gray" />
+      <div
+        v-if="selectedItem"
+        @click="clear"
+        class="absolute hover:cursor-pointer inset-y-0 right-0 pr-3 flex items-center"
+      >
+        <Icon name="heroicons:x-mark-20-solid" color="gray" class="text-xl" />
+      </div>
+      <div v-else class="absolute inset-y-0 right-0 pr-3 flex items-center">
+        <Icon name="tabler:chevron-down" color="gray" class="text-xl" />
       </div>
     </div>
 
@@ -199,10 +223,10 @@ onMounted(() => {
             :class="[props.itemClass ? props.itemClass : '']"
             class="flex items-center justify-between border-b select-none relative py-3 px-3 hover:bg-blue-50 cursor-pointer overflow-auto"
           >
-            <span class="block capitalize break-words">{{ item.name }}</span>
+            <span class="block capitalize break-words">{{ item[showBy] }}</span>
 
             <!-- ---------------Check ------------>
-            <div class="flex space-x-1">
+            <!-- <div class="flex space-x-1">
               <Icon
                 v-if="inputValue == item.id"
                 name="ic:round-check"
@@ -211,7 +235,7 @@ onMounted(() => {
                 color="#003F7D"
                 class="cursor-pointer text-inherit"
               />
-            </div>
+            </div> -->
           </div>
         </slot>
       </li>

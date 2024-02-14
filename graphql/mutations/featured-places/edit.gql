@@ -1,0 +1,5 @@
+mutation editFeaturedPlace($input: FeaturedPlacesSetInput!, $id: bigint!) {
+  updateFeaturedPlacesByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+}

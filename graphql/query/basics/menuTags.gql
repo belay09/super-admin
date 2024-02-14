@@ -1,0 +1,18 @@
+query(
+  $filter: MenuTagsBoolExp,
+  $order: [MenuTagsOrderBy!],
+  $limit: Int,
+  $offset: Int,
+){
+	menuTags(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ){
+    tag{
+      title
+      id
+    }
+  }
+}

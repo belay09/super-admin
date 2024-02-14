@@ -1,0 +1,6 @@
+query region($filter:BasicsAreasBoolExp){
+  items:basicsAreas(where:$filter){
+    id
+    name
+  }
+}

@@ -34,12 +34,15 @@ watch(pageTracker, (newVal) => {
       <p class="text-xl font-medium">
         Showing {{ totalPage > 0 ? pageTracker : 0 }} /{{ totalPage }}
       </p>
-      <H-Page
-        v-model:model-value="pageTracker"
-        :total-page="totalPage"
-      ></H-Page>
+
+      <div class="flex items-center gap-8">
+        <H-Page
+          v-model:model-value="pageTracker"
+          :total-page="totalPage"
+        ></H-Page>
+      </div>
     </div>
-    <div class="grid grid-cols-3 w-[85%]">
+    <div class="grid grid-cols-3 w-[85%] gap-8">
       <Ui-Cards-Place v-for="place in places" :place="place" :key="place.id" />
     </div>
   </div>

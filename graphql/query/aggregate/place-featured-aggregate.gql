@@ -7,7 +7,10 @@ query placeAggregate {
   SEASONAL_PLACE: placesAggregate(
     where: {
       featured_places: {
-        featured_place_type: { value: { _eq: "SEASONAL_PLACE" } }
+        _and: [
+          { isActive: { _eq: true } }
+          { featured_place_type: { value: { _eq: "SEASONAL_PLACE" } } }
+        ]
       }
     }
   ) {
@@ -18,7 +21,10 @@ query placeAggregate {
   RECENTLY_OPENED_PLACE: placesAggregate(
     where: {
       featured_places: {
-        featured_place_type: { value: { _eq: "RECENTLY_OPENED_PLACE" } }
+        _and: [
+          { isActive: { _eq: true } }
+          { featured_place_type: { value: { _eq: "RECENTLY_OPENED_PLACE" } } }
+        ]
       }
     }
   ) {
@@ -29,7 +35,12 @@ query placeAggregate {
   WEEKLY_RECOMMENDED_PLACE: placesAggregate(
     where: {
       featured_places: {
-        featured_place_type: { value: { _eq: "WEEKLY_RECOMMENDED_PLACE" } }
+        _and: [
+          { isActive: { _eq: true } }
+          {
+            featured_place_type: { value: { _eq: "WEEKLY_RECOMMENDED_PLACE" } }
+          }
+        ]
       }
     }
   ) {

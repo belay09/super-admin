@@ -11,6 +11,7 @@ query getCategories(
     offset: $offset
   ) {
     id
+    type
     title
     placesAggregate {
       aggregate {
@@ -24,8 +25,6 @@ query getCategories(
       }
     }
     icon {
-      id
-      darkIconUrl
       lightIconUrl
     }
   }

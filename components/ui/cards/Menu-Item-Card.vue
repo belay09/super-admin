@@ -31,7 +31,7 @@ const props = defineProps({
       <!-- Body -->
       <div class="flex flex-col gap-4 my-2">
         <!-- Tags -->
-        <div class="text-sheger-gray-400">
+        <div class="text-sheger-gray-400 text-sm font-light">
           <p>
             #Hotel #Restaurant #Bar #Pool #Gym #Spa #Sauna #Massage #Parking
           </p>

@@ -1,0 +1,5 @@
+mutation deleteTag($id: bigint!) {
+  deleteBasicsTagsByPk(id: $id) {
+    id
+  }
+}

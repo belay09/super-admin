@@ -109,7 +109,7 @@ createTokenDone((result) => {
   onLogin(result.data?.create_custom_token?.hasura_access_token, "authClient");
 
   // Set hasura access token on cookie
-  router.push("/app/places");
+  router.push("/app");
 });
 
 // On Error
