@@ -1,5 +1,5 @@
 <script setup>
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "refetch"]);
 const props = defineProps({
   modelValue: {
     type: Number,
@@ -15,9 +15,14 @@ const props = defineProps({
     required: true,
     default: () => 1,
   },
+  currentTab: {
+    type: Object,
+    required: true,
+  },
 });
 
 const pageTracker = ref(props.modelValue);
+const featuredValue = ref("");
 watch(
   () => props.modelValue,
   (newVal) => {
@@ -26,6 +31,13 @@ watch(
 );
 watch(pageTracker, (newVal) => {
   emit("update:modelValue", newVal);
+});
+
+watchEffect(() => {
+  featuredValue.value = props.currentTab.value;
+});
+onMounted(() => {
+  featuredValue.value = props.currentTab.value;
 });
 </script>
 <template>
@@ -36,6 +48,13 @@ watch(pageTracker, (newVal) => {
       </p>
 
       <div class="flex items-center gap-8">
+        <nuxt-link
+          to="/app/featured-places/add-new-features"
+          class="primary-button block bg-primary-600"
+        >
+          <Icon name="lucide:building-2" class="text-xl text-white" color="" />
+          <span class="text-white">Feature New</span>
+        </nuxt-link>
         <H-Page
           v-model:model-value="pageTracker"
           :total-page="totalPage"
@@ -43,7 +62,13 @@ watch(pageTracker, (newVal) => {
       </div>
     </div>
     <div class="grid grid-cols-3 w-[85%] gap-8">
-      <Ui-Cards-Place v-for="place in places" :place="place" :key="place.id" />
+      <Ui-Cards-FeaturedPlace
+        v-for="place in places"
+        :place="place"
+        :key="place.id"
+        :featuredValue="featuredValue"
+        @edit="emit('refetch')"
+      />
     </div>
   </div>
 </template>

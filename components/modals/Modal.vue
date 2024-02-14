@@ -17,6 +17,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  bodyClass: {
+    type: String,
+    default: "",
+  },
 });
 
 const open = computed({
@@ -65,9 +69,10 @@ const open = computed({
             >
               <HeadlessDialogPanel
                 class="relative z-50 transform rounded-lg text-left transition-all w-full max-w-lg bg-white p-12"
-                :class="
-                  overflowVisible ? 'overflow-visible' : 'overflow-hidden '
-                "
+                :class="[
+                  overflowVisible ? 'overflow-visible' : 'overflow-hidden ',
+                  bodyClass,
+                ]"
               >
                 <slot name="header" />
 

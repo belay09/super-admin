@@ -41,8 +41,35 @@ query getPlaces(
 
     # featured places
     featured_places {
+      id
+      endDate
+      startDate
       featured_place_type {
         value
+      }
+    }
+    # locations
+    placeLocations {
+      id
+      location
+      isMainLocation
+      area {
+        name
+      }
+      city {
+        name
+      }
+    }
+
+    # recommendation
+
+    shegerRecommendation {
+      id
+      title
+      description
+      badge
+      shegerRecommendationBadge {
+        url
       }
     }
   }
