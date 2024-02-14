@@ -37,7 +37,7 @@ const placeTypeItems = ref([
 
 /*...................Place detail data fetch.............*/
 const placeType = ref("");
-const place = ref();
+const place = ref(0);
 const slogan = ref("");
 const description = ref("");
 const startDate = ref("");

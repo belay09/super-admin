@@ -62,12 +62,19 @@ editDone(() => {
     borderClass: "border-l-8 border-green-300",
   });
   showRevokeBadgeModal.value = false;
+  showActivatePlaceModal.value = false;
+  showPendPlaceModal.value = false;
+  showSuspendPlaceModal.value = false;
   showClosePlaceModal.value = false;
 });
 
 editError((error) => {
-  editBadgeModal.value = false;
   showRevokeBadgeModal.value = false;
+  showActivatePlaceModal.value = false;
+  showPendPlaceModal.value = false;
+  showSuspendPlaceModal.value = false;
+  showClosePlaceModal.value = false;
+
   notify({
     title: "Some thing went wrong",
     description: error.message,
@@ -85,10 +92,9 @@ const handleRevoke = () => {
   editMutate({ input, id: props.place.id });
 };
 
-/**-------------------------Handle close place--------------- */
-const handleClosePlace = () => {
+const handleChangePlaceStatus = (status) => {
   let input = {
-    status: "CLOSED",
+    status,
   };
   editMutate({ input, id: props.place.id });
 };
@@ -102,9 +108,58 @@ onMounted(() => {
 
 /***-----------------Modals--------------------------- */
 const showMoreAction = ref(false);
+
+/**-----------------------------Assign Badge------------------- */
+
 const showAssignBadgeModal = ref(false);
+function toggleAssignBadgeModal(event) {
+  event.stopPropagation();
+  showAssignBadgeModal.value = !showAssignBadgeModal.value;
+}
+
+/**-----------------------Revoke Badge Modal---------------- */
 const showRevokeBadgeModal = ref(false);
+function toggleRevokeBadgeModal(event) {
+  event.stopPropagation();
+  showRevokeBadgeModal.value = !showRevokeBadgeModal.value;
+}
+
+/**-----------------------Activate Place Modal---------------- */
+const showActivatePlaceModal = ref(false);
+function toggleActivatePlaceModal(event) {
+  event.stopPropagation();
+  showActivatePlaceModal.value = !showActivatePlaceModal.value;
+}
+
+/**-------------------------Pend Place Modal------------------------ */
+
+const showPendPlaceModal = ref(false);
+function togglePendPlaceModal(event) {
+  event.stopPropagation();
+  showPendPlaceModal.value = !showPendPlaceModal.value;
+}
+
+/**-------------------------Suspend Place Modal------------------------ */
+
+const showSuspendPlaceModal = ref(false);
+function toggleSuspendPlaceModal(event) {
+  event.stopPropagation();
+  showSuspendPlaceModal.value = !showSuspendPlaceModal.value;
+}
+
+/**-------------------------Close Place Modal------------------------ */
+
 const showClosePlaceModal = ref(false);
+function toggleClosePlaceModal(event) {
+  showClosePlaceModal.value = !showClosePlaceModal.value;
+  event.stopPropagation();
+}
+
+function openMoreAction(event) {
+  event.stopPropagation();
+
+  showMoreAction.value = !showMoreAction.value;
+}
 </script>
 <template>
   <!-- -------------------Assign Badge Modal--------------- -->
@@ -138,16 +193,43 @@ const showClosePlaceModal = ref(false);
     description="This action is irreversible and will permanently remove the badge"
   ></ModalsConfirmation>
 
+  <!-- -----------------------Make Active Place Modal---------------- -->
+  <ModalsConfirmation
+    @confirm="handleChangePlaceStatus('ACTIVE')"
+    v-model="showActivatePlaceModal"
+    title="Activate Place"
+    sure-question="Are you sure you want to activate the place?"
+    description="Closing this place will result on the place be invisible to visitors and will not be found during search or via an existing links to the place’s profile."
+  ></ModalsConfirmation>
+
+  <!-- -----------------------Make Pending Place Modal---------------- -->
+  <ModalsConfirmation
+    @confirm="handleChangePlaceStatus('PENDING')"
+    v-model="showPendPlaceModal"
+    title="Pend Place"
+    sure-question="Are you sure you want to pend the place?"
+    description="Closing this place will result on the place be invisible to visitors and will not be found during search or via an existing links to the place’s profile."
+  ></ModalsConfirmation>
   <!-- -----------------------Close Place Modal---------------- -->
   <ModalsConfirmation
-    @confirm="handleClosePlace"
+    @confirm="handleChangePlaceStatus('CLOSED')"
     v-model="showClosePlaceModal"
     title="Close Place"
     sure-question="Are you sure you want to close the place?"
     description="Closing this place will result on the place be invisible to visitors and will not be found during search or via an existing links to the place’s profile."
   ></ModalsConfirmation>
 
+  <!-- -----------------------Suspend Place Modal---------------- -->
+  <ModalsConfirmation
+    @confirm="handleChangePlaceStatus('SUSPENDED')"
+    v-model="showSuspendPlaceModal"
+    title="Suspend Place"
+    sure-question="Are you sure you want to suspend the place?"
+    description="Closing this place will result on the place be invisible to visitors and will not be found during search or via an existing links to the place’s profile."
+  ></ModalsConfirmation>
+
   <div
+    @click="gotoDetailPage"
     class="flex flex-col border max-w-lg p-[25px] rounded-xl text-sm hover:cursor-pointer"
   >
     <!-- Header -->
@@ -170,10 +252,7 @@ const showClosePlaceModal = ref(false);
             <!-- Option Icon -->
 
             <div class="relative">
-              <button
-                @click="showMoreAction = !showMoreAction"
-                class="hover:cursor-pointer"
-              >
+              <button @click="openMoreAction" class="hover:cursor-pointer">
                 <Icon name="iwwa:option" class="w-8 h-8" />
               </button>
 
@@ -195,7 +274,7 @@ const showClosePlaceModal = ref(false);
                   <p class="text-lg">Update Place Info</p>
                 </button>
                 <button
-                  @click="showAssignBadgeModal = true"
+                  @click="toggleAssignBadgeModal"
                   class="flex gap-3 items-center"
                 >
                   <Icon name="cil:badge" class="text-2xl shrink-0" />
@@ -203,7 +282,7 @@ const showClosePlaceModal = ref(false);
                 </button>
                 <button
                   v-if="place.shegerRecommendation"
-                  @click="showRevokeBadgeModal = true"
+                  @click="toggleRevokeBadgeModal"
                   class="flex gap-3 items-center"
                 >
                   <Icon
@@ -212,8 +291,36 @@ const showClosePlaceModal = ref(false);
                   />
                   <p class="text-lg">Revoke a badge</p>
                 </button>
+
+                <!-- ----------------Activate Place---------- -->
                 <button
-                  @click="showClosePlaceModal = true"
+                  @click="toggleActivatePlaceModal"
+                  class="flex gap-3 items-center"
+                >
+                  <Icon name="majesticons:open" class="text-2xl shrink-0" />
+                  <p class="text-lg whitespace-nowrap">Activate Place</p>
+                </button>
+
+                <!-- ----------------Pend Place---------- -->
+                <button
+                  @click="togglePendPlaceModal"
+                  class="flex gap-3 items-center"
+                >
+                  <Icon name="carbon:pending" class="text-2xl shrink-0" />
+                  <p class="text-lg whitespace-nowrap">Pend Place</p>
+                </button>
+
+                <!-- ----------------Suspend Place---------- -->
+                <button
+                  @click="toggleSuspendPlaceModal"
+                  class="flex gap-3 items-center"
+                >
+                  <Icon name="ci:stop-sign" class="text-2xl shrink-0" />
+                  <p class="text-lg whitespace-nowrap">Suspend Place</p>
+                </button>
+                <!-- ----------------Close Place---------- -->
+                <button
+                  @click="toggleClosePlaceModal"
                   class="flex gap-3 items-center"
                 >
                   <Icon name="bi:door-closed" class="text-2xl shrink-0" />
