@@ -12,14 +12,17 @@ import useNotify from "@/use/notify";
 import { useAuthStore } from "@/stores/auth.js";
 import revokeMutate from "@/graphql/mutations/admin/revoke.gql";
 import reactivateMutate from "@/graphql/mutations/admin/reactivate.gql";
+import deleteMutate from "@/graphql/mutations/admin/delete.gql";
+
 const authStore = useAuthStore();
 const { notify } = useNotify();
-const { handleSubmit } = useForm({});
+const { handleSubmit, resetForm } = useForm({});
 
 const formattedCreatedAt = ref("");
 const count = ref(0);
 const revoke = ref(false);
 const reactivate = ref(false);
+const delet = ref(false);
 const add = ref(false);
 const item = ref({});
 const email = ref("");
@@ -36,25 +39,36 @@ const router = useRouter();
 // if (!authStore.place_hasura_access_token) {
 //   router.push('/')
 // }
+const filter = computed(() => {
+  return {
+    userRoles: {
+      _or: [
+        { userRole: { value: { _eq: "SHEGERADMIN" } } },
+        { userRole: { value: { _eq: "ENCODER" } } },
+      ],
+    },
+    status: { _neq: "DELETED" },
+  };
+});
 const {
   onResult: adminDone,
   onError: adminERR,
   refetch,
-} = list(admin, "authClient");
+} = list(admin, filter);
 
 adminDone((result) => {
   // selectTags.value=result.data.basicsTags;
-  people.value = result.data.usersUsers;
-  count.value = result.data.usersUsersAggregate.aggregate.count;
+  people.value = result?.data?.usersUsers;
+  count.value = result?.data?.usersUsersAggregate.aggregate.count;
   console.log("admin", people.value);
   loading.value = false;
 });
 
 const toggleAdd = () => {
-  add.value = !add.value; // Toggle the boolean value
+  add.value = true; // Toggle the boolean value
 };
 const toggleRevoke = (data) => {
-  console.log("revoke email", email.value);
+  console.log("revoke email", data);
   email.value = data;
   revoke.value = true; // Toggle the boolean value
 };
@@ -63,24 +77,44 @@ const toggleReactivate = (data) => {
   console.log("ractivate email", email.value);
   reactivate.value = true; // Toggle the boolean value
 };
+const toggleDelete = (data) => {
+  email.value = data;
+  console.log("delete email", email.value);
+  delet.value = true; // Toggle the boolean value
+};
+
 const {
   mutate: invite,
-  onError: onError,
+  onError: onErrorADmin,
   onDone: inviteDone,
+  loading: onLoading,
 } = mutator(invited, "");
 inviteDone((result) => {
+  resetForm();
   notify({
     title: "Invite Successfully Sent",
+    description: "check your email",
     borderClass: "border-l-8 border-green-800",
-    cardClass: "bg-green-300 text-white text-white",
   });
+
+  add.value = false;
 });
-onError((error) => {
+onErrorADmin((error) => {
+  let customDescription = "Something went wrong.";
+
+  // Check if the error message indicates duplicate emails
+  if (error.message.includes("all emails already exist")) {
+    customDescription = "Email already exists. Please use a different email.";
+  }
+  if (error.message.includes("user with given phone number already exists")) {
+    customDescription = "phone already exists. Please use a different phone.";
+  }
   notify({
-    title: "Some thing went wrong",
-    description: error.message,
+    title: "Error",
+    description: customDescription,
     type: "error",
-    cardClass: "bg-red-200",
+    borderClass: "border-l-8 border-red-300",
+    cardClass: "bg-white",
   });
 });
 
@@ -89,9 +123,9 @@ function updateName(selectedItemId) {
 
   if (selectedItem) {
     if (selectedItem.name === "Administrator") {
-      return "PLACE_OWNER";
+      return "SHEGERADMIN";
     } else if (selectedItem.name === "Data Encoder") {
-      return "PLACE_DATA_ENCODER";
+      return "ENCODER";
     }
   }
   return null; // Return null if the item is not found or doesn't match any condition
@@ -125,20 +159,19 @@ revokeDone((result) => {
   notify({
     title: "Successfully revoked",
     description:
-      result.data.updatePlaceUsers.returning[0].user.fullName +
+      result.data.updateUsersUsers.returning[0].fullName +
       " Can not Login Again",
     borderClass: "border-l-8 border-green-800",
-    cardClass: "bg-green-300 text-white text-white",
   });
   refetch();
   revoke.value = false;
 });
-onError((error) => {
+revokeonError((error) => {
   notify({
     title: "Some thing went wrong",
     description: error.message,
     type: "error",
-    cardClass: "bg-red-200",
+    borderClass: "border-l-8 border-red-800",
   });
 });
 const Revoke = () => {
@@ -156,21 +189,19 @@ reactivateDone((result) => {
   notify({
     title: "Successfully Reactivate",
     description:
-      result.data.updatePlaceUsers.returning[0].user.fullName +
-      " Can Login Again",
+      result.data.updateUsersUsers.returning[0].fullName + " Can Login Again",
 
     borderClass: "border-l-8 border-green-800",
-    cardClass: "bg-green-300 text-white text-white",
   });
   refetch();
   reactivate.value = false;
 });
-onError((error) => {
+reactivateonError((error) => {
   notify({
     title: "Some thing went wrong",
     description: error.message,
     type: "error",
-    cardClass: "bg-red-200",
+    borderClass: "border-l-8 border-red-600",
   });
 });
 const ReactivateFunction = () => {
@@ -178,6 +209,37 @@ const ReactivateFunction = () => {
     _eq: email.value,
   });
 };
+const {
+  mutate: Delete,
+  onError: DeleteonError,
+  onDone: DeleteDone,
+} = mutator(deleteMutate, "");
+DeleteDone((result) => {
+  notify({
+    title: "Successfully deleted",
+    description:
+      result.data.updateUsersUsers.returning[0].fullName + " Can Login Again",
+
+    borderClass: "border-l-8 border-green-800",
+    cardClass: "bg-green-300 text-white text-white",
+  });
+  refetch();
+  delet.value = false;
+});
+DeleteonError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    cardClass: "bg-red-200",
+  });
+});
+const DeleteFunction = () => {
+  Delete({
+    _eq: email.value,
+  });
+};
+
 // Function to determine user status based on priority
 const determineUserStatus = (userRoles) => {
   if (userRoles.some((role) => role.userRole.value === "SHEGERADMIN")) {
@@ -186,6 +248,20 @@ const determineUserStatus = (userRoles) => {
     return "Encoder";
   } else {
     return "User";
+  }
+};
+
+const validationError = "";
+watch(item.value, () => {
+  validatePhone();
+});
+const validatePhone = () => {
+  console.log("Validation");
+  const phoneRegex = /^\d{10}$/; // Assuming a 10-digit phone number for validation
+  if (!phoneRegex.test(item.phone)) {
+    validationError = "Please enter a valid 10-digit phone number.";
+  } else {
+    validationError = "";
   }
 };
 </script>
@@ -198,7 +274,6 @@ const determineUserStatus = (userRoles) => {
         <div class="skeleton-placeholder h-10 w-48 mr-2 rounded"></div>
       </div>
     </div>
-
     <!-- Placeholder for administrators table -->
     <div class="mt-8 flow-root animate-pulse">
       <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -385,10 +460,15 @@ const determineUserStatus = (userRoles) => {
                     <div class="text-gray-900">{{ person.email }}</div>
                   </td>
                   <td class="whitespace-nowrap px-3 py-5 text-sm">
-                    <span :style="{ color: person.status ? 'green' : 'red' }">
-                      {{ person.status ? "Active" : "Revoked" }}
+                    <span
+                      :style="{
+                        color: person.status === 'ACTIVE' ? 'green' : 'red',
+                      }"
+                    >
+                      {{ person.status === "ACTIVE" ? "Active" : "Revoked" }}
                     </span>
                   </td>
+
                   <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                     {{ determineUserStatus(person.userRoles) }}
                   </td>
@@ -422,7 +502,7 @@ const determineUserStatus = (userRoles) => {
                         leave-to-class="transform opacity-0 scale-95"
                       >
                         <MenuItems
-                          class="absolute right-0 z-10 mt-2.5 w-44 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+                          class="absolute right-0 z-50 mt-2.5 w-44 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
                         >
                           <MenuItem v-slot="{ active }">
                             <button
@@ -462,6 +542,26 @@ const determineUserStatus = (userRoles) => {
                               ></Icon>
 
                               <h1 class="ml-3">Revoke access</h1>
+                            </button>
+                          </MenuItem>
+                          <MenuItem v-slot="{ active }">
+                            <button
+                              @click="toggleDelete(person.id)"
+                              :class="[
+                                active
+                                  ? 'bg-primary-50 text-black'
+                                  : 'text-gray-900',
+                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                              ]"
+                            >
+                              <Icon
+                                name="uil:lock"
+                                color="black"
+                                width="20"
+                                height="20"
+                              ></Icon>
+
+                              <h1 class="ml-3">Delete Admin</h1>
                             </button>
                           </MenuItem>
                         </MenuItems>
@@ -587,7 +687,64 @@ const determineUserStatus = (userRoles) => {
     </div>
   </ModalsMod>
 
-  <Modals-Modals
+  <ModalsMod
+    :modelValue="delet"
+    v-slot:ModalContent
+    v-bind:wrapper-class="' rounded-lg bg-white  text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg lg:max-w-[25vw] sm:p-0'"
+  >
+    <div class="flex justify-between p-7">
+      <div class="flex gap-1">
+        <Icon
+          name="bx:lock-open-alt"
+          color="red"
+          width="20"
+          height="20"
+          class="self-center"
+        ></Icon>
+        <h1 class="text-lg font-poppins text-primary-600 font-bold capitalize">
+          Delete Administrator
+        </h1>
+      </div>
+      <button @click="delet = false">
+        <Icon
+          name="ph:x"
+          color="black"
+          width="20"
+          height="20"
+          class="self-center"
+        ></Icon>
+      </button>
+    </div>
+    <div class="flex-col justify-center px-7">
+      <h1 class="text-md font-normal font-poppins text-center pb-4">
+        Are you sure you want to delete administrator?
+      </h1>
+      <p class="text-sm font-poppins font-light text-gray-500 text-center">
+        Deleting the user will result on the user unable to login,update menu
+        and change the place profile and vanish for ever
+      </p>
+    </div>
+    <div class="flex justify-between px-5 pb-3">
+      <button
+        @click="delet = false"
+        for="comment"
+        class="block text-md font-normal font-poppins text-white capitalize mt-2 bg-red-500 rounded-lg px-10 py-1"
+      >
+        Cancel
+      </button>
+
+      <button
+        @click="DeleteFunction"
+        for="comment"
+        class="text-md font-normal font-poppins text-gray-700 capitalize mt-2 border-[1px] border-gray-400 rounded-lg px-10 py-1"
+      >
+        Delete
+      </button>
+    </div>
+  </ModalsMod>
+
+  <ModalsMod
+    v-if="add"
     :modelValue="add"
     v-slot:ModalContent
     v-bind:wrapper-class="'relative transform overflow-hidden rounded-lg bg-white  text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg md:max-w-[35vw] sm:p-0'"
@@ -674,29 +831,25 @@ const determineUserStatus = (userRoles) => {
             </template>
           </HTextfield>
         </div>
-        <div class="col-span-full my-2">
-          <h1
-            class="text-base font-poppins font-normal text-[#524848] contact phone number capitalize"
-          >
-            Phone
-          </h1>
-          <div>
-            <div class="mt-2 flex rounded-md shadow-sm">
-              <span
-                class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 px-3 text-gray-500 sm:text-sm"
-                >+251</span
-              >
-              <input
-                v-model="item.phone"
-                type="number"
-                name="company-website"
-                id="company-website"
-                class="block w-full flex-1 pl-2 rounded-none rounded-r-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring--600 sm:text-sm sm:leading-6"
-                placeholder=" 900000000"
-              />
-            </div>
-          </div>
-        </div>
+        <HTextfield
+          v-model="item.phone"
+          class="col-span-full my-2"
+          name="Phone Number"
+          placeholder="910101010"
+          placeholderStyle="text-gray-400 pl-14"
+          rules="required|ethio_phone"
+          :disabled="Load ? true : false"
+        >
+          <template #leading>
+            <div class="absolute left-0 px-2 py-4 bg-gray-200">+251</div>
+          </template>
+          <template #label>
+            <label class="form-label" for="Phone Number">Phone Number</label>
+          </template>
+        </HTextfield>
+
+        <!-- Phone Number -->
+
         <div class="sm:col-span-3">
           <div class="mt-2">
             <HListselect
@@ -721,14 +874,19 @@ const determineUserStatus = (userRoles) => {
           <button
             type="submit"
             for="comment"
-            class="block text-md font-normal font-poppins text-white capitalize font mt-2 bg-primary-100 rounded-lg px-4 py-3"
+            class="block text-md font-normal font-poppins text-white capitalize font mt-2 bg-primary-600 rounded-lg px-4 py-3"
           >
             Invite Administrator
+            <Icon
+              v-if="onLoading"
+              name="eos-icons:bubble-loading"
+              class="text-2xl text-white"
+            />
           </button>
         </div>
       </div>
     </form>
-  </Modals-Modals>
+  </ModalsMod>
 </template>
 
 <style scoped>
@@ -737,10 +895,3 @@ const determineUserStatus = (userRoles) => {
   border-radius: 0.25rem; /* Rounded corners */
 }
 </style>
-
-
-
-
-
-
-

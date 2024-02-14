@@ -77,7 +77,7 @@ definePageMeta({
           <div class="py-8"><Places-Menus :place-id="place.id" /></div>
         </template>
         <template #administrators>
-          <Administrators-List></Administrators-List>
+          <AdministratorsPlaceList></AdministratorsPlaceList>
         </template>
 
         <template #reviews>

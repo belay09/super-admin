@@ -1,9 +1,7 @@
 mutation MyMutation($_eq: bigint!) {
-  updatePlaceUsers(where: { userId: { _eq: $_eq } }, _set: { status: false }) {
+  updateUsersUsers(where: {id: {_eq: $_eq}}, _set: {status: "SUSPENDED"}) {
     returning {
-      user {
-        fullName
-      }
+      fullName
     }
   }
 }

@@ -1,7 +1,5 @@
-query MyQuery {
-  usersUsers(
-    where: {userRoles: {_or: [{userRole: {value: {_eq: "SHEGERADMIN"}}}, {userRole: {value: {_eq: "ENCODER"}}}]}}
-  ) {
+query MyQuery($filter: UsersUsersBoolExp!) {
+  usersUsers(where: $filter, orderBy: {id: DESC}) {
     fullName
     id
     status
@@ -11,12 +9,9 @@ query MyQuery {
       userRole {
         value
       }
-      
     }
   }
-  usersUsersAggregate(
-    where: {userRoles: {_or: [{userRole: {value: {_eq: "SHEGERADMIN"}}}, {userRole: {value: {_eq: "ENCODER"}}}]}}
-  ) {
+  usersUsersAggregate(where: $filter) {
     aggregate {
       count
     }

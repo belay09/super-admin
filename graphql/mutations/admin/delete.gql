@@ -1,5 +1,5 @@
 mutation MyMutation($_eq: bigint!) {
-  updateUsersUsers(where: {id: {_eq: $_eq}}, _set: {status: "ACTIVE",}) {
+  updateUsersUsers(where: {id: {_eq: $_eq}}, _set: {status: "DELETED"}) {
     returning {
       fullName
     }

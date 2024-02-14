@@ -148,9 +148,7 @@ const handleLogin = () => {
 <template>
   <div class="flex h-screen">
     <!----------------------------------Left Side Image ---------------------------->
-    <div
-      class="flex-[30%] bg-primary-600 flex flex-col items-center justify-center px-10"
-    >
+    <div class="flex-[30%] bg-primary-600 flex flex-col items-center justify-center px-10">
       <img src="/images/static/admin_login.png" />
       <p class="text-white text-4xl capitalize">Sheger gebete Administrator</p>
     </div>
@@ -171,19 +169,11 @@ const handleLogin = () => {
         <form class="flex flex-col gap-5 w-[25rem]">
           <!--------------------Email or phone number----------------------------->
           <div>
-            <HTextfield
-              placeholder="Email or PhoneNumber"
-              name="Email or PhoneNumber"
-              v-model="emailOrPhone"
-              rules="required|email_phone"
-              type="text"
-            >
+            <HTextfield placeholder="Email or PhoneNumber" name="Email or PhoneNumber" v-model="emailOrPhone"
+              rules="required|email_phone" type="text">
               <template #label>
                 <div class="">
-                  <span
-                    class="text-sheger_brown-200 dark:text-sheger_light_gray-400"
-                    >Email Or Phone Number</span
-                  >
+                  <span class="text-sheger_brown-200 dark:text-sheger_light_gray-400">Email Or Phone Number</span>
                 </div>
               </template>
             </HTextfield>
@@ -192,20 +182,11 @@ const handleLogin = () => {
           <!-----------------------------Password-------------------------------->
 
           <div>
-            <HTextfield
-              placeholder="Password"
-              name="Password"
-              v-model="password"
-              rules="required|password"
-              trailing-icon="heroicons:eye"
-              type="password"
-            >
+            <HTextfield placeholder="Password" name="Password" v-model="password" rules="required|password"
+              trailing-icon="heroicons:eye" type="password">
               <template #label>
                 <div class="">
-                  <span
-                    class="text-sheger_brown-200 dark:text-sheger_light_gray-400"
-                    >Password</span
-                  >
+                  <span class="text-sheger_brown-200 dark:text-sheger_light_gray-400">Password</span>
                 </div>
               </template>
             </HTextfield>
@@ -213,13 +194,9 @@ const handleLogin = () => {
 
           <div
             class="bg-primary-600 py-3 px-6 text-center rounded-md font-bold text-white disabled:opacity-50 hover:cursor-pointer"
-            @click="handleLogin"
-          >
-            <Icon
-              v-if="mobileLoginLoading || emailLoginLoading"
-              name="eos-icons:bubble-loading"
-              class="text-2xl text-white"
-            />
+            @click="handleLogin">
+            <Icon v-if="mobileLoginLoading || emailLoginLoading" name="eos-icons:bubble-loading"
+              class="text-2xl text-white" />
             Login
           </div>
         </form>

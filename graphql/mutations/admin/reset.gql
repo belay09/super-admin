@@ -1,0 +1,7 @@
+mutation MyMutation($confirm_password: String!, $password: String!, $token: String !) {
+  reset_password(
+    params: {confirm_password: $confirm_password, password: $password, token: $token}
+  ){
+    message
+  }
+}
