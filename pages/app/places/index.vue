@@ -5,9 +5,9 @@ import placesQuery from "@/graphql/query/places/list.gql";
 import useNotify from "@/use/notify";
 
 /*----------------------------Global Variables---------------------------*/
+const { notify } = useNotify();
 
 /**--------------------Tab data-------------------- */
-const { notify } = useNotify();
 const tabs = ref([
   {
     name: "Active",

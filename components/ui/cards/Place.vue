@@ -157,7 +157,6 @@ function toggleClosePlaceModal(event) {
 
 function openMoreAction(event) {
   event.stopPropagation();
-
   showMoreAction.value = !showMoreAction.value;
 }
 </script>

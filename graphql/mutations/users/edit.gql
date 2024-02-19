@@ -1,0 +1,5 @@
+mutation editUser($input: UsersUsersSetInput!, $id: bigint!) {
+  updateUsersUsersByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+}
