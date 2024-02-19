@@ -1,0 +1,23 @@
+query userAggregate {
+  totalUsers: usersUsersAggregate {
+    aggregate {
+      count
+    }
+  }
+  ACTIVE: usersUsersAggregate(where: { status: { _eq: ACTIVE } }) {
+    aggregate {
+      count
+    }
+  }
+  DELETED: usersUsersAggregate(where: { status: { _eq: DELETED } }) {
+    aggregate {
+      count
+    }
+  }
+
+  SUSPENDED: usersUsersAggregate(where: { status: { _eq: SUSPENDED } }) {
+    aggregate {
+      count
+    }
+  }
+}

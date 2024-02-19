@@ -1,0 +1,49 @@
+query getUsers(
+  $filter: UsersUsersBoolExp
+  $order: [UsersUsersOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  usersUsers(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+    id
+    fullName
+    email
+    photoUrl
+    phoneNumber
+
+    createdAt
+    status
+    userRoles {
+      role
+    }
+
+    # reviewsAgg
+    placeReviewsAggregate {
+      aggregate {
+        count
+      }
+    }
+    reviewsAggregate {
+      aggregate {
+        count
+      }
+    }
+
+    # bookmarksAgg
+    userPlaceBookMarksAggregate {
+      aggregate {
+        count
+      }
+    }
+    userReviewBookMarksAggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+  usersUsersAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
+}
