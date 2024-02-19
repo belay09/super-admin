@@ -65,13 +65,31 @@ aggregateOnError((error) => {
 });
 
 /***---------------------Place data fetch--------------------- */
+const placeSortItems = ref([
+  {
+    name: "Name",
+    levels: ["name"],
+    order: "ASC_NULLS_LAST",
+  },
+
+  {
+    name: "View",
+    levels: ["view_count"],
+    order: "DESC_NULLS_LAST",
+  },
+  {
+    name: "View",
+    levels: ["place_aggregate_summary", "sumLikes"],
+    order: "DESC_NULLS_LAST",
+  },
+  ,
+]);
 
 const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
 const places = ref([]);
 const limit = ref(6);
 const length = ref(0);
 const pageTracker = ref(1);
-
 const search = ref("");
 
 /***-------------------------Compute offset------------------------- */
@@ -153,12 +171,9 @@ definePageMeta({
             placeholder="Search here"
             trailing-icon="uil:search"
           ></H-Textfield>
-          <div class="border rounded-md py-3 px-4">
-            <Icon
-              name="heroicons-outline:adjustments"
-              class="text-2xl cursor-pointer z-30"
-            />
-          </div>
+
+          <!------------------------- sort -------------------------->
+          <H-Sort v-model="sort" :items="placeSortItems"></H-Sort>
           <nuxt-link
             to="places/register-new-place"
             class="primary-button block bg-primary-600"

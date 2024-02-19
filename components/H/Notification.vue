@@ -8,13 +8,13 @@ const { dismiss, notification } = useNotify();
 
   <div
     aria-live="assertive"
-    class="z-[200] fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-start"
+    class="z-[200] fixed inset-0 flex items-start px-4 py-6 pointer-events-none sm:p-6 sm:items-start"
   >
-    <div class="w-full flex flex-col items-center space-y-4 sm:items-end">
+    <div class="w-full flex flex-col space-y-4 items-end">
       <!-- Notification panel, dynamically insert this into the live region when it needs to be displayed -->
       <transition
         enter-active-class="transform ease-out duration-300 transition"
-        enter-from-class="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+        enter-from-class=" opacity-0 sm:translate-y-0 translate-x-2"
         enter-to-class="translate-y-0 opacity-100 sm:translate-x-0"
         leave-active-class="transition ease-in duration-100"
         leave-from-class="opacity-100"
@@ -80,4 +80,5 @@ const { dismiss, notification } = useNotify();
       </transition>
     </div>
   </div>
+  <div class="trans"></div>
 </template>
