@@ -41,8 +41,13 @@ function clearSort() {
 /**-----------------------------------Show sorts----------------------------------------- */
 const sortRef = ref(null);
 const showSorts = ref(false);
-onClickOutside(sortRef, (e) => (showSorts.value = false));
+onClickOutside(sortRef, (e) => {
+  if (showSorts.value) {
+    showSorts.value = false;
+  }
+});
 function toggleShowSorts() {
+  console.log("showSorts", showSorts.value);
   showSorts.value = !showSorts.value;
 }
 </script>
@@ -59,15 +64,15 @@ function toggleShowSorts() {
       v-if="showSorts"
       class="absolute top-14 right-0 flex flex-col z-50 bg-white border rounded-md"
     >
-      <!-- <div
+      <div
         class="cursor-pointer py-2 px-4 border-b"
         v-for="item in items"
         :key="item.name"
         @click="selectSort(item)"
       >
         {{ item.name }}
-      </div> -->
-      <!-- -------------Clear sorts----- -->
+      </div>
+      <!-- ----------------------------Clear sorts------------------ -->
       <p @click="clearSort" class="cursor-pointer py-2 px-4 border-b">
         Clear {{ showSorts }}
       </p>

@@ -1,4 +1,11 @@
 {
   "nuxt.isNuxtApp": false,
-  "cSpell.words": ["axios", "Gebeta", "ilike", "Sheger", "shegergebeta"]
+  "cSpell.words": [
+    "axios",
+    "Gebeta",
+    "heroicons",
+    "ilike",
+    "Sheger",
+    "shegergebeta"
+  ]
 }
