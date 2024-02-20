@@ -1,5 +1,6 @@
 <script setup>
-import placesQuery from "@/graphql/query/places/list.gql";
+import drinksQuery from "@/graphql/query/drinks/mini.gql";
+
 import useNotify from "@/use/notify";
 
 /**-----------------Global Variables--------------------------- */
@@ -12,12 +13,12 @@ const props = defineProps({
 
 const { notify } = useNotify();
 
-/***---------------------Place data fetch--------------------- */
-const places = ref([]);
-const place = ref(props.modelValue);
+/***---------------------menu data fetch--------------------- */
+const items = ref([]);
+const item = ref(props.modelValue);
 const limit = ref(100);
 const length = ref(0);
-const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
+const sort = ref([{ id: "ASC_NULLS_LAST" }]);
 const offset = ref(0);
 const search = ref("");
 
@@ -26,13 +27,8 @@ const filter = computed(() => {
 	let query = {};
 	query._and = [
 		{
-			name: {
+			title: {
 				_ilike: `%${search.value}%`,
-			},
-		},
-		{
-			status: {
-				_eq: "ACTIVE",
 			},
 		},
 	];
@@ -41,16 +37,16 @@ const filter = computed(() => {
 });
 
 const { onResult, onError, loading, refetch } = authListQuery(
-	placesQuery,
+	drinksQuery,
 	filter,
 	sort,
 	offset,
 	limit
 );
 onResult((result) => {
-	if (result.data?.places) {
-		places.value = result.data.places;
-		length.value = result.data.placesAggregate?.aggregate?.count;
+	if (result.data?.basicsDrinks) {
+		items.value = result.data.basicsDrinks;
+		length.value = result.data.basicsDrinksAggregate?.aggregate?.count;
 	}
 });
 
@@ -70,12 +66,12 @@ function makeSearch(value) {
 watch(
 	() => props.modelValue,
 	(value) => {
-		place.value = value;
+		item.value = value;
 	}
 );
 
 watch(
-	() => place.value,
+	() => item.value,
 	(value) => {
 		emit("update:modelValue", value);
 	}
@@ -84,12 +80,12 @@ watch(
 
 <template>
 	<Lazy-H-SingleSelectWithSearch
-		:items="places"
-		v-model="place"
+		:items="items"
+		v-model="item"
 		@search="makeSearch"
-		id="place"
-		name="place"
-		label="Place"
+		id="drink"
+		name="drink"
+		label="Drinks"
 		:loading="loading"
 	></Lazy-H-SingleSelectWithSearch>
 </template>

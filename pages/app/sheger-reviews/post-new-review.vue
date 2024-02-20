@@ -1,111 +1,167 @@
 <script setup>
-definePageMeta({
-	layout: "home",
-});
+import addReviewQuery from "@/graphql/mutations/reviews/add.gql";
+import { useForm } from "vee-validate";
+import useNotify from "@/use/notify";
 
-const placeItems = ref([
-	{
-		name: "Hotels",
-		id: "Hotels",
-		logo: "/images/temporary/kuriftu.png",
-	},
-	{
-		name: "Restaurants",
-		id: "Restaurants",
-		logo: "/images/temporary/kuriftu.png",
-	},
-	{
-		name: "Cafes",
-		id: "Cafes",
-		logo: "/images/temporary/kuriftu.png",
-	},
-	{
-		name: "Caterings",
-		id: "Caterings",
-		logo: "/images/temporary/kuriftu.png",
-	},
-]);
+const { notify } = useNotify();
 
-const dishTitleItems = ref([
-	{
-		name: "Chicken Burger",
-		id: "Chicken Burger",
-	},
-	{
-		name: "Beef Burger",
-		id: "Beef Burger",
-	},
-	{
-		name: "Veggie Burger",
-		id: "Veggie Burger",
-	},
-	{
-		name: "Beef Burger",
-		id: "Beef Burger",
-	},
-]);
+const { handleSubmit } = useForm();
 
 const menuTypeItems = ref([
 	{
 		name: "Food",
-		id: "Food",
+		id: "FOODS",
 	},
 	{
 		name: "Drink",
-		id: "Drink",
+		id: "DRINKS",
 	},
 ]);
 
-const image = ref();
-const selectedThumbnails = ref();
+const images = ref([]);
+const selectedThumbnail = ref();
+const selectedPlaceLocation = ref();
+const selectedPlaceID = ref();
+const selectedDrinkId = ref();
+const selectedDishId = ref();
+const title = ref("");
+const description = ref(""); //description
+const tags = ref();
+const price = ref();
+const type = ref();
+const timeToPrepare = ref();
+const youtubeVideoUrl = ref("");
+const sides = ref("");
+
+const {
+	mutate: addReview,
+	onError: addReviewError,
+	onDone: addReviewDone,
+	loading: addReviewLoading,
+} = authMutation(addReviewQuery);
+
+const onSubmit = handleSubmit(() => {
+	const review = ref({
+		title: title.value,
+		description: description.value,
+		price: price.value,
+		type: type.value,
+		timeToPrepare: timeToPrepare.value,
+		youtubeVideoUrl: youtubeVideoUrl.value,
+		sides: sides.value,
+		placeId: selectedPlaceID.value,
+		placeLocationId: selectedPlaceLocation.value,
+		reviewedAt: new Date().toISOString(),
+		review_drink: {
+			data: {
+				drinkId: selectedDrinkId.value,
+			},
+		},
+		menu_reviews: {
+			data: selectedDishId.value.map((dish) => {
+				return {
+					menuId: dish,
+				};
+			}),
+		},
+		review_tags: {
+			data: tags.value.map((tag) => {
+				return {
+					tagId: tag,
+				};
+			}),
+		},
+		featured_media: {
+			data: {
+				url: selectedThumbnail.value,
+			},
+		},
+
+		review_medias: {
+			data: images.value.map((image) => {
+				return {
+					media: {
+						data: {
+							url: image,
+						},
+					},
+				};
+			}),
+		},
+	});
+	addReview({ input: review.value });
+});
+
+addReviewDone((result) => {
+	notify({
+		title: "Review created successfully",
+		description: "Review created successfully",
+		type: "success",
+		borderClass: "border-l-8 border-green-300",
+	});
+	navigateTo("/app/sheger-reviews");
+});
+
+addReviewError((error) => {
+	notify({
+		title: "Review creation failed",
+		description: "Review creation failed",
+		type: "error",
+		borderClass: "border-l-8 border-red-300",
+	});
+});
+
+definePageMeta({
+	layout: "home",
+});
 </script>
 
 <template>
-	<div class="px-20">
+	<div class="px-20 pb-20">
 		<!-- --------------------------------Top-------------------------------- -->
 		<div class="flex items-center justify-between">
 			<h1 class="text-2xl font-medium">Post New Review</h1>
 			<div class="font-medium text-white border primary-button bg-primary-600">
-				<p class="mx-6">Post Now</p>
+				<button form="addReview" type="submit" class="mx-6">
+					<span v-if="!addReviewLoading">Post Now</span>
+					<Icon v-else name="eos-icons:bubble-loading" class="text-2xl" />
+				</button>
 			</div>
 		</div>
 
 		<!-- --------------------------------Form-------------------------------- -->
 
-		<form class="flex gap-7">
+		<form id="addReview" @submit.prevent="onSubmit" class="flex gap-7">
 			<!-- ------------------------------Left------------------------------- -->
-			<div class="flex-[50%]">
+			<div class="flex-[50%] space-y-4">
+				<HTextfield
+					name=" Title"
+					class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
+					rules="required"
+					v-model="title"
+				>
+					<template #label>
+						<p class="mb-2 text-sheger-gray-100">Title</p>
+					</template>
+				</HTextfield>
+
 				<!------------------------------- Place--------------------------- -->
 
-				<H-SingleSelect
-					name="place"
-					id="place"
-					label="Type"
-					:items="placeItems"
-					v-model="place"
-				>
-					<template v-slot:header="{ item }">
-						<div class="flex items-center gap-3">
-							<div>
-								<img :src="item.logo" class="w-10 h-10 rounded-full" />
-							</div>
-							<div>
-								<p class="text-sm">{{ item.name }}</p>
-							</div>
-						</div>
-					</template>
+				<LazyAdSpacePlaceSelector v-model="selectedPlaceID" />
+				<!-- ------------------------------Place Location----------------------------->
+				<LazySelectorsPlaceLocation
+					:place_Id="selectedPlaceID"
+					v-model="selectedPlaceLocation"
+				/>
 
-					<template v-slot:row="{ item }">
-						<div class="flex items-center gap-3">
-							<div>
-								<img :src="item.logo" class="w-10 h-10 rounded-full" />
-							</div>
-							<div>
-								<p class="text-sm">{{ item.name }}</p>
-							</div>
-						</div>
-					</template>
-				</H-SingleSelect>
+				<!-- ------------------------------Dish Title----------------------------->
+				<LazySelectorsDish
+					v-model="selectedDishId"
+					:place_Id="selectedPlaceID"
+				/>
+
+				<!-- ------------------------------Drinks----------------------------->
+				<LazySelectorsDrinks v-model="selectedDrinkId" />
 				<!-- ------------------------------Description-------------------------->
 
 				<HTextarea
@@ -115,16 +171,6 @@ const selectedThumbnails = ref();
 					v-model="description"
 				/>
 
-				<!-- ------------------------------Dish Title----------------------------->
-
-				<H-SingleSelect
-					name="Dish_Title"
-					id="dish_title"
-					label="Dish Title"
-					:items="dishTitleItems"
-					v-model="dishTitle"
-				></H-SingleSelect>
-
 				<!----------------------------------------------Price (ETB)------------------------------------------>
 
 				<HTextfield
@@ -132,12 +178,16 @@ const selectedThumbnails = ref();
 					name="Price"
 					class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
 					rules="required"
+					v-model="price"
 				>
 					<template #label>
 						<p class="text-sheger-gray-100">Price (ETB)</p>
 					</template>
 				</HTextfield>
+			</div>
 
+			<!-----------------------------------Right---------------------------- -->
+			<div class="flex-[50%] space-y-4">
 				<!----------------------------------------Menu Type---------------------------------------->
 
 				<H-SingleSelect
@@ -145,9 +195,8 @@ const selectedThumbnails = ref();
 					id="menu_type"
 					label="Menu Type"
 					:items="menuTypeItems"
-					v-model="menuType"
+					v-model="type"
 				></H-SingleSelect>
-
 				<!----------------------------------------Preparation Time (Minutes)-------------------------->
 
 				<HTextfield
@@ -155,6 +204,7 @@ const selectedThumbnails = ref();
 					name="Preparation Time"
 					class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
 					rules="required"
+					v-model="timeToPrepare"
 				>
 					<template #label>
 						<p class="mb-2 text-sheger-gray-100">Preparation Time (Minutes)</p>
@@ -162,12 +212,11 @@ const selectedThumbnails = ref();
 				</HTextfield>
 
 				<!----------------------------------------Ingredient ( Use comma to seprate)---------------------------------------->
-
+				<!--------------//TODO integrate ingredient-------------------->
 				<HTextfield
 					type="text"
 					name="Ingredient"
 					class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
-					rules="required"
 				>
 					<template #label>
 						<p class="mb-2 text-sheger-gray-100">
@@ -178,19 +227,7 @@ const selectedThumbnails = ref();
 
 				<!----------------------------------------Tag---------------------------------------->
 
-				<H-MultiSelect
-					name="menu_tag"
-					id="menu_tag"
-					:items="menuTypeItems"
-					label="Tag"
-					v-model="placeType"
-					show-by="name"
-				>
-				</H-MultiSelect>
-			</div>
-
-			<!-----------------------------------Right---------------------------- -->
-			<div class="flex-[50%]">
+				<LazySelectorsTag v-model="tags" />
 				<!--------------------------------Video Url-------------------------- -->
 
 				<HTextfield
@@ -199,6 +236,7 @@ const selectedThumbnails = ref();
 					class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
 					placeholder="https://www.youtube.com/watch?v=Zz5cu72GQfE"
 					rules="required"
+					v-model="youtubeVideoUrl"
 				>
 					<template #label>
 						<p class="mb-2 text-sheger-gray-100">Video Url</p>
@@ -212,44 +250,16 @@ const selectedThumbnails = ref();
 					name="Side"
 					class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
 					rules="required"
+					v-model="sides"
 				>
 					<template #label>
 						<p class="mb-2 text-sheger-gray-100">Sides</p>
 					</template>
 				</HTextfield>
 
-				<!----------------------------------Goes well with-------------------------- -->
-				<H-SingleSelect
-					name="place"
-					id="place"
-					label="Type"
-					:items="placeItems"
-					v-model="place"
-				>
-					<template v-slot:header="{ item }">
-						<div class="flex items-center gap-3">
-							<div>
-								<img :src="item.logo" class="w-10 h-10 rounded-full" />
-							</div>
-							<div>
-								<p class="text-sm">{{ item.name }}</p>
-							</div>
-						</div>
-					</template>
+				<!----------------------------------------images Upload---------------------------------------->
+				<p class="mb-2 text-sheger-gray-100">Upload images</p>
 
-					<template v-slot:row="{ item }">
-						<div class="flex items-center gap-3">
-							<div>
-								<img :src="item.logo" class="w-10 h-10 rounded-full" />
-							</div>
-							<div>
-								<p class="text-sm">{{ item.name }}</p>
-							</div>
-						</div>
-					</template>
-				</H-SingleSelect>
-
-				<!----------------------------------------Image Upload---------------------------------------->
 				<HFileUploadWrapper
 					name="file"
 					:maxFileSize="1024 * 1024 * 10"
@@ -257,11 +267,11 @@ const selectedThumbnails = ref();
 					folder="applications_form"
 					description="upload file"
 					placeholder="select multiple files"
-					v-model="image"
-					:init="image"
+					v-model="images"
+					:init="images"
 					:disabled="false"
 					:showStar="false"
-					v-model:thumbnails="selectedThumbnails"
+					v-model:thumbnails="selectedThumbnail"
 				/>
 			</div>
 		</form>

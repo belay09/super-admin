@@ -1,0 +1,16 @@
+query getMenus(
+	$filter: MenusBoolExp
+	$order: [MenusOrderBy!]
+	$limit: Int
+	$offset: Int
+) {
+	menus(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+		id
+		name: title
+	}
+	menusAggregate(where: $filter) {
+		aggregate {
+			count
+		}
+	}
+}

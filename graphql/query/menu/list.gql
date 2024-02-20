@@ -1,50 +1,51 @@
 query getMenus(
-  $filter: MenusBoolExp
-  $order: [MenusOrderBy!]
-  $limit: Int
-  $offset: Int
+	$filter: MenusBoolExp
+	$order: [MenusOrderBy!]
+	$limit: Int
+	$offset: Int
 ) {
-  menus(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
-    price
-    sides
-    timeToPrepare
-    title
-    type
-    updatedAt
-    menuTags {
-      id
-      tag {
-        iconId
-        title
-        id
-      }
-    }
-    media {
-      url
-    }
-    menuMedias {
-      media {
-        url
-      }
-    }
-    isHouseSpecial
-    isFeatured
-    description
+	menus(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+		id
+		price
+		sides
+		timeToPrepare
+		title
+		type
+		updatedAt
+		menuTags {
+			id
+			tag {
+				iconId
+				title
+				id
+			}
+		}
+		media {
+			url
+		}
+		menuMedias {
+			media {
+				url
+			}
+		}
+		isHouseSpecial
+		isFeatured
+		description
 
-    place {
-      id
-      name
-      type
-      # logo {
-      #   id
-      #   url
-      # }
-    }
-  }
-  # menu aggregates
-  menusAggregate(where: $filter) {
-    aggregate {
-      count
-    }
-  }
+		place {
+			id
+			name
+			type
+			# logo {
+			#   id
+			#   url
+			# }
+		}
+	}
+	# menu aggregates
+	menusAggregate(where: $filter) {
+		aggregate {
+			count
+		}
+	}
 }
