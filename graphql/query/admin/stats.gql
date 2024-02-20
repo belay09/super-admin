@@ -1,0 +1,62 @@
+query {
+  sheger_daily_visitor_by_categories(
+    args: { start_date: "2023-10-10", end_date: "2024-10-10" }
+  ) {
+    cafe_visitor_count
+    catering_visitor_count
+    date
+    hotel_visitor_count
+    restuarant_visitor_count
+  }
+  sheger_aggregate_cards(
+    args: { start_date: "2023-10-10", end_date: "2024-10-10" }
+  ) {
+    aggregate
+    new_totals
+    rate_change_percentage
+    totals
+  }
+  sheger_daily_user_signups(
+    args: { start_date: "2023-10-10", end_date: "2024-10-10" }
+  ) {
+    count
+    date
+  }
+  sheger_daily_user_engagment(
+    args: { start_date: "2023-10-10", end_date: "2024-10-10" }
+  ) {
+    date
+    engages
+    views
+  }
+  sheger_daily_add_views(
+    args: { start_date: "2023-10-10", end_date: "2024-10-10" }
+  ) {
+    count
+    date
+  }
+
+  weekly_recommended: featuredPlacesAggregate(
+    where: { type: { _eq: WEEKLY_RECOMMENDED_PLACE } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+
+  seasonal_places: featuredPlacesAggregate(
+    where: { type: { _eq: SEASONAL_PLACE } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+
+  recently_opened: featuredPlacesAggregate(
+    where: { type: { _eq: RECENTLY_OPENED_PLACE } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
