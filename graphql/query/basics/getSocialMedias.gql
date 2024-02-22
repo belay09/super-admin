@@ -1,11 +1,12 @@
-query{
-	basicsSocialMedias{
+query getSocialMedias {
+  basicsSocialMedias {
     icon {
       darkIconUrl
+      lightIconUrl
       id
-    },
+    }
     name
     url
     id
-  }  
+  }
 }

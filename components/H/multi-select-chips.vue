@@ -71,7 +71,7 @@ const props = defineProps({
   placeholder: {
     type: String,
     default: "Search",
-  }
+  },
 });
 
 const chips = ref([]);

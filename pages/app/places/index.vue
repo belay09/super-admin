@@ -174,7 +174,7 @@ definePageMeta({
           <!------------------------- sort -------------------------->
           <H-Sort v-model="sort" :items="placeSortItems"></H-Sort>
           <nuxt-link
-            to="places/register-new-place"
+            to="places/register-new-place?step=0"
             class="primary-button block bg-primary-600"
           >
             <Icon

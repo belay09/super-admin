@@ -84,6 +84,18 @@ const props = defineProps({
     default: "",
   },
 
+  /**-----------------------------------Leading text----------------- */
+  leadingText: {
+    type: String,
+    default: "",
+    required: false,
+  },
+  leadingTextClass: {
+    type: String,
+    default: "",
+    required: false,
+  },
+
   /*-------------------- Trailing icon-----------------------*/
   trailingIcon: {
     type: String,
@@ -190,6 +202,8 @@ watch(
       <!-- -----------------Leading Class--------------- -->
       <slot name="leading" />
 
+      <!-- ----------------------------Leading Icon---------------- -->
+
       <div
         v-if="props.leadingIcon"
         class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-4"
@@ -206,6 +220,18 @@ watch(
           class="text-gray-700"
         />
       </div>
+      <!-- ------------------Leading text--------------- -->
+      <p
+        v-if="props.leadingText != ''"
+        :class="[
+          props.leadingTextClass != ''
+            ? props.leadingTextClass
+            : 'text-sheger_brown-200 dark:text-sheger_light_gray-400 text-sm',
+        ]"
+        class="absolute top-[0px]"
+      >
+        {{ props.leadingText }}
+      </p>
       <input
         v-model="inputValue"
         @input="set($event)"
@@ -229,6 +255,7 @@ watch(
           props.type == 'password' ? 'pr-7' : '',
           props.leadingIcon ? 'pl-14' : '',
           props.iconLeadingClass ? props.iconLeadingClass : '',
+          props.leadingText != '' ? 'lg:pl-14 ' : '',
         ]"
         class="secondary-border block w-full rounded-md font-body text-base placeholder-gray-500 focus:outline-none py-3 focus:border-gray-800 focus:ring-0"
         :placeholder="props.placeholder"

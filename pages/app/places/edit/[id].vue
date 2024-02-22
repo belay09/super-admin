@@ -3,6 +3,8 @@ const route = useRoute();
 const router = useRouter();
 const currentStep = ref(0);
 
+const placeId = route.params.id || -1;
+
 // ---------------------------- Go Back Handler ----------------------------
 const goPrev = () => {
   currentStep.value -= 1;
@@ -16,13 +18,18 @@ const goNext = () => {
 };
 
 onMounted(() => {
-  if (route.query.step) {
+  if (route.query?.step) {
+    currentStep.value = parseInt(route.query.step);
+  }
+});
+watchEffect(() => {
+  if (route.query?.step) {
     currentStep.value = parseInt(route.query.step);
   }
 });
 
 definePageMeta({
-  title: "Register New Place",
+  title: "Edit Place",
   layout: "home",
 });
 </script>
@@ -129,7 +136,7 @@ definePageMeta({
     </div>
     <div class="min-h-[70%] border flex flex-col justify-between px-5 py-2">
       <div class="h-full">
-        <PlacesFormBasicInfo
+        <PlacesEditBasicInfo
           @next="goNext"
           @prev="goPrev"
           v-if="currentStep == 0"
@@ -138,27 +145,30 @@ definePageMeta({
           @next="goNext"
           @prev="goPrev"
           v-if="currentStep == 1"
+          :placeId="placeId"
         />
         <PlacesFormAmenities
           @next="goNext"
           @prev="goPrev"
           v-if="currentStep == 2"
+          :placeId="placeId"
         />
         <PlacesFormPortfolio
           @next="goNext"
           @prev="goPrev"
           v-if="currentStep == 3"
+          :placeId="placeId"
         />
         <PlacesFormMenu @next="goNext" @prev="goPrev" v-if="currentStep == 4" />
         <PlacesFormPictures
           @next="goNext"
           @prev="goPrev"
-          v-if="currentStep == 5"
+          v-if="currentStep == 4"
         />
         <PlacesFormPricing
           @next="goNext"
           @prev="goPrev"
-          v-if="currentStep == 6"
+          v-if="currentStep == 5"
         />
       </div>
     </div>

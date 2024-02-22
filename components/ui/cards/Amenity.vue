@@ -3,7 +3,7 @@ import { Carousel, Slide } from "vue3-carousel";
 
 const router = useRouter();
 const props = defineProps({
-  menu: {
+  amenity: {
     type: Object,
     required: true,
   },
@@ -13,11 +13,10 @@ const props = defineProps({
     required: false,
   },
 });
-console.log("menu large", props.menu);
-const emit = defineEmits(["edit"]);
+const emit = defineEmits(["editAmenity", "deleteAmenity"]);
 /*-------------------------Image---------------------------*/
-const imagesToShow = ref(props.menu.placeAmenityResources.slice(0, 6));
-// console.log("image to show",props.menu.menuMedias);
+const imagesToShow = ref(props.amenity.placeAmenityResources.slice(0, 6));
+// console.log("image to show",props.amenity.amenityMedias);
 
 /*---------------------Carousel---------------------- */
 const currentSlide = ref(0);
@@ -61,13 +60,13 @@ const gotoPlace = (place) => {
     });
   }
 };
-const edit = () => {
+const editAmenity = () => {
   // Send a variable to the parent function
-  emit("childEvent", props.menu);
+  emit("editAmenity", props.amenity);
 };
-const delate = () => {
+const deleteAmenity = () => {
   // Send a variable to the parent function
-  emit("delateEvent", props.menu.id);
+  emit("deleteAmenity", props.amenity.id);
 };
 </script>
 
@@ -87,7 +86,7 @@ const delate = () => {
       <div class="w-[320px] h-full">
         <div class="z-10 w-full">
           <Carousel :breakpoints="breakpoints" v-model="currentSlide" class="">
-            <Slide v-if="menu?.menuMedias?.length === 0">
+            <Slide v-if="amenity?.amenityMedias?.length === 0">
               <div
                 class="h-[100px] overflow-hidden w-full bg-sheger_brown-200"
               ></div>
@@ -114,30 +113,29 @@ const delate = () => {
           <div class="flex items-center gap-4 px-4 my-2">
             <img
               class="w-[30px] h-[30px] rounded-lg"
-              :src="props.menu.amenity.icon.darkIconUrl"
+              :src="props.amenity.amenity.icon.darkIconUrl"
               alt="default"
             />
             <p class="text-white text-xl font-bold">
-              {{ menu.amenity?.title }}
+              {{ amenity.amenity?.title }}
             </p>
-           
           </div>
           <p class="text-white text-sm description px-4">
-            {{ props.menu.description }}
+            {{ props.amenity.description }}
           </p>
         </div>
       </div>
     </div>
     <div class="flex justify-between p-5 w-[20rem]">
       <button
-        @click="edit"
+        @click="editAmenity"
         class="bg-white-500 border-[1px] hover:bg-gray-200 text-black font-normal px-2 py-1 rounded"
       >
         <Icon name="material-symbols:edit" color="black" class="w-5 h-5" />
         Edit
       </button>
       <button
-        @click="delate"
+        @click="deleteAmenity"
         class="ml-2 bg-white-500 border-[1px] hover:bg-gray-100 text-black font-normal px-2 py-1 rounded"
       >
         <Icon name="ph:trash" color="black" class="w-5 h-5" />

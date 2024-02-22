@@ -75,6 +75,13 @@ export default defineNuxtPlugin((vueApp) => {
   defineRule("ethio_phone", (value) => {
     return !value || /^(7|9)\d{8}$/.test(value) || "Not valid phone number";
   }),
+    defineRule("phoneNumber", (value) => {
+      return (
+        !value ||
+        /^(\+2519|\+2517)\d{8}$/.test(value) ||
+        "Not valid phone number"
+      );
+    }),
     defineRule("password", (value) => {
       return (
         !value ||

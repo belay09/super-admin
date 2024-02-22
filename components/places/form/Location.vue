@@ -1,8 +1,25 @@
 <script setup>
-import { useRegisterPlaceStore } from "~/stores/registerPlace";
-import addPlaceLocationMutation from "~/graphql/mutations/place/addPlaceLocations.gql";
+import updatePlaceLocationMutation from "~/graphql/mutations/place/updatePlaceLocations.gql";
 import getPlaceLocationsQuery from "~/graphql/query/places/getPlaceLocations.gql";
-const registerPlaceStore = useRegisterPlaceStore();
+import useNotify from "@/use/notify";
+
+const { notify } = useNotify();
+const { handleSubmit } = useForm({});
+
+/**-----------------------Navigation----------------------------- */
+const emit = defineEmits(["next", "prev"]);
+const props = defineProps({
+  placeId: {
+    type: Number,
+    required: true,
+  },
+});
+const next = () => {
+  emit("next");
+};
+const prev = () => {
+  emit("prev");
+};
 
 const mapModel = ref(false);
 const item = ref({
@@ -12,44 +29,26 @@ const item = ref({
 const coordinates = computed(() => {
   return `${item.value.latitude}, ${item.value.longitude}`;
 });
-const city = ref({});
-const area = ref({});
-const mainLocation = ref(false);
+const city = ref(undefined);
+const area = ref(undefined);
+const isMainLocation = ref(false);
 
 const selectedLocations = ref([]);
-const locations = ref([]);
-
-watch(
-  area,
-  (newVal) => {
-    console.log(newVal, "dasd");
-  },
-  {
-    deep: true,
-  }
-);
 
 const updateMapVal = (data) => {
-  // Find the index of the tag with the given TagId in the selectedTags array
-  console.log("latitude", data.position.lat);
-  console.log("longitude", data.position.lng);
   item.value.latitude = data.position.lat;
   item.value.longitude = data.position.lng;
 };
 
-/**--------------------------------------Query-------------------------------*/
-
-// --------------------------- Location Qury --------------------------------
-
-const locationFilter = computed(()=>{
+// --------------------------- Place  Location Data Fetch --------------------------------
+const locationFilter = computed(() => {
   let query = {
     placeId: {
-      _eq: registerPlaceStore.placeId,
+      _eq: props.placeId,
     },
   };
-
   return query;
-})
+});
 
 const {
   onResult: onResultLocation,
@@ -61,61 +60,80 @@ const {
 
 onResultLocation((result) => {
   if (result.data) {
-    locations.value = result?.data?.placeLocations;
+    result.data?.placeLocations.forEach((location) => {
+      selectedLocations.value.push({
+        city: location.city,
+        area: location.area,
+        coordinates: location.location?.coordinates,
+        isMainLocation: location.isMainLocation,
+      });
+    });
   }
 });
 
-/**-----------------------------------Mutations------------------------ */
+/**-------------------------------Add location to selectedLocations array--------------------- */
 
-const {
-  mutate: addPlaceLocation,
-  loading: addPlaceLocationLoading,
-  error: addPlaceLocationError,
-  onDone: addPlaceLocationDone,
-} = authMutation(addPlaceLocationMutation);
-
-addPlaceLocationDone(() => {
-  refetchLocation();
-});
-
-const handleAddLocation = () => {
+const handleAddLocation = handleSubmit(() => {
   selectedLocations.value.push({
     city: city.value,
     area: area.value,
-    coordinates: coordinates.value,
-    mainLocation: mainLocation.value,
+    coordinates: coordinates.value.split(",").map((item) => Number(item)),
+    isMainLocation: isMainLocation.value,
   });
+});
 
-  city.value = {};
-  area.value = {};
-  mainLocation.value = false;
+/**-------------------------------Remove location from selectedLocations array--------------------- */
 
-  console.log(selectedLocations.value, "selectedLocations");
+const handleRemoveLocation = (index) => {
+  selectedLocations.value.splice(index, 1);
+};
 
-  addPlaceLocation({
+/**-----------------------------------Update place location database table------------------------ */
+
+const {
+  mutate: updatePlaceLocation,
+  loading: updatePlaceLocationLoading,
+  onError: updatePlaceLocationError,
+  onDone: updatePlaceLocationDone,
+} = authMutation(updatePlaceLocationMutation);
+
+updatePlaceLocationDone((result) => {
+  emit("next");
+});
+
+updatePlaceLocationError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+/**-------------------------------Handle update place location---------------- */
+
+function handleUpdatePlaceLocations() {
+  updatePlaceLocation({
+    filter: {
+      placeId: {
+        _eq: props.placeId,
+      },
+    },
     data: selectedLocations.value.map((location) => {
       return {
-        placeId: registerPlaceStore.placeId,
+        placeId: props.placeId,
         cityId: location.city.id,
         areaId: location.area.id,
-        isMainLocation: location.mainLocation,
-        description: "da",
+        isMainLocation: location.isMainLocation,
+        description: "description",
         location: {
           type: "Point",
-          coordinates: location.coordinates
-            .split(",")
-            .map((item) => parseFloat(item)),
+          coordinates: location.coordinates,
         },
       };
     }),
   });
-
-  console.log(data, "data");
-};
-
-const handleDeleteLocation = (index) => {
-  selectedLocations.value.splice(index, 1);
-};
+}
 </script>
 <template>
   <div>
@@ -131,12 +149,14 @@ const handleDeleteLocation = (index) => {
       </template>
     </ModalsModal>
   </div>
+
   <div class="flex flex-col justify-center items-center mt-10 gap-5">
-    <!-----------------------------top-------------------------------------->
+    <!-----------------------------Selected location list-------------------------------------->
     <div class="flex gap-4">
       <div
         class="flex items-center gap-3 border w-fit px-5 py-1 rounded-lg"
-        v-for="location in locations"
+        v-for="(location, index) in selectedLocations"
+        :key="index"
       >
         <Icon
           v-if="location.isMainLocation"
@@ -161,24 +181,19 @@ const handleDeleteLocation = (index) => {
           <Icon
             name="uiw:delete"
             class="w-5 h-5 cursor-pointer"
-            @click="handleDeleteLocation"
+            @click="handleRemoveLocation"
           />
         </div>
       </div>
     </div>
 
-    <div class="flex flex-col gap-3">
+    <form class="flex flex-col gap-3" @submit.prevent="handleAddLocation">
       <!-- ------------------------------------City---------------------------------- -->
-      <div class="sm:col-span-2">
-        <BasicCity v-model="city" name="city" rules="required"></BasicCity>
-      </div>
+
+      <LazySelectorsCity v-model="city"></LazySelectorsCity>
+
       <!--------------------------------------Area-------------------------------------- -->
-      <BasicSubcity
-        v-model="area"
-        :region_id="city.id"
-        name="subcity"
-        rules="required"
-      ></BasicSubcity>
+      <LazySelectorsArea v-model="area" :cityId="city?.id"></LazySelectorsArea>
 
       <!---------------------------------------Coordinates--------------------------------------->
       <div class="flex">
@@ -211,17 +226,36 @@ const handleDeleteLocation = (index) => {
       <!-- ----------------------------------------Set as main location-------------------------------- -->
       <div class="flex justify-between">
         <p class="">Set as main location</p>
-        <HSwitch v-model="mainLocation" />
+        <HSwitch name="main_location" v-model="isMainLocation" />
       </div>
 
       <!----------------------------------------------Add Location------------------------------------>
-      <div
+      <button
         class="flex items-center gap-3 primary-button border"
-        @click="handleAddLocation"
+        type="submit"
       >
         <Icon name="fluent:location-add-16-regular" class="w-5 h-5" />
         Add Location
-      </div>
-    </div>
+      </button>
+    </form>
+  </div>
+
+  <!-- --------------------------------------navigation-------------------------------- -->
+  <div class="flex items-center justify-between my-2">
+    <button
+      class="primary-button border flex items-center gap-4"
+      @click="prev()"
+    >
+      <Icon name="uil:arrow-left" class="w-6 h-6" />
+      Previous
+    </button>
+
+    <button
+      class="primary-button border flex items-center gap-4 text-white bg-primary-600"
+      @click="handleUpdatePlaceLocations()"
+    >
+      Save & Proceed
+      <Icon name="uil:arrow-right" class="text" />
+    </button>
   </div>
 </template>

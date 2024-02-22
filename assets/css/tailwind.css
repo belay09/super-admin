@@ -111,8 +111,8 @@ body::-webkit-scrollbar-thumb:hover {
 .teritary-flex-row {
   @apply flex flex-row items-center space-x-6;
 }
-.form-input{
-  @apply py-2 border-gray-200 border px-4
+.form-input {
+  @apply py-2 border-gray-200 border px-4;
 }
 /* ---------------------------No edge---------------------- */
 
@@ -120,6 +120,6 @@ body::-webkit-scrollbar-thumb:hover {
   @apply border-none hover:border-none focus:border-none focus:ring-0 focus:outline-none;
 }
 
-.steper-button {
+.stepper-button {
   @apply bg-sheger-gray-500 w-full flex items-center justify-center text-lg border-r border-sheger-gray-200;
 }

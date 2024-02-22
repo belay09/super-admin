@@ -1,4 +1,4 @@
-query {
+query getPlaceTypes {
   placeTypes {
     name: value
     id: value

@@ -1,0 +1,15 @@
+mutation editPortfolio(
+  $portfolioObject: PortfoliosSetInput!
+  $portfolioResourceObject: [PortfolioMediasInsertInput!]!
+  $id: bigint!
+) {
+  deletePortfolioMedias(where: { portfolioId: { _eq: $id } }) {
+    affectedRows
+  }
+  insertPortfolioMedias(objects: $portfolioResourceObject) {
+    affectedRows
+  }
+  updatePortfoliosByPk(_set: $portfolioObject, pkColumns: { id: $id }) {
+    id
+  }
+}

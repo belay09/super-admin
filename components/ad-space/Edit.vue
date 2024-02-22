@@ -142,7 +142,7 @@ onDone(() => {
   notify({
     title: "Ad space edited successfully",
     description: "Ad space edited successfully",
-    type: "error",
+    type: "success",
     borderClass: "border-l-8 border-green-300",
   });
 });

@@ -1,20 +1,82 @@
 <script setup>
 import getAmenitiesQuery from "~/graphql/query/basics/amenities.gql";
 import insertPlaceAmenitiesMutation from "~/graphql/mutations/place/insertPlaceAmenities.gql";
+import editPlaceAmenityMutation from "~/graphql/mutations/place/editPlaceAmenity.gql";
+
 import getPlaceAmenitiesQuery from "~/graphql/query/places/getPlaceAmenities.gql";
 import deletePlaceAmenitiesMutation from "~/graphql/mutations/place/deletePlaceAmenities.gql";
-import { useRegisterPlaceStore } from "~/stores/registerPlace";
+
 import useNotify from "@/use/notify";
+const { handleSubmit, isSubmitting } = useForm({});
 
-/************************** Datas ******************************/
-const amenities = ref([]);
-const selectedPlaceAmenity = ref("");
-const searchTerm = ref("");
-const placeAmenityDescription = ref("");
-const image_urls = ref([]);
-const image_url = ref("");
+/**-----------------------Globals----------------------------- */
 const { notify } = useNotify();
+const placeAmenityForm = ref(null);
+const emit = defineEmits(["next", "prev"]);
+const props = defineProps({
+  placeId: {
+    type: Number,
+    required: true,
+  },
+});
 
+/**-----------------------Navigation----------------------------- */
+
+const next = () => {
+  emit("next");
+};
+const prev = () => {
+  emit("prev");
+};
+
+/**---------------------Place Amenities Data Fetch---------------------- */
+const placeAmenities = ref([]);
+const placeAmenitySort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
+const placeAmenityFilter = computed(() => {
+  let query = {
+    placeId: {
+      _eq: props.placeId,
+    },
+  };
+  return query;
+});
+
+const {
+  onResult: onResultPlaceAmenities,
+  onError: onErrorPlaceAmenities,
+  loading: loadingPlaceAmenities,
+  refetch: refetchPlaceAmenities,
+} = authListQuery(
+  getPlaceAmenitiesQuery,
+  placeAmenityFilter,
+  placeAmenitySort,
+  0,
+  20
+);
+
+onResultPlaceAmenities((result) => {
+  if (result.data) {
+    placeAmenities.value = result.data?.placeAmenities;
+  }
+});
+
+onErrorPlaceAmenities((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+/**************************Add and Edit Data ******************************/
+const selectedAmenity = ref("");
+const placeAmenityDescription = ref("");
+const image_urls = ref([
+  "https://cdn.hahu.jobs/public/sheger-gebeta/37a06044-d763-4b6b-adc7-a418235e5179.png",
+  "https://cdn.hahu.jobs/public/sheger-gebeta/37a06044-d763-4b6b-adc7-a418235e5179.png",
+]);
+const image_url = ref("");
 watch(image_url, (newVal) => {
   image_urls.value.push({
     media: {
@@ -25,79 +87,20 @@ watch(image_url, (newVal) => {
   });
 });
 
-watch(
-  image_urls,
-  (newVal) => {
-    console.log(newVal, "image_urls");
-  },
-  { deep: true }
-);
+/**--------------------------------Toggle between edit and add place amenity---------------- */
+const isAddPlaceAmenity = ref(true);
+function changeToAddPlaceAmenity() {
+  isAddPlaceAmenity.value = true;
+  image_urls.value = [];
+  placeAmenityDescription.value = "";
+  selectedPlaceAmenity.value = null;
+  selectedAmenity.value = "";
+}
+// place amenity selected for edit
+const selectedPlaceAmenity = ref(null);
 
-/************************** Control Variables ******************************/
-const showProfilePictureModal = ref(false);
-const registerPlaceStore = useRegisterPlaceStore();
-
-/************************** Query ******************************/
-
-/**------------------------Basic Amenity ---------------------- */
-const basicAmenityfilters = computed(() => {
-  let query = {};
-  if (searchTerm.value) {
-    query.title = {
-      _ilike: `%${searchTerm.value}%`,
-    };
-  }
-  return query;
-});
-
-const {
-  onResult: onResultAmenities,
-  onError: onErrorAmenities,
-  loading: loadingAmenities,
-  refetch: refetchAmenities,
-  fetchMore: fetchMoreAmenities,
-} = authListQuery(getAmenitiesQuery, basicAmenityfilters, "", 0, 50);
-
-onResultAmenities((result) => {
-  if (result.data) {
-    amenities.value = result.data.basicsAmenities;
-  }
-});
-
-/**---------------------Place Amenities ---------------------- */
-
-const placeAmenityfilters = computed(() => {
-  let query = {};
-  if (registerPlaceStore.placeId) {
-    query.placeId = {
-      _eq: registerPlaceStore.placeId,
-    };
-  }
-  return query;
-});
-
-const {
-  onResult: onResultPlaceAmenities,
-  onError: onErrorPlaceAmenities,
-  loading: loadingPlaceAmenities,
-  refetch: refetchPlaceAmenities,
-  fetchMore: fetchMorePlaceAmenities,
-} = authListQuery(getPlaceAmenitiesQuery, placeAmenityfilters, "", 0, 1);
-
-onResultPlaceAmenities((result) => {
-  console.log(result.data, "result.data");
-  if (result.data) {
-    placeAmenities.value = result.data?.placeAmenities;
-  }
-});
-
-/************************** Methods ******************************/
-const onSearch = (term) => {
-  searchTerm.value = term;
-};
-
-
-/************************** Mutations ******************************/
+/************************** insert place amenity ******************************/
+// mutation
 const {
   mutate: insertPlaceAmenityMutation,
   onDone: insertPlaceAmenityDone,
@@ -107,13 +110,115 @@ const {
 
 insertPlaceAmenityDone((result) => {
   refetchPlaceAmenities();
-
-  selectedPlaceAmenity.value = "";
+  notify({
+    title: "Amenity Added",
+    description: "Amenity Added Successfully",
+    type: "success",
+    borderClass: "border-l-8 border-green-300",
+  });
+  isAddPlaceAmenity.value = true;
+  selectedAmenity.value = "";
   placeAmenityDescription.value = "";
   image_urls.value = [];
 });
 
-/************************** Delete Aminity ******************************/
+insertPlaceAmenityError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+// handler
+const handleAddPlaceAmenity = () => {
+  insertPlaceAmenityMutation({
+    obj: {
+      placeId: props.placeId,
+      amenityId: selectedAmenity.value,
+      description: placeAmenityDescription.value,
+      placeAmenityResources: {
+        data: image_urls.value.map((url) => {
+          return {
+            media: {
+              data: {
+                url,
+              },
+            },
+          };
+        }),
+      },
+    },
+  });
+};
+
+/************************** edit place amenity ******************************/
+// Set initial value for edit place amenity
+const editAmenity = (amenity) => {
+  isAddPlaceAmenity.value = false;
+  selectedPlaceAmenity.value = amenity;
+  selectedAmenity.value = amenity.amenityId;
+  placeAmenityDescription.value = amenity.description;
+  image_urls.value = amenity.placeAmenityResources.map(
+    (item) => item.media.url
+  );
+
+  // scroll to edit form
+  if (placeAmenityForm.value) {
+    placeAmenityForm.value.scrollIntoView({
+      behavior: "smooth",
+    });
+  }
+};
+// mutation
+const {
+  mutate: editPlaceAmenityMutate,
+  onDone: editPlaceAmenityDone,
+  onError: editPlaceAmenityError,
+  loading: editPlaceAmenityLoading,
+} = authMutation(editPlaceAmenityMutation);
+
+editPlaceAmenityDone((result) => {
+  refetchPlaceAmenities();
+  notify({
+    title: "Amenity Updated",
+    description: "Amenity Updated Successfully",
+    type: "success",
+    borderClass: "border-l-8 border-green-300",
+  });
+});
+editPlaceAmenityError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+// handler
+const handleEditPlaceAmenity = () => {
+  editPlaceAmenityMutate({
+    id: selectedPlaceAmenity.value?.id,
+    placeAmenityObject: {
+      amenityId: selectedAmenity.value,
+      description: placeAmenityDescription.value,
+    },
+    amenityResourceObject: image_urls.value.map((url) => {
+      return {
+        placeAmenityId: selectedPlaceAmenity.value?.id,
+        media: {
+          data: {
+            url,
+          },
+        },
+      };
+    }),
+  });
+};
+
+/************************** Delete Place Aminity ******************************/
 const {
   mutate: deletePlaceAmenityMutation,
   onDone: deletePlaceAmenityDone,
@@ -122,6 +227,7 @@ const {
 } = authMutation(deletePlaceAmenitiesMutation);
 
 deletePlaceAmenityDone((result) => {
+  showDeletePlaceAmenityModal.value = false;
   refetchPlaceAmenities();
   notify({
     title: "Amenity Deleted",
@@ -131,162 +237,198 @@ deletePlaceAmenityDone((result) => {
   });
 });
 
-/************************** Handler ******************************/
-
-const handleAddPlaceAmenity = () => {
-  insertPlaceAmenityMutation({
-    obj: {
-      placeId: registerPlaceStore.placeId,
-      amenityId: selectedPlaceAmenity.value,
-      description: placeAmenityDescription.value,
-      placeAmenityResources: {
-        data: image_urls.value,
-      },
-    },
+deletePlaceAmenityError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
   });
-};
+});
 
-const handleChildEvent = (amenity) => {
-  selectedPlaceAmenity.value = amenity.amenityId;
-  placeAmenityDescription.value = amenity.description;
-  image_urls.value = amenity.placeAmenityResources;
+/**---------------------------Handle delete  place amenity--------------- */
+const placeAmenityToDelete = ref(null);
+const setPlaceAmenityToDelete = (id) => {
+  showDeletePlaceAmenityModal.value = true;
+  placeAmenityToDelete.value = id;
 };
-
-const handelDelate = (id) => {
+const handleDeleteAmenity = () => {
   deletePlaceAmenityMutation({
-    id: id,
+    id: placeAmenityToDelete.value,
   });
 };
 
+/**----------------------------Call edit or add Amenity handler------------------------------ */
+const callEditOrAddPlaceAmenity = handleSubmit(() => {
+  if (isAddPlaceAmenity.value) {
+    handleAddPlaceAmenity();
+  } else {
+    handleEditPlaceAmenity();
+  }
+});
+
+/************************** Control Variables ******************************/
+const showProfilePictureModal = ref(false);
+const showDeletePlaceAmenityModal = ref(false);
 const handelDeleteImage = (index) => {
   image_urls.value.splice(index, 1);
 };
-
-const placeAmenities = ref([]);
 </script>
 <template>
-  <div class="flex">
-    <!-- Modal for image upload -->
+  <!-- -----------------------Delete Place Amenity Badge Modal---------------- -->
+  <ModalsConfirmation
+    @confirm="handleDeleteAmenity"
+    v-model="showDeletePlaceAmenityModal"
+    title="Delete Place Amenity"
+    sure-question="Are you sure you want to delete the amenity ?"
+    description="This action is irreversible and will permanently delete the amenity and its associated resources."
+  ></ModalsConfirmation>
 
-    <ModalsModal :auto-close="false" v-model="showProfilePictureModal">
-      <template #content>
-        <UiImageUploader
-          title="Upload Place Picture"
-          description="Upload a picture of the place"
-          v-model="image_url"
-          @close="showProfilePictureModal = false"
-        ></UiImageUploader>
-      </template>
-    </ModalsModal>
+  <!-- Modal for image upload -->
+  <ModalsModal :auto-close="false" v-model="showProfilePictureModal">
+    <template #content>
+      <UiImageUploader
+        title="Upload Place Picture"
+        description="Upload a picture of the place"
+        v-model="image_url"
+        @close="showProfilePictureModal = false"
+      ></UiImageUploader>
+    </template>
+  </ModalsModal>
+  <div>
+    <div class="flex" ref="placeAmenityForm">
+      <!------------------------------ Left ---------------------->
+      <div class="flex-[50%] px-10">
+        <form
+          @submit.prevent="callEditOrAddPlaceAmenity"
+          action=""
+          class="flex flex-col gap-4"
+        >
+          <LazySelectorsAmenity
+            v-model="selectedAmenity"
+          ></LazySelectorsAmenity>
+          <!-------------------------------Description----------------------------------->
+          <H-Textarea
+            name="place_amenity_description"
+            id="place_amenity_description"
+            label="Description"
+            placeholder="Description"
+            v-model="placeAmenityDescription"
+          ></H-Textarea>
 
-    <!-- Left -->
+          <!-------------------------------------- image upload------------------------------------------------- -->
 
-    <div class="flex flex-col gap-4 flex-[50%] px-10">
-      <H-SingleSelectWithSearch
-        v-model="selectedPlaceAmenity"
-        name="place_amenity"
-        id="place_amenity"
-        label="Amenity"
-        :items="amenities"
-        @search="onSearch"
-      >
-        <template v-slot:header="{ item }">
-          <div class="flex items-center gap-x-5">
-            <div class="border-r pr-4">
-              <img :src="item.icon.darkIconUrl" class="w-7 h-7" />
-            </div>
-            <p>{{ item.name }}</p>
-          </div>
-        </template>
-      </H-SingleSelectWithSearch>
-      <!-------------------------------Description----------------------------------->
-      <H-Textarea
-        name="place_amenity_description"
-        id="place_amenity_description"
-        label="Description"
-        placeholder="Description"
-        v-model="placeAmenityDescription"
-      ></H-Textarea>
-
-      <!-------------------------------------- image upload------------------------------------------------- -->
-
-      <div
-        class="flex flex-col items-center justify-center gap-4 border-2 border-dashed border-gray-300 rounded-lg px-8 py-4"
-      >
-        <Icon name="uil:cloud-upload" class="w-20 h-20" />
-        <div class="input_field flex flex-col w-max mx-auto text-center">
-          <div>
-            Drag and drop here or
-            <span
-              class="text-primary-600 cursor-pointer"
-              @click="showProfilePictureModal = true"
-              >Browse</span
-            >
-          </div>
-
-          <div class="">Select images that are Square and 10MB</div>
-        </div>
-      </div>
-
-      <!-------------------------------Uploaded Files------------------------------- -->
-
-      <div
-        class="flex flex-col gap-4 border px-6 py-3 rounded-md"
-        v-if="image_urls.length > 0"
-      >
-        <p class="font-medium">Uploaded Files</p>
-        <div class="flex flex-col gap-4">
           <div
-            v-for="(image, index) in image_urls"
-            class="flex items-center justify-between"
+            class="flex flex-col items-center justify-center gap-4 border-2 border-dashed border-gray-300 rounded-lg px-8 py-4"
           >
-            <div class="flex items-center gap-3">
-              <img :src="image?.media?.data?.url" class="w-[100px]" />
+            <Icon name="uil:cloud-upload" class="w-20 h-20" />
+            <div class="input_field flex flex-col w-max mx-auto text-center">
               <div>
-                <p class="text-lg font-medium">IMG=99KJ0-.png</p>
-                <p class="text-sm font-light text-sheger-gray-100">
-                  Feb 2, 2023. image
-                </p>
+                Drag and drop here or
+                <span
+                  class="text-primary-600 cursor-pointer"
+                  @click="showProfilePictureModal = true"
+                  >Browse</span
+                >
+              </div>
+
+              <div class="">Select images that are Square and 10MB</div>
+            </div>
+          </div>
+
+          <!-------------------------------Uploaded Files------------------------------- -->
+          <div
+            class="flex flex-col gap-4 border px-6 py-3 rounded-md"
+            v-if="image_urls.length > 0"
+          >
+            <p class="font-medium">Uploaded Files</p>
+            <div class="flex flex-col gap-4">
+              <div
+                v-for="(url, index) in image_urls"
+                class="flex items-center justify-between"
+              >
+                <div class="flex items-center gap-3">
+                  <img :src="url" class="w-[100px]" />
+                  <div>
+                    <p class="text-lg font-medium">IMG=99KJ0-.png</p>
+                    <p class="text-sm font-light text-sheger-gray-100">
+                      Feb 2, 2023. image
+                    </p>
+                  </div>
+                </div>
+                <!--progress -->
+                <div class="bg-primary-600 h-[3px] w-[200px]" />
+
+                <div @click="handelDeleteImage(index)" class="cursor-pointer">
+                  <Icon name="uil:trash-alt" class="w-6 h-6" />
+                </div>
               </div>
             </div>
-            <!--progress -->
-            <div class="bg-primary-600 h-[3px] w-[200px]" />
+          </div>
 
-            <div @click="handelDeleteImage(index)" class="cursor-pointer">
-              <Icon name="uil:trash-alt" class="w-6 h-6" />
-            </div>
+          <!------------------------------- Add btn --------------------------->
+
+          <button type="submit" class="primary-button border">
+            <span class="">Submit</span>
+
+            <Icon
+              v-if="insertPlaceAmenityLoading || editPlaceAmenityLoading"
+              name="eos-icons:bubble-loading"
+              class="text-3xl text-red-600"
+            />
+          </button>
+          <button
+            type="button"
+            v-if="!isAddPlaceAmenity"
+            class="primary-button bg-primary-600 text-white border"
+            @click="changeToAddPlaceAmenity"
+          >
+            <Icon name="uil:plus" class="w-6 h-6" />
+            <span class="">Add New</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- -----------------------------Amenity List------------------- -->
+      <div class="flex-[50%]">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-x-4 gap-y-6"
+        >
+          <div v-for="amenity in placeAmenities">
+            <UiCardsAmenity
+              :key="amenity"
+              :amenity="amenity"
+              @editAmenity="editAmenity"
+              @deleteAmenity="setPlaceAmenityToDelete"
+            ></UiCardsAmenity>
           </div>
         </div>
-      </div>
-
-      <!------------------------------- Add btn --------------------------->
-
-      <div class="primary-button border" @click="handleAddPlaceAmenity">
-        <Icon name="uil:plus" class="w-6 h-6" />
-        <span class="">Add</span>
+        <HPaginate
+          v-if="placeAmenities.length > 0"
+          v-model:offset="offset"
+          :items-per-page="limit"
+          :total-data="placeAmenities.length"
+          class="w-full pt-16 hidden lg:block"
+        ></HPaginate>
       </div>
     </div>
-    <!-- right -->
-    <div class="flex-[50%]">
-      <div
-        class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-x-4 gap-y-6"
+    <!-- --------------------------------------Navigation-------------------------------- -->
+    <div class="flex items-center justify-between my-2">
+      <button
+        class="primary-button border flex items-center gap-4"
+        @click="prev()"
       >
-        <div v-for="amenity in placeAmenities">
-          <UiCardsAmenities
-            :key="amenity"
-            :menu="amenity"
-            @childEvent="handleChildEvent"
-            @delateEvent="handelDelate"
-          ></UiCardsAmenities>
-        </div>
-      </div>
-      <HPaginate
-        v-if="placeAmenities.length > 0"
-        v-model:offset="offset"
-        :items-per-page="limit"
-        :total-data="placeAmenities.length"
-        class="w-full pt-16 hidden lg:block"
-      ></HPaginate>
+        <Icon name="uil:arrow-left" class="w-6 h-6" />
+        Previous
+      </button>
+
+      <button
+        class="primary-button border flex items-center gap-4 text-white bg-primary-600"
+        @click="next()"
+      >
+        Save & Proceed
+        <Icon name="uil:arrow-right" class="text" />
+      </button>
     </div>
   </div>
 </template>
