@@ -5,6 +5,31 @@ const { rawData } = defineProps({
   rawData: { type: Array, required: true },
 });
 
+function formatDate(dateString) {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  console.log("dateString", dateString);
+
+  const [year, month, day] = dateString
+    .split("-")
+    .map((part) => parseInt(part, 10));
+  const monthName = months[month - 1];
+  return `${monthName} ${day}, ${year}`;
+}
+
 // Area chart option
 var options = {
   chart: {
@@ -41,7 +66,7 @@ var options = {
   },
   xaxis: {
     type: "category",
-    categories: rawData ? rawData.map((data) => data.date) : [],
+    categories: rawData ? rawData.map((data) => formatDate(data.date)) : [],
   },
   yaxis: {
     show: false,

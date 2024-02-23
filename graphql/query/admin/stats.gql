@@ -1,6 +1,6 @@
-query {
+query GetStats($start_date: timestamptz!, $end_date: timestamptz!) {
   sheger_daily_visitor_by_categories(
-    args: { start_date: "2023-10-10", end_date: "2024-10-10" }
+    args: { start_date: $start_date, end_date: $end_date }
   ) {
     cafe_visitor_count
     catering_visitor_count
@@ -9,7 +9,7 @@ query {
     restuarant_visitor_count
   }
   sheger_aggregate_cards(
-    args: { start_date: "2023-10-10", end_date: "2024-10-10" }
+    args: { start_date: $start_date, end_date: $end_date }
   ) {
     aggregate
     new_totals
@@ -17,20 +17,20 @@ query {
     totals
   }
   sheger_daily_user_signups(
-    args: { start_date: "2023-10-10", end_date: "2024-10-10" }
+    args: { start_date: $start_date, end_date: $end_date }
   ) {
     count
     date
   }
   sheger_daily_user_engagment(
-    args: { start_date: "2023-10-10", end_date: "2024-10-10" }
+    args: { start_date: $start_date, end_date: $end_date }
   ) {
     date
     engages
     views
   }
   sheger_daily_add_views(
-    args: { start_date: "2023-10-10", end_date: "2024-10-10" }
+    args: { start_date: $start_date, end_date: $end_date }
   ) {
     count
     date

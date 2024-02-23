@@ -5,7 +5,29 @@ const { rawData } = defineProps({
   rawData: { type: Array, required: true },
 });
 
-console.log(rawData, "places");
+function formatDate(dateString) {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  const [year, month, day] = dateString
+    .split("-")
+    .map((part) => parseInt(part, 10));
+  const monthName = months[month - 1];
+  return `${monthName} ${day}, ${year}`;
+}
+
 // Area chart option
 var options = {
   series: [
@@ -14,35 +36,28 @@ var options = {
       data: rawData
         ? rawData.map((data) => data?.cafe_visitor_count || 10)
         : [],
-      fillColor: "#EB8C87",
-      strokeColor: "#C23829",
     },
     {
       name: "Catering",
       data: rawData
         ? rawData.map((data) => data?.catering_visitor_count || 10)
         : [],
-      fillColor: "#EB8C87",
-      strokeColor: "#C23829",
     },
     {
       name: "Hotel",
       data: rawData
         ? rawData.map((data) => data?.hotel_visitor_count || 10)
         : [],
-      fillColor: "#EB8C87",
-      strokeColor: "#C23829",
     },
     {
       name: "Restaurant",
       data: rawData
         ? rawData.map((data) => data?.restuarant_visitor_count || 10)
         : [],
-      fillColor: "#EB8C87",
-      strokeColor: "#C23829",
     },
   ],
   chartOptions: {
+    colors: ["#FFB946", "#FF5C93", "#4E67EB", "#1BC5BD"],
     chart: {
       type: "bar",
       height: 350,
@@ -54,7 +69,6 @@ var options = {
         enabled: true,
       },
     },
-    // colors: ["##D5492A", "#DDBD27", "#EF7E4B", "##67AC89"],
     responsive: [
       {
         breakpoint: 480,
@@ -83,7 +97,7 @@ var options = {
     },
     xaxis: {
       type: "category",
-      categories: rawData ? rawData.map((data) => data?.date) : [],
+      categories: rawData ? rawData.map((data) => formatDate(data.date)) : [],
     },
     legend: {
       show: false,
