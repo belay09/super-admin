@@ -6,6 +6,7 @@ query getMenus(
 ) {
   menus(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
     id
+    id
     price
     sides
     timeToPrepare

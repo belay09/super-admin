@@ -1,5 +1,5 @@
 <script setup>
-import placesQuery from "@/graphql/query/places/list.gql";
+import placeLocationQuery from "@/graphql/query/places/getPlaceLocations.gql";
 import useNotify from "@/use/notify";
 
 /**-----------------Global Variables--------------------------- */
@@ -8,16 +8,19 @@ const props = defineProps({
 	modelValue: {
 		type: Number,
 	},
+	place_Id: {
+		type: Number,
+	},
 });
 
 const { notify } = useNotify();
 
 /***---------------------Place data fetch--------------------- */
-const places = ref([]);
-const place = ref(props.modelValue);
+const placeLocations = ref([]);
+const placeLocation = ref(props.modelValue);
 const limit = ref(100);
 const length = ref(0);
-const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
+const sort = ref([{ id: "ASC_NULLS_LAST" }]);
 const offset = ref(0);
 const search = ref("");
 
@@ -26,13 +29,15 @@ const filter = computed(() => {
 	let query = {};
 	query._and = [
 		{
-			name: {
-				_ilike: `%${search.value}%`,
+			area: {
+				name: {
+					_ilike: `%${search.value}%`,
+				},
 			},
 		},
 		{
-			status: {
-				_eq: "ACTIVE",
+			placeId: {
+				_eq: props.place_Id,
 			},
 		},
 	];
@@ -41,16 +46,26 @@ const filter = computed(() => {
 });
 
 const { onResult, onError, loading, refetch } = authListQuery(
-	placesQuery,
+	placeLocationQuery,
 	filter,
 	sort,
 	offset,
 	limit
 );
 onResult((result) => {
-	if (result.data?.places) {
-		places.value = result.data.places;
-		length.value = result.data.placesAggregate?.aggregate?.count;
+	// Check if result.data.placeLocation exists
+	if (result.data?.placeLocations) {
+		// Map the placeLocation items to a new structure and assign to placeLocations.value
+
+		placeLocations.value = result.data?.placeLocations.map((item) => {
+			return {
+				id: item.id,
+				name: item.area.name,
+			};
+		});
+
+		// Update the length.value based on the count from result.data.placeLocationsAggregate.aggregate
+		length.value = result.data.placeLocationsAggregate?.aggregate?.count;
 	}
 });
 
@@ -70,12 +85,12 @@ function makeSearch(value) {
 watch(
 	() => props.modelValue,
 	(value) => {
-		place.value = value;
+		placeLocation.value = value;
 	}
 );
 
 watch(
-	() => place.value,
+	() => placeLocation.value,
 	(value) => {
 		emit("update:modelValue", value);
 	}
@@ -83,13 +98,13 @@ watch(
 </script>
 
 <template>
-	<H-SingleSelectWithSearch
-		:items="places"
-		v-model="place"
+	<Lazy-H-SingleSelectWithSearch
+		:items="placeLocations"
+		v-model="placeLocation"
 		@search="makeSearch"
-		id="place"
-		name="place"
-		label="Place"
+		id="PlaceLocation"
+		name="PlaceLocation"
+		label="Place Location"
 		:loading="loading"
-	></H-SingleSelectWithSearch>
+	></Lazy-H-SingleSelectWithSearch>
 </template>

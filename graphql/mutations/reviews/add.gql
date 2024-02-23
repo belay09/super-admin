@@ -1,0 +1,8 @@
+mutation postReview($input: [ReviewsInsertInput!]!) {
+	insertReviews(objects: $input) {
+		affectedRows
+		returning {
+			id
+		}
+	}
+}

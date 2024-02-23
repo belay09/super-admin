@@ -6,12 +6,8 @@ query getTags(
 ) {
 	basicsTags(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
 		id
-		type
-		title
-		icon {
-			darkIconUrl
-			lightIconUrl
-		}
+
+		name: title
 	}
 	basicsTagsAggregate {
 		aggregate {

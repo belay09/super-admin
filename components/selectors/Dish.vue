@@ -1,20 +1,24 @@
 <script setup>
-import placesQuery from "@/graphql/query/places/list.gql";
+import menuQuery from "@/graphql/query/menu/mini.gql";
+
 import useNotify from "@/use/notify";
 
 /**-----------------Global Variables--------------------------- */
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
 	modelValue: {
+		type: [Array, String, Object],
+	},
+	place_Id: {
 		type: Number,
 	},
 });
 
 const { notify } = useNotify();
 
-/***---------------------Place data fetch--------------------- */
-const places = ref([]);
-const place = ref(props.modelValue);
+/***---------------------menu data fetch--------------------- */
+const menus = ref([]);
+const menu = ref(props.modelValue);
 const limit = ref(100);
 const length = ref(0);
 const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
@@ -26,13 +30,13 @@ const filter = computed(() => {
 	let query = {};
 	query._and = [
 		{
-			name: {
+			title: {
 				_ilike: `%${search.value}%`,
 			},
 		},
 		{
-			status: {
-				_eq: "ACTIVE",
+			placeId: {
+				_eq: props.place_Id,
 			},
 		},
 	];
@@ -41,16 +45,16 @@ const filter = computed(() => {
 });
 
 const { onResult, onError, loading, refetch } = authListQuery(
-	placesQuery,
+	menuQuery,
 	filter,
 	sort,
 	offset,
 	limit
 );
 onResult((result) => {
-	if (result.data?.places) {
-		places.value = result.data.places;
-		length.value = result.data.placesAggregate?.aggregate?.count;
+	if (result.data?.menus) {
+		menus.value = result.data.menus;
+		length.value = result.data.menusAggregate?.aggregate?.count;
 	}
 });
 
@@ -70,12 +74,12 @@ function makeSearch(value) {
 watch(
 	() => props.modelValue,
 	(value) => {
-		place.value = value;
+		menu.value = value;
 	}
 );
 
 watch(
-	() => place.value,
+	() => menu.value,
 	(value) => {
 		emit("update:modelValue", value);
 	}
@@ -83,13 +87,21 @@ watch(
 </script>
 
 <template>
-	<H-SingleSelectWithSearch
-		:items="places"
-		v-model="place"
+	<h-multi-select-chips
+		multiple
+		chipsStyle="rounded-full border-[1px] border-gray-600 py-1 px-2 hover:border-primary/40"
+		:items="menus"
+		v-model="menu"
+		:init="menu"
+		value="id"
+		showBy="name"
+		listClass="h-40"
+		returnBy="id"
+		name="tag"
+		label="Dishes"
+		placeholder="Select Dishes"
 		@search="makeSearch"
-		id="place"
-		name="place"
-		label="Place"
 		:loading="loading"
-	></H-SingleSelectWithSearch>
+	>
+	</h-multi-select-chips>
 </template>

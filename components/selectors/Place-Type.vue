@@ -4,7 +4,6 @@ import placeTypeQuery from "@/graphql/query/basics/getPlaceTypes.gql";
 import useNotify from "@/use/notify";
 
 /**-----------------Global Variables--------------------------- */
-const { notify } = useNotify();
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
   modelValue: {
@@ -12,26 +11,29 @@ const props = defineProps({
   },
 });
 
-/*---------------------------Place Places---------------------------**/
-const items = ref([]);
-const search = ref("");
-const placeType = ref();
+const { notify } = useNotify();
 
-const filter = ref({});
-const { onResult, onError, loading } = authListQuery(
-  placeTypeQuery,
-  filter,
-  [{}],
-  0,
-  5
-);
+/*---------------------------Place Places---------------------------**/
+const placeTypeItems = ref([]);
+const placeTypeSearch = ref("");
+const Place = ref(props.modelValue);
+
+const placeFilter = ref({});
+
+const {
+  onResult: onResultPlace,
+  onError: onErrorPlace,
+  loading: loadingPlace,
+  refetch: refetchPlace,
+  fetchMore: fetchMorePlace,
+} = authListQuery(placeTypeQuery, placeFilter, "", 0, 5);
 
 onResultPlace((result) => {
-  items.value = result.data?.placeTypes;
+  placeTypeItems.value = result.data?.placeTypes;
 });
 
 function makeSearch(value) {
-  search.value = value;
+  placeTypeSearch.value = value;
 }
 
 watch(
@@ -42,26 +44,21 @@ watch(
 );
 
 watch(
-  () => placeType,
+  () => Place.value,
   (value) => {
     emit("update:modelValue", value);
   }
 );
-
-onMounted(() => {
-  placeType.value = props.modelValue;
-});
 </script>
 
 <template>
   <H-SingleSelectWithSearch
-    :items="items"
-    v-model="placeType"
+    :items="placeTypeItems"
+    v-model="Place"
     @search="makeSearch"
     id="placeType"
     name="placeType"
-    label="Place Type"
-    :loading="loading"
-    rules="required"
+    label="place Type"
+    :loading="loadingPlace"
   ></H-SingleSelectWithSearch>
 </template>

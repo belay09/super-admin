@@ -142,6 +142,15 @@ const deleteChip = (index) => {
   if (chips.value?.length < 1) {
     inputValue.value = chips.value;
   }
+
+  emit(
+    "update:modelValue",
+    props.returnBy ? chips.value.map((e) => e[props.returnBy]) : chips.value
+  );
+  emit(
+    "onChange",
+    props.returnBy ? chips.value.map((e) => e[props.returnBy]) : chips.value
+  );
 };
 // const backspaceDelete = ({ which }) => {
 //   which === 8 && currentInput.value === "" && chips.value.pop();
@@ -151,13 +160,12 @@ onClickOutside(list_select, (e) => (show.value = false));
 </script>
 
 <template>
-  <div class="w-full relative">
+  <div class="relative w-full">
     <div class="flex gap-x-2">
       <!-- -----------------Label----------------- -->
-
       <slot name="label"> </slot>
       <label
-        class="text-sheger-gray-100 pb-2"
+        class="pb-2 text-sheger-gray-100"
         :class="labelClass"
         v-if="props.label"
         :for="props.id ? props.id : ''"
@@ -169,21 +177,21 @@ onClickOutside(list_select, (e) => (show.value = false));
         >*</span
       >
     </div>
-    <div class="flex justify-start gap-3 my-2 flex-wrap" v-if="show">
+    <div class="flex flex-wrap justify-start gap-3 my-2" v-if="show">
       <div
-        class="flex justify-center items-center break-words"
+        class="flex items-center justify-center break-words"
         :class="[chipsStyle || 'px-1 bg-gray-200']"
         v-for="(chip, i) of chips"
         :key="chip.label"
       >
         <span
-          class="whitespace-nowrap w-full flex flex-wrap overflow-hidden text-sm"
+          class="flex flex-wrap w-full overflow-hidden text-sm whitespace-nowrap"
         >
           {{ chip[showBy] }}
         </span>
         <Icon
           name="heroicons-solid:x"
-          class="ml-1 w-4 h-4 hover:cursor-pointer hover:text-primary"
+          class="w-4 h-4 ml-1 hover:cursor-pointer hover:text-primary"
           @click="deleteChip(i)"
         />
       </div>
@@ -192,7 +200,7 @@ onClickOutside(list_select, (e) => (show.value = false));
       class="flex flex-wrap bg-white relative pr-7 rounded-md py-1.5 px-2 gap-1 border-gray-300 border-[1px]"
     >
       <input
-        class="flex-1 border-none focus:outline-none min-w-5 rounded-md w-full"
+        class="flex-1 w-full border-none rounded-md focus:outline-none min-w-5"
         name="select"
         @click="show = true"
         v-model="search"
@@ -203,27 +211,27 @@ onClickOutside(list_select, (e) => (show.value = false));
       />
       <div
         v-if="trailingIcon"
-        class="absolute inset-y-0 right-0 pr-1 flex items-center pointer-events-none ml-2"
+        class="absolute inset-y-0 right-0 flex items-center pr-1 ml-2 pointer-events-none"
         @click="show = true"
       >
-        <Icon :name="trailingIcon" class="h-5 w-5 text-gray-400 ml-2" />
+        <Icon :name="trailingIcon" class="w-5 h-5 ml-2 text-gray-400" />
       </div>
     </div>
-    <div class="flex justify-start gap-3 my-2 flex-wrap" v-if="!show">
+    <div class="flex flex-wrap justify-start gap-3 my-2" v-if="!show">
       <div
-        class="flex justify-center items-center break-words"
+        class="flex items-center justify-center break-words"
         :class="[chipsStyle || 'px-1 bg-gray-200']"
         v-for="(chip, i) of chips"
         :key="chip.label"
       >
         <span
-          class="whitespace-nowrap w-full flex flex-wrap overflow-hidden text-sm"
+          class="flex flex-wrap w-full overflow-hidden text-sm whitespace-nowrap"
         >
           {{ chip[showBy] }}
         </span>
         <Icon
           name="heroicons-solid:x"
-          class="ml-1 w-4 h-4 hover:cursor-pointer hover:text-primary"
+          class="w-4 h-4 ml-1 hover:cursor-pointer hover:text-primary"
           @click="deleteChip(i)"
         />
       </div>
@@ -231,13 +239,13 @@ onClickOutside(list_select, (e) => (show.value = false));
     <ul
       ref="list_select"
       v-show="show"
-      class="absolute z-10 w-full bg-white border border-primary shadow max-h-56 rounded-b-md text-base overflow-auto"
+      class="absolute z-10 w-full overflow-auto text-base bg-white border shadow border-primary max-h-56 rounded-b-md"
       :class="[listClass || '']"
     >
       <li class="h-1">
         <h-progress
           v-if="loading"
-          class="rounded-xl w-full"
+          class="w-full rounded-xl"
           color1="bg-primary-lite"
           color2="bg-primary"
           color3="bg-primary-dark"
@@ -245,12 +253,13 @@ onClickOutside(list_select, (e) => (show.value = false));
         ></h-progress>
       </li>
       <li
-        v-for="item in items"
+        v-for="(item, index) in items"
         @click="select(item)"
-        class="border-b select-none relative py-3 px-3 hover:bg-primary/30 text-gray-600 cursor-pointer"
+        class="relative px-3 py-3 text-gray-600 border-b cursor-pointer select-none hover:bg-primary/30"
+        :key="index"
       >
         <div class="flex items-center justify-between">
-          <span class="text-gray-600 font-semibold block truncate">
+          <span class="block font-semibold text-gray-600 truncate">
             {{ item[showBy] }}
           </span>
           <Icon
