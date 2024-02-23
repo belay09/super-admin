@@ -1,6 +1,7 @@
 <script setup>
 import uploadMutation from "@/graphql/mutations/file-upload/upload.gql";
 import useNotify from "@/use/notify";
+import { useField } from "vee-validate";
 
 /**-----------------------Global variables----------------------- */
 const { notify } = useNotify();
@@ -14,6 +15,24 @@ const props = defineProps({
     type: String,
     default: "",
   },
+
+  name: {
+    type: String,
+    required: true,
+  },
+  rules: {
+    type: String,
+    default: "",
+    required: false,
+  },
+});
+
+const {
+  errorMessage,
+  value: inputValue,
+  meta,
+} = useField(props.name, props.rules, {
+  initialValue: props.modelValue,
 });
 
 const base64Image = ref(null);
@@ -32,6 +51,7 @@ const deleteImage = () => {
   isUploaded.value = false;
   isError.value = false;
   base64Image.value = null;
+  inputValue.value = null;
   emit("update:modelValue", "");
 };
 
@@ -62,8 +82,14 @@ function uploadImage(image) {
   isError.value = false;
   showUploadImageModal.value = false;
   base64Image.value = image;
+  inputValue.value = image;
   uploadMutate({ base64Image: image, folder: "shegergebeta" + props.folder });
 }
+
+watchEffect(() => {
+  inputValue.value = props.modelValue;
+  selectedImage.value = props.modelValue;
+});
 
 // modal
 const showUploadImageModal = ref(false);
@@ -87,30 +113,42 @@ const showUploadImageModal = ref(false);
     </template>
   </ModalsModal>
 
-  <div class="flex flex-col space-y-4 border rounded-lg p-6">
-    <div class="flex justify-between">
-      <p class="font-medium">Uploaded files</p>
+  <div>
+    <div class="flex flex-col space-y-4 border rounded-lg p-6">
+      <div class="flex justify-between">
+        <p class="font-medium">Uploaded files</p>
 
-      <button
-        @click="showUploadImageModal = true"
-        class="flex space-x-2 items-center border rounded-md p-2"
+        <button
+          @click="showUploadImageModal = true"
+          class="flex space-x-2 items-center border rounded-md p-2"
+        >
+          <Icon name="heroicons:cloud-arrow-up" class="text-2xl" />
+          <p>Upload</p>
+        </button>
+      </div>
+      <div
+        v-if="isImageSelected && !isError"
+        class="flex items-center space-x-6"
       >
-        <Icon name="heroicons:cloud-arrow-up" class="text-2xl" />
-        <p>Upload</p>
-      </button>
+        <img
+          class="w-16 h-16 object-center"
+          :src="selectedImage"
+          alt="My Image"
+        />
+        <H-LoadingBar v-if="uploadLoading" />
+        <p v-if="true" class="w-[200px] h-1 bg-primary-600"></p>
+        <button @click="deleteImage">
+          <Icon name="heroicons:x-mark-20-solid" class="text-2xl" />
+        </button>
+      </div>
+      <p class="secondary-text text-center" v-else>No image is selected</p>
     </div>
-    <div v-if="isImageSelected && !isError" class="flex items-center space-x-6">
-      <img
-        class="w-16 h-16 object-center"
-        :src="selectedImage"
-        alt="My Image"
-      />
-      <H-LoadingBar v-if="uploadLoading" />
-      <p v-if="true" class="w-[200px] h-1 bg-primary-600"></p>
-      <button @click="deleteImage">
-        <Icon name="heroicons:x-mark-20-solid" class="text-2xl" />
-      </button>
-    </div>
-    <p class="secondary-text text-center" v-else>No image is selected</p>
+    <p
+      :visible="errorMessage"
+      class="mt-1 text-sm text-red-500 font-body"
+      id="email-error"
+    >
+      {{ errorMessage }} &nbsp;
+    </p>
   </div>
 </template>

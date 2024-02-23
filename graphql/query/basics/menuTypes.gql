@@ -1,15 +1,12 @@
-query(
-  $filter: MenuTypesBoolExp,
-  $order: [MenuTypesOrderBy!],
-  $limit: Int,
-  $offset: Int,
-){
-	menuTypes(
-    where: $filter
-    orderBy: $order
-    limit: $limit
-    offset: $offset
-  ){
+query (
+  $filter: MenuTypesBoolExp
+  $order: [MenuTypesOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  menuTypes(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
     value
+    id: value
+    name: value
   }
 }

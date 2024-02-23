@@ -68,7 +68,7 @@ const open = computed({
               leave-to="opacity-0 translate-y-24 sm:translate-y-0 sm:scale-95"
             >
               <HeadlessDialogPanel
-                class="relative z-50 transform rounded-lg text-left transition-all w-full max-w-lg bg-white p-12"
+                class="relative z-50 transform rounded-lg text-left transition-all bg-white p-12"
                 :class="[
                   overflowVisible ? 'overflow-visible' : 'overflow-hidden ',
                   bodyClass,

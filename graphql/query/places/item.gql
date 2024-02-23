@@ -2,9 +2,16 @@ query getPlace($id: bigint!, $include: Boolean = false) {
   place: placesByPk(id: $id) {
     id
     name
+    # logo
+    light_logo {
+      url
+    }
     view_count
     status
     cousins
+    description
+    type
+    categoryId
 
     # contact us
     contactEmail
@@ -33,22 +40,30 @@ query getPlace($id: bigint!, $include: Boolean = false) {
     placeSocialMedias {
       id
       url
+
       socialMedia {
+        icon {
+          darkIconUrl
+          lightIconUrl
+          id
+        }
         name
         order
       }
     }
 
     # video  media
-
     featuredReviewMediaUrl {
       url
     }
 
     # tags
     placeTags {
+      id
       tag {
+        id
         title
+
         # icon {
         #   lightIconUrl
         #   darkIconUrl
@@ -80,6 +95,16 @@ query getPlace($id: bigint!, $include: Boolean = false) {
         # }
         title
       }
+    }
+
+    # ambiance
+    placeAmbiances {
+      id
+      ambiance {
+        title
+        id
+      }
+      placeId
     }
 
     # social media

@@ -86,9 +86,37 @@ function onDeleted() {
 
     <!-- -------------------Ad space place type total places ------------- -->
     <!-- -------------------Add ad space list-------------------- -->
-    <!-- ad-space-default -->
+
     <div class="pt-6">
-      <div class="grid grid-cols-2 gap-6">
+      <!-- ----------------Loading Skeleton---------------- -->
+      <div v-if="loading" class="grid grid-cols-2 gap-6">
+        <div v-for="i in 6" class="rounded-lg border skeleton-container">
+          <!-- Skeleton loader for the card body -->
+          <div class="flex items-center space-x-5 px-5">
+            <!-- Image skeleton -->
+            <div class="skeleton w-[40%] h-36 rounded-t-lg"></div>
+
+            <!-- Place name and logo skeleton -->
+            <div class="flex flex-col space-y-4 w-[60%]">
+              <!-- Title skeleton -->
+              <div class="skeleton w-full h-6 mb-2"></div>
+              <!-- Description skeleton -->
+              <div class="skeleton w-full h-16 mb-2"></div>
+              <!-- Price skeleton -->
+              <div class="skeleton w-full h-6"></div>
+            </div>
+          </div>
+          <!-- Skeleton loader for the card footer -->
+          <div class="grid grid-cols-2 px-10 py-4 gap-x-4 border-t">
+            <!-- Edit button skeleton -->
+            <div class="skeleton w-2/3 h-10"></div>
+
+            <!-- Delete button skeleton -->
+            <div class="skeleton w-2/3 h-10"></div>
+          </div>
+        </div>
+      </div>
+      <div v-else class="grid grid-cols-2 gap-6">
         <Ui-Cards-DrinkItem
           v-for="drink in drinks"
           :key="drink.id"

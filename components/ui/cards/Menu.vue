@@ -1,32 +1,117 @@
 <script setup>
+import deleteMenuMutation from "@/graphql/mutations/menu/delete.gql";
+import useNotify from "@/use/notify";
 import { format } from "date-fns";
+import { onClickOutside } from "@vueuse/core";
 
-// const props = defineProps({
-//   menu: {
-//     type: Object,
-//     required: true,
-//   },
-// });
-  
-const menu = ref({
-  id: 1,
-  title: "Dinech wot",
-  media: {
-    url: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D",
+/**-------------------------Globals------------------------- */
+const props = defineProps({
+  menu: {
+    type: Object,
+    required: true,
   },
 });
 
-/*....................Window resize.............*/
-const windowSize = ref(0);
-onMounted(() => {
-  windowSize.value = window.innerWidth;
-  window.onresize = () => {
-    windowSize.value = window.innerWidth;
-  };
+const { notify } = useNotify();
+const emit = defineEmits(["onDelete", "onEdit"]);
+
+/**------------------------Handle delete--------------------- */
+const { mutate, onDone, onError, loading } = authMutation(deleteMenuMutation);
+
+function handleDelete() {
+  mutate({
+    id: props.menu.id,
+  });
+}
+onDone((result) => {
+  showRemoveFromMenuModal.value = false;
+  emit("onDelete");
+  notify({
+    title: "Menu deleted",
+    description: "Menu  deleted successfully",
+    type: "success",
+    borderClass: "border-l-8 border-green-300",
+  });
 });
+
+onError((error) => {
+  showRemoveFromMenuModal.value = false;
+  notify({
+    title: "Error",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+/**--------------------------Click outside------------------- */
+const menuActionsContainer = ref(null);
+onClickOutside(menuActionsContainer, (e) => (showMoreAction.value = false));
+
+const showMoreAction = ref(false);
+
+function openMoreAction(event) {
+  event.stopPropagation();
+  showMoreAction.value = !showMoreAction.value;
+}
+
+/**--------------------------Modals------------------- */
+const showUpdateMenuModal = ref(false);
+function openUpdateMenuModal(event) {
+  event.stopPropagation();
+  showMoreAction.value = false;
+  showUpdateMenuModal.value = !showUpdateMenuModal.value;
+}
+
+const showRemoveFromMenuModal = ref(false);
+function openRemoveMenuModal(event) {
+  event.stopPropagation();
+  showMoreAction.value = false;
+  showRemoveFromMenuModal.value = !showRemoveFromMenuModal.value;
+}
+
+const showMarkUsUpdatedModal = ref(false);
+function openMarkUsUpdatedModal(event) {
+  event.stopPropagation();
+  showMoreAction.value = false;
+
+  showMarkUsUpdatedModal.value = !showMarkUsUpdatedModal.value;
+}
 </script>
 
 <template>
+  <!-- -------------------Edit Menu--------------------- -->
+  <Modals-Modal :autoClose="true" v-model="showUpdateMenuModal">
+    <template #header>
+      <div class="flex items-center justify-between pb-4 px-10">
+        <h3 class="text-lg font-medium text-gray-900">Update Menu Item</h3>
+        <button>
+          <Icon
+            name="system-uicons:close"
+            class="text-4xl"
+            @click="showUpdateMenuModal = false"
+          />
+        </button>
+      </div>
+    </template>
+    <template #content>
+      <MenusEdit :menu-id="menu.id" @on-edit="emit('onEdit')"></MenusEdit>
+    </template>
+  </Modals-Modal>
+  <!-- -----------------------Remove from menu ---------------- -->
+  <ModalsConfirmation
+    v-model="showRemoveFromMenuModal"
+    title="Remove Menu"
+    @confirm="handleDelete"
+    sure-question="Are you sure you want to remove the menu ?"
+    description="This action is irreversible and will permanently remove the menu and its related data."
+  ></ModalsConfirmation>
+
+  <!-- -----------------------Remove from menu ---------------- -->
+  <ModalsConfirmation
+    v-model="showMarkUsUpdatedModal"
+    title="Mark Us Updated"
+    sure-question="Are you sure you want to make this menu as Updated ?"
+  ></ModalsConfirmation>
   <div class="w-full 2xl:max-w-4xl">
     <div
       class="grid grid-cols-8 gap-4 lg:gap-8 secondary-border rounded-lg w-full relative"
@@ -40,8 +125,49 @@ onMounted(() => {
       >
         <div class="flex justify-between w-full">
           <p class="secondary-text iphone5:text-lg">ETB {{ menu.price }}</p>
+
+          <div class="relative">
+            <button @click="openMoreAction" class="hover:cursor-pointer">
+              <Icon name="iwwa:option" class="w-8 h-8" />
+            </button>
+
+            <!-- -----------------------Extend date and Remove from feature --------------- -->
+            <div
+              ref="menuActionsContainer"
+              v-if="showMoreAction"
+              class="absolute top-7 right-0 w-72 flex flex-col gap-y-4 shadow-xl bg-white rounded-lg p-5"
+            >
+              <!-- ----------------Pend Place---------- -->
+              <button
+                @click="openUpdateMenuModal"
+                class="flex gap-3 items-center"
+              >
+                <Icon name="uil:edit-alt" class="text-2xl shrink-0" />
+                <p class="text-lg">Update Menu Info</p>
+              </button>
+
+              <!-- ----------------Mark Us Updated---------- -->
+              <button
+                @click="openMarkUsUpdatedModal"
+                class="flex gap-3 items-center"
+              >
+                <Icon name="uil:check-circle" class="text-2xl shrink-0" />
+                <p class="text-lg whitespace-nowrap">Mark Us Updated</p>
+              </button>
+              <!-- ----------------Remove menu Item---------- -->
+              <button
+                @click="openRemoveMenuModal"
+                class="flex gap-3 items-center text-primary-600"
+              >
+                <Icon name="uil:trash-alt" class="text-2xl shrink-0" />
+                <p class="text-lg whitespace-nowrap">Remove from Menu Item</p>
+              </button>
+            </div>
+          </div>
         </div>
-        <p class="lg:text-2xl dark:text-white">{{ menu.title }}</p>
+        <p class="lg:text-2xl dark:text-white">
+          {{ menu.title }}
+        </p>
 
         <div
           v-if="menu.menuTags.length > 0"
@@ -72,7 +198,7 @@ onMounted(() => {
         <p
           class="hidden text-sheger_brown-200 dark:text-sheger_light_gray-400 lg:block"
         >
-          {{ menu.description }}
+          {{ menu.ingridients }}
         </p>
 
         <div class="flex items-center space-x-4">
@@ -87,12 +213,6 @@ onMounted(() => {
             {{ format(new Date(), "dd MMM, yyyy") }}
           </p>
         </div>
-      </div>
-
-      <div
-        class="absolute top-0 bg-green-500 py-2 px-3 text-white rounded-md text-xs lg:text-base"
-      >
-        Available
       </div>
     </div>
   </div>

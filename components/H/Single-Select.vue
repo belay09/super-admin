@@ -141,6 +141,21 @@ watch(
   }
 );
 
+/**------------------------Watch items----------------------- */
+watch(
+  () => props.items,
+  (newVal) => {
+    let tempSelectedItem = props.items.find(
+      (item) => item.id == props.modelValue
+    );
+
+    if (tempSelectedItem) {
+      selectedItem.value = tempSelectedItem;
+      placeHolder.value = selectedItem.name;
+    }
+  }
+);
+
 onClickOutside(singleSelect, (e) => (show.value = false));
 
 onMounted(() => {

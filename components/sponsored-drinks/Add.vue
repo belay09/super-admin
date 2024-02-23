@@ -10,26 +10,10 @@ const price = ref();
 const description = ref("");
 const url = ref("");
 
-const noImageIsSelected = ref(false);
-watch(
-  () => url.value,
-  (value) => {
-    if (value != "") {
-      noImageIsSelected.value = false;
-    } else {
-      noImageIsSelected.value = true;
-    }
-  }
-);
-
 const { mutate, onDone, onError, loading } = authMutation(addDrinkMutation);
 
 /**-----------------------Handle add --------------------------- */
 const handleAdd = handleSubmit(() => {
-  if (url.value == "") {
-    noImageIsSelected.value = true;
-    return;
-  }
   let input = {
     description: description.value,
     title: title.value,
@@ -103,8 +87,9 @@ onError((error) => {
     <CommonUploadSingleImage
       folder=""
       v-model:model-value="url"
+      rules="required"
+      name="drinkImage"
     ></CommonUploadSingleImage>
-    <p v-if="noImageIsSelected" class="text-red-500">No image is selected</p>
 
     <!-- ----------------------Submit------------------- -->
     <button

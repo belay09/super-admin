@@ -1,0 +1,12 @@
+mutation updatePlaceLocations(
+  $data: [PlaceLocationsInsertInput!]!
+  $filter: PlaceLocationsBoolExp!
+) {
+  deletePlaceLocations(where: $filter) {
+    affectedRows
+  }
+
+  insertPlaceLocations(objects: $data) {
+    affectedRows
+  }
+}

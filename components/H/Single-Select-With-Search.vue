@@ -70,6 +70,10 @@ const props = defineProps({
   errorMessages: {
     type: String,
   },
+  showBy: {
+    type: String,
+    default: "name",
+  },
 
   clearable: Boolean,
   trailingIcon: String,
@@ -87,12 +91,22 @@ const props = defineProps({
   placeholderStyle: String,
 });
 
+function getInitialValue() {
+  if (props.returnObject) {
+    if (props.modelValue) {
+      return props.modelValue.id;
+    }
+  } else {
+    return props.modelValue;
+  }
+}
+
 const {
   errorMessage,
   value: inputValue,
   meta,
 } = useField(props.name, props.rules, {
-  initialValue: props.returnObject ? props.modelValue.id : props.modelValue,
+  initialValue: getInitialValue(),
 });
 
 const show = ref(false);
@@ -101,8 +115,7 @@ const search = ref(undefined);
 const { items, disabled } = toRefs(props);
 const list_select = ref(null);
 
-const selectedItem = ref(null);
-
+const selectedItem = ref();
 const selectItem = (item) => {
   inputValue.value = item.id;
   selectedItem.value = item;
@@ -144,43 +157,19 @@ const clear = () => {
 
 onClickOutside(list_select, (e) => (show.value = false));
 
-watch(
-  () => props.modelValue,
-  (newVal) => {
+watchEffect(() => {
+  if (props.modelValue) {
     if (props.returnObject) {
-      inputValue.value = newVal.id;
-      selectedItem.value = newVal;
+      if (props.modelValue) {
+        selectedItem.value = props.modelValue;
+        inputValue.value = props.modelValue.id;
+      }
     } else {
-      inputValue.value = newVal;
-      selectedItem.value = props.items.find((item) => item.id == newVal);
+      selectedItem.value = props.items.find(
+        (item) => item.id == props.modelValue
+      );
+      inputValue.value = props.modelValue;
     }
-  }
-);
-
-/**------------------------Watch items----------------------- */
-watch(
-  () => props.items,
-  (newVal) => {
-    let tempSelectedItem = props.items.find(
-      (item) => item.id == props.modelValue
-    );
-
-    if (tempSelectedItem) {
-      selectedItem.value = tempSelectedItem;
-      placeHolder.value = selectedItem.name;
-    }
-  }
-);
-
-onMounted(() => {
-  if (props.returnObject) {
-    inputValue.value = props.modelValue.id;
-    selectedItem.value = props.modelValue;
-  } else {
-    inputValue.value = props.modelValue;
-    selectedItem.value = props.items.find(
-      (item) => item.id == props.modelValue
-    );
   }
 });
 </script>
@@ -189,7 +178,6 @@ onMounted(() => {
   <div class="relative">
     <div class="flex gap-x-2">
       <!-- -----------------Label----------------- -->
-
       <slot name="label"> </slot>
       <label
         class="text-sheger-gray-100 pb-2"
@@ -223,7 +211,7 @@ onMounted(() => {
       >
         <div v-if="selectedItem" @click="show = true">
           <slot name="header" :item="selectedItem">
-            <div class="text-black">{{ selectedItem.name }}</div>
+            <div class="text-black">{{ selectedItem[showBy] }}</div>
           </slot>
         </div>
         <div class="text-gray-500" :class="placeholderClass" v-else>
@@ -287,7 +275,7 @@ onMounted(() => {
             :class="[props.itemClass ? props.itemClass : '']"
             class="flex items-center justify-between select-none relative py-3 px-3 hover:bg-blue-50 cursor-pointer overflow-auto"
           >
-            <span class="block capitalize break-words">{{ item.name }}</span>
+            <span class="block capitalize break-words">{{ item[showBy] }}</span>
             <!-- ---------------Check ------------>
             <div class="flex space-x-1">
               <Icon

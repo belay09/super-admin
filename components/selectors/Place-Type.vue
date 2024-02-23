@@ -6,9 +6,9 @@ import useNotify from "@/use/notify";
 /**-----------------Global Variables--------------------------- */
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
-	modelValue: {
-		type: Number,
-	},
+  modelValue: {
+    type: Number,
+  },
 });
 
 const { notify } = useNotify();
@@ -21,44 +21,44 @@ const Place = ref(props.modelValue);
 const placeFilter = ref({});
 
 const {
-	onResult: onResultPlace,
-	onError: onErrorPlace,
-	loading: loadingPlace,
-	refetch: refetchPlace,
-	fetchMore: fetchMorePlace,
+  onResult: onResultPlace,
+  onError: onErrorPlace,
+  loading: loadingPlace,
+  refetch: refetchPlace,
+  fetchMore: fetchMorePlace,
 } = authListQuery(placeTypeQuery, placeFilter, "", 0, 5);
 
 onResultPlace((result) => {
-	placeTypeItems.value = result.data?.placeTypes;
+  placeTypeItems.value = result.data?.placeTypes;
 });
 
 function makeSearch(value) {
-	placeTypeSearch.value = value;
+  placeTypeSearch.value = value;
 }
 
 watch(
-	() => props.modelValue,
-	(value) => {
-		Place.value = value;
-	}
+  () => props.modelValue,
+  (value) => {
+    Place.value = value;
+  }
 );
 
 watch(
-	() => Place.value,
-	(value) => {
-		emit("update:modelValue", value);
-	}
+  () => Place.value,
+  (value) => {
+    emit("update:modelValue", value);
+  }
 );
 </script>
 
 <template>
-	<H-SingleSelectWithSearch
-		:items="placeTypeItems"
-		v-model="Place"
-		@search="makeSearch"
-		id="placeType"
-		name="placeType"
-		label="place Type"
-		:loading="loadingPlace"
-	></H-SingleSelectWithSearch>
+  <H-SingleSelectWithSearch
+    :items="placeTypeItems"
+    v-model="Place"
+    @search="makeSearch"
+    id="placeType"
+    name="placeType"
+    label="place Type"
+    :loading="loadingPlace"
+  ></H-SingleSelectWithSearch>
 </template>

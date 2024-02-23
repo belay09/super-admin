@@ -5,10 +5,13 @@ import placeTagQuery from "@/graphql/query/basics/getPlaceTags.gql";
 import placeCategoryQuery from "@/graphql/query/basics/getPlaceCategories.gql";
 import addPlaceMutation from "@/graphql/mutations/place/addPlace.gql";
 import { useRegisterPlaceStore } from "~/stores/registerPlace";
+import getPlaceQuery from "@/graphql/query/places/item.gql";
+
 const { handleSubmit } = useForm({});
 
-/**-----------------------Navigation----------------------------- */
+/**-----------------------Globals----------------------------- */
 const emit = defineEmits(["next", "prev"]);
+const route = useRoute();
 
 /**------------------------Data------------------------ */
 const image_url = ref("");
@@ -17,20 +20,97 @@ const placeCousins = ref("");
 const description = ref("");
 const placeType = ref("");
 const placeTag = ref([]);
+const initPlaceTags = ref([]);
 const placeAmbiance = ref([]);
+const initPlaceAmbiances = ref([]);
+
 const placeCategory = ref([]);
-const featureAsRecentlyOpened = ref(false);
-const recentlyOpenedStartDate = ref(new Date().toISOString().split("T")[0]);
-const recentlyOpenedEndDate = ref();
+
 const phoneNumber = ref("");
 const alternativePhoneNumber = ref("");
 const email = ref("");
 const website = ref("");
 const socialMedia = ref([]);
+const initSocialMedias = ref([]);
 const offerTakeout = ref(false);
 const orderNumber = ref("");
 const alternativeOrderNumber = ref("");
-const socials = ref([]);
+/*...................Place detail data fetch.............*/
+
+function capitalizeFirstLetter(inputString) {
+  // Check if the input is not an empty string
+  if (inputString && typeof inputString === "string") {
+    // Capitalize the first letter and concatenate the rest of the string
+    return inputString.charAt(0).toUpperCase() + inputString.slice(1);
+  } else {
+    // Return the input unchanged if it's not a non-empty string
+    return inputString;
+  }
+}
+const place = ref(null);
+const {
+  onResult: placeOnResult,
+  onError: placeOnError,
+  loading: placeLoading,
+} = authItemQuery(getPlaceQuery, route.params.id);
+
+placeOnResult((result) => {
+  if (result.data?.place) {
+    place.value = result.data.place;
+    let tempPlace = result.data.place;
+    placeName.value = tempPlace.name;
+    image_url.value = tempPlace.light_logo?.url;
+    placeCousins.value = tempPlace.cousins;
+    description.value = tempPlace.description;
+    placeType.value = capitalizeFirstLetter(tempPlace.type.toLowerCase());
+
+    // init place tags
+    initPlaceTags.value = tempPlace.placeTags.map((placeTag) => {
+      return {
+        title: placeTag.tag.title,
+        id: placeTag.tag.id,
+      };
+    });
+
+    // init place ambiances
+    initPlaceAmbiances.value = tempPlace.placeAmbiances.map((placeAmbiance) => {
+      return {
+        title: placeAmbiance.ambiance.title,
+        id: placeAmbiance.ambiance.id,
+      };
+    });
+
+    placeCategory.value = tempPlace.categoryId;
+
+    // contact
+    phoneNumber.value = tempPlace.contactPhoneNumber;
+    alternativePhoneNumber.value = tempPlace.contactAltPhoneNumber;
+    email.value = tempPlace.contactEmail;
+    website.value = tempPlace.contactWebsite;
+
+    // social media
+
+    socialMedia.value = tempPlace.placeSocialMedias.map((media) => {
+      return {
+        ...media.socialMedia,
+        url: media.url,
+      };
+    });
+
+    offerTakeout.value = tempPlace.offerTakeouts;
+    orderNumber.value = tempPlace.orderPhoneNumber1;
+    alternativeOrderNumber.value = tempPlace.orderPhoneNumber2;
+  }
+});
+
+placeOnError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-green-300",
+  });
+});
 
 /**-------------------------Control Variables------------------- */
 const registerPlaceStore = useRegisterPlaceStore();
@@ -146,23 +226,7 @@ addPlaceError((error) => {
   });
 });
 
-const noImageIsSelected = ref(false);
-watch(
-  () => image_url.value,
-  (value) => {
-    if (value != "") {
-      noImageIsSelected.value = false;
-    } else {
-      noImageIsSelected.value = true;
-    }
-  }
-);
-
 const handleAddPlace = handleSubmit(() => {
-  // if (image_url.value == "") {
-  //   noImageIsSelected.value = true;
-  //   return;
-  // }
   const input = {
     light_logo: {
       data: {
@@ -195,20 +259,6 @@ const handleAddPlace = handleSubmit(() => {
     },
   };
 
-  // recently opened
-  if (featureAsRecentlyOpened.value) {
-    input.featured_places = {
-      data: [
-        {
-          startDate: recentlyOpenedStartDate.value,
-          endDate: recentlyOpenedEndDate.value,
-          isActive: true,
-          type: "RECENTLY_OPENED_PLACE",
-        },
-      ],
-    };
-  }
-
   // offer take out
   if (offerTakeout.value) {
     input.orderPhoneNumber1 = orderNumber.value;
@@ -224,7 +274,7 @@ const handleAddPlace = handleSubmit(() => {
 </script>
 
 <template>
-  <div>
+  <div v-if="place && !placeLoading">
     <form
       @submit.prevent="handleAddPlace"
       class="flex"
@@ -238,10 +288,9 @@ const handleAddPlace = handleSubmit(() => {
         <CommonUploadSingleImage
           folder=""
           v-model:model-value="image_url"
+          rules="required"
+          name="placeLogo"
         ></CommonUploadSingleImage>
-        <p v-if="noImageIsSelected" class="text-red-500">
-          No image is selected
-        </p>
 
         <!--------------------------------------------------- Place Name------------------------------- -->
         <HTextfield
@@ -289,7 +338,6 @@ const handleAddPlace = handleSubmit(() => {
           label="Type"
           :items="placeTypeItems"
           v-model="placeType"
-          showBy="value"
           rules="required"
         ></H-SingleSelect>
 
@@ -299,6 +347,7 @@ const handleAddPlace = handleSubmit(() => {
           chipsStyle="rounded-full border-[1px] border-gray-600 py-1 px-2 hover:border-primary/40"
           :items="placeTagItems"
           v-model="placeTag"
+          :init="initPlaceTags"
           value="id"
           showBy="title"
           listClass="h-40"
@@ -317,6 +366,7 @@ const handleAddPlace = handleSubmit(() => {
           chipsStyle="rounded-full border-[1px] border-gray-600 py-1 px-2 hover:border-primary/40"
           :items="placeAmbianceItems"
           v-model="placeAmbiance"
+          :init="initPlaceAmbiances"
           value="id"
           showBy="title"
           listClass="h-40"
@@ -339,45 +389,6 @@ const handleAddPlace = handleSubmit(() => {
           showBy="title"
           rules="required"
         ></H-SingleSelectWithSearch>
-
-        <div class="px-5 rounded-md border border-sheger-gray-200">
-          <div class="flex justify-between items-center py-4">
-            Feature as Recently Opened?
-            <HSwitch
-              name="houses_special"
-              id="houses_special"
-              label="houses_special"
-              class="flex items-center"
-              v-model="featureAsRecentlyOpened"
-            ></HSwitch>
-          </div>
-          <!-- -----------------Start and End Date -->
-          <div
-            v-if="featureAsRecentlyOpened"
-            class="grid items-center grid-cols-2 pt-6 gap-x-6"
-          >
-            <HDatePicker
-              id="start_date"
-              name="start_date"
-              label="Start Date"
-              class="w-full"
-              rules="required"
-              trailing-icon="uil:calender"
-              trailing-icon-class="lg:text-sheger-gray-100"
-              v-model="recentlyOpenedStartDate"
-            ></HDatePicker>
-            <HDatePicker
-              id="end_date"
-              name="end_date"
-              rules="required"
-              label="End Date"
-              trailing-icon="uil:calender"
-              trailing-icon-class="lg:text-sheger-gray-100"
-              class="w-full"
-              v-model="recentlyOpenedEndDate"
-            ></HDatePicker>
-          </div>
-        </div>
       </div>
 
       <!-- Right -->
@@ -387,12 +398,10 @@ const handleAddPlace = handleSubmit(() => {
         <!------------------------------------Phone Number--------------------------------------->
 
         <HTextfield
-          leading-text-class="bg-sheger-gray-300 border  h-full rounded-l-md flex items-center px-2 "
-          leading-text="+251"
-          placeholder="900000000"
+          placeholder="+251900000000"
+          rules="phoneNumber"
           name="phoneNumber"
           v-model="phoneNumber"
-          rules="ethio_phone"
           type="text"
         >
           <template #label>
@@ -407,13 +416,11 @@ const handleAddPlace = handleSubmit(() => {
 
         <!---------------------------------Alternative Phone Number------------------------------------>
         <HTextfield
-          leading-text-class="bg-sheger-gray-300 h-full rounded-l-md flex items-center px-2 "
-          leading-text="+251"
+          placeholder="+251900000000"
+          rules="phoneNumber"
           name="alternativePhoneNumber"
           v-model="alternativePhoneNumber"
-          rules="ethio_phone"
           type="text"
-          placeholder="900000000"
         >
           <template #label>
             <div class="lg:my-2">
@@ -463,11 +470,10 @@ const handleAddPlace = handleSubmit(() => {
         <!-- ------------------------------------Social Media ------------------------ -->
 
         <div class="text-xl font-medium my-2">Social Media</div>
-        <H-SocialMedialSelectChips
+        <LazyH-SocialMedialSelectChips
           v-model="socialMedia"
           name="socialMedia"
-          :socials="socials"
-        ></H-SocialMedialSelectChips>
+        ></LazyH-SocialMedialSelectChips>
 
         <!-- ----------------------------------Offer Takeout---------------------------------- -->
 
@@ -484,13 +490,11 @@ const handleAddPlace = handleSubmit(() => {
 
           <HTextfield
             v-if="offerTakeout"
-            leading-text-class="bg-sheger-gray-300 h-full rounded-l-md flex items-center px-2 "
-            leading-text="+251"
+            placeholder="+251900000000"
+            rules="phoneNumber"
             name="orderNumber"
             v-model="orderNumber"
-            rules="ethio_phone"
             type="text"
-            placeholder="900000000"
           >
             <template #label>
               <div class="lg:my-2">
@@ -506,13 +510,11 @@ const handleAddPlace = handleSubmit(() => {
 
           <HTextfield
             v-if="offerTakeout"
-            leading-text-class="bg-sheger-gray-300 h-full rounded-l-md flex items-center px-2 "
-            leading-text="+251"
+            placeholder="+251900000000"
+            rules="phoneNumber"
             name="alternativeOrderNumber"
             v-model="alternativeOrderNumber"
-            rules="ethio_phone"
             type="text"
-            placeholder="900000000"
           >
             <template #label>
               <div class="lg:my-2">

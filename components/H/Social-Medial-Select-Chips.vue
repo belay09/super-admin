@@ -1,18 +1,17 @@
 <script setup>
-import placeSocailMediaQuery from "@/graphql/query/basics/getSocialMedias.gql";
+import placeSocialMediaQuery from "@/graphql/query/basics/getSocialMedias.gql";
 
+const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
   modelValue: {
-    type: [String, Array, Object],
+    type: Array,
     default: () => [],
   },
 });
 
-const emit = defineEmits(["update:modelValue"]);
-
 const openCombobox = ref(false);
 const selectedMedia = ref({});
-const addedMedia = ref([]);
+const addedMedia = ref(props.modelValue);
 const url = ref("");
 const socials = ref([]);
 
@@ -23,20 +22,17 @@ const {
   loading: loadingSocialMedia,
   refetch: refetchSocialMedia,
   fetchMore: fetchMoreSocialMedia,
-} = authListQuery(placeSocailMediaQuery, {}, "", 0, 100);
+} = authListQuery(placeSocialMediaQuery, {}, "", 0, 100);
 
 onResultSocialMedia((result) => {
-  console.log(loadingSocialMedia, "loadingSocialMedia");
   socials.value = result.data?.basicsSocialMedias;
-  console.log(socials.value, "SocialMesssssdia");
   selectedMedia.value = socials.value[0];
-  console.log(socials.value, "socials");
 });
 
 const handleAddMedia = () => {
   if (!url.value) return;
   addedMedia.value.push({ ...selectedMedia.value, url: url.value });
-  url.value = "";
+
   emit("update:modelValue", addedMedia.value);
 };
 
@@ -44,6 +40,12 @@ const handleDeleteMedia = (index) => {
   addedMedia.value.splice(index, 1);
   emit("update:modelValue", addedMedia.value);
 };
+
+function selectSocialMedia(media) {
+  url.value = "";
+  selectedMedia.value = media;
+  openCombobox.value = false;
+}
 </script>
 
 <template>
@@ -74,7 +76,7 @@ const handleDeleteMedia = (index) => {
             class="text-white w-fit flex items-center py-1 px-2 hover:cursor-pointer gap-3 border-r"
             @click="openCombobox = !openCombobox"
           >
-            <img :src="selectedMedia.icon.darkIconUrl" class="w-10 h-10" />
+            <img :src="selectedMedia?.icon?.darkIconUrl" class="w-10 h-10" />
 
             <Icon
               name="mdi:chevron-down"
@@ -89,10 +91,7 @@ const handleDeleteMedia = (index) => {
               v-for="(social, index) in socials"
               :key="index"
               class="p-3 hover:cursor-pointer hover:bg-primary/20"
-              @click="
-                selectedMedia = social;
-                openCombobox = false;
-              "
+              @click="selectSocialMedia(social)"
             >
               <img :src="social.icon.darkIconUrl" class="w-10" />
             </div>

@@ -1,0 +1,16 @@
+mutation editPlaceAmenity(
+  $placeAmenityObject: PlaceAmenitiesSetInput!
+  $amenityResourceObject: [PlaceAmenityResourcesInsertInput!]!
+  $id: bigint!
+) {
+  deletePlaceAmenityResources(where: { placeAmenityId: { _eq: $id } }) {
+    affectedRows
+  }
+  updatePlaceAmenitiesByPk(_set: $placeAmenityObject, pkColumns: { id: $id }) {
+    id
+  }
+
+  insertPlaceAmenityResources(objects: $amenityResourceObject) {
+    affectedRows
+  }
+}

@@ -44,6 +44,17 @@ function gotoDetailPage() {
   router.push(`/app/places/${props.place.id}`);
 }
 
+function gotoEditPage(event) {
+  event.stopPropagation();
+
+  router.push({
+    path: `/app/places/edit/${props.place.id}`,
+    query: {
+      step: 0,
+    },
+  });
+}
+
 /**------------------------Edit place----------------------- */
 const refetchPlaces = inject("refetch");
 const {
@@ -268,7 +279,7 @@ function openMoreAction(event) {
                   />
                   <p class="text-lg">Billing</p>
                 </button>
-                <button class="flex gap-3 items-center">
+                <button @click="gotoEditPage" class="flex gap-3 items-center">
                   <Icon name="uil:edit-alt" class="text-2xl shrink-0" />
                   <p class="text-lg">Update Place Info</p>
                 </button>

@@ -174,7 +174,21 @@ watch(
 
     <!-- -------------------Ad space place type total places ------------- -->
 
+    <div v-if="aggregateLoading" class="flex items-center space-x-6 py-5">
+      <!-- Skeleton loader for place type items -->
+      <div
+        v-for="index in 4"
+        :key="index"
+        class="skeleton-container flex items-center space-x-2 border rounded-md px-6 py-3"
+      >
+        <!-- Place type skeleton -->
+        <div class="skeleton w-8 h-8 rounded-full"></div>
+        <!-- Place type name skeleton -->
+        <div class="skeleton w-20 h-12"></div>
+      </div>
+    </div>
     <AdSpacePlaceLength
+      v-else
       v-model:model-value="placeType"
       :placeTypeItems="placeTypeItems"
     ></AdSpacePlaceLength>
@@ -182,7 +196,44 @@ watch(
     <!-- -------------------Add ad space list-------------------- -->
     <!-- ad-space-default -->
     <div class="h-screen overflow-y-scroll scroll">
-      <div class="grid grid-cols-2 gap-6">
+      <div v-if="loading" class="grid grid-cols-2 gap-6">
+        <div v-for="i in 4" class="rounded-lg border skeleton-container">
+          <!-- Skeleton loader for the card body -->
+          <div class="skeleton w-full h-32 rounded-t-lg"></div>
+
+          <!-- Skeleton loader for the card body -->
+          <div class="flex flex-col space-y-4 py-4 px-5">
+            <!-- Place name and logo skeleton -->
+            <div class="secondary-flex-row items-center space-x-4">
+              <!-- Place logo skeleton -->
+              <div class="skeleton w-8 h-8 rounded-full"></div>
+              <!-- Place name skeleton -->
+              <div class="skeleton w-1/2 h-6"></div>
+            </div>
+            <!-- Place type skeleton -->
+            <div class="skeleton w-1/4 h-6"></div>
+            <!-- Slogan title skeleton -->
+            <div class="skeleton w-3/4 h-8"></div>
+            <!-- Description skeleton -->
+            <div class="skeleton w-full h-20"></div>
+            <!-- Date skeleton -->
+            <div class="primary-flex-row items-center space-x-2">
+              <div class="skeleton w-6 h-6 rounded-full"></div>
+              <div class="skeleton w-1/4 h-6"></div>
+            </div>
+          </div>
+
+          <!-- Skeleton loader for the card footer -->
+          <div class="grid grid-cols-2 px-10 py-4 gap-x-4 border-t">
+            <!-- Edit button skeleton -->
+            <div class="skeleton w-2/3 h-10"></div>
+            <!-- Delete button skeleton -->
+            <div class="skeleton w-2/3 h-10"></div>
+          </div>
+        </div>
+      </div>
+
+      <div v-else class="grid grid-cols-2 gap-6">
         <UiCardsPlaceAdItem
           v-for="placeAd in placeAds"
           :key="placeAd.id"
@@ -198,7 +249,6 @@ watch(
       >
         Zero Result
       </p>
-      <HLoading v-if="loading"></HLoading>
     </div>
   </div>
 </template>

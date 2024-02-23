@@ -12,8 +12,10 @@ query getAmenities(
   ) {
     id
     title
+    name: title
     icon {
       lightIconUrl
+      darkIconUrl
     }
   }
 }
