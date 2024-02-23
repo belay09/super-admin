@@ -75,15 +75,6 @@ placeAdOnError((error) => {
 });
 
 /**----------------------------Add media--------------------- */
-const noImageIsSelected = ref(false);
-watch(
-  () => url.value,
-  (value) => {
-    if (value != "") {
-      noImageIsSelected.value = false;
-    }
-  }
-);
 const {
   mutate: addMediaMutate,
   onDone: addMediaOnDone,
@@ -116,14 +107,12 @@ addMediaOnError((error) => {
 const { mutate, onDone, onError, loading } = authMutation(editPlaceAdMutation);
 /**-----------------------Handle add --------------------------- */
 const handleEdit = handleSubmit(() => {
-  if (url.value != "" && url.value != placeAd.value.media?.url) {
+  if (url.value != placeAd.value.media?.url) {
     addMediaMutate({
       input: {
         url: url.value,
       },
     });
-  } else if (url.value == "") {
-    noImageIsSelected.value = true;
   } else {
     let input = {
       description: description.value,
@@ -158,7 +147,37 @@ onError((error) => {
 </script>
 
 <template>
-  <form @submit.prevent="handleEdit" class="flex flex-col space-y-2" action="">
+  <!-- Skeleton container for the form -->
+  <div v-if="placeAdLoading" class="flex flex-col space-y-4">
+    <!-- Title skeleton -->
+    <div class="flex flex-col space-y-4">
+      <div class="skeleton w-1/3 h-8"></div>
+      <div class="skeleton w-full h-12"></div>
+    </div>
+
+    <!-- Price skeleton -->
+    <div class="flex flex-col space-y-4">
+      <div class="skeleton w-1/3 h-8"></div>
+      <div class="skeleton w-full h-12"></div>
+    </div>
+    <!-- Description skeleton -->
+    <div class="flex flex-col space-y-4">
+      <div class="skeleton w-1/3 h-8"></div>
+      <div class="skeleton w-full h-36"></div>
+    </div>
+    <!-- Image Upload skeleton -->
+    <div class="skeleton w-full h-36"></div>
+
+    <!-- Submit button skeleton -->
+    <div class="skeleton w-full h-12"></div>
+    <div class="skeleton w-full h-12"></div>
+  </div>
+  <form
+    v-else
+    @submit.prevent="handleEdit"
+    class="flex flex-col space-y-2"
+    action=""
+  >
     <!-- ----------------Add space or place type----- -->
     <H-SingleSelect
       name="ad_space"
@@ -222,8 +241,9 @@ onError((error) => {
     <CommonUploadSingleImage
       folder=""
       v-model:model-value="url"
+      rules="required"
+      name="adImage"
     ></CommonUploadSingleImage>
-    <p v-if="noImageIsSelected" class="text-red-500">No image is selected</p>
 
     <!-- ----------------------Submit------------------- -->
     <button

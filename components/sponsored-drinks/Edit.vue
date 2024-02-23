@@ -88,14 +88,12 @@ addMediaOnError((error) => {
 const { mutate, onDone, onError, loading } = authMutation(editDrinkMutation);
 /**-----------------------Handle add --------------------------- */
 const handleEdit = handleSubmit(() => {
-  if (url.value != "" && url.value != drink.value?.media?.url) {
+  if (url.value != drink.value?.media?.url) {
     addMediaMutate({
       input: {
         url: url.value,
       },
     });
-  } else if (url.value == "") {
-    noImageIsSelected.value = true;
   } else {
     let input = {
       description: description.value,
@@ -127,9 +125,33 @@ onError((error) => {
 </script>
 
 <template>
-  <form @submit.prevent="handleEdit" class="flex flex-col" action="">
-    <!-- ----------------------Title------------------- -->
+  <!-- Skeleton container for the form -->
+  <div v-if="drinkLoading" class="flex flex-col space-y-4">
+    <!-- Title skeleton -->
+    <div class="flex flex-col space-y-4">
+      <div class="skeleton w-1/3 h-8"></div>
+      <div class="skeleton w-full h-12"></div>
+    </div>
 
+    <!-- Price skeleton -->
+    <div class="flex flex-col space-y-4">
+      <div class="skeleton w-1/3 h-8"></div>
+      <div class="skeleton w-full h-12"></div>
+    </div>
+    <!-- Description skeleton -->
+    <div class="flex flex-col space-y-4">
+      <div class="skeleton w-1/3 h-8"></div>
+      <div class="skeleton w-full h-36"></div>
+    </div>
+    <!-- Image Upload skeleton -->
+    <div class="skeleton w-full h-36"></div>
+
+    <!-- Submit button skeleton -->
+    <div class="skeleton w-full h-12"></div>
+    <div class="skeleton w-full h-12"></div>
+  </div>
+  <form v-else @submit.prevent="handleEdit" class="flex flex-col" action="">
+    <!-- ----------------------Title------------------- -->
     <H-Textfield
       id="drink_title"
       name="drink_title"
@@ -166,6 +188,8 @@ onError((error) => {
     <CommonUploadSingleImage
       folder=""
       v-model:model-value="url"
+      rules="required"
+      name="drinkImage"
     ></CommonUploadSingleImage>
     <p v-if="noImageIsSelected" class="text-red-500">No image is selected</p>
 

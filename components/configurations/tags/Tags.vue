@@ -206,7 +206,18 @@ getError((error) => {
       ></Configurations-Tags-AddEditTag>
       <!-- --------------------Tag lists--------------------- -->
 
+      <div v-if="getLoading" class="flex flex-col space-y-6">
+        <div class="border p-6 rounded-lg flex flex-col space-y-6">
+          <div class="flex flex-wrap gap-4">
+            <div
+              v-for="i in 8"
+              class="rounded-full skeleton border pl-4 h-8 w-40"
+            ></div>
+          </div>
+        </div>
+      </div>
       <Configurations-List
+        v-else
         :items="items"
         :has-icon="true"
         @deleteItem="handleDelete"

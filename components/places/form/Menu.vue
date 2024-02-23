@@ -1,11 +1,22 @@
 <script setup>
-import insertPlaceMenuMutation from "@/graphql/mutations/place/insertPlaceMenus.gql";
-import getMenuTypes from "@/graphql/query/basics/menuTypes.gql";
+import insertPlaceMenuMutation from "@/graphql/mutations/menu/add.gql";
+import getMenuTypesQuery from "@/graphql/query/basics/menuTypes.gql";
 import getMenuTags from "@/graphql/query/basics/menuTags.gql";
+import getPlacesMenuQuery from "@/graphql/query/menu/list.gql";
 
+import useNotify from "@/use/notify";
+const { handleSubmit, isSubmitting } = useForm({});
+
+/**-----------------------Globals----------------------------- */
+const { notify } = useNotify();
+const props = defineProps({
+  placeId: {
+    type: Number,
+    required: true,
+  },
+});
 /**-----------------------Navigation----------------------------- */
 const emit = defineEmits(["next", "prev"]);
-const route = useRoute();
 const next = () => {
   emit("next");
 };
@@ -13,31 +24,48 @@ const prev = () => {
   emit("prev");
 };
 
-/***************************Data*************************************/
-const menuType = ref("");
-const menuTag = ref([]);
-const housesSpecial = ref(false);
-const menuTypeItems = ref([]);
-const menuTagItems = ref([]);
-const menuTagSearch = ref("");
-const menuName = ref("");
-const menuPrice = ref(0);
-const menuPreparationTime = ref(0);
+/*...................Place menus data fetch.............*/
+const menuFilter = ref({
+  placeId: {
+    _eq: props.placeId,
+  },
+});
+const limit = ref(20);
+const menuOffset = ref(0);
+const menuSort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
+const menus = ref([]);
+const length = ref(0);
 
-watch(menuType, (newVal) => {
-  console.log(newVal, "menuType");
+const {
+  onResult: menuResult,
+  onError: menuError,
+  loading: menuLoading,
+  refetch: menuRefetch,
+  fetchMore: menuFetchMore,
+} = authListQuery(getPlacesMenuQuery, menuFilter, menuSort, menuOffset, limit);
+
+menuResult((result) => {
+  if (result.data?.menus) {
+    menus.value = result.data?.menus;
+    length.value = result.data?.menusAggregate?.aggregate?.count;
+  }
+});
+menuError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
 });
 
-/***************************Query*************************************/
-
-/**-----------------------------Menu Type Query ----------------------*/
+/**-----------------------------Menu Type Data fetch ----------------------*/
+const menuTypeItems = ref([]);
 const {
   onResult: onResultMenuType,
   onError: onErrorMenuType,
   loading: loadingMenuType,
-  refetch: refetchMenuType,
-  fetchMore: fetchMoreMenuType,
-} = authListQuery(getMenuTypes, {}, "", 0, 50);
+} = authListQuery(getMenuTypesQuery, {}, "", 0, 50);
 
 onResultMenuType((result) => {
   if (result.data) {
@@ -45,8 +73,9 @@ onResultMenuType((result) => {
   }
 });
 
-/**--------------------------Menu Tag Query ------------------------ */
-
+/**--------------------------Menu Tag Data Fetch ------------------------ */
+const menuTagItems = ref([]);
+const menuTagSearch = ref("");
 const menuTagFilter = computed(() => {
   let query = {};
   if (menuTagSearch.value) {
@@ -55,7 +84,6 @@ const menuTagFilter = computed(() => {
     };
   }
 });
-
 const {
   onResult: onResultMenuTag,
   onError: onErrorMenuTag,
@@ -73,192 +101,341 @@ onResultMenuTag((result) => {
       };
     });
   }
-
-  console.log(menuTagItems.value, "menuTagItems");
 });
 
-// const menuTypeItems = ref([
-//   {
-//     name: "Food",
-//     id: "Food",
-//   },
-//   {
-//     name: "Drink",
-//     id: "Drink",
-//   },
-// ]);
+/*--------------------------------Add menu ------------------------- */
+
+const image_urls = ref([
+  "https://cdn.hahu.jobs/public/sheger-gebeta/715762eb-6c62-4887-a8f6-9ed791dddabc.jpeg",
+  "https://cdn.hahu.jobs/public/sheger-gebeta/715762eb-6c62-4887-a8f6-9ed791dddabc.jpeg",
+]);
+const menuType = ref("");
+const menuTags = ref([]);
+const menuCategory = ref("");
+const isHouseSpecial = ref(false);
+const menuName = ref("");
+const menuIngredients = ref("");
+const menuDescription = ref("");
+const menuPrice = ref(0);
+const menuPreparationTime = ref(0);
+const featuredImage = ref("");
+
+// mutation
+const {
+  mutate: insertPlaceMenuMutate,
+  loading: insertPlaceMenuLoading,
+  onError: insertPlaceMenuError,
+  onDone: insertPlaceMenuDone,
+} = authMutation(insertPlaceMenuMutation);
+
+insertPlaceMenuDone(() => {
+  menuRefetch();
+  notify({
+    title: "Menu Added",
+    description: "Menu Added Successfully",
+    type: "success",
+    borderClass: "border-l-8 border-green-300",
+  });
+});
+
+insertPlaceMenuError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+// handler
+const handleAddMenu = handleSubmit(() => {
+  insertPlaceMenuMutate({
+    input: {
+      placeId: props.placeId,
+      title: menuName.value,
+      type: menuType.value.toUpperCase(),
+      categoryId: menuCategory.value,
+      price: menuPrice.value,
+      timeToPrepare: menuPreparationTime.value,
+      isHouseSpecial: isHouseSpecial.value,
+      ingridients: menuIngredients.value,
+      description: menuDescription.value,
+      media: {
+        data: {
+          url: featuredImage.value,
+        },
+      },
+      menuMedias: {
+        data: image_urls.value.map((url) => {
+          return {
+            media: {
+              data: {
+                url,
+              },
+            },
+          };
+        }),
+      },
+      menuTags: {
+        data: menuTags.value.map((tag) => {
+          return {
+            tagId: tag,
+          };
+        }),
+      },
+    },
+  });
+});
 </script>
 <template>
   <div>
-    <div class="flex px-20 py-10">
+    <div class="flex px-10 py-10">
       <!-----------------------------------Left-------------------------------------------------- -->
-      <div class="flex-[50%] px-10 flex flex-col gap-4 border-r mx-2">
-        <!-- ----------------------------------------- Menu Name ---------------------------------------->
-        <HTextfield
-          type="text"
-          name="Menu Name"
-          class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
-          rules="required"
-          v-model="menuName"
+      <div class="flex-[50%] pr-10 border-r mx-2">
+        <form
+          @submit.prevent="handleAddMenu"
+          action=""
+          class="flex flex-col gap-5"
         >
-          <template #label>
-            <p class="text-sheger-gray-100">Menu Name</p>
-          </template>
-        </HTextfield>
+          <!-- ----------------------------------------- Menu Name ---------------------------------------->
+          <HTextfield
+            type="text"
+            name="Menu Name"
+            class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
+            rules="required"
+            v-model="menuName"
+          >
+            <template #label>
+              <p class="text-sheger-gray-100">Menu Name</p>
+            </template>
+          </HTextfield>
 
-        <!----------------------------------------------Price (ETB)------------------------------------------>
-        <HTextfield
-          type="number"
-          name="Price"
-          class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
-          rules="required"
-          v-model="menuPrice"
-        >
-          <template #label>
-            <p class="text-sheger-gray-100">Price (ETB)</p>
-          </template>
-        </HTextfield>
+          <!----------------------------------------------Price (ETB)------------------------------------------>
+          <HTextfield
+            type="number"
+            name="Price"
+            class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
+            rules="required"
+            v-model="menuPrice"
+          >
+            <template #label>
+              <p class="text-sheger-gray-100">Price (ETB)</p>
+            </template>
+          </HTextfield>
 
-        <!----------------------------------------Preparation Time (Minutes)---------------------------------------->
+          <!----------------------------------------Preparation Time (Minutes)---------------------------------------->
 
-        <HTextfield
-          type="number"
-          name="Preparation Time"
-          class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
-          rules="required"
-          v-model="menuPreparationTime"
-        >
-          <template #label>
-            <p class="text-sheger-gray-100">Preparation Time (Minutes)</p>
-          </template>
-        </HTextfield>
+          <HTextfield
+            type="number"
+            name="Preparation Time"
+            class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
+            rules="required"
+            v-model="menuPreparationTime"
+          >
+            <template #label>
+              <p class="text-sheger-gray-100">Preparation Time (Minutes)</p>
+            </template>
+          </HTextfield>
 
-        <!----------------------------------------Menu Type---------------------------------------->
-        <H-SingleSelect
-          name="menu_type"
-          id="menu_type"
-          label="Menu Type"
-          :items="menuTypeItems"
-          v-model="menuType"
-          show-by="value"
-          return-object
-        ></H-SingleSelect>
+          <!----------------------------------------Menu Type---------------------------------------->
 
-        <!----------------------------------------Ingredient ( Use comma to seprate)---------------------------------------->
+          <LazyH-SingleSelect
+            name="menu_type"
+            id="menu_type"
+            label="Menu Type"
+            :items="menuTypeItems"
+            v-model="menuType"
+          ></LazyH-SingleSelect>
 
-        <HTextfield
-          type="text"
-          name="Ingredient"
-          class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
-          rules="required"
-          v-model="menuIngredient"
-        >
-          <template #label>
-            <p class="text-sheger-gray-100 mb-2">
-              Ingredient ( Use comma to seprate)
-            </p>
-          </template>
-        </HTextfield>
+          <!----------------------------------------Ingredient ( Use comma to separate)---------------------------------------->
 
-        <!----------------------------------------Tag---------------------------------------->
+          <HTextfield
+            type="text"
+            name="Ingredient"
+            class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
+            rules="required"
+            v-model="menuIngredients"
+          >
+            <template #label>
+              <p class="text-sheger-gray-100 mb-2">
+                Ingredient ( Use comma to separate)
+              </p>
+            </template>
+          </HTextfield>
 
-        <Lazyh-multi-select-chips
-          multiple
-          chipsStyle="rounded-full border-[1px] border-gray-600 py-1 px-2 hover:border-primary/40"
-          :items="menuTagItems"
-          v-model="menuTag"
-          value="id"
-          showBy="title"
-          listClass="h-40"
-          returnBy="id"
-          name="tag"
-          rules="required"
-          label="Tag"
-          placeholder="Select Tag"
-          @search="menuTagSearch = $event"
-        >
-        </Lazyh-multi-select-chips>
+          <!----------------------------------------Tag---------------------------------------->
 
-        <!----------------------------------------Home Special---------------------------------------->
+          <LazyH-multi-select-chips
+            multiple
+            chipsStyle="rounded-full border-[1px] border-gray-600 py-1 px-2 hover:border-primary/40"
+            :items="menuTagItems"
+            v-model="menuTags"
+            value="id"
+            showBy="title"
+            listClass="h-40"
+            returnBy="id"
+            name="tag"
+            rules="required"
+            label="Tag"
+            placeholder="Select Tag"
+            @search="menuTagSearch = $event"
+          >
+          </LazyH-multi-select-chips>
 
-        <div
-          class="flex justify-between border items-center py-2.5 border-sheger-gray-200 px-2 rounded-md"
-        >
-          Houses' Special
+          <!--------------------------------------------Category ---------------------------------------- -->
+          <SelectorsCategory
+            type="MENU_CATEGORY"
+            v-model="menuCategory"
+          ></SelectorsCategory>
 
-          <HSwitch
-            name="houses_special"
-            id="houses_special"
-            label="houses_special"
-            class="flex items-center"
-            v-model="housesSpecial"
-          ></HSwitch>
-        </div>
+          <!--------------------------------------------Description ---------------------------------------- -->
+          <H-Textarea
+            name="place_portfolio_description"
+            id="place_portfolio_description"
+            label="Description"
+            placeholder="Description"
+            v-model="menuDescription"
+            rules="required"
+          ></H-Textarea>
 
-        <!----------------------------------------Image Upload---------------------------------------->
+          <!----------------------------------------Home Special---------------------------------------->
 
-        <div
-          class="flex flex-col items-center justify-center gap-4 border-2 border-dashed border-gray-300 rounded-lg p-8"
-        >
-          <Icon name="uil:cloud-upload" class="w-20 h-20" />
-          <div class="input_field flex flex-col w-max mx-auto text-center">
-            <label>
-              <input
-                class="text-sm cursor-pointer w-36 hidden"
-                type="file"
-                accept="image/*"
-                multiple
-              />
-              <div>
-                Drag and drop here or
-                <span class="text-primary-600">Browse</span>
-              </div>
-            </label>
+          <div
+            class="flex justify-between border items-center py-2.5 border-sheger-gray-200 px-2 rounded-md"
+          >
+            Houses' Special
 
-            <div class="">Select images that are Square and 10MB</div>
+            <HSwitch
+              name="houses_special"
+              id="houses_special"
+              label="houses_special"
+              class="flex items-center"
+              v-model="isHouseSpecial"
+            ></HSwitch>
           </div>
-        </div>
 
-        <!-------------------------------Uploaded Files------------------------------- -->
+          <!-- ----------------------Featured image------------------- -->
+          <div class="flex flex-col gap-y-4">
+            <p class="secondary-text">Featured Image</p>
+            <CommonUploadSingleImage
+              folder=""
+              v-model:model-value="featuredImage"
+              name="featuredImage"
+              rules="required"
+            ></CommonUploadSingleImage>
+          </div>
 
-        <div class="flex flex-col gap-4">
-          <p class="text-lg font-medium">Uploaded Files</p>
-          <div>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <img
-                  src="/images/temporary/default-food-image.png"
-                  class="w-[100px]"
+          <!----------------------------------------Image Upload---------------------------------------->
+
+          <div
+            class="flex flex-col items-center justify-center gap-4 border-2 border-dashed border-gray-300 rounded-lg p-8"
+          >
+            <Icon name="uil:cloud-upload" class="w-20 h-20" />
+            <div class="input_field flex flex-col w-max mx-auto text-center">
+              <label>
+                <input
+                  class="text-sm cursor-pointer w-36 hidden"
+                  type="file"
+                  accept="image/*"
+                  multiple
                 />
                 <div>
-                  <p class="text-lg font-medium">IMG=99KJ0-.png</p>
-                  <p class="text-sm font-light text-sheger-gray-100">
-                    Feb 2, 2023. image
-                  </p>
+                  Drag and drop here or
+                  <span class="text-primary-600">Browse</span>
+                </div>
+              </label>
+
+              <div class="">Select images that are Square and 10MB</div>
+            </div>
+          </div>
+
+          <!-------------------------------Uploaded Files------------------------------- -->
+
+          <div
+            class="flex flex-col gap-4 border px-6 py-3 rounded-md"
+            v-if="image_urls.length > 0"
+          >
+            <p class="font-medium">Uploaded Files</p>
+            <div class="flex flex-col gap-4">
+              <div
+                v-for="(url, index) in image_urls"
+                class="flex items-center justify-between"
+              >
+                <div class="flex items-center gap-3">
+                  <img :src="url" class="w-[100px]" />
+                  <div>
+                    <p class="text-lg font-medium">IMG=99KJ0-.png</p>
+                    <p class="text-sm font-light text-sheger-gray-100">
+                      Feb 2, 2023. image
+                    </p>
+                  </div>
+                </div>
+                <!--progress -->
+                <div class="bg-primary-600 h-[3px] w-[200px]" />
+
+                <div @click="handelDeleteImage(index)" class="cursor-pointer">
+                  <Icon name="uil:trash-alt" class="w-6 h-6" />
                 </div>
               </div>
-              <!--progress -->
-              <div class="bg-primary-600 h-[3px] w-[200px]" />
+            </div>
+          </div>
+          <!------------------------------- Add btn --------------------------->
 
-              <div>
-                <Icon name="uil:trash-alt" class="w-6 h-6" />
+          <button class="primary-button border">
+            <Icon name="uil:plus" class="w-6 h-6" />
+            <span class="">Add Menu Item</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- ------------------------------Menu list ----------------------------- -->
+      <div class="flex-[50%] pl-6">
+        <p class="secondary-text !text-lg font-medium mb-6">
+          {{ length }} Menu items
+        </p>
+
+        <!-- -----------------------Skeleton------------------- -->
+        <div v-if="menuLoading" class="flex flex-col gap-4">
+          <div v-for="i in 8" class="w-full 2xl:max-w-4xl">
+            <!-- Skeleton loader for the menu item -->
+            <div
+              class="grid grid-cols-8 gap-4 lg:gap-8 secondary-border rounded-lg w-full relative skeleton-container"
+            >
+              <div
+                class="skeleton col-span-3 lg:col-span-3 bg-gray-300 rounded-l-lg"
+              ></div>
+              <div
+                class="col-span-5 lg:col-span-5 flex flex-col space-y-2 lg:space-y-4 py-4 pr-2 lg:pr-6"
+              >
+                <div class="flex justify-between w-full">
+                  <div class="skeleton w-20 h-6"></div>
+                  <div class="skeleton w-8 h-8"></div>
+                </div>
+                <div class="skeleton w-full h-8"></div>
+                <div class="skeleton w-2/3 h-6"></div>
+                <div class="flex space-x-4 items-start">
+                  <div class="skeleton w-8 h-8"></div>
+                  <div class="skeleton w-2/3 h-6"></div>
+                </div>
+                <div class="skeleton w-full h-16"></div>
+                <div class="flex items-center space-x-4">
+                  <div class="skeleton w-8 h-8"></div>
+                  <div class="skeleton w-2/3 h-6"></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <!------------------------------- Add btn --------------------------->
 
-        <div class="primary-button border">
-          <Icon name="uil:plus" class="w-6 h-6" />
-          <span class="">Add Menu Item</span>
+        <div v-else class="flex flex-col gap-4">
+          <UiCardsMenu
+            @onDelete="menuRefetch"
+            @onEdit="menuRefetch"
+            v-for="menu in menus"
+            :key="menu.id"
+            :menu="menu"
+          />
         </div>
-      </div>
-
-      <!-- ------------------------------Right ----------------------------- -->
-      <div class="flex-[50%] flex flex-col gap-4">
-        <UiCardsMenuItemCard />
-        <UiCardsMenuItemCard />
-        <UiCardsMenuItemCard />
       </div>
     </div>
     <!-- --------------------------------------navigation-------------------------------- -->

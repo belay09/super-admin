@@ -226,23 +226,7 @@ addPlaceError((error) => {
   });
 });
 
-const noImageIsSelected = ref(false);
-watch(
-  () => image_url.value,
-  (value) => {
-    if (value != "") {
-      noImageIsSelected.value = false;
-    } else {
-      noImageIsSelected.value = true;
-    }
-  }
-);
-
 const handleAddPlace = handleSubmit(() => {
-  // if (image_url.value == "") {
-  //   noImageIsSelected.value = true;
-  //   return;
-  // }
   const input = {
     light_logo: {
       data: {
@@ -304,10 +288,9 @@ const handleAddPlace = handleSubmit(() => {
         <CommonUploadSingleImage
           folder=""
           v-model:model-value="image_url"
+          rules="required"
+          name="placeLogo"
         ></CommonUploadSingleImage>
-        <p v-if="noImageIsSelected" class="text-red-500">
-          No image is selected
-        </p>
 
         <!--------------------------------------------------- Place Name------------------------------- -->
         <HTextfield
@@ -358,7 +341,6 @@ const handleAddPlace = handleSubmit(() => {
           rules="required"
         ></H-SingleSelect>
 
-        {{ placeTag }}
         <!-------------------------------------------------- Tag--------------------------------------->
         <H-Multi-Select-Chips
           multiple

@@ -158,7 +158,18 @@ getError((error) => {
       ></ConfigurationsAmbiancesAddEditAmbiance>
       <!-- --------------------Tag lists--------------------- -->
 
+      <div v-if="loading" class="flex flex-col space-y-6">
+        <div class="border p-6 rounded-lg flex flex-col space-y-6">
+          <div class="flex flex-wrap gap-4">
+            <div
+              v-for="i in 8"
+              class="rounded-full skeleton border pl-4 h-8 w-32"
+            ></div>
+          </div>
+        </div>
+      </div>
       <Configurations-List
+        v-else
         :items="items"
         :has-icon="false"
         @deleteItem="handleDelete"

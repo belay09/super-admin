@@ -159,16 +159,22 @@ definePageMeta({
           v-if="currentStep == 3"
           :placeId="placeId"
         />
-        <PlacesFormMenu @next="goNext" @prev="goPrev" v-if="currentStep == 4" />
-        <PlacesFormPictures
+        <PlacesFormMenu
           @next="goNext"
           @prev="goPrev"
           v-if="currentStep == 4"
+          :placeId="placeId"
+        />
+        <PlacesFormPictures
+          @next="goNext"
+          @prev="goPrev"
+          v-if="currentStep == 5"
+          :placeId="placeId"
         />
         <PlacesFormPricing
           @next="goNext"
           @prev="goPrev"
-          v-if="currentStep == 5"
+          v-if="currentStep == 6"
         />
       </div>
     </div>

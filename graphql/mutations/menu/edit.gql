@@ -1,0 +1,30 @@
+mutation editMenu(
+  $menuObject: MenusSetInput!
+  $menuMediaObject: [MenuMediasInsertInput!]!
+  $menuTagObject: [MenuTagsInsertInput!]!
+  $id: bigint!
+) {
+  # delete menu tag
+
+  deleteMenuMedias(where: { menuId: { _eq: $id } }) {
+    affectedRows
+  }
+
+  #  delete menu media
+  deleteMenuTags(where: { menuId: { _eq: $id } }) {
+    affectedRows
+  }
+
+  # insert menu medias
+  insertMenuMedias(objects: $menuMediaObject) {
+    affectedRows
+  }
+
+  # insert menu tag
+  insertMenuTags(objects: $menuTagObject) {
+    affectedRows
+  }
+  updateMenusByPk(_set: $menuObject, pkColumns: { id: $id }) {
+    id
+  }
+}

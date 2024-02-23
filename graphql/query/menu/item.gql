@@ -1,18 +1,19 @@
-query getMenus(
-  $filter: MenusBoolExp
-  $order: [MenusOrderBy!]
-  $limit: Int
-  $offset: Int
-) {
-  menus(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+query getMenu($id: bigint!) {
+  menu: menusByPk(id: $id) {
     id
     price
     sides
     timeToPrepare
-    title
-    type
     ingridients
+    title
+    categoryId
+    type
     updatedAt
+
+    # featured image
+    media {
+      url
+    }
     menuTags {
       id
       tag {
@@ -25,6 +26,7 @@ query getMenus(
       url
     }
     menuMedias {
+      id
       media {
         url
       }
@@ -37,16 +39,6 @@ query getMenus(
       id
       name
       type
-      # logo {
-      #   id
-      #   url
-      # }
-    }
-  }
-  # menu aggregates
-  menusAggregate(where: $filter) {
-    aggregate {
-      count
     }
   }
 }

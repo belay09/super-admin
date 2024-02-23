@@ -1,10 +1,17 @@
 <script setup>
 import useNotify from "@/use/notify";
-import { useRegisterPlaceStore } from "~/stores/registerPlace";
-import insertPlaceMediasMutaion from "~/graphql/mutations/place/insertPlaceMedias.gql";
+import insertPlaceMediasMutation from "~/graphql/mutations/place/insertPlaceMedias.gql";
 import getPlaceMediasQuery from "~/graphql/query/places/getPlaceMedias.gql";
 import deletePlaceMediasMutation from "~/graphql/mutations/place/deletePlaceMedia.gql";
 
+/**-----------------------Globals----------------------------- */
+const { notify } = useNotify();
+const props = defineProps({
+  placeId: {
+    type: Number,
+    required: true,
+  },
+});
 /**-----------------------Navigation----------------------------- */
 const emit = defineEmits(["next", "prev"]);
 const route = useRoute();
@@ -17,25 +24,16 @@ const prev = () => {
 /************************* Data ****************************/
 const images = ref([]);
 const image_url = ref("");
-const { notify } = useNotify();
 const offset = ref(0);
-const limit = ref(4);
+const limit = ref(100);
 
-/************************* Control Variables ****************************/
-const showProfilePictureModal = ref(false);
-const registerPlaceStore = useRegisterPlaceStore();
-
-/************************** Query ******************************/
-
+/************************** Place Medias Data Fetch ******************************/
 const placeMediaFilters = computed(() => {
-  let query = {};
-
-  if (registerPlaceStore.placeId) {
-    query.placeId = {
-      _eq: registerPlaceStore.placeId,
-    };
-  }
-
+  let query = {
+    placeId: {
+      _eq: props.placeId,
+    },
+  };
   return query;
 });
 
@@ -44,14 +42,7 @@ const {
   onError: onErrorImages,
   loading: loadingImages,
   refetch: refetchImages,
-  fetchMore: fetchMoreImages,
-} = authListQuery(
-  getPlaceMediasQuery,
-  placeMediaFilters,
-  "",
-  offset.value,
-  limit.value
-);
+} = authListQuery(getPlaceMediasQuery, placeMediaFilters, "", offset, limit);
 
 onResultImages((result) => {
   if (result.data) {
@@ -67,15 +58,13 @@ onErrorImages((error) => {
   });
 });
 
-/************************* Mutaions ****************************/
-
 /**---------------------Insert Place Media ---------------------- */
 const {
   mutate: insertPlaceMedia,
   loading: loadingInsertPlaceMedia,
   onDone: onDoneInsertPlaceMedia,
   onError: onErrorInsertPlaceMedia,
-} = authMutation(insertPlaceMediasMutaion);
+} = authMutation(insertPlaceMediasMutation);
 
 onDoneInsertPlaceMedia((result) => {
   if (result.data) {
@@ -146,6 +135,9 @@ const handleDelete = (id) => {
     id: id,
   });
 };
+
+/************************* Control Variables ****************************/
+const showProfilePictureModal = ref(false);
 </script>
 
 <template>

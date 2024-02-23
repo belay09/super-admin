@@ -1,0 +1,5 @@
+mutation deleteMenus($id: bigint!) {
+  deleteMenusByPk(id: $id) {
+    id
+  }
+}
