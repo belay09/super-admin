@@ -7,7 +7,7 @@ import useNotify from "@/use/notify";
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
 	modelValue: {
-		type: Number,
+		type: [Array, String, Object],
 	},
 	place_Id: {
 		type: Number,
@@ -92,6 +92,7 @@ watch(
 		chipsStyle="rounded-full border-[1px] border-gray-600 py-1 px-2 hover:border-primary/40"
 		:items="menus"
 		v-model="menu"
+		:init="menu"
 		value="id"
 		showBy="name"
 		listClass="h-40"

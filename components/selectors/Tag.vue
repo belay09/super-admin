@@ -7,7 +7,7 @@ import useNotify from "@/use/notify";
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
 	modelValue: {
-		type: Number,
+		type: Array,
 	},
 });
 
@@ -16,7 +16,7 @@ const { notify } = useNotify();
 /*---------------------------Place Tags---------------------------**/
 const placeTagItems = ref([]);
 const placeTagSearch = ref("");
-const tag = ref(props.modelValue);
+const tags = ref(props.modelValue);
 
 const tagFilter = computed(() => {
 	let query = {};
@@ -48,12 +48,12 @@ function makeSearch(value) {
 watch(
 	() => props.modelValue,
 	(value) => {
-		tag.value = value;
+		tags.value = value;
 	}
 );
 
 watch(
-	() => tag.value,
+	() => tags.value,
 	(value) => {
 		emit("update:modelValue", value);
 	}
@@ -65,7 +65,8 @@ watch(
 		multiple
 		chipsStyle="rounded-full border-[1px] border-gray-600 py-1 px-2 hover:border-primary/40"
 		:items="placeTagItems"
-		v-model="tag"
+		:init="tags"
+		v-model="tags"
 		value="id"
 		showBy="name"
 		listClass="h-40"

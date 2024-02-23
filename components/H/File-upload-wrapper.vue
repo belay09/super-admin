@@ -56,7 +56,8 @@ const { value: inputValue, errorMessage } = useField(props.name, props.rules, {
 });
 const uploadedFiles = ref([]);
 const openModal = ref(false);
-onMounted(() => {
+
+watchEffect(() => {
 	if (props.init) {
 		uploadedFiles.value = props.init;
 	}
@@ -95,6 +96,7 @@ const thumbnail = computed({
 				:fileLimit="fileLimit"
 				:folder="folder"
 				:accept="accept"
+				:init="init"
 				v-model="uploadedFiles"
 				v-model:openModal="openModal"
 				@uploadDone="uploadDone"

@@ -1,0 +1,42 @@
+mutation editPlace(
+	$input: ReviewsSetInput!
+	$id: bigint!
+	$reviewMediaInput: [ReviewMediasInsertInput!]!
+	$reviewMenuInput: [MenuReviewsInsertInput!]!
+	$reviewTagInput: [ReviewTagsInsertInput!]!
+) {
+	updateReviewsByPk(_set: $input, pkColumns: { id: $id }) {
+		id
+	}
+	deleteReviewMedias(where: { reviewId: { _eq: $id } }) {
+		returning {
+			id
+		}
+	}
+	deleteReviewTags(where: { reviewId: { _eq: $id } }) {
+		returning {
+			id
+		}
+	}
+	deleteMenuReviews(where: { reviewId: { _eq: $id } }) {
+		returning {
+			id
+		}
+	}
+	insertReviewMedias(objects: $reviewMediaInput) {
+		returning {
+			id
+		}
+	}
+	insertMenuReviews(objects: $reviewMenuInput) {
+		returning {
+			id
+		}
+	}
+
+	insertReviewTags(objects: $reviewTagInput) {
+		returning {
+			id
+		}
+	}
+}

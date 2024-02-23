@@ -1,5 +1,11 @@
-mutation addBasicMedia($input: BasicsMediaInsertInput!) {
-  insertBasicsMediaOne(object: $input) {
-    id
-  }
+mutation addBasicMedia(
+	$input: BasicsMediaInsertInput!
+	$drink: ReviewDrinksInsertInput!
+) {
+	insertBasicsMediaOne(object: $input) {
+		id
+	}
+	insertReviewDrinksOne(object: $drink) {
+		id
+	}
 }

@@ -83,7 +83,7 @@ watch(
 </script>
 
 <template>
-	<Lazy-H-SingleSelectWithSearch
+	<H-SingleSelectWithSearch
 		:items="places"
 		v-model="place"
 		@search="makeSearch"
@@ -91,5 +91,5 @@ watch(
 		name="place"
 		label="Place"
 		:loading="loading"
-	></Lazy-H-SingleSelectWithSearch>
+	></H-SingleSelectWithSearch>
 </template>

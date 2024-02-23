@@ -1,7 +1,5 @@
 <script setup>
 import { useField } from "vee-validate";
-// import { useToast } from "primevue/usetoast";
-// import { fi } from "date-fns/locale";
 
 import upload_query from "@/graphql/mutations/file-upload/uploadMultiple.gql";
 import authMutation from "@/composables/auth-mutation.js";
