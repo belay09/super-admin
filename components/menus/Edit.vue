@@ -20,10 +20,7 @@ const props = defineProps({
 
 /*--------------------------------Add menu data ------------------------- */
 
-const image_urls = ref([
-  "https://cdn.hahu.jobs/public/sheger-gebeta/715762eb-6c62-4887-a8f6-9ed791dddabc.jpeg",
-  "https://cdn.hahu.jobs/public/sheger-gebeta/715762eb-6c62-4887-a8f6-9ed791dddabc.jpeg",
-]);
+const image_urls = ref([]);
 const menuType = ref("");
 const menuTags = ref([]);
 const initMenuTags = ref([]);
@@ -34,7 +31,7 @@ const menuIngredients = ref("");
 const menuDescription = ref("");
 const menuPrice = ref(0);
 const menuPreparationTime = ref(0);
-const featuredImage = ref("");
+const selectedThumbnail = ref("");
 
 /**
  * Capitalizes the first letter of the input string.
@@ -52,7 +49,7 @@ function capitalizeFirstLetter(inputString) {
     return inputString;
   }
 }
-/*...................Place detail data fetch.............*/
+/*...................Place menu data fetch.............*/
 const menu = ref(null);
 const {
   onResult: menuOnResult,
@@ -70,12 +67,13 @@ menuOnResult((result) => {
     // init menu tags
     initMenuTags.value = tempMenu.menuTags.map((menuTag) => {
       return {
-        title: menuTag.tag.title,
+        name: menuTag.tag.title,
         id: menuTag.tag.id,
       };
     });
 
-    featuredImage.value = tempMenu.media.url;
+    menuTags.value = tempMenu.menuTags.map((menuTag) => menuTag.tag.id);
+    selectedThumbnail.value = tempMenu.media.url;
     menuCategory.value = tempMenu.categoryId;
     menuName.value = tempMenu.title;
     menuIngredients.value = tempMenu.ingridients;
@@ -86,6 +84,8 @@ menuOnResult((result) => {
     image_urls.value = tempMenu.menuMedias.map((item) => {
       return item.media.url;
     });
+
+    image_urls.value.push(selectedThumbnail.value);
   }
 });
 
@@ -112,40 +112,8 @@ onResultMenuType((result) => {
   }
 });
 
-/**--------------------------Menu Tag Data Fetch ------------------------ */
-const menuTagItems = ref([]);
-const menuTagSearch = ref("");
-const menuTagFilter = computed(() => {
-  let query = {};
-  if (menuTagSearch.value) {
-    query.title = {
-      _ilike: `%${menuTagSearch.value}%`,
-    };
-  }
-});
-const {
-  onResult: onResultMenuTag,
-  onError: onErrorMenuTag,
-  loading: loadingMenuTag,
-  refetch: refetchMenuTag,
-  fetchMore: fetchMoreMenuTag,
-} = authListQuery(getMenuTags, menuTagFilter, "", 0, 50);
+/*--------------------------------Edit menu ------------------------- */
 
-onResultMenuTag((result) => {
-  if (result.data) {
-    menuTagItems.value = result?.data?.menuTags.map((item) => {
-      return {
-        title: item.tag.title,
-        id: item.tag.id,
-      };
-    });
-  }
-});
-
-/*--------------------------------Add menu ------------------------- */
-const editInput = ref({
-  id: props.menuId,
-});
 // mutation
 const {
   mutate: editMutate,
@@ -183,6 +151,9 @@ const {
 } = authMutation(addMediaMutation);
 
 addMediaOnDone((result) => {
+  // remove thumbnail from images
+  let imageWithOutThumbnails =
+    image_urls.value.filter((image) => image !== selectedThumbnail.value) || [];
   editMutate({
     id: props.menuId,
     menuObject: {
@@ -197,7 +168,8 @@ addMediaOnDone((result) => {
       featuredImage: result.data?.insertBasicsMediaOne?.id,
     },
     // menu medias
-    menuMediaObject: image_urls.value.map((url) => {
+
+    menuMediaObject: imageWithOutThumbnails.map((url) => {
       return {
         menuId: props.menuId,
         media: {
@@ -220,7 +192,7 @@ addMediaOnDone((result) => {
 const handleEditMenu = handleSubmit(() => {
   addMediaMutate({
     input: {
-      url: featuredImage.value,
+      url: selectedThumbnail.value,
     },
   });
 });
@@ -290,69 +262,22 @@ const handleEditMenu = handleSubmit(() => {
             </template>
           </HTextfield>
 
-          <!-- ----------------------Featured image------------------- -->
-          <div class="flex flex-col gap-y-4">
-            <p class="secondary-text">Featured Image</p>
-            <CommonUploadSingleImage
-              folder=""
-              v-model:model-value="featuredImage"
-              name="featuredImage"
-            ></CommonUploadSingleImage>
-          </div>
+          <!----------------------------------------images Upload---------------------------------------->
+          <p class="mb-2 text-sheger-gray-100">Upload images</p>
 
-          <!----------------------------------------Image Upload---------------------------------------->
-          <div
-            class="flex flex-col items-center justify-center gap-4 border-2 border-dashed border-gray-300 rounded-lg p-8"
-          >
-            <Icon name="uil:cloud-upload" class="w-20 h-20" />
-            <div class="input_field flex flex-col w-max mx-auto text-center">
-              <label>
-                <input
-                  class="text-sm cursor-pointer w-36 hidden"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                />
-                <div>
-                  Drag and drop here or
-                  <span class="text-primary-600">Browse</span>
-                </div>
-              </label>
-
-              <div class="">Select images that are Square and 10MB</div>
-            </div>
-          </div>
-
-          <!-------------------------------Uploaded Files------------------------------- -->
-
-          <div
-            class="flex flex-col gap-4 border px-6 py-3 rounded-md"
-            v-if="image_urls.length > 0"
-          >
-            <p class="font-medium">Uploaded Files</p>
-            <div class="flex flex-col gap-4">
-              <div
-                v-for="(url, index) in image_urls"
-                class="flex items-center justify-between"
-              >
-                <div class="flex items-center gap-3">
-                  <img :src="url" class="w-[100px]" />
-                  <div>
-                    <p class="text-lg font-medium">IMG=99KJ0-.png</p>
-                    <p class="text-sm font-light text-sheger-gray-100">
-                      Feb 2, 2023. image
-                    </p>
-                  </div>
-                </div>
-                <!--progress -->
-                <div class="bg-primary-600 h-[3px] w-[200px]" />
-
-                <div @click="handelDeleteImage(index)" class="cursor-pointer">
-                  <Icon name="uil:trash-alt" class="w-6 h-6" />
-                </div>
-              </div>
-            </div>
-          </div>
+          <HFileUploadWrapper
+            name="file"
+            :maxFileSize="1024 * 1024 * 10"
+            :fileLimit="3"
+            folder="applications_form"
+            description="upload file"
+            placeholder="select multiple files"
+            v-model="image_urls"
+            :init="image_urls"
+            :disabled="false"
+            :showStar="false"
+            v-model:thumbnails="selectedThumbnail"
+          />
 
           <!----------------------------------------Home Special---------------------------------------->
 
@@ -390,13 +315,13 @@ const handleEditMenu = handleSubmit(() => {
 
           <!----------------------------------------Menu Type---------------------------------------->
 
-          <LazyH-SingleSelect
+          <LazyHSingleSelect
             name="menu_type"
             id="menu_type"
             label="Menu Type"
             :items="menuTypeItems"
             v-model="menuType"
-          ></LazyH-SingleSelect>
+          ></LazyHSingleSelect>
 
           <!----------------------------------------Ingredient ( Use comma to separate)---------------------------------------->
 
@@ -415,24 +340,12 @@ const handleEditMenu = handleSubmit(() => {
           </HTextfield>
 
           <!----------------------------------------Tag---------------------------------------->
-
-          <LazyH-multi-select-chips
-            multiple
-            chipsStyle="rounded-full border-[1px] border-gray-600 py-1 px-2 hover:border-primary/40"
-            :items="menuTagItems"
-            :init="initMenuTags"
+          <SelectorsTag
+            type="MENU_TAG"
             v-model="menuTags"
-            value="id"
-            showBy="title"
-            listClass="h-40"
-            returnBy="id"
-            name="tag"
-            rules="required"
-            label="Tag"
-            placeholder="Select Tag"
-            @search="menuTagSearch = $event"
-          >
-          </LazyH-multi-select-chips>
+            :init="initMenuTags"
+          />
+
           <!--------------------------------------------Category ---------------------------------------- -->
           <SelectorsCategory
             type="MENU_CATEGORY"
@@ -453,6 +366,11 @@ const handleEditMenu = handleSubmit(() => {
           <button class="primary-button text-white bg-primary-600">
             <Icon name="uil:plus" class="w-6 h-6" />
             <span class="">Submit</span>
+            <Icon
+              v-if="editLoading"
+              name="eos-icons:bubble-loading"
+              class="text-3xl text-red-600"
+            />
           </button>
         </div>
       </form>

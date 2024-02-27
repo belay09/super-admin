@@ -1,5 +1,3 @@
-import error from "~/plugins/error";
-
 const xHasuraRole = useCookie("x-hasura-role");
 export default (query, id) => {
   const { onResult, onError, loading, refetch } = useQuery(
@@ -18,9 +16,7 @@ export default (query, id) => {
     })
   );
 
-  onError((error) => {
-    console.log("error", error);
-  });
+  onError((error) => {});
 
   return {
     onResult,

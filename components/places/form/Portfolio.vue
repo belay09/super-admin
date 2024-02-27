@@ -73,22 +73,8 @@ onErrorPortfolios((error) => {
 
 const date = ref();
 const title = ref("");
-const image_url = ref("");
-const image_urls = ref([
-  "https://cdn.hahu.jobs/public/sheger-gebeta/9285590d-3567-4411-a08b-f2272306e959.png",
-  "https://cdn.hahu.jobs/public/sheger-gebeta/9285590d-3567-4411-a08b-f2272306e959.png",
-]);
+const image_urls = ref([]);
 const portfolioDescription = ref("");
-
-watch(image_url, (newVal) => {
-  image_urls.value.push({
-    media: {
-      data: {
-        url: newVal,
-      },
-    },
-  });
-});
 
 /**--------------------------------Toggle between edit and add place amenity---------------- */
 const isAddPortfolio = ref(true);
@@ -284,17 +270,6 @@ const handelDeleteImage = (index) => {
     description="This action is irreversible and will permanently delete the amenity and its associated resources."
   ></ModalsConfirmation>
 
-  <!-- Modal for image upload -->
-  <ModalsModal :auto-close="false" v-model="showProfilePictureModal">
-    <template #content>
-      <UiImageUploader
-        title="Upload Place Picture"
-        description="Upload a picture of the place"
-        v-model="image_url"
-        @close="showProfilePictureModal = false"
-      ></UiImageUploader>
-    </template>
-  </ModalsModal>
   <div>
     <div class="flex px-20 py-10">
       <!-----------------------------------Left-------------------------------------------------- -->
@@ -338,55 +313,23 @@ const handelDeleteImage = (index) => {
             rules="required"
           ></H-Textarea>
 
-          <!-------------------------------------- image upload------------------------------------------------- -->
-          <div
-            class="flex flex-col items-center justify-center gap-4 border-2 border-dashed border-gray-300 rounded-lg px-8 py-4"
-          >
-            <Icon name="uil:cloud-upload" class="w-20 h-20" />
-            <div class="input_field flex flex-col w-max mx-auto text-center">
-              <div>
-                Drag and drop here or
-                <span
-                  class="text-primary-600 cursor-pointer"
-                  @click="showProfilePictureModal = true"
-                  >Browse</span
-                >
-              </div>
+          <!----------------------------------------images Upload---------------------------------------->
+          <p class="mb-2 text-sheger-gray-100">Upload images</p>
 
-              <div class="">Select images that are Square and 10MB</div>
-            </div>
-          </div>
-
-          <!-------------------------------Uploaded Files------------------------------- -->
-
-          <div
-            class="flex flex-col gap-4 border px-6 py-3 rounded-md"
-            v-if="image_urls.length > 0"
-          >
-            <p class="font-medium">Uploaded Files</p>
-            <div class="flex flex-col gap-4">
-              <div
-                v-for="(url, index) in image_urls"
-                class="flex items-center justify-between"
-              >
-                <div class="flex items-center gap-3">
-                  <img :src="url" class="w-[100px]" />
-                  <div>
-                    <p class="text-lg font-medium">IMG=99KJ0-.png</p>
-                    <p class="text-sm font-light text-sheger-gray-100">
-                      Feb 2, 2023. image
-                    </p>
-                  </div>
-                </div>
-                <!--progress -->
-                <div class="bg-primary-600 h-[3px] w-[200px]" />
-
-                <div @click="handelDeleteImage(index)" class="cursor-pointer">
-                  <Icon name="uil:trash-alt" class="w-6 h-6" />
-                </div>
-              </div>
-            </div>
-          </div>
+          <HFileUploadWrapper
+            name="file"
+            :maxFileSize="1024 * 1024 * 10"
+            :fileLimit="3"
+            folder="applications_form"
+            description="upload file"
+            placeholder="select multiple files"
+            v-model="image_urls"
+            :init="image_urls"
+            v-model:thumbnails="selectedThumbnail"
+            :disabled="false"
+            :showStar="false"
+            rules="required"
+          />
 
           <!------------------------------- Add btn --------------------------->
 
@@ -414,15 +357,49 @@ const handelDeleteImage = (index) => {
       <!------------------------------------Right----------------------------------------->
 
       <div class="flex-[50%]">
+        <!-- -------------------Loading Place Amenities---------------- -->
+        <div v-if="loadingPortfolios" class="flex flex-col gap-6">
+          <div
+            v-for="i in 1"
+            class="rounded-lg border skeleton-container py-5 flex flex-col gap-y-6 pr-10"
+          >
+            <!-- Skeleton loader for the title -->
+            <div class="skeleton w-full h-6 rounded-t-lg"></div>
+
+            <!-- Description skeleton -->
+            <div class="skeleton w-full h-20"></div>
+
+            <!-- -------------------date-------------- -->
+
+            <div class="skeleton w-32 h-6 rounded-t-lg"></div>
+
+            <!-- ---------------------Images----------------- -->
+
+            <div class="flex items-center gap-5">
+              <div v-for="i in 3" class="skeleton w-44 h-44"></div>
+            </div>
+
+            <!-- Skeleton loader for the card footer -->
+            <div class="flex items-center px-10 py-4 gap-x-4 border-t">
+              <!-- Edit button skeleton -->
+              <div class="skeleton w-2/3 h-10"></div>
+              <!-- Delete button skeleton -->
+              <div class="skeleton w-2/3 h-10"></div>
+            </div>
+          </div>
+        </div>
         <!-------------------------------------- Preview------------------------------------------------- -->
-        <UiCardsPortfolioItemCard
-          v-for="(portfolio, index) in portfolios"
-          class="w-full"
-          :key="index"
-          :portfolio="portfolio"
-          @editPortfolio="editPortfolio"
-          @deletePortfolio="setPortfolioToDelete"
-        ></UiCardsPortfolioItemCard>
+        <div v-else>
+          <UiCardsPortfolioItemCard
+            v-for="(portfolio, index) in portfolios"
+            class="w-full"
+            :key="index"
+            :portfolio="portfolio"
+            @editPortfolio="editPortfolio"
+            @deletePortfolio="setPortfolioToDelete"
+          ></UiCardsPortfolioItemCard>
+        </div>
+
         <div
           v-if="portfolios.length == 0 && !loadingPortfolios"
           class="flex flex-col items-center justify-center h-full"

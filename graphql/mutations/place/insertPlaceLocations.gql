@@ -1,0 +1,7 @@
+mutation updatePlaceLocations(
+  $placeLocationObject: [PlaceLocationsInsertInput!]!
+) {
+  insertPlaceLocations(objects: $placeLocationObject) {
+    affectedRows
+  }
+}

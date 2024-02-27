@@ -1,5 +1,7 @@
 <script setup>
 import updatePlaceLocationMutation from "~/graphql/mutations/place/updatePlaceLocations.gql";
+import insertPlaceLocationMutation from "~/graphql/mutations/place/insertPlaceLocations.gql";
+import deletePlaceLocationMutation from "~/graphql/mutations/place/deletePlaceLocation.gql";
 import getPlaceLocationsQuery from "~/graphql/query/places/getPlaceLocations.gql";
 import useNotify from "@/use/notify";
 
@@ -15,6 +17,15 @@ const props = defineProps({
   },
 });
 const next = () => {
+  if (placeLocations.value.length == 0) {
+    notify({
+      title: "Location is required",
+      description: "Please add at least one location",
+      type: "error",
+      borderClass: "border-l-8 border-red-300",
+    });
+    return;
+  }
   emit("next");
 };
 const prev = () => {
@@ -33,7 +44,7 @@ const city = ref(undefined);
 const area = ref(undefined);
 const isMainLocation = ref(false);
 
-const selectedLocations = ref([]);
+const placeLocations = ref([]);
 
 const updateMapVal = (data) => {
   item.value.latitude = data.position.lat;
@@ -60,48 +71,63 @@ const {
 
 onResultLocation((result) => {
   if (result.data) {
-    result.data?.placeLocations.forEach((location) => {
-      selectedLocations.value.push({
-        city: location.city,
-        area: location.area,
-        coordinates: location.location?.coordinates,
-        isMainLocation: location.isMainLocation,
-      });
-    });
+    placeLocations.value = result.data?.placeLocations;
   }
 });
 
-/**-------------------------------Add location to selectedLocations array--------------------- */
+/**-------------------------------Add location--------------------- */
 
-const handleAddLocation = handleSubmit(() => {
-  selectedLocations.value.push({
-    city: city.value,
-    area: area.value,
-    coordinates: coordinates.value.split(",").map((item) => Number(item)),
-    isMainLocation: isMainLocation.value,
+/**-------------------------------Delete Place Location--------------------- */
+
+const {
+  mutate: deleteMutate,
+  onDone: deleteDone,
+  onError: deleteError,
+  loading: deleteLoading,
+} = authMutation(deletePlaceLocationMutation);
+const handleDelete = (id) => {
+  deleteMutate({ id });
+};
+
+deleteDone(() => {
+  refetchLocation();
+  notify({
+    title: "Location deleted successfully",
+    description: "Location deleted successfully",
+    type: "error",
+    borderClass: "border-l-8 border-green-300",
   });
 });
 
-/**-------------------------------Remove location from selectedLocations array--------------------- */
-
-const handleRemoveLocation = (index) => {
-  selectedLocations.value.splice(index, 1);
-};
-
-/**-----------------------------------Update place location database table------------------------ */
-
-const {
-  mutate: updatePlaceLocation,
-  loading: updatePlaceLocationLoading,
-  onError: updatePlaceLocationError,
-  onDone: updatePlaceLocationDone,
-} = authMutation(updatePlaceLocationMutation);
-
-updatePlaceLocationDone((result) => {
-  emit("next");
+deleteError((error) => {
+  let message;
+  if (error.message.includes("Foreign key violation")) {
+    message = "Can't delete this item";
+  } else {
+    message = error.message;
+  }
+  notify({
+    title: "Some thing went wrong",
+    description: message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
 });
 
-updatePlaceLocationError((error) => {
+/**-------------------------------Handle insert place location---------------- */
+
+const {
+  mutate: insertPlaceLocation,
+  loading: insertPlaceLocationLoading,
+  onError: insertPlaceLocationError,
+  onDone: insertPlaceLocationDone,
+} = authMutation(insertPlaceLocationMutation);
+
+insertPlaceLocationDone((result) => {
+  refetchLocation();
+});
+
+insertPlaceLocationError((error) => {
   notify({
     title: "Some thing went wrong",
     description: error.message,
@@ -110,34 +136,29 @@ updatePlaceLocationError((error) => {
   });
 });
 
-/**-------------------------------Handle update place location---------------- */
-
-function handleUpdatePlaceLocations() {
-  updatePlaceLocation({
-    filter: {
-      placeId: {
-        _eq: props.placeId,
-      },
-    },
-    data: selectedLocations.value.map((location) => {
-      return {
+const handleAddLocation = handleSubmit(() => {
+  insertPlaceLocation({
+    placeLocationObject: [
+      {
         placeId: props.placeId,
-        cityId: location.city.id,
-        areaId: location.area.id,
-        isMainLocation: location.isMainLocation,
+        cityId: city.value.id,
+        areaId: area.value.id,
+        isMainLocation: isMainLocation.value,
         description: "description",
         location: {
           type: "Point",
-          coordinates: location.coordinates,
+          coordinates: coordinates.value
+            .split(",")
+            .map((item) => parseFloat(item)),
         },
-      };
-    }),
+      },
+    ],
   });
-}
+});
 </script>
 <template>
   <div>
-    <ModalsModal :auto-close="false" v-model="mapModel">
+    <ModalsModal body-class="!w-[40rem]" :auto-close="false" v-model="mapModel">
       <template #content>
         <HMapSelector
           @updateMapVal="updateMapVal"
@@ -152,10 +173,17 @@ function handleUpdatePlaceLocations() {
 
   <div class="flex flex-col justify-center items-center mt-10 gap-5">
     <!-----------------------------Selected location list-------------------------------------->
-    <div class="flex gap-4">
+    <div v-if="loadingLocation" class="flex gap-4">
+      <!-- Skeleton loader for place locations -->
+      <div v-for="index in 3" :key="index" class="skeleton-container">
+        <!-- Place location skeleton -->
+        <div class="skeleton w-48 h-16"></div>
+      </div>
+    </div>
+    <div v-else class="flex gap-4">
       <div
         class="flex items-center gap-3 border w-fit px-5 py-1 rounded-lg"
-        v-for="(location, index) in selectedLocations"
+        v-for="(location, index) in placeLocations"
         :key="index"
       >
         <Icon
@@ -181,7 +209,7 @@ function handleUpdatePlaceLocations() {
           <Icon
             name="uiw:delete"
             class="w-5 h-5 cursor-pointer"
-            @click="handleRemoveLocation"
+            @click="handleDelete(location.id)"
           />
         </div>
       </div>
@@ -190,10 +218,10 @@ function handleUpdatePlaceLocations() {
     <form class="flex flex-col gap-3" @submit.prevent="handleAddLocation">
       <!-- ------------------------------------City---------------------------------- -->
 
-      <LazySelectorsCity v-model="city"></LazySelectorsCity>
+      <SelectorsCity v-model="city"></SelectorsCity>
 
       <!--------------------------------------Area-------------------------------------- -->
-      <LazySelectorsArea v-model="area" :cityId="city?.id"></LazySelectorsArea>
+      <SelectorsArea v-model="area" :cityId="city?.id"></SelectorsArea>
 
       <!---------------------------------------Coordinates--------------------------------------->
       <div class="flex">
@@ -252,7 +280,7 @@ function handleUpdatePlaceLocations() {
 
     <button
       class="primary-button border flex items-center gap-4 text-white bg-primary-600"
-      @click="handleUpdatePlaceLocations()"
+      @click="next()"
     >
       Save & Proceed
       <Icon name="uil:arrow-right" class="text" />

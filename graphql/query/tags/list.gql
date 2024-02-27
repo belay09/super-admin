@@ -1,21 +1,22 @@
 query getTags(
-	$filter: BasicsTagsBoolExp
-	$order: [BasicsTagsOrderBy!]
-	$limit: Int
-	$offset: Int
+  $filter: BasicsTagsBoolExp
+  $order: [BasicsTagsOrderBy!]
+  $limit: Int
+  $offset: Int
 ) {
-	basicsTags(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
-		id
-		type
-		title
-		icon {
-			darkIconUrl
-			lightIconUrl
-		}
-	}
-	basicsTagsAggregate {
-		aggregate {
-			count
-		}
-	}
+  basicsTags(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+    id
+    type
+    title
+    name: title
+    icon {
+      darkIconUrl
+      lightIconUrl
+    }
+  }
+  basicsTagsAggregate {
+    aggregate {
+      count
+    }
+  }
 }

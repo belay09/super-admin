@@ -1,21 +1,22 @@
 query getDrinks(
-	$filter: BasicsDrinksBoolExp
-	$order: [BasicsDrinksOrderBy!]
-	$limit: Int
-	$offset: Int
+  $filter: BasicsDrinksBoolExp
+  $order: [BasicsDrinksOrderBy!]
+  $limit: Int
+  $offset: Int
 ) {
-	basicsDrinks(
-		where: $filter
-		orderBy: $order
-		limit: $limit
-		offset: $offset
-	) {
-		id
-		name: title
-	}
-	basicsDrinksAggregate(where: $filter) {
-		aggregate {
-			count
-		}
-	}
+  basicsDrinks(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    name: title
+    title
+  }
+  basicsDrinksAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
 }

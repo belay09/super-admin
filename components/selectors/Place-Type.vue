@@ -1,6 +1,5 @@
 <script setup>
-import placeTypeQuery from "@/graphql/query/basics/getPlaceTypes.gql";
-
+import listQuery from "@/graphql/query/basics/getPlaceTypes.gql";
 import useNotify from "@/use/notify";
 
 /**-----------------Global Variables--------------------------- */
@@ -14,37 +13,54 @@ const props = defineProps({
 const { notify } = useNotify();
 
 /*---------------------------Place Places---------------------------**/
-const placeTypeItems = ref([]);
-const placeTypeSearch = ref("");
-const Place = ref(props.modelValue);
+const items = ref([]);
+const search = ref("");
+const item = ref(props.modelValue);
 
-const placeFilter = ref({});
+const filter = computed(() => {
+  let query = {
+    value: {
+      _ilike: `%${search.value}%`,
+    },
+  };
 
-const {
-  onResult: onResultPlace,
-  onError: onErrorPlace,
-  loading: loadingPlace,
-  refetch: refetchPlace,
-  fetchMore: fetchMorePlace,
-} = authListQuery(placeTypeQuery, placeFilter, "", 0, 5);
-
-onResultPlace((result) => {
-  placeTypeItems.value = result.data?.placeTypes;
+  return query;
 });
 
+const { onResult, onError, loading, refetch } = authListQuery(
+  listQuery,
+  filter,
+  [{}],
+  0,
+  100
+);
+onResult((result) => {
+  if (result.data?.placeTypes) {
+    items.value = result.data.placeTypes;
+  }
+});
+
+onError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
 function makeSearch(value) {
-  placeTypeSearch.value = value;
+  search.value = value;
 }
 
 watch(
   () => props.modelValue,
   (value) => {
-    Place.value = value;
+    item.value = value;
   }
 );
 
 watch(
-  () => Place.value,
+  () => item.value,
   (value) => {
     emit("update:modelValue", value);
   }
@@ -52,13 +68,14 @@ watch(
 </script>
 
 <template>
+  {{ search }}
   <H-SingleSelectWithSearch
-    :items="placeTypeItems"
-    v-model="Place"
+    :items="items"
+    v-model="item"
     @search="makeSearch"
     id="placeType"
     name="placeType"
-    label="place Type"
-    :loading="loadingPlace"
+    label="Place Type"
+    :loading="loading"
   ></H-SingleSelectWithSearch>
 </template>

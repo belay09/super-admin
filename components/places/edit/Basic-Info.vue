@@ -1,36 +1,38 @@
 <script setup>
-import placeTypeQuery from "@/graphql/query/basics/getPlaceTypes.gql";
-import placeAmbianceQuery from "@/graphql/query/basics/getAmbiances.gql";
-import placeTagQuery from "@/graphql/query/basics/getPlaceTags.gql";
-import placeCategoryQuery from "@/graphql/query/basics/getPlaceCategories.gql";
 import addPlaceMutation from "@/graphql/mutations/place/addPlace.gql";
-import { useRegisterPlaceStore } from "~/stores/registerPlace";
 import getPlaceQuery from "@/graphql/query/places/item.gql";
+import editPlaceMutation from "@/graphql/mutations/place/editPlace.gql";
+import addMediaMutation from "@/graphql/mutations/medias/add-media.gql";
+import useNotify from "@/use/notify";
 
 const { handleSubmit } = useForm({});
 
 /**-----------------------Globals----------------------------- */
 const emit = defineEmits(["next", "prev"]);
-const route = useRoute();
+const props = defineProps({
+  placeId: {
+    type: Number,
+    required: true,
+  },
+});
+const { notify } = useNotify();
 
 /**------------------------Data------------------------ */
-const image_url = ref("");
+const placeLog = ref("");
 const placeName = ref("");
 const placeCousins = ref("");
 const description = ref("");
 const placeType = ref("");
-const placeTag = ref([]);
+const placeTags = ref([]);
 const initPlaceTags = ref([]);
-const placeAmbiance = ref([]);
+const placeAmbiances = ref([]);
 const initPlaceAmbiances = ref([]);
-
 const placeCategory = ref([]);
-
 const phoneNumber = ref("");
 const alternativePhoneNumber = ref("");
 const email = ref("");
 const website = ref("");
-const socialMedia = ref([]);
+const socialMedias = ref([]);
 const initSocialMedias = ref([]);
 const offerTakeout = ref(false);
 const orderNumber = ref("");
@@ -52,33 +54,38 @@ const {
   onResult: placeOnResult,
   onError: placeOnError,
   loading: placeLoading,
-} = authItemQuery(getPlaceQuery, route.params.id);
+} = authItemQuery(getPlaceQuery, props.placeId);
 
 placeOnResult((result) => {
   if (result.data?.place) {
     place.value = result.data.place;
     let tempPlace = result.data.place;
     placeName.value = tempPlace.name;
-    image_url.value = tempPlace.light_logo?.url;
+    placeLog.value = tempPlace.light_logo?.url;
     placeCousins.value = tempPlace.cousins;
     description.value = tempPlace.description;
     placeType.value = capitalizeFirstLetter(tempPlace.type.toLowerCase());
-
     // init place tags
     initPlaceTags.value = tempPlace.placeTags.map((placeTag) => {
       return {
-        title: placeTag.tag.title,
+        name: placeTag.tag.title,
         id: placeTag.tag.id,
       };
     });
 
+    placeTags.value = tempPlace.placeTags.map((placeTag) => placeTag.tag.id);
+
     // init place ambiances
     initPlaceAmbiances.value = tempPlace.placeAmbiances.map((placeAmbiance) => {
       return {
-        title: placeAmbiance.ambiance.title,
+        name: placeAmbiance.ambiance.title,
         id: placeAmbiance.ambiance.id,
       };
     });
+
+    placeAmbiances.value = tempPlace.placeAmbiances.map(
+      (placeAmbiance) => placeAmbiance.ambiance.id
+    );
 
     placeCategory.value = tempPlace.categoryId;
 
@@ -90,7 +97,7 @@ placeOnResult((result) => {
 
     // social media
 
-    socialMedia.value = tempPlace.placeSocialMedias.map((media) => {
+    socialMedias.value = tempPlace.placeSocialMedias.map((media) => {
       return {
         ...media.socialMedia,
         url: media.url,
@@ -112,112 +119,21 @@ placeOnError((error) => {
   });
 });
 
-/**-------------------------Control Variables------------------- */
-const registerPlaceStore = useRegisterPlaceStore();
-/*****************************Queries******************************/
+/*--------------------------------Edit Place ------------------------- */
 
-/*---------------------------Place Type Data Fetch---------------------------*/
-const placeTypeItems = ref([]);
-const { onResult, onError, loading, refetch, fetchMore } = authListQuery(
-  placeTypeQuery,
-  {},
-  [{}],
-  0,
-  100
-);
-
-onResult((result) => {
-  placeTypeItems.value = result.data?.placeTypes;
-});
-
-/*---------------------------Place Tags Data Fetch---------------------------**/
-const placeTagItems = ref([]);
-const placeTagSearch = ref("");
-const tagFilter = computed(() => {
-  let query = {};
-  if (placeTagSearch.value) {
-    query.title = {
-      _ilike: `%${placeTagSearch.value}%`,
-    };
-  }
-  return query;
-});
-
+// mutation
 const {
-  onResult: tagResult,
-  onError: tagError,
-  loading: tagLoading,
-  refetch: tagRefetch,
-} = authListQuery(placeTagQuery, tagFilter, "", 0, 5);
+  mutate: editMutate,
+  loading: editLoading,
+  onError: editError,
+  onDone: editDone,
+} = authMutation(editPlaceMutation);
 
-tagResult((result) => {
-  placeTagItems.value = result.data?.basicsTags;
+editDone(() => {
+  emit("next");
 });
 
-/*---------------------------Place Ambiance Data Fetch---------------------------*/
-const placeAmbianceItems = ref([]);
-const placeAmbianceSearch = ref("");
-const ambianceFilter = computed(() => {
-  let query = {};
-  if (placeAmbianceSearch.value) {
-    query.title = {
-      _ilike: `%${placeAmbianceSearch.value}%`,
-    };
-  }
-  return query;
-});
-
-const {
-  onResult: ambianceResult,
-  onError: ambianceError,
-  loading: ambianceLoading,
-  refetch: ambianceRefetch,
-} = authListQuery(placeAmbianceQuery, ambianceFilter, "", 0, 5);
-
-ambianceResult((result) => {
-  placeAmbianceItems.value = result.data?.ambiances;
-});
-
-/*---------------------------Place Category Data Fetch---------------------------**/
-const placeCategorySearch = ref("");
-const placeCategoryItems = ref([]);
-const categoryFilter = computed(() => {
-  let query = {};
-  if (placeCategorySearch.value) {
-    console.log(placeCategorySearch.value, "placeCategorySearch");
-    query.title = {
-      _ilike: `%${placeCategorySearch.value}%`,
-    };
-  }
-  return query;
-});
-
-const {
-  onResult: categoryResult,
-  onError: categoryError,
-  loading: categoryLoading,
-  refetch: categoryRefetch,
-} = authListQuery(placeCategoryQuery, categoryFilter, "", 0, 5);
-
-categoryResult((result) => {
-  placeCategoryItems.value = result.data?.basicsCategories;
-});
-
-/*****************************Mutations******************************/
-const {
-  mutate: addPlace,
-  loading: addPlaceLoading,
-  onError: addPlaceError,
-  onDone: addPlaceDone,
-} = authMutation(addPlaceMutation);
-
-addPlaceDone((result) => {
-  console.log(result, "result");
-  console.log(result.data?.insertPlacesOne?.id, "id");
-  registerPlaceStore.setPlaceId(result.data?.insertPlacesOne?.id);
-});
-
-addPlaceError((error) => {
+editError((error) => {
   notify({
     title: "Some thing went wrong",
     description: error.message,
@@ -226,49 +142,67 @@ addPlaceError((error) => {
   });
 });
 
-const handleAddPlace = handleSubmit(() => {
-  const input = {
-    light_logo: {
-      data: {
-        url: image_url.value,
-      },
-    },
-    name: placeName.value,
-    cousins: placeCousins.value,
-    description: description.value,
-    type: placeType.value.toUpperCase(),
-    placeTags: {
-      data: placeTag.value.map((id) => ({ tagId: id })),
-    },
-    categoryId: placeCategory.value,
-    placeAmbiances: {
-      data: placeAmbiance.value.map((id) => ({ ambianceId: id })),
-    },
-    contactPhoneNumber: phoneNumber.value,
-    contactAltPhoneNumber: alternativePhoneNumber.value,
-    contactEmail: email.value,
-    contactWebsite: website.value,
-    offerTakeouts: offerTakeout.value,
+/**----------------------------Add Featured Media--------------------- */
+const {
+  mutate: addMediaMutate,
+  onDone: addMediaOnDone,
+  onError: addMediaOnError,
+  loading: addMediaLoading,
+} = authMutation(addMediaMutation);
 
-    featuredReviewMedia: 3,
-    placeSocialMedias: {
-      data: socialMedia.value.map((social) => ({
+addMediaOnDone((result) => {
+  editMutate({
+    id: props.placeId,
+    placeObject: {
+      name: placeName.value,
+      cousins: placeCousins.value,
+      description: description.value,
+      type: placeType.value.toUpperCase(),
+      categoryId: placeCategory.value,
+      contactPhoneNumber: phoneNumber.value,
+      contactAltPhoneNumber: alternativePhoneNumber.value,
+      contactEmail: email.value,
+      contactWebsite: website.value,
+      offerTakeouts: offerTakeout.value,
+      featuredReviewMedia: 3,
+      featuredMedia: result.data?.insertBasicsMediaOne?.id,
+
+      orderPhoneNumber1: orderNumber.value,
+      orderPhoneNumber2: alternativeOrderNumber.value,
+    },
+
+    // place tags
+    placeTagObject: placeTags.value.map((tag) => {
+      return {
+        placeId: props.placeId,
+        tagId: tag,
+      };
+    }),
+
+    // place ambiances
+    placeAmbianceObject: placeAmbiances.value.map((ambiance) => {
+      return {
+        placeId: props.placeId,
+        ambianceId: ambiance,
+      };
+    }),
+
+    // place social medias
+    placeSocialMediaObject: socialMedias.value.map((social) => {
+      return {
+        placeId: props.placeId,
         socialMediaId: social.id,
         url: social.url,
-      })),
+      };
+    }),
+  });
+});
+// handler
+const handleEditPlace = handleSubmit(() => {
+  addMediaMutate({
+    input: {
+      url: placeLog.value,
     },
-  };
-
-  // offer take out
-  if (offerTakeout.value) {
-    input.orderPhoneNumber1 = orderNumber.value;
-    input.orderPhoneNumber2 = alternativeOrderNumber.value;
-  }
-
-  console.log(input, "input");
-
-  addPlace({
-    obj: input,
   });
 });
 </script>
@@ -276,7 +210,7 @@ const handleAddPlace = handleSubmit(() => {
 <template>
   <div v-if="place && !placeLoading">
     <form
-      @submit.prevent="handleAddPlace"
+      @submit.prevent="handleEditPlace"
       class="flex"
       method="POST"
       id="basicInfoForm"
@@ -287,7 +221,7 @@ const handleAddPlace = handleSubmit(() => {
 
         <CommonUploadSingleImage
           folder=""
-          v-model:model-value="image_url"
+          v-model:model-value="placeLog"
           rules="required"
           name="placeLogo"
         ></CommonUploadSingleImage>
@@ -331,64 +265,28 @@ const handleAddPlace = handleSubmit(() => {
         />
 
         <!------------------------------------------------ Type--------------------------------------------->
-
-        <H-SingleSelect
-          name="place_type"
-          id="place_type"
-          label="Type"
-          :items="placeTypeItems"
-          v-model="placeType"
-          rules="required"
-        ></H-SingleSelect>
+        <SelectorsPlaceType v-model="placeType" />
 
         <!-------------------------------------------------- Tag--------------------------------------->
-        <H-Multi-Select-Chips
-          multiple
-          chipsStyle="rounded-full border-[1px] border-gray-600 py-1 px-2 hover:border-primary/40"
-          :items="placeTagItems"
-          v-model="placeTag"
-          :init="initPlaceTags"
-          value="id"
-          showBy="title"
-          listClass="h-40"
-          returnBy="id"
-          name="tag"
-          rules="required"
-          label="Tag"
-          placeholder="Select Tag"
-          @search="placeTagSearch = $event"
-        >
-        </H-Multi-Select-Chips>
 
+        <SelectorsTag
+          type="PLACE_TAG"
+          v-model="placeTags"
+          :init="initPlaceTags"
+        />
         <!-- --------------------------------------------------Ambiance----------------------------------- -->
-        <H-Multi-Select-Chips
-          multiple
-          chipsStyle="rounded-full border-[1px] border-gray-600 py-1 px-2 hover:border-primary/40"
-          :items="placeAmbianceItems"
-          v-model="placeAmbiance"
+        <SelectorsAmbiance
+          v-model="placeAmbiances"
           :init="initPlaceAmbiances"
-          value="id"
-          showBy="title"
-          listClass="h-40"
-          returnBy="id"
-          name="tag"
-          rules="required"
-          label="Ambiance"
-          placeholder="Select Ambiance"
-          @search="placeAmbianceSearch = $event"
-        >
-        </H-Multi-Select-Chips>
+          name="placeAmbiance"
+        />
 
         <!-- --------------------------------------------------Category----------------------------------- -->
-        <H-SingleSelectWithSearch
-          name="place_category"
-          id="place_category"
-          label="Category"
-          :items="placeCategoryItems"
+
+        <SelectorsCategory
+          type="PLACE_CATEGORY"
           v-model="placeCategory"
-          showBy="title"
-          rules="required"
-        ></H-SingleSelectWithSearch>
+        ></SelectorsCategory>
       </div>
 
       <!-- Right -->
@@ -470,10 +368,10 @@ const handleAddPlace = handleSubmit(() => {
         <!-- ------------------------------------Social Media ------------------------ -->
 
         <div class="text-xl font-medium my-2">Social Media</div>
-        <LazyH-SocialMedialSelectChips
-          v-model="socialMedia"
+        <H-SocialMedialSelectChips
+          v-model="socialMedias"
           name="socialMedia"
-        ></LazyH-SocialMedialSelectChips>
+        ></H-SocialMedialSelectChips>
 
         <!-- ----------------------------------Offer Takeout---------------------------------- -->
 
@@ -544,6 +442,12 @@ const handleAddPlace = handleSubmit(() => {
         form="basicInfoForm"
         class="primary-button border flex items-center gap-4 text-white bg-primary-600"
       >
+        <!-- loading icon -->
+        <Icon
+          v-if="editLoading"
+          name="eos-icons:bubble-loading"
+          class="text-3xl"
+        />
         Save & Proceed
         <Icon name="uil:arrow-right" class="text" />
       </button>
