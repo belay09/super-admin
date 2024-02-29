@@ -1,7 +1,6 @@
 <script setup>
 import insertPlaceMenuMutation from "@/graphql/mutations/menu/add.gql";
 import getMenuTypesQuery from "@/graphql/query/basics/menuTypes.gql";
-import getMenuTags from "@/graphql/query/basics/menuTags.gql";
 import getPlacesMenuQuery from "@/graphql/query/menu/list.gql";
 
 import useNotify from "@/use/notify";

@@ -1,0 +1,6 @@
+mutation changePlaceStatus($input: PlacesSetInput!, $id: bigint!) {
+  # update place
+  updatePlacesByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+}

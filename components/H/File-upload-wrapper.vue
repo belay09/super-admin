@@ -186,7 +186,7 @@ function submitToDatabase() {
                 <button
                   type="button"
                   @click="submitToDatabase"
-                  v-if="true"
+                  v-if="emitSubmit"
                   class="flex items-center px-3 py-1 transition-all duration-200 ease-in rounded-md border hover:bg-primary gap-x-2 text-green-600 group"
                 >
                   <Icon name="bx:upload" class="text-lg text-green-600" />

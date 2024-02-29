@@ -68,7 +68,6 @@ watch(
 </script>
 
 <template>
-  {{ search }}
   <H-SingleSelectWithSearch
     :items="items"
     v-model="item"

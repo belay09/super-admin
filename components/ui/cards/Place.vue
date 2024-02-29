@@ -1,6 +1,6 @@
 <script setup>
 import { onClickOutside } from "@vueuse/core";
-import editPlaceMutation from "@/graphql/mutations/place/editPlace.gql";
+import editPlaceMutation from "@/graphql/mutations/place/changePlaceStatus.gql";
 import useNotify from "@/use/notify";
 
 /**----------------------Globals-------------------------- */
@@ -248,7 +248,7 @@ function openMoreAction(event) {
         <!--------------------Place image and name---------- -->
         <div class="w-20 h-20 self-start shrink-0 mr-1">
           <img
-            src="/images/temporary/Hotel_Logo.png"
+            :src="place.light_logo?.url"
             alt=""
             class="object-cover w-full h-full rounded-xl"
           />

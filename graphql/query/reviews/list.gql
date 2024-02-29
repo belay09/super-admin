@@ -18,6 +18,9 @@ query getReviews(
       name
       status
       type
+      light_logo {
+        url
+      }
     }
 
     # review tags

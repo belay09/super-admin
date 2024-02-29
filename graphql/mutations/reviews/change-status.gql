@@ -1,0 +1,5 @@
+mutation editPlace($input: ReviewsSetInput!, $id: bigint!) {
+  updateReviewsByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+}

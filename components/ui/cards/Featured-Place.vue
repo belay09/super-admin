@@ -132,11 +132,16 @@ onMounted(() => {
 
 /***-----------------Modals--------------------------- */
 const showExtendEndDateModal = ref(false);
+const showRemoveFromFeaturedModal = ref(false);
 const showMoreAction = ref(false);
 </script>
 <template>
   <!-- -------------------Extend end date modal--------------- -->
-  <Modals-Modal :autoClose="true" :modelValue="showExtendEndDateModal">
+  <Modals-Modal
+    body-class="w-[30rem]"
+    :autoClose="true"
+    :modelValue="showExtendEndDateModal"
+  >
     <template #header>
       <div class="flex items-center justify-between pb-4">
         <h3 class="text-lg font-medium text-gray-900">Extend Deadline</h3>
@@ -180,6 +185,19 @@ const showMoreAction = ref(false);
       </div>
     </template>
   </Modals-Modal>
+
+  <!-- -----------------Remove from featured ---------------- -->
+
+  <ModalsConfirmation
+    @confirm="removeFromFeatured"
+    v-model="showRemoveFromFeaturedModal"
+    :title="`Remove from ${featuredPlaceValue(featuredValue).name}`"
+    v-bind:sure-question="`Are you sure you want to remove ${
+      featuredPlaceValue(featuredValue).name
+    } ?`"
+    description=""
+  ></ModalsConfirmation>
+  <!-- -----------------------Card---------------- -->
   <div
     @click="makePlaceFeatured"
     class="flex flex-col border max-w-lg p-[25px] rounded-xl text-sm hover:cursor-pointer"
@@ -192,7 +210,7 @@ const showMoreAction = ref(false);
         <div class="w-20 h-20 self-start shrink-0 mr-1">
           <!-- Image -->
           <img
-            src="/images/temporary/Hotel_Logo.png"
+            :src="place.light_logo?.url"
             alt=""
             class="object-cover w-full h-full rounded-xl"
           />
@@ -231,7 +249,7 @@ const showMoreAction = ref(false);
                   <p class="text-sm">Extend Deadline</p>
                 </div>
                 <button
-                  @click="removeFromFeatured"
+                  @click="showRemoveFromFeaturedModal = true"
                   class="flex gap-3 items-center"
                 >
                   <Icon
@@ -239,7 +257,7 @@ const showMoreAction = ref(false);
                     class="text-2xl shrink-0"
                   />
                   <p class="text-sm text-primary-600 whitespace-nowrap">
-                    Remove from {{ featuredPlaceValue(featuredValue).name }}
+                    Remove from {{ featuredPlaceValue(featuredValue)?.name }}
                   </p>
                 </button>
               </div>
@@ -253,7 +271,7 @@ const showMoreAction = ref(false);
               </p>
             </div>
             <div
-              v-for="featuredType in place.featured_places"
+              v-for="featuredType in place?.featured_places"
               class="bg-gray-100 px-2 py-1 rounded-sm"
               :class="
                 featuredPlaceValue(featuredType.featured_place_type?.value)
@@ -299,10 +317,11 @@ const showMoreAction = ref(false);
       </div>
       <!-- menu update -->
 
-      <div class="flex items-center gap-3">
+      <div v-if="getFeaturedPlace()" class="flex items-center gap-3">
         <Icon name="carbon:calendar" class="h-5 w-5" />
         <p class="">
-          {{ getFeaturedPlace().startDate }} to {{ getFeaturedPlace().endDate }}
+          {{ getFeaturedPlace()?.startDate }} to
+          {{ getFeaturedPlace()?.endDate }}
         </p>
       </div>
 
@@ -315,7 +334,7 @@ const showMoreAction = ref(false);
       <!-- --------------------Award ----------------->
       <div v-if="place.shegerRecommendation" class="flex items-center gap-3">
         <Icon name="uil:award-alt" class="h-5 w-5" />
-        <p class="">{{ place.shegerRecommendation.title }}</p>
+        <p class="">{{ place.shegerRecommendation?.title }}</p>
       </div>
     </div>
   </div>
