@@ -3,7 +3,6 @@ import { onClickOutside } from "@vueuse/core";
 import editPlaceMutation from "@/graphql/mutations/place/changePlaceStatus.gql";
 import useNotify from "@/use/notify";
 import getMainLocation from "@/helpers/main-location";
-
 /**----------------------Globals-------------------------- */
 const { notify } = useNotify();
 const router = useRouter();
@@ -15,7 +14,7 @@ const props = defineProps({
 });
 
 /***---------------------------Main location---------------------- */
-const mainLocation = ref(getMainLocation(props.review?.place?.placeLocations));
+const mainLocation = ref(getMainLocation(props.place?.placeLocations));
 /**--------------------Featured place value------------- */
 function featuredPlaceValue(value) {
   if (value === "RECENTLY_OPENED_PLACE") {
@@ -43,6 +42,7 @@ onClickOutside(featureActionsContainer, (e) => (showMoreAction.value = false));
 /**----------------------Detail page------- */
 
 function gotoDetailPage() {
+  console.log("gotoDetailPage", props.place.id);
   router.push(`/app/places/${props.place.id}`);
 }
 
@@ -111,13 +111,6 @@ const handleChangePlaceStatus = (status) => {
   };
   editMutate({ input, id: props.place.id });
 };
-
-onMounted(() => {
-  mainLocation.value =
-    props.place.placeLocations.find(
-      (placeLocation) => placeLocation.isMainLocation
-    ) || props.place.placeLocations[0];
-});
 
 /***-----------------Modals--------------------------- */
 const showMoreAction = ref(false);
