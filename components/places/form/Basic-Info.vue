@@ -1,14 +1,9 @@
 <script setup>
-import placeTypeQuery from "@/graphql/query/basics/getPlaceTypes.gql";
-import placeAmbianceQuery from "@/graphql/query/basics/getAmbiances.gql";
-import placeTagQuery from "@/graphql/query/basics/getPlaceTags.gql";
-import placeCategoryQuery from "@/graphql/query/basics/getPlaceCategories.gql";
 import addPlaceMutation from "@/graphql/mutations/place/addPlace.gql";
-import { useRegisterPlaceStore } from "~/stores/registerPlace";
 const { handleSubmit } = useForm({});
 
 /**-----------------------Navigation----------------------------- */
-const emit = defineEmits(["next", "prev"]);
+const router = useRouter();
 
 /**------------------------Data------------------------ */
 const image_url = ref("");
@@ -17,7 +12,7 @@ const placeCousins = ref("");
 const description = ref("");
 const placeType = ref("");
 const placeTag = ref([]);
-const placeAmbiance = ref([]);
+const placeAmbiances = ref([]);
 const placeCategory = ref([]);
 const featureAsRecentlyOpened = ref(false);
 const recentlyOpenedStartDate = ref(new Date().toISOString().split("T")[0]);
@@ -32,97 +27,6 @@ const orderNumber = ref("");
 const alternativeOrderNumber = ref("");
 const socials = ref([]);
 
-/**-------------------------Control Variables------------------- */
-const registerPlaceStore = useRegisterPlaceStore();
-/*****************************Queries******************************/
-
-/*---------------------------Place Type Data Fetch---------------------------*/
-const placeTypeItems = ref([]);
-const { onResult, onError, loading, refetch, fetchMore } = authListQuery(
-  placeTypeQuery,
-  {},
-  [{}],
-  0,
-  100
-);
-
-onResult((result) => {
-  placeTypeItems.value = result.data?.placeTypes;
-});
-
-/*---------------------------Place Tags Data Fetch---------------------------**/
-const placeTagItems = ref([]);
-const placeTagSearch = ref("");
-const tagFilter = computed(() => {
-  let query = {};
-  if (placeTagSearch.value) {
-    query.title = {
-      _ilike: `%${placeTagSearch.value}%`,
-    };
-  }
-  return query;
-});
-
-const {
-  onResult: tagResult,
-  onError: tagError,
-  loading: tagLoading,
-  refetch: tagRefetch,
-} = authListQuery(placeTagQuery, tagFilter, "", 0, 5);
-
-tagResult((result) => {
-  placeTagItems.value = result.data?.basicsTags;
-});
-
-/*---------------------------Place Ambiance Data Fetch---------------------------*/
-const placeAmbianceItems = ref([]);
-const placeAmbianceSearch = ref("");
-const ambianceFilter = computed(() => {
-  let query = {};
-  if (placeAmbianceSearch.value) {
-    query.title = {
-      _ilike: `%${placeAmbianceSearch.value}%`,
-    };
-  }
-  return query;
-});
-
-const {
-  onResult: ambianceResult,
-  onError: ambianceError,
-  loading: ambianceLoading,
-  refetch: ambianceRefetch,
-} = authListQuery(placeAmbianceQuery, ambianceFilter, "", 0, 5);
-
-ambianceResult((result) => {
-  placeAmbianceItems.value = result.data?.ambiances;
-});
-
-/*---------------------------Place Category Data Fetch---------------------------**/
-const placeCategorySearch = ref("");
-const placeCategoryItems = ref([]);
-const categoryFilter = computed(() => {
-  let query = {};
-  if (placeCategorySearch.value) {
-    console.log(placeCategorySearch.value, "placeCategorySearch");
-    query.title = {
-      _ilike: `%${placeCategorySearch.value}%`,
-    };
-  }
-  return query;
-});
-
-const {
-  onResult: categoryResult,
-  onError: categoryError,
-  loading: categoryLoading,
-  refetch: categoryRefetch,
-} = authListQuery(placeCategoryQuery, categoryFilter, "", 0, 5);
-
-categoryResult((result) => {
-  placeCategoryItems.value = result.data?.basicsCategories;
-});
-
 /*****************************Mutations******************************/
 const {
   mutate: addPlace,
@@ -132,9 +36,14 @@ const {
 } = authMutation(addPlaceMutation);
 
 addPlaceDone((result) => {
-  console.log(result, "result");
-  console.log(result.data?.insertPlacesOne?.id, "id");
-  registerPlaceStore.setPlaceId(result.data?.insertPlacesOne?.id);
+  if (result.data.insertPlacesOne) {
+    router.push({
+      path: `/app/places/edit/${result.data.insertPlacesOne.id}`,
+      query: {
+        step: 1,
+      },
+    });
+  }
 });
 
 addPlaceError((error) => {
@@ -146,23 +55,7 @@ addPlaceError((error) => {
   });
 });
 
-const noImageIsSelected = ref(false);
-watch(
-  () => image_url.value,
-  (value) => {
-    if (value != "") {
-      noImageIsSelected.value = false;
-    } else {
-      noImageIsSelected.value = true;
-    }
-  }
-);
-
 const handleAddPlace = handleSubmit(() => {
-  // if (image_url.value == "") {
-  //   noImageIsSelected.value = true;
-  //   return;
-  // }
   const input = {
     light_logo: {
       data: {
@@ -178,7 +71,7 @@ const handleAddPlace = handleSubmit(() => {
     },
     categoryId: placeCategory.value,
     placeAmbiances: {
-      data: placeAmbiance.value.map((id) => ({ ambianceId: id })),
+      data: placeAmbiances.value.map((id) => ({ ambianceId: id })),
     },
     contactPhoneNumber: phoneNumber.value,
     contactAltPhoneNumber: alternativePhoneNumber.value,
@@ -215,8 +108,6 @@ const handleAddPlace = handleSubmit(() => {
     input.orderPhoneNumber2 = alternativeOrderNumber.value;
   }
 
-  console.log(input, "input");
-
   addPlace({
     obj: input,
   });
@@ -238,10 +129,9 @@ const handleAddPlace = handleSubmit(() => {
         <CommonUploadSingleImage
           folder=""
           v-model:model-value="image_url"
+          rules="required"
+          name="placeLogo"
         ></CommonUploadSingleImage>
-        <p v-if="noImageIsSelected" class="text-red-500">
-          No image is selected
-        </p>
 
         <!--------------------------------------------------- Place Name------------------------------- -->
         <HTextfield
@@ -283,62 +173,21 @@ const handleAddPlace = handleSubmit(() => {
 
         <!------------------------------------------------ Type--------------------------------------------->
 
-        <H-SingleSelect
-          name="place_type"
-          id="place_type"
-          label="Type"
-          :items="placeTypeItems"
-          v-model="placeType"
-          showBy="value"
-          rules="required"
-        ></H-SingleSelect>
+        <SelectorsPlaceType v-model="placeType" />
 
         <!-------------------------------------------------- Tag--------------------------------------->
-        <H-Multi-Select-Chips
-          multiple
-          chipsStyle="rounded-full border-[1px] border-gray-600 py-1 px-2 hover:border-primary/40"
-          :items="placeTagItems"
-          v-model="placeTag"
-          value="id"
-          showBy="title"
-          listClass="h-40"
-          returnBy="id"
-          name="tag"
-          rules="required"
-          label="Tag"
-          placeholder="Select Tag"
-          @search="placeTagSearch = $event"
-        >
-        </H-Multi-Select-Chips>
+        <SelectorsTag type="PLACE_TAG" v-model="placeTag" />
 
         <!-- --------------------------------------------------Ambiance----------------------------------- -->
-        <H-Multi-Select-Chips
-          multiple
-          chipsStyle="rounded-full border-[1px] border-gray-600 py-1 px-2 hover:border-primary/40"
-          :items="placeAmbianceItems"
-          v-model="placeAmbiance"
-          value="id"
-          showBy="title"
-          listClass="h-40"
-          returnBy="id"
-          name="tag"
-          rules="required"
-          label="Ambiance"
-          placeholder="Select Ambiance"
-          @search="placeAmbianceSearch = $event"
-        >
-        </H-Multi-Select-Chips>
+        <SelectorsAmbiance v-model="placeAmbiance" name="placeAmbiance" />
 
         <!-- --------------------------------------------------Category----------------------------------- -->
-        <H-SingleSelectWithSearch
-          name="place_category"
-          id="place_category"
-          label="Category"
-          :items="placeCategoryItems"
+        <SelectorsCategory
+          type="PLACE_CATEGORY"
           v-model="placeCategory"
-          showBy="title"
-          rules="required"
-        ></H-SingleSelectWithSearch>
+        ></SelectorsCategory>
+
+        <!-- -------------------Featured Place------------ -->
 
         <div class="px-5 rounded-md border border-sheger-gray-200">
           <div class="flex justify-between items-center py-4">
@@ -387,12 +236,10 @@ const handleAddPlace = handleSubmit(() => {
         <!------------------------------------Phone Number--------------------------------------->
 
         <HTextfield
-          leading-text-class="bg-sheger-gray-300 border  h-full rounded-l-md flex items-center px-2 "
-          leading-text="+251"
-          placeholder="900000000"
+          placeholder="+251900000000"
+          rules="phoneNumber"
           name="phoneNumber"
           v-model="phoneNumber"
-          rules="ethio_phone"
           type="text"
         >
           <template #label>
@@ -407,13 +254,11 @@ const handleAddPlace = handleSubmit(() => {
 
         <!---------------------------------Alternative Phone Number------------------------------------>
         <HTextfield
-          leading-text-class="bg-sheger-gray-300 h-full rounded-l-md flex items-center px-2 "
-          leading-text="+251"
+          placeholder="+251900000000"
+          rules="phoneNumber"
           name="alternativePhoneNumber"
           v-model="alternativePhoneNumber"
-          rules="ethio_phone"
           type="text"
-          placeholder="900000000"
         >
           <template #label>
             <div class="lg:my-2">
@@ -463,11 +308,11 @@ const handleAddPlace = handleSubmit(() => {
         <!-- ------------------------------------Social Media ------------------------ -->
 
         <div class="text-xl font-medium my-2">Social Media</div>
-        <H-SocialMedialSelectChips
+        <HSocialMedialSelectChips
           v-model="socialMedia"
           name="socialMedia"
           :socials="socials"
-        ></H-SocialMedialSelectChips>
+        ></HSocialMedialSelectChips>
 
         <!-- ----------------------------------Offer Takeout---------------------------------- -->
 
@@ -484,13 +329,11 @@ const handleAddPlace = handleSubmit(() => {
 
           <HTextfield
             v-if="offerTakeout"
-            leading-text-class="bg-sheger-gray-300 h-full rounded-l-md flex items-center px-2 "
-            leading-text="+251"
+            placeholder="+251900000000"
+            rules="phoneNumber"
             name="orderNumber"
             v-model="orderNumber"
-            rules="ethio_phone"
             type="text"
-            placeholder="900000000"
           >
             <template #label>
               <div class="lg:my-2">
@@ -506,13 +349,11 @@ const handleAddPlace = handleSubmit(() => {
 
           <HTextfield
             v-if="offerTakeout"
-            leading-text-class="bg-sheger-gray-300 h-full rounded-l-md flex items-center px-2 "
-            leading-text="+251"
+            placeholder="+251900000000"
+            rules="phoneNumber"
             name="alternativeOrderNumber"
             v-model="alternativeOrderNumber"
-            rules="ethio_phone"
             type="text"
-            placeholder="900000000"
           >
             <template #label>
               <div class="lg:my-2">

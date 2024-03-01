@@ -1,18 +1,21 @@
-query(
-  $filter: PlaceMediasBoolExp,
-  $order: [PlaceMediasOrderBy!],
-  $limit: Int,
-  $offset: Int,
-){
-  placeMedias(
-    where: $filter
-    orderBy: $order
-    limit: $limit
-    offset: $offset
-  ){
-  	id
-    media{
+query (
+  $filter: PlaceMediasBoolExp
+  $order: [PlaceMediasOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  placeMedias(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+    id
+    media {
       url
+    }
+  }
+
+  # aggregate
+
+  placeMediasAggregate(where: $filter) {
+    aggregate {
+      count
     }
   }
 }

@@ -1,6 +1,6 @@
 <script setup>
 import getPlacesMenuQuery from "@/graphql/query/menu/list.gql";
-
+const router = useRouter();
 const props = defineProps({
   placeId: {
     type: String,
@@ -32,7 +32,7 @@ const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
 const menus = ref([]);
 const length = ref(0);
 
-const { onResult, onError, loading, fetchMore } = authListQuery(
+const { onResult, onError, loading, fetchMore, refetch } = authListQuery(
   getPlacesMenuQuery,
   filter,
   sort,
@@ -50,15 +50,41 @@ onResult((result) => {
 onError((error) => {
   console.log("onError: " + error);
 });
+
+/**----------------On Menu Add Done--------------- */
+
+function onMenuAddDone() {
+  refetch();
+  showAddMenuModal.value = false;
+}
+const showAddMenuModal = ref(false);
 </script>
 
 <template>
+  <!-- -------------------Add Menu--------------------- -->
+  <Modals-Modal :autoClose="true" v-model="showAddMenuModal">
+    <template #header>
+      <div class="flex items-center justify-between pb-4 px-10">
+        <h3 class="text-lg font-medium text-gray-900">Add Menu Item</h3>
+        <button>
+          <Icon
+            name="system-uicons:close"
+            class="text-4xl"
+            @click="showAddMenuModal = false"
+          />
+        </button>
+      </div>
+    </template>
+    <template #content>
+      <MenusAdd :placeId="placeId" @on-add="onMenuAddDone"></MenusAdd>
+    </template>
+  </Modals-Modal>
   <div class="flex flex-col space-y-4">
     <!-- -----------------Header------------------- -->
     <div class="flex items-center justify-between">
       <p class="text-xl font-medium">{{ length }} Menu Items</p>
       <button
-        @click="showAddAdministratorModal = true"
+        @click="showAddMenuModal = true"
         class="primary-button block secondary-border"
       >
         <Icon
@@ -79,6 +105,7 @@ onError((error) => {
             class="flex"
             v-for="menu in menus"
             :key="menu.id"
+            @onDelete="refetch"
             :menu="menu"
           >
           </Ui-Cards-Menu>

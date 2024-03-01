@@ -199,7 +199,7 @@ onMounted(() => {
               />
               <img
                 v-else
-                src="@/images/temporary/default-profile.png"
+                src="/images/temporary/default-profile.png"
                 alt="user image"
                 class="w-10 h-10 rounded-full"
               />
@@ -229,16 +229,16 @@ onMounted(() => {
         <template v-slot:reviews="{ item }">
           <p class="tertiary-text">
             {{
-              item.placeReviewsAggregate.aggregate.count +
-              item.reviewsAggregate.aggregate.count
+              item.placeReviewsAggregate?.aggregate?.count +
+              item.reviewReviewsAggregate?.aggregate?.count
             }}
           </p>
         </template>
         <template v-slot:bookmarks="{ item }">
           <p class="tertiary-text">
             {{
-              item.userPlaceBookMarksAggregate.aggregate.count +
-              item.userReviewBookMarksAggregate.aggregate.count
+              item.userPlaceBookMarksAggregate?.aggregate.count +
+              item.userReviewBookMarksAggregate?.aggregate.count
             }}
           </p>
         </template>

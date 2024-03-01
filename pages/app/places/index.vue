@@ -68,23 +68,34 @@ const placeSortItems = ref([
   {
     name: "Name",
     levels: ["name"],
-    order: "ASC_NULLS_LAST",
   },
 
   {
     name: "View",
     levels: ["view_count"],
-    order: "DESC_NULLS_LAST",
   },
   {
-    name: "View",
-    levels: ["place_aggregate_summary", "sumLikes"],
-    order: "DESC_NULLS_LAST",
+    name: "Rating",
+    levels: ["place_aggregate_summary", "avgRating"],
   },
-  ,
+  {
+    name: "Like",
+    levels: ["place_aggregate_summary", "sumLikes"],
+  },
+
+  {
+    name: "Price",
+    levels: ["place_aggregate_summary", "avgDishPrice"],
+  },
+
+  {
+    name: "Created At",
+    levels: ["createdAt"],
+  },
 ]);
 
 const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
+const selectedSort = ref("Created At");
 const places = ref([]);
 const limit = ref(6);
 const length = ref(0);
@@ -162,7 +173,7 @@ definePageMeta({
 
     <div class="relative">
       <div class="flex absolute top-2 right-0">
-        <div class="secondary-flex-row">
+        <div class="secondary-flex-row !items-center">
           <H-Textfield
             v-model="search"
             name="search"
@@ -172,9 +183,13 @@ definePageMeta({
           ></H-Textfield>
 
           <!------------------------- sort -------------------------->
-          <H-Sort v-model="sort" :items="placeSortItems"></H-Sort>
+          <H-Sort
+            v-model:selected="selectedSort"
+            v-model="sort"
+            :items="placeSortItems"
+          ></H-Sort>
           <nuxt-link
-            to="places/register-new-place?step=0"
+            to="places/register-new-place"
             class="primary-button block bg-primary-600"
           >
             <Icon

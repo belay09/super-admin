@@ -1,50 +1,49 @@
 <script setup>
-import query from "@/graphql/query/ambiances/list.gql";
+import listQuery from "@/graphql/query/ambiances/list.gql";
+
 import useNotify from "@/use/notify";
 
 /**-----------------Global Variables--------------------------- */
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
   modelValue: {
-    type: Number,
+    type: [Array, String, Object],
+  },
+  init: {
+    type: Array,
   },
 });
 
 const { notify } = useNotify();
-
-/***---------------------Place data fetch--------------------- */
+/***---------------------menu data fetch--------------------- */
 const items = ref([]);
-const limit = ref(20);
-const length = ref(0);
-const sort = ref([{}]);
+const menu = ref(props.modelValue);
+const limit = ref(100);
+const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
 const offset = ref(0);
 const search = ref("");
 
 /**-------------------Compute filter---------------- */
 const filter = computed(() => {
-  let query = {};
-  query._and = [
-    {
-      title: {
-        _ilike: `%${search.value}%`,
-      },
+  let query = {
+    title: {
+      _ilike: `%${search.value}%`,
     },
-  ];
+  };
 
   return query;
 });
 
 const { onResult, onError, loading, refetch } = authListQuery(
-  query,
+  listQuery,
   filter,
   sort,
   offset,
   limit
 );
 onResult((result) => {
-  if (result.data?.places) {
-    places.value = result.data.places;
-    length.value = result.data.placesAggregate?.aggregate?.count;
+  if (result.data?.basicsAmbiances) {
+    items.value = result.data.basicsAmbiances;
   }
 });
 
@@ -64,12 +63,12 @@ function makeSearch(value) {
 watch(
   () => props.modelValue,
   (value) => {
-    place.value = value;
+    menu.value = value;
   }
 );
 
 watch(
-  () => place.value,
+  () => menu.value,
   (value) => {
     emit("update:modelValue", value);
   }
@@ -77,14 +76,21 @@ watch(
 </script>
 
 <template>
-  <H-SingleSelectWithSearch
-    :items="places"
-    v-model="place"
+  <h-multi-select-chips
+    multiple
+    chipsStyle="rounded-full border-[1px] border-gray-600 py-1 px-2 hover:border-primary/40"
+    :items="items"
+    v-model="menu"
+    :init="init"
+    value="id"
+    showBy="name"
+    listClass="h-40"
+    returnBy="id"
+    name="ambiance"
+    label="Ambiances"
+    placeholder="Select ambiance"
     @search="makeSearch"
-    id="place"
-    name="place"
-    label="Place"
     :loading="loading"
-    rules="required"
-  ></H-SingleSelectWithSearch>
+  >
+  </h-multi-select-chips>
 </template>

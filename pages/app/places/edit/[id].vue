@@ -36,16 +36,6 @@ definePageMeta({
 <template>
   <div class="h-screen">
     <!-- Top -->
-    <div class="flex items-center justify-between">
-      <div class="text-lg">0% Completed</div>
-      <!-- Save Draft -->
-      <div
-        class="flex items-center gap-3 text-lg border py-2 px-4 rounded-md cursor-pointer hover:bg-primary-600 hover:text-white transition-transform ease-in-out duration-150 active:scale-95"
-      >
-        <Icon name="uil:save" class="w-6 h-6" />
-        Save as Draft
-      </div>
-    </div>
 
     <!-- stepper -->
     <div class="flex justify-between my-4 h-20">
@@ -140,6 +130,7 @@ definePageMeta({
           @next="goNext"
           @prev="goPrev"
           v-if="currentStep == 0"
+          :placeId="placeId"
         />
         <PlacesFormLocation
           @next="goNext"

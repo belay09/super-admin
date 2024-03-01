@@ -319,7 +319,7 @@ const flyTo = (coordinates) => {
       <!-- ------------------Sheger video------------------ -->
       <div>
         <img
-          src="@/images/temporary/sheger-review-video-small.png"
+          src="/images/temporary/sheger-review-video-small.png"
           class="w-full object-cover object-center"
           alt="Video image"
         />

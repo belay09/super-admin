@@ -6,9 +6,9 @@ import useNotify from "@/use/notify";
 /**-----------------Global Variables--------------------------- */
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
-	modelValue: {
-		type: Number,
-	},
+  modelValue: {
+    type: Number,
+  },
 });
 
 const { notify } = useNotify();
@@ -24,68 +24,68 @@ const search = ref("");
 
 /**-------------------Compute filter---------------- */
 const filter = computed(() => {
-	let query = {};
-	query._and = [
-		{
-			title: {
-				_ilike: `%${search.value}%`,
-			},
-		},
-	];
+  let query = {};
+  query._and = [
+    {
+      title: {
+        _ilike: `%${search.value}%`,
+      },
+    },
+  ];
 
-	return query;
+  return query;
 });
 
 const { onResult, onError, loading, refetch } = authListQuery(
-	drinksQuery,
-	filter,
-	sort,
-	offset,
-	limit
+  drinksQuery,
+  filter,
+  sort,
+  offset,
+  limit
 );
 onResult((result) => {
-	if (result.data?.basicsDrinks) {
-		items.value = result.data.basicsDrinks;
-		length.value = result.data.basicsDrinksAggregate?.aggregate?.count;
-	}
+  if (result.data?.basicsDrinks) {
+    items.value = result.data.basicsDrinks;
+    length.value = result.data.basicsDrinksAggregate?.aggregate?.count;
+  }
 });
 
 onError((error) => {
-	notify({
-		title: "Some thing went wrong",
-		description: error.message,
-		type: "error",
-		borderClass: "border-l-8 border-red-300",
-	});
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
 });
 
 function makeSearch(value) {
-	search.value = value;
+  search.value = value;
 }
 
 watch(
-	() => props.modelValue,
-	(value) => {
-		item.value = value;
-	}
+  () => props.modelValue,
+  (value) => {
+    item.value = value;
+  }
 );
 
 watch(
-	() => item.value,
-	(value) => {
-		emit("update:modelValue", value);
-	}
+  () => item.value,
+  (value) => {
+    emit("update:modelValue", value);
+  }
 );
 </script>
 
 <template>
-	<Lazy-H-SingleSelectWithSearch
-		:items="items"
-		v-model="item"
-		@search="makeSearch"
-		id="drink"
-		name="drink"
-		label="Drinks"
-		:loading="loading"
-	></Lazy-H-SingleSelectWithSearch>
+  <H-SingleSelectWithSearch
+    :items="items"
+    v-model="item"
+    @search="makeSearch"
+    id="drink"
+    name="drink"
+    label="Drinks"
+    :loading="loading"
+  ></H-SingleSelectWithSearch>
 </template>

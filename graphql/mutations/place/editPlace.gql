@@ -1,5 +1,42 @@
-mutation editPlace($input: PlacesSetInput!, $id: bigint!) {
-  updatePlacesByPk(_set: $input, pkColumns: { id: $id }) {
+mutation editPlace(
+  $placeObject: PlacesSetInput!
+  $placeTagObject: [PlaceTagsInsertInput!]!
+  $placeAmbianceObject: [PlaceAmbiancesInsertInput!]!
+  $placeSocialMediaObject: [PlaceSocialMediasInsertInput!]!
+  $id: bigint!
+) {
+  #  delete place tag
+  deletePlaceTags(where: { placeId: { _eq: $id } }) {
+    affectedRows
+  }
+
+  # delete place Ambiance
+  deletePlaceAmbiances(where: { placeId: { _eq: $id } }) {
+    affectedRows
+  }
+
+  # delete place social media
+  deletePlaceSocialMedias(where: { placeId: { _eq: $id } }) {
+    affectedRows
+  }
+
+  # insert place tag
+  insertPlaceTags(objects: $placeTagObject) {
+    affectedRows
+  }
+
+  # insert place ambiances
+  insertPlaceAmbiances(objects: $placeAmbianceObject) {
+    affectedRows
+  }
+
+  # insert place social  medias
+  insertPlaceSocialMedias(objects: $placeSocialMediaObject) {
+    affectedRows
+  }
+
+  # update place
+  updatePlacesByPk(_set: $placeObject, pkColumns: { id: $id }) {
     id
   }
 }

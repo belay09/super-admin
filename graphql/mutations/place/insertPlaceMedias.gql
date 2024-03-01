@@ -1,5 +1,5 @@
-mutation($obj:[PlaceMediasInsertInput!]!){
- insertPlaceMedias(objects:$obj){
-  affectedRows
-}
+mutation insertPlaceMedias($obj: [PlaceMediasInsertInput!]!) {
+  insertPlaceMedias(objects: $obj) {
+    affectedRows
+  }
 }

@@ -23,7 +23,7 @@ query getUsers(
         count
       }
     }
-    reviewsAggregate {
+    reviewReviewsAggregate {
       aggregate {
         count
       }

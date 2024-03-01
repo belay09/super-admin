@@ -32,6 +32,7 @@ const prev = () => {
 /**---------------------Place Amenities Data Fetch---------------------- */
 const placeAmenities = ref([]);
 const placeAmenitySort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
+const placeAmenitiesLength = ref(0);
 const placeAmenityFilter = computed(() => {
   let query = {
     placeId: {
@@ -57,6 +58,8 @@ const {
 onResultPlaceAmenities((result) => {
   if (result.data) {
     placeAmenities.value = result.data?.placeAmenities;
+    placeAmenitiesLength.value =
+      result.data?.placeAmenitiesAggregate?.aggregate?.count;
   }
 });
 
@@ -72,20 +75,12 @@ onErrorPlaceAmenities((error) => {
 /**************************Add and Edit Data ******************************/
 const selectedAmenity = ref("");
 const placeAmenityDescription = ref("");
-const image_urls = ref([
-  "https://cdn.hahu.jobs/public/sheger-gebeta/37a06044-d763-4b6b-adc7-a418235e5179.png",
-  "https://cdn.hahu.jobs/public/sheger-gebeta/37a06044-d763-4b6b-adc7-a418235e5179.png",
-]);
-const image_url = ref("");
-watch(image_url, (newVal) => {
-  image_urls.value.push({
-    media: {
-      data: {
-        url: newVal,
-      },
-    },
-  });
-});
+// const image_urls = ref([
+//   "https://cdn.hahu.jobs/public/sheger-gebeta/37a06044-d763-4b6b-adc7-a418235e5179.png",
+//   "https://cdn.hahu.jobs/public/sheger-gebeta/37a06044-d763-4b6b-adc7-a418235e5179.png",
+// ]);
+
+const image_urls = ref([]);
 
 /**--------------------------------Toggle between edit and add place amenity---------------- */
 const isAddPlaceAmenity = ref(true);
@@ -284,19 +279,8 @@ const handelDeleteImage = (index) => {
     description="This action is irreversible and will permanently delete the amenity and its associated resources."
   ></ModalsConfirmation>
 
-  <!-- Modal for image upload -->
-  <ModalsModal :auto-close="false" v-model="showProfilePictureModal">
-    <template #content>
-      <UiImageUploader
-        title="Upload Place Picture"
-        description="Upload a picture of the place"
-        v-model="image_url"
-        @close="showProfilePictureModal = false"
-      ></UiImageUploader>
-    </template>
-  </ModalsModal>
   <div>
-    <div class="flex" ref="placeAmenityForm">
+    <div class="flex py-2" ref="placeAmenityForm">
       <!------------------------------ Left ---------------------->
       <div class="flex-[50%] px-10">
         <form
@@ -316,55 +300,22 @@ const handelDeleteImage = (index) => {
             v-model="placeAmenityDescription"
           ></H-Textarea>
 
-          <!-------------------------------------- image upload------------------------------------------------- -->
+          <!----------------------------------------images Upload---------------------------------------->
+          <p class="mb-2 text-sheger-gray-100">Upload images</p>
 
-          <div
-            class="flex flex-col items-center justify-center gap-4 border-2 border-dashed border-gray-300 rounded-lg px-8 py-4"
-          >
-            <Icon name="uil:cloud-upload" class="w-20 h-20" />
-            <div class="input_field flex flex-col w-max mx-auto text-center">
-              <div>
-                Drag and drop here or
-                <span
-                  class="text-primary-600 cursor-pointer"
-                  @click="showProfilePictureModal = true"
-                  >Browse</span
-                >
-              </div>
-
-              <div class="">Select images that are Square and 10MB</div>
-            </div>
-          </div>
-
-          <!-------------------------------Uploaded Files------------------------------- -->
-          <div
-            class="flex flex-col gap-4 border px-6 py-3 rounded-md"
-            v-if="image_urls.length > 0"
-          >
-            <p class="font-medium">Uploaded Files</p>
-            <div class="flex flex-col gap-4">
-              <div
-                v-for="(url, index) in image_urls"
-                class="flex items-center justify-between"
-              >
-                <div class="flex items-center gap-3">
-                  <img :src="url" class="w-[100px]" />
-                  <div>
-                    <p class="text-lg font-medium">IMG=99KJ0-.png</p>
-                    <p class="text-sm font-light text-sheger-gray-100">
-                      Feb 2, 2023. image
-                    </p>
-                  </div>
-                </div>
-                <!--progress -->
-                <div class="bg-primary-600 h-[3px] w-[200px]" />
-
-                <div @click="handelDeleteImage(index)" class="cursor-pointer">
-                  <Icon name="uil:trash-alt" class="w-6 h-6" />
-                </div>
-              </div>
-            </div>
-          </div>
+          <HFileUploadWrapper
+            name="file"
+            :maxFileSize="1024 * 1024 * 10"
+            :fileLimit="6"
+            folder="applications_form"
+            description="upload file"
+            placeholder="select multiple files"
+            v-model="image_urls"
+            :init="image_urls"
+            :disabled="false"
+            :showStar="false"
+            rules="required"
+          />
 
           <!------------------------------- Add btn --------------------------->
 
@@ -391,7 +342,43 @@ const handelDeleteImage = (index) => {
 
       <!-- -----------------------------Amenity List------------------- -->
       <div class="flex-[50%]">
+        <p v-if="loadingPlaceAmenities" class="skeleton w-36 h-6 mb-6"></p>
+        <p v-else class="secondary-text !text-xl font-medium m-6">
+          {{ placeAmenitiesLength }} Amenities Added
+        </p>
+        <!-- -------------------Loading Place Amenities---------------- -->
+        <div v-if="loadingPlaceAmenities" class="grid grid-cols-2 gap-6">
+          <div v-for="i in 4" class="rounded-lg border skeleton-container">
+            <!-- Skeleton loader for the card body -->
+            <div class="skeleton w-full h-64 rounded-t-lg"></div>
+
+            <!-- Skeleton loader for the card body -->
+            <div class="flex flex-col space-y-4 py-4 px-5">
+              <!-- Place name and logo skeleton -->
+              <div class="secondary-flex-row items-center space-x-4">
+                <!-- Place logo skeleton -->
+                <div class="skeleton w-8 h-8 rounded-full"></div>
+                <!-- Place name skeleton -->
+                <div class="skeleton w-1/2 h-6"></div>
+              </div>
+
+              <!-- Description skeleton -->
+              <div class="skeleton w-full h-20"></div>
+            </div>
+
+            <!-- Skeleton loader for the card footer -->
+            <div
+              class="flex justify-between items-center px-10 py-4 gap-x-4 border-t"
+            >
+              <!-- Edit button skeleton -->
+              <div class="skeleton w-2/3 h-10"></div>
+              <!-- Delete button skeleton -->
+              <div class="skeleton w-2/3 h-10"></div>
+            </div>
+          </div>
+        </div>
         <div
+          v-else
           class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-x-4 gap-y-6"
         >
           <div v-for="amenity in placeAmenities">

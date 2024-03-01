@@ -12,5 +12,6 @@ query getAmbiances(
   ) {
     id
     title
+    name: title
   }
 }

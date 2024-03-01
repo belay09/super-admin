@@ -20,9 +20,11 @@ const props = defineProps({
   },
   returnBy: {
     type: String,
+    default: "id",
   },
   showBy: {
     type: String,
+    default: "name",
   },
   chipsStyle: {
     type: String,
@@ -122,7 +124,9 @@ const queryList = () => {
   emit("search", search.value);
 };
 
-if (props.init) {
+/**---------------------Merge init value------------------ */
+
+function mergeInit() {
   chips.value = [
     ...new Map(props.init.map((item) => [item[props.value], item])).values(),
   ];
@@ -134,6 +138,23 @@ if (props.init) {
     props.returnBy ? chips.value.map((e) => e[props.returnBy]) : chips.value
   );
 }
+
+if (props.init) {
+  mergeInit();
+}
+
+watch(
+  () => props.init,
+  (val) => {
+    mergeInit();
+  },
+  {
+    deep: true,
+  },
+  {
+    immediate: true,
+  }
+);
 
 const deleteChip = (index) => {
   let id = chips.value[index].id;

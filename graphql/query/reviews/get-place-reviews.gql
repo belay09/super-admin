@@ -20,6 +20,7 @@ query getPlaceReviews(
     # user
     user {
       fullName
+      photoUrl
     }
 
     # place

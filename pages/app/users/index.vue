@@ -53,7 +53,26 @@ aggregateOnError((error) => {
 });
 
 /***---------------------Users data fetch--------------------- */
+const userSortItems = ref([
+  {
+    name: "Name",
+    levels: ["fullName"],
+  },
 
+  {
+    name: "Email",
+    levels: ["email"],
+  },
+  {
+    name: "Phone Number",
+    levels: ["phoneNumber"],
+  },
+
+  {
+    name: "Created At",
+    levels: ["createdAt"],
+  },
+]);
 const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
 const users = ref([]);
 const limit = ref(14);
@@ -154,12 +173,12 @@ definePageMeta({
             trailing-icon="uil:search"
             v-model="search"
           ></H-Textfield>
-          <div class="border rounded-md py-3 px-4">
-            <Icon
-              name="heroicons-outline:adjustments"
-              class="text-2xl cursor-pointer z-30"
-            />
-          </div>
+          <!------------------------- sort -------------------------->
+          <H-Sort
+            v-model:selected="selectedSort"
+            v-model="sort"
+            :items="userSortItems"
+          ></H-Sort>
         </div>
       </div>
     </div>
