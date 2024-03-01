@@ -35,6 +35,7 @@ function formatDate(dateString) {
 var options = {
   chart: {
     height: 280,
+    width: 500,
     type: "area",
     toolbar: {
       show: false,
@@ -42,7 +43,20 @@ var options = {
     zoom: {
       enabled: true,
     },
+    responsive: true,
   },
+  responsive: [
+    {
+      breakpoint: 480,
+      options: {
+        legend: {
+          position: "bottom",
+          offsetX: -10,
+          offsetY: 0,
+        },
+      },
+    },
+  ],
   dataLabels: {
     enabled: false,
   },
@@ -62,7 +76,7 @@ var options = {
       shadeIntensity: 1,
       opacityFrom: 0.7,
       opacityTo: 1,
-      stops: [100, 100, 100],
+      stops: [50, 99, 100],
     },
   },
   xaxis: {

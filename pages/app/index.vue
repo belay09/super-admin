@@ -9,7 +9,14 @@ definePageMeta({
   layout: "home",
 });
 
-const dateRangeValue = ref([new Date(), new Date()]);
+const dateRangeValue = ref([
+  new Date(
+    new Date().getFullYear(),
+    new Date().getMonth() - 12,
+    new Date().getDate()
+  ),
+  new Date(),
+]);
 
 /*----------- Fetch analytic data -----------*/
 const analytics = ref([]);
@@ -172,9 +179,6 @@ watch(rawDataForCharts, () => {
           </div>
           <div>
             <h3>{{ featuredAnalytic.title }}</h3>
-            <!-- <p class="mt-3 text-xs text-sheger-gray-100">
-              Last Featured: {{ featuredAnalytic.last_featured }}
-            </p> -->
           </div>
         </div>
         <div>
@@ -230,7 +234,11 @@ watch(rawDataForCharts, () => {
             class="flex items-center justify-center w-16 h-8 text-xs text-white bg-red-500 rounded-[10px]"
           >
             <Icon :name="'eva:arrow-downward-outline'" class="w-4 h-4" />
-            <span class="ml-1">{{ analytic.trendValue }}</span>
+            <span class="ml-1">{{
+              analytic.trendValue >= 0
+                ? analytic?.trendValue
+                : analytic?.trendValue?.replace("-", "")
+            }}</span>
           </div>
         </div>
       </div>
