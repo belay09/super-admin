@@ -1,0 +1,12 @@
+query getBusinessReq($id: bigint!) {
+	businessRequestsByPk(id: $id) {
+		createdAt
+		email
+		phoneNumber
+		messageLabel
+		message
+		isAddressed
+		id
+		fullName
+	}
+}

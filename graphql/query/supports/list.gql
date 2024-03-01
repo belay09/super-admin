@@ -1,0 +1,41 @@
+query getShegerSupport(
+	$filter: SupportsBoolExp
+	$order: [SupportsOrderBy!]
+	$limit: Int
+	$offset: Int
+) {
+	supports(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+		updatedAt
+		updatedBy
+		supportType
+		placeId
+		subject
+		messageLabel
+		message
+		isAddressed
+		id
+		email
+		createdBy
+		createdAt
+		user {
+			fullName
+			email
+			photoUrl
+		}
+	}
+	total: supportsAggregate(where: $filter) {
+		aggregate {
+			count
+		}
+	}
+	pending: supportsAggregate(where: { isAddressed: { _eq: false } }) {
+		aggregate {
+			count
+		}
+	}
+	addressed: supportsAggregate(where: { isAddressed: { _eq: true } }) {
+		aggregate {
+			count
+		}
+	}
+}

@@ -3,123 +3,123 @@
 @tailwind utilities;
 
 html {
-  /* scroll-behavior: smooth; */
-  /* background-color: #280404; */
+	/* scroll-behavior: smooth; */
+	/* background-color: #280404; */
 }
 *,
 root,
 body {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  border-color: #b5b5b5;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	border-color: #b5b5b5;
 }
 
 body {
-  font-family: poppins;
-  color: black;
+	font-family: poppins;
+	color: black;
 }
 
 body::-webkit-scrollbar,
 .scroll::-webkit-scrollbar {
-  display: none;
-  width: 0.5em;
+	display: none;
+	width: 0.5em;
 }
 
 body::-webkit-scrollbar,
 .scroll::-webkit-scrollbar-track {
-  background-color: transparent;
+	background-color: transparent;
 }
 
 body::-webkit-scrollbar,
 .scroll::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 0.25em;
+	background-color: #888;
+	border-radius: 0.25em;
 }
 
 .scroll-bar::-webkit-scrollbar {
-  width: 4px;
+	width: 4px;
 }
 
 .scroll-bar::-webkit-scrollbar-track {
-  background-color: transparent;
+	background-color: transparent;
 }
 
 .scroll-bar::-webkit-scrollbar-thumb {
-  background-color: #d34553;
-  border-radius: 2em;
+	background-color: #d34553;
+	border-radius: 2em;
 }
 
 body::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
+	background-color: #555;
 }
 
 @layer utilities {
-  .filter-shadow {
-    box-shadow: 2px 10px 2px rgb(198, 196, 196);
-  }
-  .filter-shadow-dark {
-    box-shadow: 2px 10px 2px #1c0406;
-  }
+	.filter-shadow {
+		box-shadow: 2px 10px 2px rgb(198, 196, 196);
+	}
+	.filter-shadow-dark {
+		box-shadow: 2px 10px 2px #1c0406;
+	}
 
-  .filter-shadow-small {
-    box-shadow: 2px 2px 4px #bab7b7;
-  }
+	.filter-shadow-small {
+		box-shadow: 2px 2px 4px #bab7b7;
+	}
 
-  .filter-shadow-small-dark {
-    box-shadow: 0 0 0 white;
-  }
+	.filter-shadow-small-dark {
+		box-shadow: 0 0 0 white;
+	}
 }
 
 /* ------------Primary text-------------- */
 
 .primary-medium-text {
-  @apply font-medium;
+	@apply font-medium;
 }
 
 .secondary-text {
-  @apply text-sheger-gray-100;
+	@apply text-sheger-gray-100;
 }
 
 .tertiary-text {
-  @apply text-sheger-gray-400;
+	@apply text-sheger-gray-400;
 }
 
 /* ---------------------------Button---------------------- */
 
 .primary-button {
-  @apply flex items-center justify-center px-4 py-3 space-x-2 rounded-md cursor-pointer;
+	@apply flex items-center justify-center px-4 py-3 space-x-2 rounded-md cursor-pointer;
 }
 
 /* ---------------------------Border---------------------- */
 
 .secondary-border {
-  @apply border border-sheger-gray-300;
+	@apply border border-sheger-gray-300;
 }
 
 /* ---------------------------Background---------------------- */
 
 /* ---------------------------Flex---------------------- */
 .primary-flex-row {
-  @apply flex flex-row items-center space-x-2;
+	@apply flex flex-row items-center space-x-2;
 }
 
 .secondary-flex-row {
-  @apply flex flex-row items-center space-x-4;
+	@apply flex flex-row items-center space-x-4;
 }
 
 .teritary-flex-row {
-  @apply flex flex-row items-center space-x-6;
+	@apply flex flex-row items-center space-x-6;
 }
 .form-input {
-  @apply px-4 py-2 border border-gray-200;
+	@apply px-4 py-2 border border-gray-200;
 }
 /* ---------------------------No edge---------------------- */
 
 .border-outline-ring-removal {
-  @apply border-none hover:border-none focus:border-none focus:ring-0 focus:outline-none;
+	@apply border-none hover:border-none focus:border-none focus:ring-0 focus:outline-none;
 }
 
 .stepper-button {
-  @apply flex items-center justify-center w-full text-lg border-r bg-sheger-gray-500 border-sheger-gray-200;
+	@apply flex items-center justify-center w-full text-lg border-r bg-sheger-gray-500 border-sheger-gray-200;
 }

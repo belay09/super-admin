@@ -1,0 +1,21 @@
+query getShegerSupport($id: bigint!) {
+	supportsByPk(id: $id) {
+		updatedAt
+		updatedBy
+		supportType
+		placeId
+		subject
+		messageLabel
+		message
+		isAddressed
+		id
+		email
+		createdBy
+		createdAt
+		user {
+			fullName
+			email
+			photoUrl
+		}
+	}
+}
