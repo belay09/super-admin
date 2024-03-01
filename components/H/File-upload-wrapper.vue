@@ -113,12 +113,6 @@ const thumbnail = computed({
 				<Icon name="uil:cloud-upload" class="w-20 h-20" />
 				<div class="flex flex-col mx-auto text-center input_field w-max">
 					<label>
-						<input
-							class="hidden text-sm cursor-pointer w-36"
-							type="file"
-							accept="image/*"
-							multiple
-						/>
 						<div>
 							{{ placeholder }} <span class="text-primary-600">Browse</span>
 						</div>

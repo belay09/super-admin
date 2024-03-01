@@ -1,8 +1,8 @@
 <script setup>
 import { format, parseISO } from "date-fns";
-import getSupportQuery from "@/graphql/query/supports/item.gql";
-import editSupportMutation from "@/graphql/mutations/supports/edit.gql";
-import deleteSupportMutation from "@/graphql/mutations/supports/delete.gql";
+import getBusinessReqQuery from "@/graphql/query/business-request/item.gql";
+import editBusinessReqMutation from "@/graphql/mutations/business-request/edit.gql";
+import deleteBusinessReqMutation from "@/graphql/mutations/business-request/delete.gql";
 
 import useNotify from "@/use/notify";
 
@@ -11,32 +11,27 @@ const route = useRoute();
 const router = useRouter();
 
 /**------------------------Get Support Data----------------------- */
-const support = ref();
+const businessReq = ref();
 const {
-	onResult: supportOnResult,
-	onError: supportOnError,
-	loading: supportLoading,
-	refetch: supportRefetch,
-} = authItemQuery(getSupportQuery, route.params.id);
+	onResult: businessReqOnResult,
+	onError: businessReqOnError,
+	loading: businessReqLoading,
+	refetch: businessReqRefetch,
+} = authItemQuery(getBusinessReqQuery, route.params.id);
 
-supportOnResult(({ data }) => {
-	support.value = data.supportsByPk;
+businessReqOnResult(({ data }) => {
+	businessReq.value = data.businessRequestsByPk;
 });
 
 /*--------------------------------- mark as addressed------------------------- */
 const selectedMarkAsAddressed = ref(null);
-const selectedSupportId = ref();
-
-const mark = (selectedMark) => {
-	selectedMarkAsAddressed.value = selectedMark;
-};
 
 const {
 	mutate: markAsAddressed,
 	onError: markAsAddressedError,
 	onDone: markAsAddressedDone,
 	loading: markAsAddressedLoading,
-} = authMutation(editSupportMutation);
+} = authMutation(editBusinessReqMutation);
 
 const onSubmit = () => {
 	markAsAddressed({
@@ -52,11 +47,10 @@ markAsAddressedDone(() => {
 	openMarkAsAddressedModal.value = false;
 	notify({
 		title: "Marked as Addressed",
-		description: "Support has been marked as addressed",
+		description: "the message has been updated",
 		type: "success",
 		borderClass: "border-l-8 border-green-300",
 	});
-	refetch();
 });
 
 markAsAddressedError((error) => {
@@ -70,28 +64,28 @@ markAsAddressedError((error) => {
 
 /**------------------------Delete Support----------------------- */
 const {
-	mutate: deleteSupport,
-	onError: deleteSupportError,
-	onDone: deleteSupportDone,
-	loading: deleteSupportLoading,
-} = authMutation(deleteSupportMutation);
+	mutate: deleteBusinessReq,
+	onError: deleteBusinessReqError,
+	onDone: deleteBusinessReqDone,
+	loading: deleteBusinessReqLoading,
+} = authMutation(deleteBusinessReqMutation);
 
-const onDeleteSupport = () => {
-	deleteSupport({
+const onDeleteBusinessReq = () => {
+	deleteBusinessReq({
 		id: route.params.id,
 	});
 };
 
-deleteSupportDone(() => {
+deleteBusinessReqDone(() => {
 	notify({
-		title: "Support Deleted",
+		title: "business request deleted",
 		type: "success",
 		borderClass: "border-l-8 border-green-300",
 	});
-	router.push("/app/supports");
+	router.push("/app/service_requests");
 });
 
-deleteSupportError((error) => {
+deleteBusinessReqError((error) => {
 	notify({
 		title: "Some thing went wrong",
 		description: error.message,
@@ -109,10 +103,10 @@ definePageMeta({
 
 <template>
 	<ModalsConfirmation
-		@confirm="onDeleteSupport()"
+		@confirm="onDeleteBusinessReq()"
 		v-model="openDeleteConfirmModal"
-		title="Delete Support Message"
-		sure-question="Are you sure you want to delete this support?"
+		title="Delete contact us Message"
+		sure-question="Are you sure you want to delete this contact us?"
 		description="Deleting the message will permanently remove it from our system, and the message will be irretrievable. Please confirm your decision, as this action cannot be undone."
 	></ModalsConfirmation>
 	<ModalsModal
@@ -212,7 +206,7 @@ definePageMeta({
 			>
 				<Icon name="heroicons:arrow-left-20-solid" class="text-2xl"></Icon>
 				<p class="text-2xl font-semibold capitalize">
-					{{ support.subject.replace(/_/g, " ") }}
+					<!-- {{ support.subject.replace(/_/g, " ") }} -->
 				</p>
 			</div>
 			<div class="flex items-center space-x-6">
@@ -231,7 +225,7 @@ definePageMeta({
 				<NuxtLink
 					class="block primary-button secondary-border"
 					@click.stop
-					:to="`mailto:${support.user.email}`"
+					:to="`mailto:${businessReq.email}`"
 				>
 					<Icon class="text-2xl cursor-pointer" name="material-symbols:reply" />
 					<span class="">Reply</span>
@@ -251,25 +245,23 @@ definePageMeta({
 		<div class="flex items-center justify-between py-6">
 			<!-- -----------------Profile Picture----------------- -->
 			<div class="secondary-flex-row">
+				<p>{{ businessReq.fullName }}</p>
 				<div>
-					<img
-						:src="support.user.photoUrl"
-						alt="user image"
-						class="w-10 h-10 rounded-full"
-					/>
-				</div>
-				<div>
-					<p>{{ support.user.fullName }}</p>
-					<p class="secondary-text">{{ support.user.email }}</p>
+					<p>{{ businessReq.phoneNumber }}</p>
+
+					<p class="secondary-text">{{ businessReq.email }}</p>
 				</div>
 			</div>
 			<!-- -------------------Time----------------------- -->
 			<p class="secondary-text">
-				{{ format(parseISO(support.createdAt), "dd MMM yyyy") }}
+				{{ format(parseISO(businessReq.createdAt), "dd MMM yyyy") }}
 			</p>
 		</div>
 
 		<!-- -------------------------Body------------------------ -->
-		<div v-html="support.message" class="flex flex-col w-9/12 space-y-6"></div>
+		<div
+			v-html="businessReq.message"
+			class="flex flex-col w-9/12 space-y-6"
+		></div>
 	</div>
 </template>
