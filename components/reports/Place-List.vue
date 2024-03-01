@@ -185,7 +185,7 @@ onSuspendUserDone(() => {
         </template>
 
         <template v-slot:review_content="{ item }">
-          <p class="tertiary-text line-clamp-1">
+          <p class="tertiary-text line-clamp-1 max-w-[40ch]">
             {{ item?.place_review?.comment }}
           </p>
         </template>
