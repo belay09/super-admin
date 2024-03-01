@@ -16,6 +16,8 @@ query getReview($id: bigint!) {
     place {
       shegerRecommendationId
       id
+      type
+      status
       name
       dark_logo {
         url
@@ -25,6 +27,18 @@ query getReview($id: bigint!) {
       }
       featuredReviewMediaUrl {
         url
+      }
+      # locations
+      placeLocations {
+        id
+        location
+        isMainLocation
+        area {
+          name
+        }
+        city {
+          name
+        }
       }
     }
 

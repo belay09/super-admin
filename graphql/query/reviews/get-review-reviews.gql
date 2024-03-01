@@ -18,6 +18,7 @@ query getReviewReviews(
 
     # user
     user {
+      photoUrl
       fullName
     }
 

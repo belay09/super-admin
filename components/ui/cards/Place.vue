@@ -2,6 +2,7 @@
 import { onClickOutside } from "@vueuse/core";
 import editPlaceMutation from "@/graphql/mutations/place/changePlaceStatus.gql";
 import useNotify from "@/use/notify";
+import getMainLocation from "@/helpers/main-location";
 
 /**----------------------Globals-------------------------- */
 const { notify } = useNotify();
@@ -12,8 +13,9 @@ const props = defineProps({
     required: true,
   },
 });
+
 /***---------------------------Main location---------------------- */
-const mainLocation = ref(null);
+const mainLocation = ref(getMainLocation(props.review?.place?.placeLocations));
 /**--------------------Featured place value------------- */
 function featuredPlaceValue(value) {
   if (value === "RECENTLY_OPENED_PLACE") {
@@ -384,7 +386,6 @@ function openMoreAction(event) {
       <!-------------------- Location------------------ -->
       <div v-if="mainLocation" class="flex items-center gap-3">
         <Icon name="carbon:map" class="h-5 w-5" />
-
         <span class="decoration-sheger_brown-200 underline leading"
           >{{ mainLocation.area?.name }}, {{ mainLocation.city?.name }}</span
         >

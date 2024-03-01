@@ -47,6 +47,16 @@ const options = ref({
   chart: {
     type: "area",
   },
+  markers: {
+    size: 0,
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  stroke: {
+    curve: "smooth",
+    width: 3,
+  },
 
   colors: ["#D34553"],
 
@@ -88,87 +98,56 @@ onMounted(() => {
 <template>
   <div class="grid grid-cols-4">
     <div class="col-span-3 grid grid-cols-2">
-      <!-- Pace Info -->
+      <!-- ----------------Place Info-------------------- -->
       <div class="py-4 flex flex-col gap-3">
-        <!-- top -->
         <div class="flex space-x-4">
-          <!-- Logo -->
-          <div class="w-20 h-20 mr-1">
-            <!-- Image -->
+          <!---------------------- Logo--------------------- -->
+          <div class="w-20 h-20 self-start shrink-0 mr-1">
             <img
-              src="/images/temporary/Hotel_Logo.png"
+              :src="place?.light_logo?.url"
               alt=""
               class="object-cover w-full h-full rounded-xl"
             />
           </div>
-          <!-- Description -->
+
           <div class="flex flex-col gap-6">
-            <!-- Name and status -->
+            <!--------------------Place Name and status------------------- -->
             <div class="flex gap-3">
-              <!-- Name -->
               <h1 class="text-xl font-medium">{{ place.name }}</h1>
-              <!-- status -->
               <div class="px-2 py-1" :class="placeStatus(place.status).class">
                 <p class="text-sheger-green-600 font-medium">
                   {{ placeStatus(place.status).name }}
                 </p>
               </div>
             </div>
-            <!-- review and like -->
-            <!-- Rating and like -->
-            <div class="flex items-center space-x-4">
-              <!-- Rating -->
-              <div class="flex items-center gap-2">
-                <Icon name="iwwa:star" class="text-xl text-black" />
-                <p class="">
-                  3/5
-                  <span class=""
-                    >({{
-                      formatNumberToShow(
-                        place.placeReviewsAggregate?.aggregate?.count
-                      )
-                    }}
-                    reviews)</span
-                  >
-                </p>
-              </div>
-              <!-- dash -->
-              <div>
-                <p class="">|</p>
-              </div>
-              <!-- Like -->
-              <div class="flex items-center gap-2">
-                <Icon name="heroicons:heart-solid" class="w-6 h-6" />
 
-                <p class="">
-                  {{
-                    formatNumberToShow(place.place_aggregate_summary?.sumLikes)
-                  }}
-                  <span class="">Likes</span>
-                </p>
-              </div>
-            </div>
-            <!-- menu update -->
+            <!-- -----------------Review rating and like----------- -->
+            <CommonReviewRatingLike
+              :rating="place?.place_aggregate_summary?.avgRating || 0"
+              :like="place?.place_aggregate_summary?.sumLikes || 0"
+              :review="place?.placeReviewsAggregate?.aggregate?.count || 0"
+            ></CommonReviewRatingLike>
 
+            <!-------------------- Menu update---------------------- -->
             <div class="flex items-center gap-3">
               <Icon name="carbon:calendar" class="h-5 w-5" />
               <p class="text-sheger-gray-100">Menu last updated: 2 days ago</p>
             </div>
           </div>
         </div>
-        <!-- Tags -->
+        <!-- ----------------Tags --------------------->
         <div class="flex flex-wrap secondary-text pb-4">
           <p
             v-for="placeTag in place.placeTags"
-            :key="placeTag.tag.id"
+            :key="placeTag.tag?.id"
             class="pr-2"
           >
-            #{{ placeTag.tag.title }}
+            #{{ placeTag.tag?.title }}
           </p>
         </div>
       </div>
 
-      <!-- Featured on -->
+      <!-- ----------------------------Featured on------------------- -->
       <div class="px-9 py-3 flex flex-col gap-4 border-x relative">
         <!-- -----------Flag icon----------- -->
         <div
@@ -195,7 +174,6 @@ onMounted(() => {
         </div>
 
         <!------------------------ Featured on cards -------------->
-
         <Places-FeaturedPlace-Card
           v-for="item in place.featured_places"
           :key="item.id"
@@ -204,7 +182,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- visits -->
+    <!----------------- visits------------ -->
     <div class="col-span-1 pl-2">
       <apexchart
         :key="series"

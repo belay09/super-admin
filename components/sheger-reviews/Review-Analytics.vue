@@ -8,6 +8,13 @@ const dummyData = [
 
   // Add more dummy data objects as needed
 ];
+
+const props = defineProps({
+  review: {
+    type: Object,
+    required: true,
+  },
+});
 </script>
 <template>
   <div>
