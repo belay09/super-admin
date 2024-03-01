@@ -162,6 +162,17 @@ onResult(({ data }) => {
 watch(rawDataForCharts, () => {
   console.log(rawDataForCharts.value, "rawDataForCharts");
 });
+
+function compressXAxisData(data) {
+  const compressedData = [];
+  const interval = Math.floor(data.length / 12); // Calculate interval size
+
+  for (let i = 0; i < data.length; i += interval) {
+    compressedData.push(data[i]);
+  }
+
+  return compressedData;
+}
 </script>
 
 <template>
@@ -255,7 +266,9 @@ watch(rawDataForCharts, () => {
       v-if="!loading && rawDataForCharts != null"
     >
       <Dashboard-UserSignupChart
-        :rawData="rawDataForCharts?.sheger_daily_user_signups"
+        :rawData="
+          compressXAxisData(rawDataForCharts?.sheger_daily_user_signups)
+        "
         :key="rawDataForCharts"
       />
       <Dashboard-TotalAdViewChart

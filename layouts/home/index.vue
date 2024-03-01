@@ -62,7 +62,7 @@ const handleLogout = () => {
       <main class="relative flex flex-col w-full">
         <!-- top bar -->
         <div
-          class="sticky top-0 z-50 flex items-center justify-between py-4 ml-10 mr-16 border-b border-sheger-gray-300"
+          class="sticky top-0 z-50 flex items-center justify-between py-4 ml-10 mr-16 bg-white border-b border-sheger-gray-300"
         >
           <div class="text-xl font-semibold text-primary-600">Dashboard</div>
 

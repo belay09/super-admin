@@ -6,8 +6,13 @@ defineProps({
 <template>
   <nuxt-link
     :to="`${name.toLowerCase()}`"
-    class="group flex gap-x-4 rounded-md text-lg font-medium leading-6 px-6 py-4"
-    exact-active-class="bg-primary-600 text-white"
+    class="flex px-6 py-4 text-lg font-medium leading-6 rounded-md group gap-x-4"
+    exact-active-class="text-white bg-primary-600"
+    :class="[
+      name != '/app' && $route.path.includes(name)
+        ? 'bg-primary-600 text-white'
+        : '',
+    ]"
   >
     <!-- <Icon name="streamline:insert-side" size="24" color="" /> -->
     <div>
