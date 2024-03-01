@@ -7,9 +7,9 @@ const props = defineProps({
   },
 });
 const completedSteps = ref(); // Initial value, will be calculated based on start date
-const remainingTime = (startDate) => {
+const remainingTime = (endDate) => {
   const now = new Date();
-  const startTime = new Date(startDate);
+  const startTime = new Date(endDate);
   const timeDifference = startTime - now;
   if (timeDifference > 0) {
     const days = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
