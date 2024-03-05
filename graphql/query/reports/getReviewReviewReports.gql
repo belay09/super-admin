@@ -1,0 +1,65 @@
+query GetReviewReports(
+  $filter: ReviewReviewReportsBoolExp
+  $limit: Int
+  $offset: Int
+  $order: [ReviewReviewReportsOrderBy!]
+) {
+  reviewReviewReports(
+    where: $filter
+    limit: $limit
+    offset: $offset
+    orderBy: $order
+  ) {
+    id
+    type
+    isAddressed
+    reporter: user {
+      id
+      fullName
+      photoUrl
+      status
+    }
+
+    report_type: review_report_type {
+      description
+    }
+
+    review: review_review {
+      comment
+      subject: user {
+        id
+        fullName
+        photoUrl
+        email
+        status
+      }
+      review {
+        place {
+          name
+        }
+      }
+    }
+  }
+
+  length: reviewReviewReportsAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
+
+  addressed: reviewReviewReportsAggregate(
+    where: { isAddressed: { _eq: true } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+
+  pending: reviewReviewReportsAggregate(
+    where: { isAddressed: { _eq: false } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}

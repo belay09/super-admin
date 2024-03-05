@@ -1,0 +1,5 @@
+mutation deleteBusinessReq($id: bigint!) {
+	deleteBusinessRequestsByPk(id: $id) {
+		id
+	}
+}

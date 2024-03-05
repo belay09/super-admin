@@ -150,6 +150,14 @@ const markasread = () => {
 </script>
 
 <template>
+  <ModalsConfirmation
+    v-model="showLogoutConformationModal"
+    title="Log out"
+    description="Are you sure you want to log out?"
+    confirm-button="Log out"
+    @confirm="handleLogout"
+    icon="mdi:warning-box"
+  />
   <HNotification />
   <div class="">
     <div class="flex">
@@ -158,17 +166,17 @@ const markasread = () => {
       >
         <!-- Sidebar component, swap this element with another sidebar if you like -->
         <div
-          class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-primary-50 px-6 fixed top-0 left-0 h-screen scroll"
+          class="fixed top-0 left-0 flex flex-col h-screen px-6 overflow-y-auto border-r border-gray-200 grow gap-y-5 bg-primary-50 scroll"
         >
-          <div class="flex h-16 shrink-0 items-center">
+          <div class="flex items-center h-16 shrink-0">
             <img
-              class="h-12 w-auto"
+              class="w-auto h-12"
               src="/images/static/sheger-admin-logo.png"
               alt="Sheger Admin Logo"
             />
           </div>
-          <nav class="flex flex-1 flex-col">
-            <ul role="list" class="flex flex-1 flex-col gap-y-7">
+          <nav class="flex flex-col flex-1">
+            <ul role="list" class="flex flex-col flex-1 gap-y-7">
               <li>
                 <ul role="list" class="mx-2 space-y-1">
                   <UiSidebar />
@@ -179,12 +187,12 @@ const markasread = () => {
         </div>
       </div>
 
-      <main class="w-full relative">
+      <main class="relative flex flex-col w-full">
         <!-- top bar -->
         <div
-          class="flex items-center justify-between ml-10 mr-16 py-4 border-b border-sheger-gray-300 sticky top-0 bg-white z-50"
+          class="sticky top-0 z-50 flex items-center justify-between py-4 ml-10 mr-16 bg-white border-b border-sheger-gray-300"
         >
-          <div class="text-xl text-primary-600 font-semibold">Dashboard</div>
+          <div class="text-xl font-semibold text-primary-600">Dashboard</div>
 
           <!----------------------------- Right----------------------- -->
           <div class="flex items-center gap-4">
@@ -298,7 +306,7 @@ const markasread = () => {
             </div>
           </div>
         </div>
-        <div class="overflow-y-scroll px-10 pr-16 py-6">
+        <div class="h-full px-10 py-6 pr-16 overflow-y-scroll">
           <!-- Main area -->
           <slot />
         </div>

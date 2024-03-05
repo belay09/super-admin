@@ -80,13 +80,13 @@ const open = computed({
           leave-to="opacity-0"
         >
           <div
-            class="fixed inset-0 bg-gray-500 bg-opacity-20 transition-opacity"
+            class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-20"
           />
         </TransitionChild>
 
         <div class="fixed inset-0 z-10 overflow-y-auto">
           <div
-            class="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0"
+            class="flex items-center justify-center min-h-full p-4 text-center sm:items-center sm:p-0"
           >
             <TransitionChild
               as="template"
@@ -98,7 +98,7 @@ const open = computed({
               leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <DialogPanel
-                class="relative w-full max-w-md transform overflow-hidden rounded-lg bg-white p-6 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
+                class="relative w-full max-w-md p-6 overflow-hidden text-left transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
               >
                 <div class="flex flex-col space-y-4">
                   <div class="flex items-center justify-between">
@@ -126,7 +126,7 @@ const open = computed({
                         name="ion:close-outline"
                         width="25"
                         height="25"
-                        class="h-6 w-6"
+                        class="w-6 h-6"
                       />
                     </button>
                   </div>
@@ -136,18 +136,18 @@ const open = computed({
                   <p v-if="description !== ''" class="secondary-text">
                     {{ description }}
                   </p>
-                  <div class="secondary-flex-row justify-between w-full">
+                  <div class="justify-between w-full secondary-flex-row">
                     <button
                       @click="open = false"
-                      class="primary-button block bg-primary-600 w-full text-white"
+                      class="block w-full text-white primary-button bg-primary-600"
                     >
                       <span class="">Cancel</span>
                     </button>
                     <button
                       @click="emits('confirm')"
-                      class="primary-button block secondary-border w-full"
+                      class="block w-full primary-button secondary-border"
                     >
-                      <span class="">Confirm</span>
+                      <span class="">{{ confirmButton }}</span>
                     </button>
                   </div>
                 </div>

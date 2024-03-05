@@ -1,0 +1,5 @@
+mutation editBusinessRequest($id: bigint!, $input: BusinessRequestsSetInput) {
+	updateBusinessRequestsByPk(pkColumns: { id: $id }, _set: $input) {
+		id
+	}
+}

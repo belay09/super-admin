@@ -1,0 +1,12 @@
+query getContactUs($id: bigint!) {
+	contactUsByPk(id: $id) {
+		createdAt
+		email
+		phoneNumber
+		messageLabel
+		message
+		isAddressed
+		id
+		fullName
+	}
+}

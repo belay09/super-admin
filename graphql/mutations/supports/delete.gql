@@ -1,0 +1,5 @@
+mutation deleteSupport($id: bigint!) {
+	deleteSupportsByPk(id: $id) {
+		id
+	}
+}

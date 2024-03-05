@@ -1,0 +1,5 @@
+mutation addressSupport($id: bigint!, $input: SupportsSetInput) {
+	updateSupportsByPk(pkColumns: { id: $id }, _set: $input) {
+		id
+	}
+}

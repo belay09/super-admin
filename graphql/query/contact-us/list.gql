@@ -1,0 +1,35 @@
+query getContactUs(
+	$filter: ContactUsBoolExp
+	$order: [ContactUsOrderBy!]
+	$limit: Int
+	$offset: Int
+) {
+	contactUs(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+		createdAt
+		email
+		phoneNumber
+		messageLabel
+		message
+		isAddressed
+		id
+		fullName
+	}
+
+	total: contactUsAggregate(where: $filter) {
+		aggregate {
+			count
+		}
+	}
+
+	addressed: contactUsAggregate(where: { isAddressed: { _eq: true } }) {
+		aggregate {
+			count
+		}
+	}
+
+	pending: contactUsAggregate(where: { isAddressed: { _eq: false } }) {
+		aggregate {
+			count
+		}
+	}
+}

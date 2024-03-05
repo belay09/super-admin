@@ -1,0 +1,8 @@
+mutation UpdateReviewReport(
+  $id: bigint!
+  $changes: ReviewReviewReportsSetInput!
+) {
+  updateReviewReviewReportsByPk(pkColumns: { id: $id }, _set: $changes) {
+    id
+  }
+}

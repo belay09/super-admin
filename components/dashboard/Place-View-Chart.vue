@@ -57,7 +57,7 @@ var options = {
     },
   ],
   chartOptions: {
-    colors: ["#FFB946", "#FF5C93", "#4E67EB", "#1BC5BD"],
+    colors: ["#D5492A", "#DDBD27", "#EF7E4B", "#67AC89"],
     chart: {
       type: "bar",
       height: 350,

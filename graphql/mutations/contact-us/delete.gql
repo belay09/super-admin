@@ -1,0 +1,5 @@
+mutation deleteContactUs($id: bigint!) {
+	deleteContactUsByPk(id: $id) {
+		id
+	}
+}

@@ -130,7 +130,7 @@ onMounted(() => {
     <div class="relative rounded-md shadow-sm font-body">
       <div
         v-if="leadingIcon && !disabled"
-        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+        class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
       >
         <component
           class="h-7 w-7 text-new-tale/30"
@@ -148,7 +148,7 @@ onMounted(() => {
         :placeholder="props.placeholder"
         :name="props.name"
         :id="id"
-        class="block w-full pr-10  :text-white focus:outline-none md:text-base text-sm rounded-md"
+        class="block w-full pr-10 text-sm rounded-md :text-white focus:outline-none md:text-base"
         :class="[
           errorMessage
             ? 'focus:ring-red-500 focus:border-red-500 hover:border-red-500 border-red-500 '
@@ -165,15 +165,15 @@ onMounted(() => {
       />
       <!-- icon -->
       <div
-        class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+        class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
       >
-        <!-- <component class="h-5 w-5 text-gray-400" :is="trailingIcon"></component> -->
+        <!-- <component class="w-5 h-5 text-gray-400" :is="trailingIcon"></component> -->
         <Icon name="tabler:chevron-down" width="25" height="25" color="gray" />
       </div>
       <div
         v-if="clearable && !disabled"
         @click="clear"
-        class="absolute inset-y-0 right-0 pr-3 flex items-center"
+        class="absolute inset-y-0 right-0 flex items-center pr-3"
       >
         <Icon
           name="gg:close"
@@ -186,7 +186,7 @@ onMounted(() => {
     </div>
     <ul
       v-show="show"
-      class="absolute z-50 overflow-y-scroll overflow-x-hidden w-full bg-white border border-gray-300 shadow max-h-56 h-auto rounded-md text-base"
+      class="absolute z-50 w-full h-auto overflow-x-hidden overflow-y-scroll text-base bg-white border border-gray-300 rounded-md shadow max-h-56"
       :class="listHeight ? listHeight : ''"
     >
       <li
@@ -194,7 +194,7 @@ onMounted(() => {
         :key="item.id"
         @click="set(item)"
         :class="{ 'bg-blue-50 ': selected == item.id }"
-        class="border-b border-gray-200 select-none relative py-3 px-3 hover:bg-blue-50 text-secondary-text cursor-pointer overflow-auto"
+        class="relative px-3 py-3 overflow-auto border-b border-gray-200 cursor-pointer select-none hover:bg-blue-50 text-secondary-text"
       >
         <div
           class="flex items-center justify-between"
@@ -207,7 +207,7 @@ onMounted(() => {
           <span class="block capitalize break-words">{{ item.name }}</span>
           <div class="flex space-x-1">
             <p
-              class="text-sm text-secondary-text font-light"
+              class="text-sm font-light text-secondary-text"
               v-if="item.identifier"
             >
               {{ item.identifier }}
@@ -228,6 +228,7 @@ onMounted(() => {
       :visible="errorMessage"
       class="mt-1 text-sm text-red-600 font-body"
       id="email-error"
+      v-if="errorMessage"
     >
       {{ errorMessage }} &nbsp;
     </p>

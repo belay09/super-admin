@@ -1,0 +1,41 @@
+query getBusinessReq(
+	$filter: BusinessRequestsBoolExp
+	$order: [BusinessRequestsOrderBy!]
+	$limit: Int
+	$offset: Int
+) {
+	businessRequests(
+		where: $filter
+		orderBy: $order
+		limit: $limit
+		offset: $offset
+	) {
+		phoneNumber
+		messageLabel
+		message
+		isAddressed
+		id
+		email
+		fullName
+		createdAt
+		company
+	}
+
+	total: businessRequestsAggregate(where: $filter) {
+		aggregate {
+			count
+		}
+	}
+
+	addressed: businessRequestsAggregate(where: { isAddressed: { _eq: true } }) {
+		aggregate {
+			count
+		}
+	}
+
+	pending: businessRequestsAggregate(where: { isAddressed: { _eq: false } }) {
+		aggregate {
+			count
+		}
+	}
+}

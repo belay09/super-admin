@@ -1,0 +1,56 @@
+query GetPlaceReviewReports(
+  $filter: PlaceReviewReportBoolExp
+  $limit: Int
+  $offset: Int
+  $order: [PlaceReviewReportOrderBy!]
+) {
+  placeReviewReport(
+    where: $filter
+    limit: $limit
+    offset: $offset
+    orderBy: $order
+  ) {
+    id
+    type
+    isAddressed
+    report_type: review_report_type {
+      description
+      iconId
+    }
+    createdAt
+
+    place_review {
+      place {
+        name
+      }
+      user {
+        id
+        fullName
+        photoUrl
+        email
+        status
+      }
+      comment
+    }
+    reporter: user {
+      fullName
+    }
+  }
+  length: placeReviewReportAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
+
+  addressed: placeReviewReportAggregate(where: { isAddressed: { _eq: true } }) {
+    aggregate {
+      count
+    }
+  }
+
+  pending: placeReviewReportAggregate(where: { isAddressed: { _eq: false } }) {
+    aggregate {
+      count
+    }
+  }
+}

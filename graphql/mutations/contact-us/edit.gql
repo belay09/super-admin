@@ -1,0 +1,5 @@
+mutation addressContactUs($id: bigint!, $input: ContactUsSetInput) {
+	updateContactUsByPk(pkColumns: { id: $id }, _set: $input) {
+		id
+	}
+}
