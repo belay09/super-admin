@@ -1,0 +1,6 @@
+query admins($filter: UsersUsersBoolExp!) {
+	usersUsers(where: $filter, orderBy: { id: DESC }) {
+		name: fullName
+		id
+	}
+}

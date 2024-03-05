@@ -3,6 +3,18 @@ mutation postReview($input: [ReviewsInsertInput!]!) {
 		affectedRows
 		returning {
 			id
+			featuredImageId
+			featured_image {
+				url
+				id
+			}
+			review_medias {
+				media {
+					url
+				}
+			}
+			__typename
 		}
+		__typename
 	}
 }
