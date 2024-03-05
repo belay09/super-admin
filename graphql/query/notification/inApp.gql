@@ -1,0 +1,9 @@
+query MyQuery {
+  notifications(limit: 10, orderBy: {createdAt: DESC}) {
+    createdAt
+    message
+    title
+    type
+    isSeen
+  }
+}

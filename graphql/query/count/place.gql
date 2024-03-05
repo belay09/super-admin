@@ -1,0 +1,9 @@
+query MyQuery2($filter: bigint!) {
+  place_review_star_counter(args: {place_id: $filter}) {
+    count
+    star
+  }
+  placeAggregateSummary(where: {placeId: {_eq: $filter}}) {
+    avgRating
+  }
+}

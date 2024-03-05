@@ -43,6 +43,8 @@ const {
 placeOnResult((result) => {
   if (result.data?.place) {
     place.value = result.data.place;
+    console.log("place---", place.value);
+    console.log("place---", route.params.id);
   }
 });
 
@@ -79,11 +81,10 @@ definePageMeta({
         <template #administrators>
           <AdministratorsPlaceList></AdministratorsPlaceList>
         </template>
-
         <template #reviews>
           <div class="py-6">
-            <ShegerReviews-ReviewAnalytics></ShegerReviews-ReviewAnalytics>
-            <ShegerReviews-UserReviewList></ShegerReviews-UserReviewList>
+            <PlaceReviewsReviewAnalytics/>
+            <PlaceReviews-UserReviewList/>
           </div>
         </template>
       </H-Tab>

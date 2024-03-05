@@ -1,0 +1,5 @@
+mutation MyMutation($params: UpdateProfileInput!) {
+  update_profile(params: $params) {
+    message
+  }
+}

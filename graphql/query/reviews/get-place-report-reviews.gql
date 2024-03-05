@@ -1,0 +1,29 @@
+query MyQuery2(
+  $filter: PlaceReviewReportBoolExp!
+  $order: [PlaceReviewReportOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  placeReviewReport(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    createdAt
+    isAddressed
+    placeReviewId
+    type
+    userId
+    place_review {
+      comment
+      id
+      rating
+    }
+    id
+    user {
+      fullName
+      photoUrl
+    }
+  }
+}
