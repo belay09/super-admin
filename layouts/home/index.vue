@@ -151,6 +151,70 @@ const markasread = () => {
 		isSeen: true,
 	});
 };
+
+const navs = ref([
+	{
+		name: "Dashboard",
+		icon: "material-symbols:dashboard-outline",
+		to: "/app/dashboard",
+	},
+	{
+		name: "Place",
+		icon: "uil:shop",
+		to: "/app/places",
+	},
+	{
+		name: "Featured Places",
+		icon: "lucide:building",
+		to: "/app/featured-places",
+	},
+	{
+		name: "Sheger Reviews",
+		icon: "ri:menu-unfold-fill",
+		to: "/app/sheger-reviews",
+	},
+	{
+		name: "Ad Space",
+		icon: "icons8:advertising",
+		to: "/app/ad_space",
+	},
+	{
+		name: "User",
+		icon: "tabler:users",
+		to: "/app/users",
+	},
+	{
+		icon: "fa6-solid:martini-glass-empty",
+		name: "Sponsored drinks",
+		to: "/app/sponsored_drinks",
+	},
+	{
+		name: "Administrators",
+		icon: "bi:shield",
+		to: "/app/administrators",
+	},
+	{
+		name: "Reports",
+		icon: "ph:flag-light",
+		to: "/app/reports",
+	},
+	{
+		name: "Billings",
+		icon: "solar:bill-list-bold",
+		to: "/app/billings",
+	},
+	{
+		name: "Configurations",
+		icon: "streamline:insert-side",
+		to: "/app/configurations",
+	},
+]);
+
+const currNav = computed(() => {
+	return navs.value.find((nav) => {
+		return route.path.includes(nav.to);
+	});
+});
 </script>
 
 <template>
@@ -220,7 +284,7 @@ const markasread = () => {
 						>
 							<span class="sr-only">View notifications</span>
 							<Icon
-								class="text-black text-3xl"
+								class="text-3xl text-black"
 								name="basil:notification-on-outline"
 							></Icon>
 							<span
@@ -244,7 +308,7 @@ const markasread = () => {
 									<span class="sr-only">Open user menu</span>
 
 									<div
-										class="align-center flex bg-primary-50 items-center lg:pl-3 lg:pr-5 py-1 md:px-1 sm:px-1 px-1 rounded-3xl"
+										class="flex items-center px-1 py-1 align-center bg-primary-50 lg:pl-3 lg:pr-5 md:px-1 sm:px-1 rounded-3xl"
 									>
 										<img
 											class="w-[30px] h-[30px] rounded-full"
@@ -268,12 +332,12 @@ const markasread = () => {
 									</div>
 								</MenuButton>
 								<transition
-									enter-active-class="transition ease-out duration-100"
-									enter-from-class="transform opacity-0 scale-95"
-									enter-to-class="transform opacity-100 scale-100"
-									leave-active-class="transition ease-in duration-75"
-									leave-from-class="transform opacity-100 scale-100"
-									leave-to-class="transform opacity-0 scale-95"
+									enter-active-class="transition duration-100 ease-out"
+									enter-from-class="transform scale-95 opacity-0"
+									enter-to-class="transform scale-100 opacity-100"
+									leave-active-class="transition duration-75 ease-in"
+									leave-from-class="transform scale-100 opacity-100"
+									leave-to-class="transform scale-95 opacity-0"
 								>
 									<MenuItems
 										class="absolute right-0 z-10 mt-2.5 w-36 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
@@ -343,14 +407,14 @@ const markasread = () => {
 				leave-to="opacity-0"
 			>
 				<div
-					class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+					class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"
 				/>
 			</TransitionChild>
 
 			<div class="fixed inset-0 overflow-hidden">
 				<div class="absolute inset-0 overflow-hidden">
 					<div
-						class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10"
+						class="fixed inset-y-0 right-0 flex max-w-full pl-10 pointer-events-none"
 					>
 						<TransitionChild
 							as="template"
@@ -361,7 +425,7 @@ const markasread = () => {
 							leave-from="translate-x-0"
 							leave-to="translate-x-full"
 						>
-							<DialogPanel class="pointer-events-auto relative w-96">
+							<DialogPanel class="relative pointer-events-auto w-96">
 								<TransitionChild
 									as="template"
 									enter="ease-in-out duration-500"
@@ -372,11 +436,11 @@ const markasread = () => {
 									leave-to="opacity-0"
 								>
 									<div
-										class="absolute left-5 top-64 xl:top-96 -ml-8 flex pr-2 pt-4 sm:-ml-10 sm:pr-4"
+										class="absolute flex pt-4 pr-2 -ml-8 left-5 top-64 xl:top-96 sm:-ml-10 sm:pr-4"
 									>
 										<button
 											type="button"
-											class="relative rounded-full w-10 h-10 text-gray-300 hover:text-white focus:outline-none focus:ring-2 bg-primary-500"
+											class="relative w-10 h-10 text-gray-300 rounded-full hover:text-white focus:outline-none focus:ring-2 bg-primary-500"
 											@click="open = false"
 										>
 											<span class="absolute -inset-1.5" />
@@ -391,8 +455,8 @@ const markasread = () => {
 										</button>
 									</div>
 								</TransitionChild>
-								<div class="bg-white h-screen py-2 w-full overflow-y-auto">
-									<div class="flex justify-between mb-4 px-2">
+								<div class="w-full h-screen py-2 overflow-y-auto bg-white">
+									<div class="flex justify-between px-2 mb-4">
 										<h1
 											class="font-medium text-lg leading-[35px] font-body text-secondary :text-white capitalize"
 										>
@@ -411,15 +475,15 @@ const markasread = () => {
 											:message="message"
 										></HNotify>
 									</div>
-									<div class="flex-col justify-center my-auto pt-64 w-full">
-										<div class="flex justify-center my-auto m-auto">
+									<div class="flex-col justify-center w-full pt-64 my-auto">
+										<div class="flex justify-center m-auto my-auto">
 											<Icon
 												name="basil:notification-on-outline"
 												class="item-center h-[100px] w-[100px] text-primary-600"
 											>
 											</Icon>
 										</div>
-										<div class="flex justify-center my-auto m-auto">
+										<div class="flex justify-center m-auto my-auto">
 											<h1
 												class="item-center text-primary-600 text-md font-poppins"
 											>
