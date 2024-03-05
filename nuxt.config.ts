@@ -55,7 +55,7 @@ export default defineNuxtConfig({
     clients: {
       shegerAnonymous: "./apollo/sheger-gebeta/anonymous.js",
       authClient: "./apollo/sheger-gebeta/auth.js",
-      authorizerClient: "./apollo/authorizer/auth.js",
+      Authorizer: "./apollo/authorizer.js",
     },
   },
   veeValidate: {

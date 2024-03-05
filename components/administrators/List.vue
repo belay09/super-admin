@@ -218,10 +218,9 @@ DeleteDone((result) => {
   notify({
     title: "Successfully deleted",
     description:
-      result.data.updateUsersUsers.returning[0].fullName + " Can Login Again",
+      result.data.updateUsersUsers.returning[0].fullName + " IS Deleted ",
 
     borderClass: "border-l-8 border-green-800",
-    cardClass: "bg-green-300 text-white text-white",
   });
   refetch();
   delet.value = false;

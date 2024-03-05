@@ -1,10 +1,17 @@
-export default defineNuxtRouteMiddleware((to, from) => {
-  const cookie = useCookie("hasuraAccessToken");
-  const isLoggedin = !!cookie.value;
+import { useAuthStore } from "@/stores/auth";
 
-  if (isLoggedin) {
-  } else if (to.fullPath.includes("app")) {
+export default defineNuxtRouteMiddleware((to, from) => {
+  const { isLoggedIn } = useAuthStore();
+
+  // Allow access to the /password route for password reset
+  if (to.path.startsWith("/password")) {
+    return;
+  }
+  if (to.path === "/") {
+    return;
+  }
+  // Redirect to the login page if not logged in and not accessing the /password route
+  if (isLoggedIn === false && to.path !== "/") {
     return navigateTo("/");
   }
-  return;
 });

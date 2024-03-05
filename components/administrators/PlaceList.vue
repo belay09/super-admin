@@ -41,8 +41,18 @@ const router = useRouter();
 const route = useRoute();
 const filter = computed(() => {
   return {
-    placeId: {_eq: route.params.id}
+    _and: {
+      placeId: {
+         _eq: route.params.id
+      },
+      user: {
+        status: {
+          _neq: "DELETED"
+        }
+      }
+    }
   }
+  
 
 });
 const {
@@ -148,6 +158,7 @@ const finish = handleSubmit(() => {
 const {
   mutate: revokee,
   onError: revokeonError,
+  onLoading: revokeonLoading,
   onDone: revokeDone,
 } = mutator(revokeMutate, "");
 revokeDone((result) => {
@@ -178,6 +189,7 @@ const Revoke = () => {
 const {
   mutate: reactivatee,
   onError: reactivateonError,
+  onLoading: reactivateonLoading,
   onDone: reactivateDone,
 } = mutator(reactivateMutate, "");
 reactivateDone((result) => {
@@ -212,11 +224,9 @@ const {
 DeleteDone((result) => {
   notify({
     title: "Successfully deleted",
-    description:
-      result.data.updateUsersUsers.returning[0].fullName + " Can Login Again",
 
-    borderClass: "border-l-8 border-green-800",
-    cardClass: "bg-green-300 text-white text-white",
+
+    borderClass: "border-l-8 border-green-600",
   });
   refetch();
   delet.value = false;
@@ -237,9 +247,9 @@ const DeleteFunction = () => {
 
 // Function to determine user status based on priority
 const determineUserStatus = (userRoles) => {
-  if (userRoles.some((role) => role.userRole.value === "SHEGERADMIN")) {
+  if (userRoles.value === "SHEGERADMIN") {
     return "Sheger Admin";
-  } else if (userRoles.some((role) => role.userRole.value === "encoder")) {
+  } else if ( userRoles.value === "encoder") {
     return "Encoder";
   } else {
     return "User";
@@ -355,13 +365,13 @@ const validatePhone = () => {
     </div>
   </div>
 
-  <div v-if="!loading" class="w-[90%] h-full">
+  <div v-if="!loading" class="w-[90%] h-full mt-5">
     <div class="flex justify-between">
       <h1 class="text-2xl capitalize font-inter">{{ count }} Administrators</h1>
       <div class="flex items-center">
         <button
           @click="toggleAdd"
-          class="bg-primary-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          class="bg-primary-600 hover:bg-red-700 text-white font-bold py-4 px-7 rounded"
         >
           <Icon
             name="uiw:user-add"
@@ -428,11 +438,9 @@ const validatePhone = () => {
                   </th>
                 </tr>
               </thead>
-              {{ people }}
               <tbody class="divide-y divide-gray-200 bg-white">
                 <tr v-for="person in people" :key="person.email">
-                 {{   person}}
-                  <td class="whitespace-nowrap py-5 pr-3 text-sm sm:pl-0">
+                  <td class="whitespace-nowrap py-5 pr-3 text-sm sm:pl-0 ">
                     <div class="h-7 w-7 flex-shrink-0">
                       <img
                         v-if="person.user?.photoUrl"
@@ -457,12 +465,13 @@ const validatePhone = () => {
                     <div class="text-gray-900">{{ person.user?.email }}</div>
                   </td>
                   <td class="whitespace-nowrap px-3 py-5 text-sm">
+                    {{  }}
                     <span
                       :style="{
-                        color: person.status === 'ACTIVE' ? 'green' : 'red',
+                        color: person?.user?.status === 'ACTIVE' ? 'green' : 'red',
                       }"
                     >
-                      {{ person.status === "ACTIVE" ? "Active" : "Revoked" }}
+                      {{ person?.user?.status === "ACTIVE" ? "Active" : "Revoked" }}
                     </span>
                   </td>
 
@@ -625,6 +634,12 @@ const validatePhone = () => {
         class="text-md font-normal font-poppins text-gray-700 capitalize mt-2 border-[1px] border-gray-400 rounded-lg px-10 py-1"
       >
         Revoke
+        <Icon v-if="revokeonLoading"
+          name="bx:loader"
+          color="black"
+          width="20"
+          height="20"
+          class="self-center"/>
       </button>
     </div>
   </ModalsMod>
@@ -644,6 +659,7 @@ const validatePhone = () => {
         ></Icon>
         <h1 class="text-lg font-poppins text-primary-600 font-bold capitalize">
           reactivate access
+
         </h1>
       </div>
       <button @click="reactivate = false">
@@ -680,6 +696,12 @@ const validatePhone = () => {
         class="text-md font-normal font-poppins text-gray-700 capitalize mt-2 border-[1px] border-gray-400 rounded-lg px-10 py-1"
       >
         Reactivate
+        <Icon v-if="reactivateonLoading"
+          name="bx:loader"
+          color="black"
+          width="20"
+          height="20"
+          class="self-center"/>
       </button>
     </div>
   </ModalsMod>
