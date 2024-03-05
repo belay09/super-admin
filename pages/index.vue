@@ -32,7 +32,7 @@ mobileLoginDone((result) => {
   authStore.setUser(result.data?.mobile_login?.user);
 
   // Set access token on cookie
-  onLogin(result.data?.mobile_login?.access_token, "authorizerClient");
+  onLogin(result.data?.mobile_login?.access_token, "Authorizer");
 
   //Execute createTokenMutation
   createTokenMutation({
