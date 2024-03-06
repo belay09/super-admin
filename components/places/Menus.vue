@@ -20,11 +20,24 @@ const tabs = [
   },
 ];
 
+const currentTabIndex = ref(0);
 /*...................Place menus data fetch.............*/
-const filter = ref({
-  placeId: {
-    _eq: props.placeId,
-  },
+const filter = computed(() => {
+  let query = {};
+  query._and = [
+    {
+      placeId: {
+        _eq: props.placeId,
+      },
+    },
+    {
+      is_available: {
+        _eq: tabs[currentTabIndex.value].value == "Available" ? true : false,
+      },
+    },
+  ];
+
+  return query;
 });
 const limit = ref(6);
 const offset = ref(0);
@@ -42,17 +55,12 @@ const { onResult, onError, loading, fetchMore, refetch } = authListQuery(
 
 onResult((result) => {
   if (result.data?.menus) {
-    console.log("onResult: " + result.data.menus);
     menus.value = result.data?.menus;
     length.value = result.data?.menusAggregate?.aggregate?.count;
   }
 });
-onError((error) => {
-  console.log("onError: " + error);
-});
 
 /**----------------On Menu Add Done--------------- */
-
 function onMenuAddDone() {
   refetch();
   showAddMenuModal.value = false;
@@ -98,26 +106,25 @@ const showAddMenuModal = ref(false);
 
     <!-- -----------------Body------------------- -->
 
-    <H-Tab :tabs="tabs" tab-class="text-xl">
-      <template #Available>
-        <div class="grid grid-cols-2 gap-6 py-8">
-          <Ui-Cards-Menu
-            class="flex"
-            v-for="menu in menus"
-            :key="menu.id"
-            @onDelete="refetch"
-            :menu="menu"
-          >
-          </Ui-Cards-Menu>
-        </div>
-      </template>
+    <H-Tab
+      v-model:current-tab-index="currentTabIndex"
+      :tabs="tabs"
+      tab-class="text-xl"
+    >
+      <template #Available> </template>
 
-      <template #Unavailable>
-        <div class="grid grid-cols-2 gap-6 py-8">
-          <Ui-Cards-Menu v-for="menu in menus" :key="menu.id" :menu="menu">
-          </Ui-Cards-Menu>
-        </div>
-      </template>
+      <template #Unavailable> </template>
     </H-Tab>
+    <div class="grid grid-cols-2 gap-6 py-8">
+      <Ui-Cards-Menu
+        class="flex"
+        v-for="menu in menus"
+        :key="menu.id"
+        @onDelete="refetch"
+        @onEdit="refetch"
+        :menu="menu"
+      >
+      </Ui-Cards-Menu>
+    </div>
   </div>
 </template>

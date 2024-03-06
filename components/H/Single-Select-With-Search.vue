@@ -162,13 +162,17 @@ watchEffect(() => {
     if (props.returnObject) {
       if (props.modelValue) {
         selectedItem.value = props.modelValue;
-        inputValue.value = props.modelValue.id;
+        if (selectedItem.value?.id != "") {
+          inputValue.value = props.modelValue.id;
+        }
       }
     } else {
       selectedItem.value = props.items.find(
         (item) => item.id == props.modelValue
       );
-      inputValue.value = props.modelValue;
+      if (selectedItem.value) {
+        inputValue.value = props.modelValue;
+      }
     }
   }
 });

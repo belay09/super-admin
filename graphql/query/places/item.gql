@@ -173,11 +173,24 @@ query getPlace($id: bigint!, $include: Boolean = false) {
       menuTags {
         tag {
           title
-          # icon {
-          #   lightIconUrl
-          #   darkIconUrl
-          # }
+          icon {
+            lightIconUrl
+            darkIconUrl
+          }
         }
+      }
+    }
+
+    # menu last updated at
+    menuLastUpdatedAt: menus(
+      where: { isHouseSpecial: { _eq: true } }
+      orderBy: [{ createdAt: DESC }]
+      limit: 1
+      offset: 0
+    ) {
+      last_updated_menus(orderBy: [{ lastUpdate: DESC_NULLS_LAST }], limit: 1) {
+        id
+        lastUpdate
       }
     }
   }

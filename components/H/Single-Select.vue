@@ -89,8 +89,17 @@ const props = defineProps({
   },
 });
 
-const singleSelect = ref(null);
+function getInitialValue() {
+  if (props.returnObject) {
+    if (props.modelValue) {
+      return props.modelValue.id;
+    }
+  } else {
+    return props.modelValue;
+  }
+}
 
+const singleSelect = ref(null);
 const { items } = toRefs(props) || [];
 const show = ref(false);
 const {
@@ -98,7 +107,7 @@ const {
   value: inputValue,
   meta,
 } = useField(props.name, props.rules, {
-  initialValue: props.returnObject ? props.modelValue?.id : props.modelValue,
+  initialValue: getInitialValue(),
 });
 
 const selectedItem = ref(null);
@@ -158,15 +167,23 @@ watch(
 
 onClickOutside(singleSelect, (e) => (show.value = false));
 
-onMounted(() => {
-  if (props.returnObject) {
-    inputValue.value = props.modelValue?.id;
-    selectedItem.value = props.modelValue;
-  } else {
-    inputValue.value = props.modelValue;
-    selectedItem.value = props.items.find(
-      (item) => item.id == props.modelValue
-    );
+watchEffect(() => {
+  if (props.modelValue) {
+    if (props.returnObject) {
+      if (props.modelValue) {
+        selectedItem.value = props.modelValue;
+        if (selectedItem.value?.id != "") {
+          inputValue.value = props.modelValue.id;
+        }
+      }
+    } else {
+      selectedItem.value = props.items.find(
+        (item) => item.id == props.modelValue
+      );
+      if (selectedItem.value) {
+        inputValue.value = props.modelValue;
+      }
+    }
   }
 });
 </script>

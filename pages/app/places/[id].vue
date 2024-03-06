@@ -32,6 +32,34 @@ const tabs = ref([
   },
 ]);
 
+/**----------------------Assign tab in route to currentTabIndex value--------------- */
+function getCurrentTab() {
+  if (route.query?.tab && route.query?.tab != "") {
+    let index = tabs.value.findIndex(
+      (tab) => tab.value.toLowerCase() == route.query?.tab.toLowerCase()
+    );
+    if (index > -1) {
+      return index;
+    }
+  }
+  return 0;
+}
+const currentTabIndex = ref(getCurrentTab());
+watch(currentTabIndex, () => {
+  router.push({ query: { tab: tabs.value[currentTabIndex.value].value } });
+});
+
+watchEffect(() => {
+  if (route.query?.tab && route.query?.tab != "") {
+    let index = tabs.value.findIndex(
+      (tab) => tab.value.toLowerCase() == route.query?.tab.toLowerCase()
+    );
+    if (index > -1) {
+      currentTabIndex.value = index;
+    }
+  }
+});
+
 /*...................Place detail data fetch.............*/
 const place = ref(null);
 const {
@@ -43,8 +71,6 @@ const {
 placeOnResult((result) => {
   if (result.data?.place) {
     place.value = result.data.place;
-    console.log("place---", place.value);
-    console.log("place---", route.params.id);
   }
 });
 
@@ -71,7 +97,12 @@ definePageMeta({
 
     <!-- Tab -->
     <div class="py-8" v-if="place">
-      <H-Tab :tabs="tabs" tab-class="text-xl " tab-container-class="gap-x-12">
+      <H-Tab
+        v-model:current-tab-index="currentTabIndex"
+        :tabs="tabs"
+        tab-class="text-xl "
+        tab-container-class="gap-x-12"
+      >
         <template #overview>
           <div class="py-8"><Places-Overview :place="place" /></div>
         </template>
@@ -83,8 +114,8 @@ definePageMeta({
         </template>
         <template #reviews>
           <div class="py-6">
-            <PlaceReviewsReviewAnalytics/>
-            <PlaceReviews-UserReviewList/>
+            <PlaceReviewsReviewAnalytics />
+            <PlaceReviews-UserReviewList />
           </div>
         </template>
       </H-Tab>

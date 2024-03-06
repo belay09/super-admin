@@ -32,7 +32,7 @@ const {
   value: inputValue,
   meta,
 } = useField(props.name, props.rules, {
-  initialValue: props.modelValue,
+  initialValue: "props.modelValue",
 });
 
 const base64Image = ref(null);
@@ -86,11 +86,6 @@ function uploadImage(image) {
   uploadMutate({ base64Image: image, folder: "shegergebeta" + props.folder });
 }
 
-watchEffect(() => {
-  inputValue.value = props.modelValue;
-  selectedImage.value = props.modelValue;
-});
-
 // modal
 const showUploadImageModal = ref(false);
 </script>
@@ -112,7 +107,6 @@ const showUploadImageModal = ref(false);
       />
     </template>
   </ModalsModal>
-
   <div>
     <div class="flex flex-col space-y-4 border rounded-lg p-6">
       <div class="flex justify-between">
