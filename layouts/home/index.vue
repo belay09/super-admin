@@ -55,7 +55,7 @@ const notificationTimeGap = ref(
 /* --------------------------- Register device Id --------------------------- */
 const { mutate, onError, loading, onDone } = mutator(notification_subscription);
 onDone((result) => {
-	console.log("egistering", result);
+	console.log("registering", result);
 });
 if (!("Notification" in window)) {
 	// Check if the browser supports notifications
@@ -208,6 +208,21 @@ const navs = ref([
 		icon: "streamline:insert-side",
 		to: "/app/configurations",
 	},
+	{
+		name: "Supports",
+		icon: "ic:outline-support-agent",
+		to: "/app/supports",
+	},
+	{
+		name: "Service Request",
+		icon: "pixelarticons:contact-plus",
+		to: "/app/service_requests",
+	},
+	{
+		name: "Contact Us",
+		icon: "mingcute:service-fill",
+		to: "/app/contact_us",
+	},
 ]);
 
 const currNav = computed(() => {
@@ -218,14 +233,14 @@ const currNav = computed(() => {
 </script>
 
 <template>
-	<ModalsConfirmation
+	<!-- <ModalsConfirmation
 		v-model="showLogoutConformationModal"
 		title="Log out"
 		description="Are you sure you want to log out?"
 		confirm-button="Log out"
 		@confirm="handleLogout"
 		icon="mdi:warning-box"
-	/>
+	/> -->
 	<HNotification />
 	<div class="">
 		<div class="flex">
@@ -263,7 +278,7 @@ const currNav = computed(() => {
 					<div
 						class="flex items-center text-xl font-semibold gap-x-4 text-primary-600"
 					>
-						<Icon :name="currNav.icon" />
+						<Icon :name="currNav?.icon" />
 						<p>{{ currNav?.name }}</p>
 					</div>
 
@@ -308,7 +323,7 @@ const currNav = computed(() => {
 									<span class="sr-only">Open user menu</span>
 
 									<div
-										class="flex items-center px-1 py-1 align-center bg-primary-50 lg:pl-3 lg:pr-5 md:px-1 sm:px-1 rounded-3xl"
+										class="flex items-center px-1 py-2 align-center bg-primary-50 lg:pl-3 lg:pr-5 md:px-1 sm:px-1 rounded-3xl"
 									>
 										<img
 											class="w-[30px] h-[30px] rounded-full"
@@ -350,7 +365,7 @@ const currNav = computed(() => {
 													active
 														? 'bg-primary-50 text-primary-600'
 														: 'text-gray-900',
-													'group flex w-full item-center rounded-md px-2 py-2 text-sm justify-center',
+													'group flex w-full item-center rounded-md px-2 py-2 text-sm ',
 												]"
 											>
 												update profile
@@ -370,7 +385,7 @@ const currNav = computed(() => {
 													active
 														? 'bg-primary-50 text-primary-600'
 														: 'text-gray-900',
-													'group flex w-full items-center rounded-md px-2 py-2 text-sm justify-center',
+													'group flex w-full items-center rounded-md px-2 py-2 text-sm ',
 												]"
 											>
 												Logout
@@ -425,7 +440,7 @@ const currNav = computed(() => {
 							leave-from="translate-x-0"
 							leave-to="translate-x-full"
 						>
-							<DialogPanel class="relative pointer-events-auto w-96">
+							<DialogPanel class="relative pointer-events-auto max-w-7xl">
 								<TransitionChild
 									as="template"
 									enter="ease-in-out duration-500"
@@ -455,7 +470,7 @@ const currNav = computed(() => {
 										</button>
 									</div>
 								</TransitionChild>
-								<div class="w-full h-screen py-2 overflow-y-auto bg-white">
+								<div class="w-full h-screen py-4 pl-6 overflow-y-auto bg-white">
 									<div class="flex justify-between px-2 mb-4">
 										<h1
 											class="font-medium text-lg leading-[35px] font-body text-secondary :text-white capitalize"
@@ -469,13 +484,20 @@ const currNav = computed(() => {
 											mark as read
 										</button>
 									</div>
-									<div v-if="notificationValue.length>0" class="divide-y-2 divide-gray-100">
+									<div
+										v-if="notificationValue.length > 0"
+										class="divide-y-2 divide-gray-100"
+									>
 										<HNotify
-											v-for="message in notificationValue"
+											v-for="(message, index) in notificationValue"
 											:message="message"
+											:key="index"
 										></HNotify>
 									</div>
-									<div v-if="notificationValue.length<4" class="flex-col justify-center w-full pt-64 my-auto">
+									<div
+										v-if="notificationValue.length < 4"
+										class="flex-col justify-center w-full pt-64 my-auto"
+									>
 										<div class="flex justify-center m-auto my-auto">
 											<Icon
 												name="basil:notification-on-outline"
