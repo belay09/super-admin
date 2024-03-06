@@ -4,8 +4,10 @@ definePageMeta({
 });
 </script>
 <template>
-<ProfilePhoto/>
-<ProfilePersonal />
-<ProfileContact />
-<ProfilePassword/>
+  <div>
+    <ProfilePhoto />
+    <ProfilePersonal />
+    <ProfileContact />
+    <ProfilePassword />
+  </div>
 </template>

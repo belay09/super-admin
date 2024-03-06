@@ -61,7 +61,7 @@ const openUpload = ref(false)
 
 
   <div
-    class="w-[80%] h-full flex-col bg-white-100 justify-center items-center my-3 pl-2 rounded-md border-[1px]"
+    class="w-[80%] flex-col bg-white-100 justify-center items-center my-3 pl-2 rounded-md border-[1px]"
   >
     <!-- <div v-if="load" class="w-full">
       <CommanProgress

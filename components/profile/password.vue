@@ -74,7 +74,7 @@ const passwordChange = handleSubmit(() => {
   <div>
   <form action="" @submit.prevent="passwordChange">
     <div
-      class="w-[80%] h-full flex bg-white-100 justify-center pl-2 rounded-md border-[1px]"
+      class="w-[80%] flex bg-white-100 justify-center pl-2 rounded-md border-[1px]"
     >
       <div
         class="w-[30%] flex-col bg-white-100 justify-between items-center p-5 mt-2"

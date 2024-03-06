@@ -108,7 +108,7 @@ const handlePhoneChange = handleSubmit(() => {
     </div>
   </ModalsMod>
   <div
-        class="w-[80%] h-full my-4 flex-col bg-white-100 justify-center items-center pl-2 rounded-md border-[1px]"
+        class="w-[80%] my-4 flex-col bg-white-100 justify-center items-center pl-2 rounded-md border-[1px]"
       >
         <div class="w-full flex bg-white-100 justify-between items-center p-5">
           <h1 class="text-lg font-poppins font-medium capitalize pt-0">

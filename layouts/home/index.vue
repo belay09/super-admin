@@ -54,7 +54,7 @@ const notificationTimeGap = ref(
 /* --------------------------- Register device Id --------------------------- */
 const { mutate, onError, loading, onDone } = mutator(notification_subscription);
 onDone((result) => {
-  console.log("egistering", result);
+  console.log("registering", result);
 });
 if (!("Notification" in window)) {
   // Check if the browser supports notifications
@@ -109,14 +109,15 @@ let notificationInterval = setInterval(() => {
     messages = [];
   }
 }, notificationTimeGap.value);
-const notificationValue = ref({});
-const { onResult, refetch } = notificationInApp(notification, 'authClient')
+const notificationValue = ref([]);
+const { onResult, refetch } = notificationInApp(notification)
 onResult((result) => {
   notificationValue.value = result.data.notifications
+  console.log('notification', notificationValue.value)
 })
 
 const notificationCounter = ref(0)
-const { onResult: result, refetch: refet } = notificationInApp(counter, 'authClient')
+const { onResult: result, refetch: refet } = notificationInApp(counter)
 result((result) => {
   notificationCounter.value =
     result.data?.notificationsAggregate?.aggregate?.count
@@ -387,13 +388,13 @@ const markasread = () => {
                       mark as read
                     </button>
                   </div>
-                  <div class="divide-y-2 divide-gray-100">
+                  <div v-if="notificationValue.length>0" class="divide-y-2 divide-gray-100">
                     <HNotify
                       v-for="message in notificationValue"
                       :message="message"
                     ></HNotify>
                   </div>
-                  <div class="flex-col justify-center my-auto pt-64 w-full">
+                  <div v-if="notificationValue.length<3" class="flex-col justify-center my-auto pt-64 w-full">
                     <div class="flex justify-center my-auto m-auto">
                       <Icon
                         name="basil:notification-on-outline"
