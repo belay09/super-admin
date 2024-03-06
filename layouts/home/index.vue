@@ -207,6 +207,21 @@ const navs = ref([
     icon: "streamline:insert-side",
     to: "/app/configurations",
   },
+  {
+    name: "Supports",
+    icon: "ic:outline-support-agent",
+    to: "/app/supports",
+  },
+  {
+    name: "Service Request",
+    icon: "pixelarticons:contact-plus",
+    to: "/app/service_requests",
+  },
+  {
+    name: "Contact Us",
+    icon: "mingcute:service-fill",
+    to: "/app/contact_us",
+  },
 ]);
 
 const currNav = computed(() => {
@@ -263,7 +278,7 @@ const showLogoutConformationModal = ref(false);
           <div
             class="flex items-center text-xl font-semibold gap-x-4 text-primary-600"
           >
-            <Icon :name="currNav.icon" />
+            <Icon :name="currNav?.icon" />
             <p>{{ currNav?.name }}</p>
           </div>
 
@@ -308,7 +323,7 @@ const showLogoutConformationModal = ref(false);
                   <span class="sr-only">Open user menu</span>
 
                   <div
-                    class="flex items-center px-1 py-1 align-center bg-primary-50 lg:pl-3 lg:pr-5 md:px-1 sm:px-1 rounded-3xl"
+                    class="flex items-center px-1 py-2 align-center bg-primary-50 lg:pl-3 lg:pr-5 md:px-1 sm:px-1 rounded-3xl"
                   >
                     <img
                       class="w-[30px] h-[30px] rounded-full"
@@ -340,7 +355,7 @@ const showLogoutConformationModal = ref(false);
                   leave-to-class="transform scale-95 opacity-0"
                 >
                   <MenuItems
-                    class="absolute right-0 z-10 mt-2.5 w-56 p-4 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none flex flex-col gap-y-3"
+                    class="absolute right-0 z-10 mt-2.5 w-36 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
                   >
                     <MenuItem v-slot="{ active }">
                       <button
@@ -350,10 +365,10 @@ const showLogoutConformationModal = ref(false);
                           active
                             ? 'bg-primary-50 text-primary-600'
                             : 'text-gray-900',
-                          'group flex w-full item-center rounded-md whitespace-nowrap pt-2',
+                          'group flex w-full item-center rounded-md px-2 py-2 text-sm ',
                         ]"
                       >
-                        Settings and Profile
+                        update profile
                         <Icon
                           name="mdi:account-edit"
                           width="17"
@@ -365,9 +380,12 @@ const showLogoutConformationModal = ref(false);
                     <MenuItem v-slot="{ active }">
                       <button
                         type="button"
-                        @click="showLogoutConformationModal = true"
+                        @click="logout"
                         :class="[
-                          'group flex w-full items-center rounded-md text-primary-600 pb-2',
+                          active
+                            ? 'bg-primary-50 text-primary-600'
+                            : 'text-gray-900',
+                          'group flex w-full items-center rounded-md px-2 py-2 text-sm ',
                         ]"
                       >
                         Logout
@@ -422,7 +440,7 @@ const showLogoutConformationModal = ref(false);
               leave-from="translate-x-0"
               leave-to="translate-x-full"
             >
-              <DialogPanel class="relative pointer-events-auto w-96">
+              <DialogPanel class="relative pointer-events-auto max-w-7xl">
                 <TransitionChild
                   as="template"
                   enter="ease-in-out duration-500"
@@ -452,7 +470,7 @@ const showLogoutConformationModal = ref(false);
                     </button>
                   </div>
                 </TransitionChild>
-                <div class="w-full h-screen py-2 overflow-y-auto bg-white">
+                <div class="w-full h-screen py-4 pl-6 overflow-y-auto bg-white">
                   <div class="flex justify-between px-2 mb-4">
                     <h1
                       class="font-medium text-lg leading-[35px] font-body text-secondary :text-white capitalize"
@@ -471,8 +489,9 @@ const showLogoutConformationModal = ref(false);
                     class="divide-y-2 divide-gray-100"
                   >
                     <HNotify
-                      v-for="message in notificationValue"
+                      v-for="(message, index) in notificationValue"
                       :message="message"
+                      :key="index"
                     ></HNotify>
                   </div>
                   <div

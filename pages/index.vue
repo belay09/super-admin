@@ -11,7 +11,7 @@ const emailOrPhone = ref("");
 const password = ref("");
 const { notify } = useNotify();
 const authStore = useAuthStore();
-const { onLogin } = useApollo();
+const { onLogin, getToken } = useApollo();
 const router = useRouter();
 const route = useRoute();
 
@@ -108,8 +108,9 @@ createTokenDone((result) => {
 
 	onLogin(result.data?.create_custom_token?.hasura_access_token, "authClient");
 
-	// Set hasura access token on cookie
-	router.replace("/app/dashboard");
+	if (!!getToken("authClient")) {
+		router.replace("/app/dashboard");
+	}
 });
 
 // On Error
@@ -151,7 +152,7 @@ const handleLogin = () => {
 		<div
 			class="flex-[30%] bg-primary-600 flex flex-col items-center justify-center px-10"
 		>
-			<img src="/images/static/admin_login.png" />
+			<img src="/images/static/admin_login.png" alt="image" />
 			<p class="text-4xl text-white capitalize">Sheger gebete Administrator</p>
 		</div>
 
@@ -159,7 +160,7 @@ const handleLogin = () => {
 		<div class="flex-[70%] flex flex-col items-center justify-center gap-6">
 			<div class="flex flex-col items-center justify-center gap-5">
 				<!---------------------Logo----------------------------->
-				<img src="/images/static/sheger-admin-logo.png" />
+				<img src="/images/static/sheger-admin-logo.png" alt="image" />
 				<p class="w-[50%] text-center text-sheger-gray-100 font-light">
 					Please enter your credential to login to your Sheger Gebeta account.
 					If you face during logging in, please contact our customer support
