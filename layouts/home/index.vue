@@ -469,13 +469,13 @@ const currNav = computed(() => {
 											mark as read
 										</button>
 									</div>
-									<div class="divide-y-2 divide-gray-100">
+									<div v-if="notificationValue.length>0" class="divide-y-2 divide-gray-100">
 										<HNotify
 											v-for="message in notificationValue"
 											:message="message"
 										></HNotify>
 									</div>
-									<div class="flex-col justify-center w-full pt-64 my-auto">
+									<div v-if="notificationValue.length<4" class="flex-col justify-center w-full pt-64 my-auto">
 										<div class="flex justify-center m-auto my-auto">
 											<Icon
 												name="basil:notification-on-outline"
