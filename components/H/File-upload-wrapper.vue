@@ -1,5 +1,6 @@
 <script setup>
 import { useField } from "vee-validate";
+import Loading from "./Loading.vue";
 // import { getVideoThumbnail } from "video-thumbnails";
 
 const props = defineProps({
@@ -51,6 +52,10 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
+	loading: {
+		type: Boolean,
+		default: false,
+	},
 });
 
 const emit = defineEmits([
@@ -59,7 +64,11 @@ const emit = defineEmits([
 	"submitToDatabase",
 ]);
 
-const { value: inputValue, errorMessage } = useField(props.name, props.rules, {
+const {
+	errorMessage,
+	value: inputValue,
+	meta,
+} = useField(props.name, props.rules, {
 	initialValue: props.modelValue,
 });
 const uploadedFiles = ref([]);
@@ -153,6 +162,7 @@ function submitToDatabase() {
 										class="w-[50px] h-[50px] rounded-sm object-cover"
 										alt="file"
 									/>
+
 									<div class="flex items-center gap-x-2">
 										<p class="text-lg font-medium">Image {{ index + 1 }}</p>
 										<span
@@ -181,7 +191,7 @@ function submitToDatabase() {
 										name="subway:round-arrow-1"
 										class="text-lg transition-all duration-200 ease-in group-hover:rotate-45"
 									/>
-									Change
+									Add
 								</button>
 								<button
 									type="button"
@@ -189,7 +199,12 @@ function submitToDatabase() {
 									v-if="emitSubmit"
 									class="flex items-center px-3 py-1 text-green-600 transition-all duration-200 ease-in border rounded-md hover:bg-primary gap-x-2 group"
 								>
-									<Icon name="bx:upload" class="text-lg text-green-600" />
+									<Icon v-if="loading" name="eos-icons:bubble-loading" />
+									<Icon
+										v-else
+										name="bx:upload"
+										class="text-lg text-green-600"
+									/>
 									Submit
 								</button>
 							</div>

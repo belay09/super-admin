@@ -10,75 +10,75 @@ const route = useRoute();
 const review = ref(null);
 
 const {
-  onResult: reviewOnResult,
-  onError: reviewOnError,
-  loading: reviewLoading,
+	onResult: reviewOnResult,
+	onError: reviewOnError,
+	loading: reviewLoading,
 } = authItemQuery(getReviewQuery, route.params.id);
 
 reviewOnResult((result) => {
-  if (result.data?.reviewsByPk) {
-    review.value = result.data.reviewsByPk;
-  }
+	if (result.data?.reviewsByPk) {
+		review.value = result.data.reviewsByPk;
+	}
 });
 
 reviewOnError((error) => {
-  notify({
-    title: "Some thing went wrong",
-    description: error.message,
-    type: "error",
-    borderClass: "border-l-8 border-green-300",
-  });
+	notify({
+		title: "Some thing went wrong",
+		description: error.message,
+		type: "error",
+		borderClass: "border-l-8 border-green-300",
+	});
 });
 
 const tabs = [
-  {
-    name: "Overview",
-    value: "overview",
-  },
+	{
+		name: "Overview",
+		value: "overview",
+	},
 
-  {
-    name: "Reviews",
-    value: "reviews",
-  },
+	{
+		name: "Reviews",
+		value: "reviews",
+	},
 ];
 
 definePageMeta({
-  layout: "home",
+	layout: "home",
 });
 </script>
 
 <template>
-  <div v-if="review">
-    <!-- Top -->
-    <Sheger-Reviews-Analytics v-if="review" :review="review" />
-    <!-- Tab -->
-    <div v-if="review" class="py-8">
-      <H-Tab :tabs="tabs" tab-class="text-xl " tab-container-class="gap-x-12">
-        <template #overview>
-          <div class="py-8"><Sheger-Reviews-Overview :review="review" /></div>
-        </template>
+	<div v-if="review">
+		<!-- Top -->
+		<Sheger-Reviews-Analytics v-if="review" :review="review" />
+		<!-- Tab -->
+		<div v-if="review" class="py-8">
+			<H-Tab :tabs="tabs" tab-class="text-xl " tab-container-class="gap-x-12">
+				<template #overview>
+					<div class="py-8"><Sheger-Reviews-Overview :review="review" /></div>
+				</template>
 
-        <template #reviews>
-          <div class="py-6">
-            <ShegerReviews-ReviewAnalytics></ShegerReviews-ReviewAnalytics>
-            <ShegerReviews-UserReviewList
-              :review="review"
-            ></ShegerReviews-UserReviewList>
-          </div>
-        </template>
-      </H-Tab>
-    </div>
-  </div>
+				<template #reviews>
+					<div class="py-6">
+						<ShegerReviews-ReviewAnalytics></ShegerReviews-ReviewAnalytics>
+						<ShegerReviews-UserReviewList
+							:review="review"
+						></ShegerReviews-UserReviewList>
+					</div>
+				</template>
+			</H-Tab>
+		</div>
+	</div>
 </template>
 <style>
 .dp__input {
-  line-height: 57px;
-  font-size: 14px;
-  border-radius: 10px;
+	line-height: 57px;
+	font-size: 14px;
+	border-radius: 10px;
 }
 .dp__theme_light {
-  --dp-hover-color: #f0e4e5;
-  --dp-primary-color: #d34553;
-  --dp-icon-color: #070707;
+	--dp-hover-color: #f0e4e5;
+	--dp-primary-color: #d34553;
+	--dp-icon-color: #070707;
 }
 </style>

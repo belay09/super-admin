@@ -1,0 +1,7 @@
+mutation addReviewMedia($reviewMediaInput: [ReviewMediasInsertInput!]!) {
+	insertReviewMedias(objects: $reviewMediaInput) {
+		returning {
+			id
+		}
+	}
+}

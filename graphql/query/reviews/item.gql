@@ -1,104 +1,101 @@
 query getReview($id: bigint!) {
-  reviewsByPk(id: $id) {
-    id
-    title
-    youtubeVideoUrl
-    price
-    sides
-    description
-    view_count
-    timeToPrepare
-    sides
+	reviewsByPk(id: $id) {
+		id
+		title
+		youtubeVideoUrl
+		reviewedBy
 
-    description
+		description
+		view_count
 
-    # place
-    place {
-      shegerRecommendationId
-      id
-      type
-      status
-      name
-      dark_logo {
-        url
-      }
-      light_logo {
-        url
-      }
-      featuredReviewMediaUrl {
-        url
-      }
-      # locations
-      placeLocations {
-        id
-        location
-        isMainLocation
-        area {
-          name
-        }
-        city {
-          name
-        }
-      }
-    }
+		description
 
-    placeLocationId
+		# place
+		place {
+			shegerRecommendationId
+			id
 
-    # tags
-    review_tags {
-      tag {
-        id
-        title
-        # icon {
-        #   darkIconUrl
-        #   lightIconUrl
-        # }
-      }
-    }
+			status
+			name
+			dark_logo {
+				url
+			}
+			light_logo {
+				url
+			}
+			featuredReviewMediaUrl {
+				url
+			}
+			# locations
+			placeLocations {
+				id
+				location
+				isMainLocation
+				area {
+					name
+				}
+				city {
+					name
+				}
+			}
+		}
 
-    # review aggregate
-    review_aggregate_summary {
-      avgRating
-      sumLikes
-    }
+		placeLocationId
 
-    reviewAggregate: reviewReviewsAggregate {
-      aggregate {
-        count
-      }
-    }
-    featured_media {
-      url
-      id
-    }
-    # medias
-    review_medias {
-      id
-      media {
-        url
-      }
-    }
-    type
-    menu_reviews {
-      menu {
-        id
-        name: title
-      }
-    }
+		# tags
+		review_tags {
+			tag {
+				id
+				title
+				# icon {
+				#   darkIconUrl
+				#   lightIconUrl
+				# }
+			}
+		}
 
-    # review drink
-    review_drink {
-      id
-      drink {
-        description
-        id
-        image
-        price
-        title
-        media {
-          url
-        }
-      }
-    }
-  }
+		# review aggregate
+		review_aggregate_summary {
+			avgRating
+			sumLikes
+		}
+
+		reviewAggregate: reviewReviewsAggregate {
+			aggregate {
+				count
+			}
+		}
+		featured_image {
+			url
+			id
+		}
+		# medias
+		review_medias {
+			id
+			media {
+				url
+			}
+		}
+		menu_reviews {
+			menu {
+				id
+				name: title
+			}
+		}
+
+		# review drink
+		review_drink {
+			id
+			drink {
+				description
+				id
+				image
+				price
+				title
+				media {
+					url
+				}
+			}
+		}
+	}
 }
