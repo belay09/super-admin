@@ -47,6 +47,22 @@ const filter = computed(() => {
 const numberOfAddressed = ref(0);
 const numberOfPending = ref(0);
 
+/**--------------------Sort---------- */
+const reportSortItems = ref([
+  {
+    name: "Name",
+    levels: ["user", "fullName"],
+  },
+
+  {
+    name: "Reported At",
+    levels: ["createdAt"],
+  },
+]);
+
+const selectedSort = ref("Reported At");
+const sort = ref[{ createdAt: "DESC_NULLS_LAST" }];
+
 /***--------------------- Fetch place review reports --------------------- */
 const placeReviewReportEnabled = computed(() => {
   return selectedFilter.value === "place";
@@ -59,7 +75,7 @@ const {
 } = list(
   GetPlaceReports,
   filter,
-  [],
+  sort,
   ref(0),
   ref(100),
   placeReviewReportEnabled
@@ -82,14 +98,7 @@ const {
   onResult: onReviewReportResult,
   loading: loadingReviewReports,
   refetch: refetchReviewReports,
-} = list(
-  GetReviewReports,
-  filter,
-  ref([]),
-  ref(0),
-  ref(100),
-  reviewReportEnabled
-);
+} = list(GetReviewReports, filter, sort, ref(0), ref(100), reviewReportEnabled);
 
 onReviewReportResult(({ data }) => {
   reviewReports.value = data?.reviewReviewReports;
@@ -105,7 +114,7 @@ onReviewReportResult(({ data }) => {
     <div class="relative">
       <div class="absolute right-0 flex">
         <div class="secondary-flex-row">
-          <H-Listselect
+          <H-ListSelect
             name="filter"
             :items="[
               { name: 'Place', id: 'place' },
@@ -113,19 +122,19 @@ onReviewReportResult(({ data }) => {
             ]"
             v-model="selectedFilter"
             class="!w-20 !px-3 !py-3 !box-content cursor-pointer"
-          ></H-Listselect>
+          ></H-ListSelect>
           <H-Textfield
             name="search"
             type="text"
             placeholder="Search here"
             trailing-icon="uil:search"
           ></H-Textfield>
-          <div class="px-4 !mt-0 py-3 border rounded-md">
-            <Icon
-              name="heroicons-outline:adjustments"
-              class="z-30 text-2xl cursor-pointer"
-            />
-          </div>
+          <!------------------------- sort -------------------------->
+          <H-Sort
+            v-model:selected="selectedSort"
+            v-model="sort"
+            :items="reportSortItems"
+          ></H-Sort>
         </div>
       </div>
     </div>

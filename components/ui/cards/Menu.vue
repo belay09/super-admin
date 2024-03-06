@@ -1,7 +1,8 @@
 <script setup>
 import deleteMenuMutation from "@/graphql/mutations/menu/delete.gql";
+import markAsUpdatedMutation from "@/graphql/mutations/menu/mark-us-updated.gql";
 import useNotify from "@/use/notify";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { onClickOutside } from "@vueuse/core";
 
 /**-------------------------Globals------------------------- */
@@ -43,6 +44,43 @@ onError((error) => {
     borderClass: "border-l-8 border-red-300",
   });
 });
+
+/**-----------------------Mark us updated--------------------- */
+const {
+  mutate: markUsUpdatedMutate,
+  onDone: markUsUpdatedDone,
+  onError: markUsUpdatedError,
+} = authMutation(markAsUpdatedMutation);
+
+markUsUpdatedDone((result) => {
+  showMarkUsUpdatedModal.value = false;
+  emit("onEdit");
+  notify({
+    title: "Menu updated",
+    description: "Menu  updated successfully",
+    type: "success",
+    borderClass: "border-l-8 border-green-300",
+  });
+});
+
+markUsUpdatedError((error) => {
+  showMarkUsUpdatedModal.value = false;
+  notify({
+    title: "Error",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+function handleMarkAsUpdated() {
+  markUsUpdatedMutate({
+    input: {
+      menuId: props.menu.id,
+    },
+  });
+}
+
 /**--------------------------Click outside------------------- */
 const menuActionsContainer = ref(null);
 onClickOutside(menuActionsContainer, (e) => (showMoreAction.value = false));
@@ -76,6 +114,14 @@ function openMarkUsUpdatedModal(event) {
 
   showMarkUsUpdatedModal.value = !showMarkUsUpdatedModal.value;
 }
+
+const menuUpdatedAt = computed(() => {
+  if (props.menu.last_updated_menus?.length > 0) {
+    return props.menu.last_updated_menus[0].lastUpdate;
+  } else {
+    return props.menu.updatedAt;
+  }
+});
 </script>
 
 <template>
@@ -108,6 +154,7 @@ function openMarkUsUpdatedModal(event) {
 
   <!-- -----------------------Remove from menu ---------------- -->
   <ModalsConfirmation
+    @confirm="handleMarkAsUpdated"
     v-model="showMarkUsUpdatedModal"
     title="Mark Us Updated"
     sure-question="Are you sure you want to make this menu as Updated ?"
@@ -210,7 +257,7 @@ function openMarkUsUpdatedModal(event) {
             class="whitespace-nowrap text-sm text-sheger_dark_gray-100 dark:text-white"
           >
             Updated:
-            {{ format(new Date(), "dd MMM, yyyy") }}
+            {{ formatDistanceToNow(menuUpdatedAt) }}
           </p>
         </div>
       </div>

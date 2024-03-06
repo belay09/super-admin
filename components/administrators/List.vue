@@ -1,7 +1,4 @@
 <script setup>
-definePageMeta({
-  layout: "base",
-});
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import admin from "@/graphql/query/admin/query.gql";
 import list from "@/composables/auth-list-query.js";
@@ -50,11 +47,7 @@ const filter = computed(() => {
     status: { _neq: "DELETED" },
   };
 });
-const {
-  onResult: adminDone,
-  onError: adminERR,
-  refetch,
-} = list(admin, filter);
+const { onResult: adminDone, onError: adminERR, refetch } = list(admin, filter);
 
 adminDone((result) => {
   // selectTags.value=result.data.basicsTags;

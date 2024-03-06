@@ -1,0 +1,5 @@
+mutation markAsUpdated($input: [LastUpdatedMenusInsertInput!]!) {
+  insertLastUpdatedMenus(objects: $input) {
+    affectedRows
+  }
+}

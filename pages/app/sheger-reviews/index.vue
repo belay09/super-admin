@@ -61,7 +61,7 @@ aggregateOnError((error) => {
 	});
 });
 
-/***---------------------Places data fetch--------------------- */
+/***---------------------Reviews data fetch--------------------- */
 const reviewSortItems = ref([
 	{
 		name: "Title",
