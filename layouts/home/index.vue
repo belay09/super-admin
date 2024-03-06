@@ -55,7 +55,7 @@ const notificationTimeGap = ref(
 /* --------------------------- Register device Id --------------------------- */
 const { mutate, onError, loading, onDone } = mutator(notification_subscription);
 onDone((result) => {
-  console.log("registering", result);
+	console.log("egistering", result);
 });
 if (!("Notification" in window)) {
 	// Check if the browser supports notifications
@@ -111,13 +111,16 @@ let notificationInterval = setInterval(() => {
 	}
 }, notificationTimeGap.value);
 const notificationValue = ref({});
-const { onResult, refetch } = notificationInApp(notification, 'authClient')
+const { onResult, refetch } = notificationInApp(notification, "authClient");
 onResult((result) => {
 	notificationValue.value = result.data.notifications;
 });
 
-const notificationCounter = ref(0)
-const { onResult: result, refetch: refet } = notificationInApp(counter)
+const notificationCounter = ref(0);
+const { onResult: result, refetch: refet } = notificationInApp(
+	counter,
+	"authClient"
+);
 result((result) => {
 	notificationCounter.value =
 		result.data?.notificationsAggregate?.aggregate?.count;
@@ -408,92 +411,92 @@ const currNav = computed(() => {
 				/>
 			</TransitionChild>
 
-      <div class="fixed inset-0 overflow-hidden">
-        <div class="absolute inset-0 overflow-hidden">
-          <div
-            class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10"
-          >
-            <TransitionChild
-              as="template"
-              enter="transform transition ease-in-out duration-500 sm:duration-700"
-              enter-from="translate-x-full"
-              enter-to="translate-x-0"
-              leave="transform transition ease-in-out duration-500 sm:duration-700"
-              leave-from="translate-x-0"
-              leave-to="translate-x-full"
-            >
-              <DialogPanel class="pointer-events-auto relative w-96">
-                <TransitionChild
-                  as="template"
-                  enter="ease-in-out duration-500"
-                  enter-from="opacity-0"
-                  enter-to="opacity-100"
-                  leave="ease-in-out duration-500"
-                  leave-from="opacity-100"
-                  leave-to="opacity-0"
-                >
-                  <div
-                    class="absolute left-5 top-64 xl:top-96 -ml-8 flex pr-2 pt-4 sm:-ml-10 sm:pr-4"
-                  >
-                    <button
-                      type="button"
-                      class="relative rounded-full w-10 h-10 text-gray-300 hover:text-white focus:outline-none focus:ring-2 bg-primary-500"
-                      @click="open = false"
-                    >
-                      <span class="absolute -inset-1.5" />
-                      <span class="sr-only">Close panel</span>
-                      <Icon
-                        name="ph:x"
-                        color="white"
-                        width="20"
-                        height="20"
-                        class="self-center"
-                      ></Icon>
-                    </button>
-                  </div>
-                </TransitionChild>
-                <div class="bg-white h-screen py-2 w-full overflow-y-auto">
-                  <div class="flex justify-between mb-4 px-2">
-                    <h1
-                      class="font-medium text-lg leading-[35px] font-body text-secondary :text-white capitalize"
-                    >
-                      notifications
-                    </h1>
-                    <button
-                      @click="markasread"
-                      class="p-2.5 text-primary-600 font-poppins capitalize"
-                    >
-                      mark as read
-                    </button>
-                  </div>
-                  <div v-if="notificationValue.length>0" class="divide-y-2 divide-gray-100">
-                    <HNotify
-                      v-for="message in notificationValue"
-                      :message="message"
-                    ></HNotify>
-                  </div>
-                  <div v-if="notificationValue.length<3" class="flex-col justify-center my-auto pt-64 w-full">
-                    <div class="flex justify-center my-auto m-auto">
-                      <Icon
-                        name="basil:notification-on-outline"
-                        class="item-center h-[100px] w-[100px] text-primary-600"
-                      >
-                      </Icon>
-                    </div>
-                    <div class="flex justify-center my-auto m-auto">
-                      <h1
-                        class="item-center text-primary-600 text-md font-poppins"
-                      >
-                        No More Notifications
-                      </h1>
-                    </div>
-                  </div>
-                </div>
-              </DialogPanel>
-            </TransitionChild>
-          </div>
-        </div>
-      </div>
-    </Dialog>
-  </TransitionRoot>
+			<div class="fixed inset-0 overflow-hidden">
+				<div class="absolute inset-0 overflow-hidden">
+					<div
+						class="fixed inset-y-0 right-0 flex max-w-full pl-10 pointer-events-none"
+					>
+						<TransitionChild
+							as="template"
+							enter="transform transition ease-in-out duration-500 sm:duration-700"
+							enter-from="translate-x-full"
+							enter-to="translate-x-0"
+							leave="transform transition ease-in-out duration-500 sm:duration-700"
+							leave-from="translate-x-0"
+							leave-to="translate-x-full"
+						>
+							<DialogPanel class="relative pointer-events-auto w-96">
+								<TransitionChild
+									as="template"
+									enter="ease-in-out duration-500"
+									enter-from="opacity-0"
+									enter-to="opacity-100"
+									leave="ease-in-out duration-500"
+									leave-from="opacity-100"
+									leave-to="opacity-0"
+								>
+									<div
+										class="absolute flex pt-4 pr-2 -ml-8 left-5 top-64 xl:top-96 sm:-ml-10 sm:pr-4"
+									>
+										<button
+											type="button"
+											class="relative w-10 h-10 text-gray-300 rounded-full hover:text-white focus:outline-none focus:ring-2 bg-primary-500"
+											@click="open = false"
+										>
+											<span class="absolute -inset-1.5" />
+											<span class="sr-only">Close panel</span>
+											<Icon
+												name="ph:x"
+												color="white"
+												width="20"
+												height="20"
+												class="self-center"
+											></Icon>
+										</button>
+									</div>
+								</TransitionChild>
+								<div class="w-full h-screen py-2 overflow-y-auto bg-white">
+									<div class="flex justify-between px-2 mb-4">
+										<h1
+											class="font-medium text-lg leading-[35px] font-body text-secondary :text-white capitalize"
+										>
+											notifications
+										</h1>
+										<button
+											@click="markasread"
+											class="p-2.5 text-primary-600 font-poppins capitalize"
+										>
+											mark as read
+										</button>
+									</div>
+									<div class="divide-y-2 divide-gray-100">
+										<HNotify
+											v-for="message in notificationValue"
+											:message="message"
+										></HNotify>
+									</div>
+									<div class="flex-col justify-center w-full pt-64 my-auto">
+										<div class="flex justify-center m-auto my-auto">
+											<Icon
+												name="basil:notification-on-outline"
+												class="item-center h-[100px] w-[100px] text-primary-600"
+											>
+											</Icon>
+										</div>
+										<div class="flex justify-center m-auto my-auto">
+											<h1
+												class="item-center text-primary-600 text-md font-poppins"
+											>
+												No More Notifications
+											</h1>
+										</div>
+									</div>
+								</div>
+							</DialogPanel>
+						</TransitionChild>
+					</div>
+				</div>
+			</div>
+		</Dialog>
+	</TransitionRoot>
 </template>
