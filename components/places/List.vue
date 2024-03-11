@@ -15,6 +15,10 @@ const props = defineProps({
     required: true,
     default: () => 1,
   },
+  loading: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const pageTracker = ref(props.modelValue);
@@ -29,7 +33,7 @@ watch(pageTracker, (newVal) => {
 });
 </script>
 <template>
-  <div class="flex flex-col space-y-8 py-6">
+  <div class="flex flex-col py-6 space-y-8">
     <div class="flex items-center justify-between">
       <p class="text-xl font-medium">
         Showing {{ totalPage > 0 ? pageTracker : 0 }} /{{ totalPage }}
@@ -42,8 +46,11 @@ watch(pageTracker, (newVal) => {
         ></H-Page>
       </div>
     </div>
-    <div class="grid grid-cols-3 w-[85%] gap-8">
+    <div class="grid grid-cols-3 w-[85%] gap-8" v-if="!loading">
       <Ui-Cards-Place v-for="place in places" :place="place" :key="place.id" />
+    </div>
+    <div class="grid grid-cols-3 w-[85%] gap-8" v-else>
+      <SkeletonLoaderCard v-for="i in 6" :key="i" />
     </div>
   </div>
 </template>

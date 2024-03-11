@@ -171,7 +171,7 @@ definePageMeta({
     <!-- ---------search and filter and btn--------- -->
 
     <div class="relative">
-      <div class="flex absolute top-2 right-0">
+      <div class="absolute right-0 flex top-2">
         <div class="secondary-flex-row">
           <H-Textfield
             name="search"
@@ -207,6 +207,7 @@ definePageMeta({
       <template #WEEKLY_RECOMMENDED_PLACE>
         <div>
           <FeaturedPlaces-List
+            :loading="loading"
             :places="places"
             :total-page="totalPage"
             v-model:model-value="pageTracker"
@@ -229,6 +230,7 @@ definePageMeta({
       <template #SEASONAL_PLACE>
         <div>
           <FeaturedPlaces-List
+            :loading="loading"
             :places="places"
             :total-page="totalPage"
             v-model:model-value="pageTracker"
@@ -251,6 +253,7 @@ definePageMeta({
       <template #RECENTLY_OPENED_PLACE>
         <div>
           <FeaturedPlaces-List
+            :loading="loading"
             :places="places"
             :total-page="totalPage"
             v-model:model-value="pageTracker"

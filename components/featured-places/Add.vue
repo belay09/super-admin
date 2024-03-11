@@ -143,7 +143,7 @@ addError((error) => {
           <p class="text-xl font-medium">
             Selected {{ selectedPlaces.length }} Places
           </p>
-          <button class="primary-button block bg-primary-600">
+          <button class="block primary-button bg-primary-600">
             <span class="text-white">Confirm and Post</span>
           </button>
         </div>
@@ -183,7 +183,7 @@ addError((error) => {
       ></H-Textfield>
 
       <!-- ------------------Place list----------------- -->
-      <div class="grid grid-cols-1 gap-8">
+      <div class="grid grid-cols-1 gap-8" v-if="!loading">
         <Ui-Cards-FeaturedPlace
           v-for="place in places"
           :place="place"
@@ -193,6 +193,10 @@ addError((error) => {
           :isAdd="true"
           @toggleSelect="toggleSelect"
         />
+      </div>
+
+      <div class="grid grid-cols-1 gap-8" v-else>
+        <SkeletonLoader-Card v-for="i in 6" :key="i" />
       </div>
 
       <HPaginate
