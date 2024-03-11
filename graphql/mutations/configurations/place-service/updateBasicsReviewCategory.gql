@@ -1,0 +1,8 @@
+mutation UpdateBasicsReviewCategory(
+  $id: bigint!
+  $changes: BasicsReviewCategoriesSetInput!
+) {
+  updateBasicsReviewCategoriesByPk(pkColumns: { id: $id }, _set: $changes) {
+    id
+  }
+}

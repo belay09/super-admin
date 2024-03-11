@@ -1,0 +1,5 @@
+mutation DeleteBasicsReviewCategoriesByPk($id: bigint!) {
+  deleteBasicsReviewCategoriesByPk(id: $id) {
+    id
+  }
+}
