@@ -1,7 +1,7 @@
 <script setup>
 /**----------------------Imports-------------------------- */
 
-import editPlaceMutation from "@/graphql/mutations/place/editPlace.gql";
+import editPlaceMutation from "@/graphql/mutations/place/changePlaceStatus.gql";
 import listQuery from "@/graphql/query/sheger-recommendations/list.gql";
 import useNotify from "@/use/notify";
 

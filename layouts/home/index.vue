@@ -368,7 +368,7 @@ const showLogoutConformationModal = ref(false);
                           'group flex w-full item-center rounded-md px-2 py-2 text-sm ',
                         ]"
                       >
-                        update profile
+                        Update profile
                         <Icon
                           name="mdi:account-edit"
                           width="17"
@@ -380,7 +380,7 @@ const showLogoutConformationModal = ref(false);
                     <MenuItem v-slot="{ active }">
                       <button
                         type="button"
-                        @click="logout"
+                        @click="showLogoutConformationModal = true"
                         :class="[
                           active
                             ? 'bg-primary-50 text-primary-600'
