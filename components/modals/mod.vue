@@ -1,6 +1,6 @@
 <template>
   <TransitionRoot as="template" :show="open">
-    <Dialog as="div" class="relative z-[100]">
+    <Dialog as="div" class="relative z-50">
       <TransitionChild
         as="template"
         enter="ease-out duration-300"
@@ -11,13 +11,13 @@
         leave-to="opacity-0"
       >
         <div
-          class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+          class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"
         />
       </TransitionChild>
 
       <div class="fixed inset-0 z-10 overflow-y-auto">
         <div
-          class="flex min-h-full p-0 items-center justify-center  text-center sm:items-center sm:p-0"
+          class="flex items-center justify-center min-h-full p-0 text-center sm:items-center sm:p-0"
         >
           <TransitionChild
             as="template"
@@ -31,7 +31,7 @@
             <DialogPanel
               :class="[
                 wrapperClass ||
-                  'relative transform  overflow-hidden rounded-lg bg-white  text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg md:max-w-[60vw] sm:p-0',
+                  'relative transform  rounded-lg bg-white  text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg md:max-w-[60vw] sm:p-0',
               ]"
             >
               <slot name="ModalContent" />

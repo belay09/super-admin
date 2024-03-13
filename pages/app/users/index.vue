@@ -161,10 +161,10 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="w-full pl-10 pr-16 py-6">
+  <div class="w-full py-6 pl-10 pr-16">
     <!-- ---------search and filter--------- -->
     <div class="relative">
-      <div class="flex absolute right-0">
+      <div class="absolute right-0 flex">
         <div class="secondary-flex-row">
           <H-Textfield
             name="search"
@@ -201,6 +201,7 @@ definePageMeta({
       <template #ACTIVE>
         <div>
           <Users-List
+            :loading="usersLoading"
             :users="users"
             :total-page="totalPage"
             v-model:model-value="pageTracker"
@@ -219,6 +220,7 @@ definePageMeta({
       <template #SUSPENDED>
         <div>
           <Users-List
+            :loading="usersLoading"
             :users="users"
             :total-page="totalPage"
             v-model:model-value="pageTracker"
@@ -237,6 +239,7 @@ definePageMeta({
       <template #DELETED>
         <div>
           <Users-List
+            :loading="usersLoading"
             :users="users"
             :total-page="totalPage"
             v-model:model-value="pageTracker"
