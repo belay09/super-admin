@@ -1,0 +1,18 @@
+query GetBasicsReviewCategories(
+  $filter: BasicsReviewCategoriesBoolExp
+  $limit: Int
+  $offset: Int
+  $order: [BasicsReviewCategoriesOrderBy!]
+) {
+  categories: basicsReviewCategories(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    name
+    type
+    description
+  }
+}

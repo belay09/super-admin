@@ -189,7 +189,7 @@ onError((error) => {
     ></H-SingleSelect>
     <!-- ------------------Place---------------- -->
 
-    <AdSpace-PlaceSelector v-model="place"> </AdSpace-PlaceSelector>
+    <SelectorsPlace :type="placeType" v-model="place"> </SelectorsPlace>
 
     <!-- -----------------Start and End Date -->
     <div class="flex items-center justify-between pt-6 gap-x-6">

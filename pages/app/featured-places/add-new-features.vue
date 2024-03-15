@@ -140,7 +140,7 @@ definePageMeta({
     <!-- ---------search and filter and btn--------- -->
 
     <div class="relative">
-      <div class="flex absolute top-2 right-0">
+      <div class="absolute right-0 flex top-2">
         <div class="secondary-flex-row">
           <H-Textfield
             name="search"
@@ -149,10 +149,10 @@ definePageMeta({
             trailing-icon="uil:search"
             v-model="search"
           ></H-Textfield>
-          <div class="border rounded-md py-3 px-4">
+          <div class="px-4 py-3 border rounded-md">
             <Icon
               name="heroicons-outline:adjustments"
-              class="text-2xl cursor-pointer z-30"
+              class="z-30 text-2xl cursor-pointer"
             />
           </div>
         </div>
@@ -176,6 +176,7 @@ definePageMeta({
       <template #WEEKLY_RECOMMENDED_PLACE>
         <div>
           <FeaturedPlaces-New-Featured-List
+            :loading="loading"
             :places="places"
             :total-page="totalPage"
             v-model:model-value="pageTracker"
@@ -188,7 +189,7 @@ definePageMeta({
               v-model:offset="offset"
               :total-data="length"
               v-model="pageTracker"
-              class="w-full pt-8 col-span-2"
+              class="w-full col-span-2 pt-8"
             ></HPaginate>
           </div>
 
@@ -201,6 +202,7 @@ definePageMeta({
       <template #SEASONAL_PLACE>
         <div>
           <FeaturedPlaces-New-Featured-List
+            :loading="loading"
             :places="places"
             :total-page="totalPage"
             v-model:model-value="pageTracker"
@@ -213,7 +215,7 @@ definePageMeta({
               v-model:offset="offset"
               :total-data="length"
               v-model="pageTracker"
-              class="w-full pt-8 col-span-2"
+              class="w-full col-span-2 pt-8"
             ></HPaginate>
           </div>
           <HZeroResult
@@ -225,6 +227,7 @@ definePageMeta({
       <template #RECENTLY_OPENED_PLACE>
         <div>
           <FeaturedPlaces-New-Featured-List
+            :loading="loading"
             :places="places"
             :total-page="totalPage"
             v-model:model-value="pageTracker"
@@ -237,7 +240,7 @@ definePageMeta({
               v-model:offset="offset"
               :total-data="length"
               v-model="pageTracker"
-              class="w-full pt-8 col-span-2"
+              class="w-full col-span-2 pt-8"
             ></HPaginate>
           </div>
           <HZeroResult

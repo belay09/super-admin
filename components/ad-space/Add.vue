@@ -88,7 +88,7 @@ onError((error) => {
 
     <!-- ------------------Place---------------- -->
 
-    <AdSpace-PlaceSelector v-model="place"> </AdSpace-PlaceSelector>
+    <Selectors-Place :type="placeType" v-model="place"> </Selectors-Place>
 
     <!-- -----------------Start and End Date -->
     <div class="flex items-center justify-between pt-6 gap-x-6">

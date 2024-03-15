@@ -19,6 +19,11 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  loading: {
+    type: Boolean,
+    required: true,
+    default: () => false,
+  },
 });
 
 /**-------------------Feature selected places---------------------- */
@@ -44,11 +49,11 @@ onMounted(() => {
 <template>
   <div class="grid grid-cols-3 gap-4 py-8">
     <!-- ---------------------List places--------------------- -->
-    <div class="col-span-2 flex flex-col gap-y-8 pr-12 border-r">
+    <div class="flex flex-col col-span-2 pr-12 border-r gap-y-8">
       <p class="text-xl font-medium">
         Showing {{ totalPage > 0 ? pageTracker : 0 }} /{{ totalPage }}
       </p>
-      <div class="grid grid-cols-2 gap-8">
+      <div class="grid grid-cols-2 gap-8" v-if="!loading">
         <Ui-Cards-FeaturedPlace
           v-for="place in places"
           :place="place"
@@ -56,6 +61,10 @@ onMounted(() => {
           :featuredValue="featuredValue"
           @edit="emit('refetch')"
         />
+      </div>
+
+      <div class="grid grid-cols-2 gap-8" v-else>
+        <SkeletonLoader-Card v-for="i in 2" :key="i" />
       </div>
     </div>
 
