@@ -222,6 +222,21 @@ const navs = ref([
 		icon: "mingcute:service-fill",
 		to: "/app/contact_us",
 	},
+	{
+		name: "Broadcast",
+		icon: "",
+		to: "/app/broadcast/sms",
+	},
+	{
+		name: "Broadcast",
+		icon: "",
+		to: "/app/broadcast/push-notification",
+	},
+	{
+		name: "Broadcast",
+		icon: "",
+		to: "/app/broadcast/email",
+	},
 ]);
 
 const currNav = computed(() => {
@@ -288,6 +303,12 @@ const showLogoutConformationModal = ref(false);
 
 					<!----------------------------- Right----------------------- -->
 					<div class="flex items-center gap-4">
+						<div
+							@click="navigateTo('/app/broadcast/sms')"
+							class="flex items-center space-x-4 cursor-pointer"
+						>
+							<Icon name="heroicons-outline:speakerphone" class="text-3xl" />
+						</div>
 						<!-- -----------------Message ---------------------------- -->
 						<div
 							@click="gotoMessage"

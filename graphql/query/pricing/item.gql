@@ -1,0 +1,33 @@
+query pricingPlans($id: bigint!) {
+	billingsPricingPlansByPk(id: $id) {
+		id
+		isVisible
+		description
+		pricing_plan_features {
+			id
+		}
+		title
+		type
+		rank
+		pricing_plan_items {
+			id
+		}
+		pricing_plan_frequencies {
+			price
+			frequency
+		}
+		pricing_plan_features {
+			feature {
+				title
+				description
+				id
+			}
+		}
+		pricing_plan_items {
+			item {
+				title
+				description
+			}
+		}
+	}
+}
