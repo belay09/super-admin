@@ -1,0 +1,42 @@
+query billingsPaymentsItem($id: bigint!) {
+	billingsPaymentsByPk(id: $id) {
+		billingId
+		id
+		billing_address {
+			place {
+				name
+				contactAltPhoneNumber
+				contactPhoneNumber
+				contactEmail
+			}
+
+			id
+		}
+		subtotal
+		total
+		vat
+		paymentDate
+		paymentStatus
+		isVerified
+
+		transactionNote
+		verifiedBy
+		vat
+		paymentMethod
+		withHolding
+
+		pricing_plan_frequency {
+			id
+			price
+			pricingPlan {
+				title
+				description
+			}
+			frequency
+		}
+
+		subscription_plans {
+			id
+		}
+	}
+}

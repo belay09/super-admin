@@ -1,7 +1,6 @@
 <script setup>
 import { useForm } from "vee-validate";
 import useNotify from "@/use/notify";
-import addPricingQuery from "@/graphql/mutations/pricing/add.gql";
 
 const { notify } = useNotify();
 /***---------------------Tab--------------------- */
@@ -10,19 +9,19 @@ const { handleSubmit } = useForm();
 const frequencies = ref([
 	{
 		name: "Monthly",
-		id: "MONTHLY",
+		id: "Monthly",
 	},
 	{
 		name: "Yearly",
-		id: "YEARLY",
+		id: "Yearly",
 	},
 	{
 		name: "Quarterly",
-		id: "QUARTERLY",
+		id: "Quarterly",
 	},
 	{
 		name: "Bi-Annually",
-		id: "BIANNUALLY",
+		id: "Bi-Annually",
 	},
 ]);
 
@@ -34,13 +33,6 @@ const features = ref([]);
 definePageMeta({
 	layout: "home",
 });
-
-const {
-	mutate: addPricing,
-	onError: addPricingError,
-	onDone: addPricingDone,
-	loading: addPricingLoading,
-} = authMutation(addPricingQuery);
 
 const onSubmit = handleSubmit(() => {
 	if (!pricingItems.value.length) {
@@ -61,73 +53,19 @@ const onSubmit = handleSubmit(() => {
 		});
 		return;
 	}
-	formInput.value.rank = 1;
-	formInput.value.pricing_plan_frequencies = { data: lampPrices.value };
-	formInput.value.pricing_plan_features = {
-		data: features.value.map((item) => {
-			return {
-				feature: {
-					data: item,
-				},
-			};
-		}),
-	};
-	formInput.value.pricing_plan_items = {
-		data: pricingItems.value.map((item) => {
-			return {
-				item: {
-					data: {
-						name: item.title,
-						description: item.description,
-						itemType: item.itemType,
-						title: item.title,
-						rules: {
-							limit: item.limit,
-						},
-					},
-				},
-			};
-		}),
-	};
-
-	addPricing({ object: formInput.value });
-});
-
-addPricingDone((result) => {
-	notify({
-		title: "Pricing created successfully",
-		description: "Pricing created successfully",
-		type: "success",
-		borderClass: "border-l-8 border-green-300",
-	});
-	router.push("/app/billings/pricing");
-});
-
-addPricingError((error) => {
-	notify({
-		title: "Pricing creation failed",
-		description: "Pricing creation failed",
-		type: "error",
-		borderClass: "border-l-8 border-red-300",
-	});
 });
 </script>
 
 <template>
 	<div class="w-full pl-10 pr-16 space-y-4">
 		<div class="flex justify-between text-sheger-gray-100 hover:cursor-pointer">
-			<p class="text-3xl font-semibold">Add Pricing Plan</p>
+			<p class="text-3xl font-semibold">Edit Pricing Plan</p>
 			<div class="flex gap-x-4">
 				<button
 					class="text-white !py-2 primary-button bg-primary-600"
 					@click="onSubmit"
 				>
-					<Icon
-						name="eos-icons:bubble-loading"
-						class="text-xl text-white"
-						v-if="addPricingLoading"
-					/>
-					<span v-else> Create </span>
+					Edit
 				</button>
 				<button
 					class="px-4 py-2 border rounded-md text-gray-950 border-primary-600"
@@ -150,7 +88,7 @@ addPricingError((error) => {
 					<H-Textfield
 						id="plan_name"
 						name="plan_name"
-						v-model="formInput.title"
+						v-model="formInput.plan_name"
 						label="Plan Name"
 						placeholder="Write here"
 						rules="required"
@@ -161,7 +99,7 @@ addPricingError((error) => {
 						<HSwitch
 							class="relative"
 							name="offer_takeout"
-							v-model="formInput.isVisible"
+							v-model="formInput.offer_takeout"
 						></HSwitch>
 					</div>
 				</div>
