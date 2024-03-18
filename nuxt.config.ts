@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
 export default defineNuxtConfig({
 	app: {
 		head: {
@@ -39,6 +40,7 @@ export default defineNuxtConfig({
 		"@nuxt/image",
 		"@nuxtjs/apollo",
 		"@nuxtjs/device",
+		"nuxt-primevue",
 	],
 
 	routeRules: {
@@ -89,6 +91,11 @@ export default defineNuxtConfig({
 		classPrefix: "",
 		classSuffix: "",
 		storageKey: "nuxt-color-mode",
+	},
+	primevue: {
+		options: {
+			unstyled: true,
+		},
 	},
 	device: {
 		refreshOnResize: true,

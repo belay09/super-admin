@@ -54,9 +54,9 @@ const open = computed({
 					/>
 				</HeadlessTransitionChild>
 
-				<div class="fixed inset-0 z-50 w-full overflow-y-auto">
+				<div class="fixed inset-0 z-50 w-full mt-20 overflow-y-auto">
 					<div
-						class="flex justify-center pt-4 mt-6 text-center sm:items-center sm:p-0"
+						class="flex justify-center pt-4 text-center sm:items-center sm:p-0"
 					>
 						<HeadlessTransitionChild
 							as="template"

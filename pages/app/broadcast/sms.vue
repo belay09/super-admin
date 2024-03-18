@@ -41,34 +41,7 @@ definePageMeta({
 					</div>
 				</template>
 			</H-Tab>
-			<Popover class="absolute right-0 -top-2">
-				<PopoverButton>
-					<button class="text-white bg-primary-600 primary-button">
-						<Icon class="text-xl" name="codicon:megaphone" />
-						<span>Compose New Post</span>
-						<Icon class="text-xl" name="tabler:chevron-down" />
-					</button>
-				</PopoverButton>
-
-				<PopoverPanel
-					class="absolute z-10 p-4 mt-1.5 bg-white rounded-lg shadow-lg class"
-				>
-					<ul class="space-y-2">
-						<li class="flex items-center text-base cursor-pointer gap-x-4">
-							<Icon class="text-xl" name="nimbus:mobile" />
-							<span>SMS Message</span>
-						</li>
-						<li class="flex items-center text-base cursor-pointer gap-x-4">
-							<Icon class="text-xl" name="heroicons-outline:mail-open" />
-							<span>Email Notification</span>
-						</li>
-						<li class="flex items-center text-base cursor-pointer gap-x-4">
-							<Icon class="text-xl" name="mdi:bell-outline" />
-							<span>Push Notification</span>
-						</li>
-					</ul>
-				</PopoverPanel>
-			</Popover>
+			<BroadCastActions />
 		</div>
 		<div class="grid flex-grow grid-cols-3 gap-6">
 			<Ui-Cards-Sms v-for="i in 9" :key="i" />

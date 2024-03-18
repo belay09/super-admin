@@ -17,7 +17,7 @@ const currentTabIndex = ref(0);
 const offset = ref([]);
 const limit = ref(20);
 const length = ref(100);
-
+const value = ref("");
 definePageMeta({
 	layout: "broadcast",
 });
@@ -39,14 +39,9 @@ definePageMeta({
 					</div>
 				</template>
 			</H-Tab>
-			<button
-				class="absolute right-0 text-white -top-2 bg-primary-600 primary-button"
-			>
-				<Icon class="text-xl" name="codicon:megaphone" />
-				<span>Compose New Post</span>
-				<Icon class="text-xl" name="tabler:chevron-down" />
-			</button>
+			<BroadCastActions />
 		</div>
+
 		<div class="grid flex-grow grid-cols-3 gap-6">
 			<Ui-Cards-Email v-for="i in 9" :key="i" />
 		</div>
