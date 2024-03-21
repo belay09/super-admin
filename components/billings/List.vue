@@ -1,4 +1,15 @@
 <script setup>
+import {
+	Dialog,
+	DialogPanel,
+	Menu,
+	MenuButton,
+	MenuItem,
+	MenuItems,
+	TransitionChild,
+	TransitionRoot,
+} from "@headlessui/vue";
+import getBillingQuery from "@/graphql/query/billing/list.gql";
 const router = useRouter();
 
 /***--------------------------Table data------------------- */
@@ -9,236 +20,174 @@ const offset = ref(0);
 const limit = ref(20);
 const length = ref(100);
 const headers = [
-  {
-    text: "Invoice Number",
-    value: "invoice_number",
-  },
-  {
-    text: "Company Name",
-    value: "company_name",
-  },
+	{
+		text: "Company Name",
+		value: "billing_address.place.name",
+	},
 
-  {
-    text: "Payment type",
-    value: "payment_type",
-  },
-  {
-    text: "Invoice created at",
-    value: "invoice_created_at",
-  },
+	{
+		text: "Payment method",
+		value: "paymentMethod",
+	},
+	{
+		text: "pricing plan",
+		value: "pricing_plan_frequency.pricingPlan.title",
+	},
 
-  {
-    text: "Amount",
-    value: "amount",
-  },
-  {
-    text: "Payment status",
-    value: "payment_status",
-  },
-  {
-    text: "verification status",
-    value: "verification_status",
-  },
+	{
+		text: "price",
+		value: "pricing_plan_frequency.price",
+	},
+	{
+		text: "paid amount",
+		value: "total",
+	},
+	{
+		text: "payment date",
+		value: "paymentDate",
+	},
 
-  {
-    text: "Action",
-    value: "action",
-  },
+	{
+		text: "Action",
+		value: "action",
+	},
 ];
 
-items.value = [
-  {
-    id: 1,
-    company_name: "Minab It Solution",
-    invoice_number: "0001",
-    payment_type: "Bank transfer",
+const currentStatus = ref("Payments");
 
-    amount: 300,
-    report_category: "False information",
-    reported_by: "Samuel Noah",
+const filter = computed(() => {
+	let query = {};
+	query._and = [
+		{
+			isVerified: {
+				_eq: false,
+			},
+			isDeclined: {
+				_eq: false,
+			},
+		},
+	];
 
-    status: "Active",
+	if (currentStatus.value === "Payments") {
+		query._and[0] = {
+			isVerified: {
+				_eq: false,
+			},
+			isDeclined: {
+				_eq: false,
+			},
+		};
+	} else if (currentStatus.value === "Verified Payments") {
+		query._and[0] = {
+			isVerified: {
+				_eq: true,
+			},
+			isDeclined: {
+				_eq: false,
+			},
+		};
+	} else if (currentStatus.value === "Declined Payments") {
+		query._and[0] = {
+			isVerified: {
+				_eq: false,
+			},
+			isDeclined: {
+				_eq: true,
+			},
+		};
+	}
 
-    invoice_created_at: "2022 Jan 22",
-  },
-  {
-    id: 2,
-    company_name: "Minab It Solution",
-    invoice_number: "0001",
-    payment_type: "Bank transfer",
+	return query;
+});
 
-    amount: 300,
-    report_category: "False information",
-    reported_by: "Samuel Noah",
+const {
+	onResult: billingOnResult,
+	onError: billingOnError,
+	loading: billingLoading,
+	refetch: billingReFetch,
+} = authListQuery(getBillingQuery, filter, [], 0, 7);
 
-    status: "Active",
-
-    invoice_created_at: "2022 Jan 22",
-  },
-  {
-    id: 3,
-    company_name: "Minab It Solution",
-    invoice_number: "0001",
-    payment_type: "Bank transfer",
-
-    amount: 300,
-    report_category: "False information",
-    reported_by: "Samuel Noah",
-
-    status: "Active",
-
-    invoice_created_at: "2022 Jan 22",
-  },
-  {
-    id: 4,
-    company_name: "Minab It Solution",
-    invoice_number: "0001",
-    payment_type: "Bank transfer",
-
-    amount: 300,
-    report_category: "False information",
-    reported_by: "Samuel Noah",
-
-    status: "Active",
-
-    invoice_created_at: "2022 Jan 22",
-  },
-  {
-    id: 5,
-    company_name: "Minab It Solution",
-    invoice_number: "0001",
-    payment_type: "Bank transfer",
-
-    amount: 300,
-    report_category: "False information",
-    reported_by: "Samuel Noah",
-
-    status: "Active",
-
-    invoice_created_at: "2022 Jan 22",
-  },
-  {
-    id: 6,
-    company_name: "Minab It Solution",
-    invoice_number: "0001",
-    payment_type: "Bank transfer",
-
-    amount: 300,
-    report_category: "False information",
-    reported_by: "Samuel Noah",
-
-    status: "Active",
-
-    invoice_created_at: "2022 Jan 22",
-  },
-  {
-    id: 7,
-    company_name: "Minab It Solution",
-    invoice_number: "0001",
-    payment_type: "Bank transfer",
-
-    amount: 300,
-    report_category: "False information",
-    reported_by: "Samuel Noah",
-
-    status: "Active",
-
-    invoice_created_at: "2022 Jan 22",
-  },
-  {
-    id: 8,
-    company_name: "Minab It Solution",
-    invoice_number: "0001",
-    payment_type: "Bank transfer",
-
-    amount: 300,
-    report_category: "False information",
-    reported_by: "Samuel Noah",
-
-    status: "Active",
-
-    invoice_created_at: "2022 Jan 22",
-  },
-];
+billingOnResult((result) => {
+	if (result.data?.billingsPayments) {
+		items.value = result.data.billingsPayments;
+	}
+});
 
 const loading = ref(true);
 loading.value = false;
 const clickRow = (item) => {
-  router.push("/app/billings/12");
+	router.push("/app/billings/12");
 };
 
+const dum = ref(false);
+const openBillingModal = ref(false);
 /**----------------Billing status--------------------------- */
-const currentStatus = ref("All");
-const status = ref(["All", "Pending", "Paid", "Verified"]);
+const status = ref([
+	{ name: "Payments", icon: "solar:dollar-linear" },
+	{ name: "Verified Payments", icon: "lets-icons:money" },
+	{ name: "Declined Payments", icon: "uil:money-bill-slash" },
+	{ name: "Invoice", icon: "iconamoon:invoice" },
+]);
 </script>
 
 <template>
-  <div class="flex flex-col space-y-8 py-6">
-    <Billings-Filter v-model:model-value="currentStatus" :status="status" />
+	<ModalsBillingInvoice v-model="openBillingModal" />
+	<div class="flex flex-col py-6 space-y-8">
+		<Billings-Filter v-model:model-value="currentStatus" :status="status" />
 
-    <div class="">
-      <h-table
-        :headers="headers"
-        :items="items"
-        v-model:sort="sort"
-        :loading="loading"
-        @click:row="clickRow"
-        supporterClass="shadow-md  overflow-x-auto overflow-y-hidden rounded-md border border-gray-200"
-        supportHeaderClass="bg-gray-100 border"
-        tableHeaderStyle="secondary-border  bg-gray-50"
-        tableBodyRowStyle="border py-6"
-        rowHeadStyle="secondary-text"
-        row-style="lg:text-sheger-gray-400"
-      >
-        <template v-slot:name="{ item }">
-          <div class="secondary-flex-row">
-            <div>
-              <img
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="user image"
-                class="w-10 h-10 rounded-full"
-              />
-            </div>
-            <div>
-              <p>{{ item.name }}</p>
-              <p class="secondary-text">selamudev@gmail.com</p>
-            </div>
-          </div>
-        </template>
-
-        <template v-slot:verification_status="{ item }">
-          <p class="bg-sheger-green-100 rounded-full py-0.5 text-center w-16">
-            Verified
-          </p>
-        </template>
-        <template v-slot:payment_status="{ item }">
-          <p class="bg-sheger-green-100 rounded-full py-0.5 text-center w-16">
-            Paid
-          </p>
-        </template>
-        <template v-slot:report_description="{ item }">
-          <p class="tertiary-text">Lorem ipsum dolor, sit amet</p>
-        </template>
-        <template v-slot:sign_up_method="{ item }">
-          <p class="tertiary-text">
-            {{ item.sign_up_method }}
-          </p>
-          <p>Verified</p>
-        </template>
-
-        <template v-slot:action="{ item }">
-          <button>
-            <Icon name="fontisto:more-v" class="text-xl dark:text-white" />
-          </button>
-        </template>
-      </h-table>
-    </div>
-    <div class="mt-5">
-      <HPaginate
-        v-model:offset="offset"
-        :items-per-page="limit"
-        :total-data="length"
-      />
-    </div>
-  </div>
+		<div class="">
+			<h-table
+				:headers="headers"
+				:items="items"
+				v-model:sort="sort"
+				:loading="loading"
+				@click:row="clickRow"
+				supporterClass="shadow-md  overflow-x-auto overflow-y-hidden pb-12 rounded-md border border-gray-200"
+				supportHeaderClass="bg-gray-100 border"
+				tableHeaderStyle="secondary-border  bg-gray-50"
+				tableBodyRowStyle="border py-6"
+				rowHeadStyle="secondary-text"
+				row-style="lg:text-sheger-gray-400"
+			>
+				<template v-slot:action="{ item }">
+					<Menu @click.stop="dum = !dum" as="div" class="relative">
+						<MenuButton
+							class="-m-4 flex justify-center w-12 h-12 group-hover hover:bg-gray-100 rounded-full items-center p-1.5"
+						>
+							<Icon name="fontisto:more-v" class="text-xl text-gray-950" />
+						</MenuButton>
+						<transition
+							enter-active-class="transition duration-100 ease-out"
+							enter-from-class="transform scale-95 opacity-0"
+							enter-to-class="transform scale-100 opacity-100"
+							leave-active-class="transition duration-75 ease-in"
+							leave-from-class="transform scale-100 opacity-100"
+							leave-to-class="transform scale-95 opacity-0"
+						>
+							<MenuItems
+								class="bg-white hover:bg-primary-600 hover:text-white absolute right-32 z-50 mt-2.5 w-fit origin-top-right rounded-md py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+							>
+								<MenuItem @click="openBillingModal = true" v-slot="{ active }">
+									<button
+										type="button"
+										class="flex items-center w-full px-4 py-2 text-sm rounded-md group gap-x-4"
+									>
+										<Icon name="mdi:eye" width="17" height="17" />
+										<span class="whitespace-nowrap">Review Payment</span>
+									</button>
+								</MenuItem>
+							</MenuItems>
+						</transition>
+					</Menu>
+				</template>
+			</h-table>
+		</div>
+		<div class="mt-5">
+			<HPaginate
+				v-model:offset="offset"
+				:items-per-page="limit"
+				:total-data="length"
+			/>
+		</div>
+	</div>
 </template>

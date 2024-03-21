@@ -58,7 +58,7 @@ const navs = ref([
 ]);
 </script>
 <template>
-	<div class="flex flex-col space-y-4 text-sheger-gray-100 pb-14">
+	<div class="flex flex-col space-y-4 pb-14">
 		<!-- Dashbord -->
 		<UiSidebarItem v-for="(nav, index) in navs" :key="index" :name="nav.to">
 			<template #icon>
@@ -72,7 +72,7 @@ const navs = ref([
 
 		<nuxt-link
 			to="/app/places/register-new-place"
-			class="flex flex-col items-center px-6 py-8 mx-auto border rounded-lg cursor-pointer w-fit hover:bg-primary-600 hover:text-white"
+			class="flex flex-col items-center px-6 py-8 mx-auto text-white border border-white rounded-lg cursor-pointer w-fit hover:bg-white hover:!text-gray-950"
 		>
 			<Icon name="lucide:building-2" class="text-xl" color="" />
 			<div>

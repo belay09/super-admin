@@ -1,0 +1,49 @@
+query billingsPayments(
+	$filter: BillingsPaymentsBoolExp
+	$order: [BillingsPaymentsOrderBy!]
+	$limit: Int
+	$offset: Int
+) {
+	billingsPayments(
+		where: $filter
+		orderBy: $order
+		limit: $limit
+		offset: $offset
+	) {
+		billingId
+
+		billing_address {
+			place {
+				name
+			}
+			id
+		}
+		subtotal
+		total
+		paymentDate
+		paymentStatus
+		isVerified
+
+		transactionNote
+		verifiedBy
+		vat
+		paymentMethod
+		pricing_plan_frequency {
+			id
+			price
+			pricingPlan {
+				title
+			}
+		}
+
+		subscription_plans {
+			id
+		}
+	}
+
+	billingsPaymentsAggregate(where: $filter) {
+		aggregate {
+			count
+		}
+	}
+}

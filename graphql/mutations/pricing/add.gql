@@ -1,0 +1,6 @@
+mutation addPricing($object: BillingsPricingPlansInsertInput!) {
+	insertBillingsPricingPlansOne(object: $object) {
+		id
+		title
+	}
+}
