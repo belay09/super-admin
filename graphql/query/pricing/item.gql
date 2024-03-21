@@ -27,6 +27,8 @@ query pricingPlans($id: bigint!) {
 			item {
 				title
 				description
+				rules
+				itemType
 			}
 		}
 	}
