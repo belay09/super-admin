@@ -110,7 +110,7 @@ function selectSocialMedia(media) {
         </HTextfield>
       </div>
       <div
-        class="bg-primary-600 h-full items-center flex px-7 rounded-r-lg cursor-pointer"
+        class="bg-primary-600 h-full items-center flex px-7 py-5 rounded-r-lg cursor-pointer"
         @click="handleAddMedia"
       >
         <Icon name="fluent:add-12-filled" class="text-white" />
