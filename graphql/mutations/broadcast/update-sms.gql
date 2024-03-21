@@ -1,0 +1,8 @@
+mutation updateSmsNotifications(
+  $id: bigint!
+  $input: SmsNotificationsSetInput
+) {
+  updateSmsNotificationsByPk(pkColumns: { id: $id }, _set: $input) {
+    id
+  }
+}

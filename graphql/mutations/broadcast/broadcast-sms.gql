@@ -1,0 +1,5 @@
+mutation broadCastSms($sms_id: Int!, $target_group: String!) {
+  broadcast_sms(sms_id: $sms_id, target_group: $target_group) {
+    status
+  }
+}

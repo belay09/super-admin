@@ -5,9 +5,9 @@ import useNotify from "@/use/notify";
 /**-----------------Global Variables--------------------------- */
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
-	modelValue: {
-		type: Object,
-	},
+  modelValue: {
+    type: Object,
+  },
 });
 
 const { notify } = useNotify();
@@ -22,66 +22,66 @@ const offset = ref(0);
 
 /**------------------Filter---------------- */
 const filter = computed(() => {
-	return {
-		userRoles: {
-			_or: [
-				{ userRole: { value: { _eq: "SHEGERADMIN" } } },
-				{ userRole: { value: { _eq: "ENCODER" } } },
-			],
-		},
-		status: { _neq: "DELETED" },
-	};
+  return {
+    userRoles: {
+      _or: [
+        { userRole: { value: { _eq: "SHEGERADMIN" } } },
+        { userRole: { value: { _eq: "ENCODER" } } },
+      ],
+    },
+    status: { _neq: "DELETED" },
+  };
 });
 
 const { onResult, onError, loading } = authListQuery(
-	listQuery,
-	filter,
-	sort,
-	offset,
-	limit
+  listQuery,
+  filter,
+  sort,
+  offset,
+  limit
 );
 onResult((result) => {
-	if (result.data?.usersUsers) {
-		items.value = result.data.usersUsers;
-	}
+  if (result.data?.usersUsers) {
+    items.value = result.data.usersUsers;
+  }
 });
 
 onError((error) => {
-	notify({
-		title: "Some thing went wrong",
-		description: error.message,
-		type: "error",
-		borderClass: "border-l-8 border-red-300",
-	});
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
 });
 
 function makeSearch(value) {
-	search.value = value;
+  search.value = value;
 }
 watch(
-	() => props.modelValue,
-	(value) => {
-		selectedItem.value = value;
-	}
+  () => props.modelValue,
+  (value) => {
+    selectedItem.value = value;
+  }
 );
 
 watch(
-	() => selectedItem.value,
-	(value) => {
-		emit("update:modelValue", value);
-	}
+  () => selectedItem.value,
+  (value) => {
+    emit("update:modelValue", value);
+  }
 );
 </script>
 
 <template>
-	<HSingleSelectWithSearch
-		:items="items"
-		v-model="selectedItem"
-		@search="makeSearch"
-		id="admin"
-		placeholder="Select Reviewer"
-		name="reviewer"
-		label="Select Reviewer"
-		:loading="loading"
-	></HSingleSelectWithSearch>
+  <HSingleSelectWithSearch
+    :items="items"
+    v-model="selectedItem"
+    @search="makeSearch"
+    id="admin"
+    placeholder="Select Reviewer"
+    name="reviewer"
+    label="Select Reviewer"
+    :loading="loading"
+  ></HSingleSelectWithSearch>
 </template>

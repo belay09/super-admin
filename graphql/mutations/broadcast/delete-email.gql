@@ -1,0 +1,5 @@
+mutation deleteEmailNotification($id: bigint!) {
+  deleteEmailNotificationsByPk(id: $id) {
+    id
+  }
+}
