@@ -1,0 +1,14 @@
+mutation deletePricing($id: bigint!) {
+	deleteBillingsPricingPlanItems(where: { pricingPlanId: { _eq: $id } }) {
+		affectedRows
+	}
+	deleteBillingsPricingPlanFeatures(where: { pricingPlanId: { _eq: $id } }) {
+		affectedRows
+	}
+	deleteBillingsPricingPlanFrequencies(where: { pricingPlanId: { _eq: $id } }) {
+		affectedRows
+	}
+	deleteBillingsPricingPlansByPk(id: $id) {
+		id
+	}
+}
