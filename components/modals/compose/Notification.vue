@@ -22,6 +22,7 @@ const open = computed({
     emits("update:modelValue", newVal);
   },
 });
+const refetchNotifications = inject("refetch");
 
 /**------------------------------User and Place Owners------------------------------ */
 const currentTabIndex = ref(0);
@@ -55,6 +56,9 @@ publishDone(() => {
     type: "error",
     borderClass: "border-l-8 border-green-300",
   });
+
+  refetchNotifications();
+  open.value = false;
 });
 
 publishError((error) => {

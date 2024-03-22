@@ -1,5 +1,6 @@
 <script setup>
 import deleteMutation from "@/graphql/mutations/broadcast/delete-email.gql";
+import publishMutation from "@/graphql/mutations/broadcast/broadcast-email.gql";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import useNotify from "@/use/notify";
 
@@ -44,8 +45,45 @@ deleteError((error) => {
   });
 });
 
+/**---------------------Publish Email-------------- */
+const {
+  mutate: publishMutate,
+  onDone: publishDone,
+  onError: publishError,
+  loading: publishLoading,
+} = authMutation(publishMutation);
+
+publishDone(() => {
+  isPublish.value = false;
+  notify({
+    title: "Email Notification Published",
+    description: "Email Notification published successfully",
+    type: "error",
+    borderClass: "border-l-8 border-green-300",
+  });
+});
+
+publishError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+const handlePublish = () => {
+  publishMutate({
+    target_group: props.item?.targetGroup,
+    email_message_id: props.item?.id,
+  });
+};
+
+/**----------------------Modals----------------------- */
+
 const showDeleteEmailNotificationModal = ref(false);
 const openComposeEditEmail = ref(false);
+const openPublishModal = ref(false);
 </script>
 <template>
   <!-- -----------------Edit email notification Modal---------------- -->
@@ -62,6 +100,15 @@ const openComposeEditEmail = ref(false);
     title="Delete Email Notification"
     sure-question="Are you sure you want to delete this email notification?"
     description="This action is irreversible and will permanently remove the email notification"
+  ></ModalsConfirmation>
+
+  <!-- -----------------------Publish Email notification Modal---------------- -->
+  <ModalsConfirmation
+    @confirm="handlePublish"
+    v-model="openPublishModal"
+    title="Publish Email Notification"
+    sure-question="Are you sure you want to publish this email notification?"
+    description="This action send the email notification to all users."
   ></ModalsConfirmation>
   <div class="p-4 space-y-3 border border-gray-300 rounded-lg">
     <div class="flex items-center justify-between">
@@ -88,7 +135,10 @@ const openComposeEditEmail = ref(false);
               <Icon class="text-xl" name="carbon:edit" />
               <span>Edit Message</span>
             </li>
-            <li class="flex items-center text-base cursor-pointer gap-x-4">
+            <li
+              @click="openPublishModal = true"
+              class="flex items-center text-base cursor-pointer gap-x-4"
+            >
               <Icon class="text-xl" name="bi:check-all" />
               <span>
                 {{ item.status == "SENT" ? "Resend" : "Publish" }} Message</span

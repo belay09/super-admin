@@ -1,5 +1,5 @@
 <script setup>
-import addMutation from "@/graphql/mutations/broadcast/add-push-notification.gql";
+import editMutation from "@/graphql/mutations/broadcast/update-push-notification.gql";
 import publishMutation from "@/graphql/mutations/broadcast/broadcast-push-notification.gql";
 
 import useNotify from "@/use/notify";
@@ -13,6 +13,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  item: {
+    type: Object,
+    required: true,
+  },
 });
 const open = computed({
   get() {
@@ -22,9 +26,8 @@ const open = computed({
     emits("update:modelValue", newVal);
   },
 });
-
+const refetchNotifications = inject("refetch");
 /**------------------------------User and Place Owners------------------------------ */
-const currentTabIndex = ref(0);
 const tabs = ref([
   {
     name: "Users",
@@ -37,6 +40,15 @@ const tabs = ref([
     icon: "bi:building-fill",
   },
 ]);
+
+function getTabIndex() {
+  if (props.item === null) {
+    return 0;
+  } else {
+    return tabs.value.findIndex((tab) => tab.value === props.item.targetGroup);
+  }
+}
+const currentTabIndex = ref(getTabIndex());
 
 /**---------------------Publish Push Notification-------------- */
 
@@ -51,10 +63,12 @@ publishDone(() => {
   isPublish.value = false;
   notify({
     title: "Push Notification Published",
-    description: "Push Notification published successfully",
-    type: "error",
+    description: "Push Notification updated and published successfully",
+    type: "success",
     borderClass: "border-l-8 border-green-300",
   });
+  refetchNotifications();
+  open.value = false;
 });
 
 publishError((error) => {
@@ -68,31 +82,39 @@ publishError((error) => {
 
 /**---------------------------Add Push Notification --------------------------- */
 const isPublish = ref(false);
-
-const notificationInput = ref({});
+const notificationInput = ref({
+  ...props.item,
+});
 const {
-  mutate: addMutate,
-  onDone: addDone,
-  onError: addError,
-  loading: addLoading,
-} = authMutation(addMutation);
+  mutate: editMutate,
+  onDone: editDone,
+  onError: editError,
+  loading: editLoading,
+} = authMutation(editMutation);
 
 /**-----------------------Handle add --------------------------- */
-const handleAdd = handleSubmit((values, clickedButton) => {
+const handleEdit = handleSubmit((values, clickedButton) => {
   if (clickedButton.evt === "send") {
     isPublish.value = true;
   } else {
     isPublish.value = false;
   }
-  notificationInput.value.targetGroup = tabs.value[currentTabIndex.value].value;
-  addMutate({ input: notificationInput.value });
+  // notificationInput.value.targetGroup = tabs.value[currentTabIndex.value].value;
+  editMutate({
+    id: props.item.id,
+    input: {
+      body: notificationInput.value.body,
+      title: notificationInput.value.title,
+      targetGroup: tabs.value[currentTabIndex.value].value,
+    },
+  });
 });
 
-addDone(({ data }) => {
+editDone(({ data }) => {
   if (isPublish.value) {
     publishMutate({
       target_group: tabs.value[currentTabIndex.value].value,
-      push_notification_id: data?.insertPushNotificationsOne?.id,
+      push_notification_id: data?.updatePushNotificationsByPk?.id,
     });
   } else {
     notify({
@@ -101,10 +123,12 @@ addDone(({ data }) => {
       type: "error",
       borderClass: "border-l-8 border-green-300",
     });
+    open.value = false;
+    refetchNotifications();
   }
 });
 
-addError((error) => {
+editError((error) => {
   notify({
     title: "Some thing went wrong",
     description: error.message,
@@ -166,28 +190,28 @@ addError((error) => {
 
         <div class="flex gap-x-4">
           <button
-            :disabled="!isPublish && addLoading"
-            @click.prevent="handleAdd('draft')"
+            :disabled="!isPublish && editLoading"
+            @click.prevent="handleEdit('draft')"
             class="w-full py-3 border border-gray-300 rounded-md"
           >
-            Save as Draft
+            Save as
 
             <Icon
-              v-if="!isPublish && addLoading"
+              v-if="!isPublish && editLoading"
               name="eos-icons:bubble-loading"
-              class="text-2xl text-white"
+              class="text-2xl text-primary-600"
             />
           </button>
           <button
-            :disabled="isPublish && (addLoading || publishLoading)"
-            @click.prevent="handleAdd('send')"
+            :disabled="isPublish && (editLoading || publishLoading)"
+            @click.prevent="handleEdit('send')"
             class="flex items-center justify-center w-full py-3 text-white rounded-md gap-x-4 bg-primary-600"
           >
             <Icon name="lucide:send" />
             <span>Send Now</span>
 
             <Icon
-              v-if="isPublish && (addLoading || publishLoading)"
+              v-if="isPublish && (editLoading || publishLoading)"
               name="eos-icons:bubble-loading"
               class="text-2xl text-white"
             />

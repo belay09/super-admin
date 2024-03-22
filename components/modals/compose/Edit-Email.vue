@@ -65,7 +65,7 @@ publishDone(() => {
   notify({
     title: "Email Notification Published",
     description: "Email Notification updated and published successfully",
-    type: "error",
+    type: "success",
     borderClass: "border-l-8 border-green-300",
   });
   refetchNotifications();
@@ -117,7 +117,6 @@ editDone(({ data }) => {
       email_message_id: data?.updateEmailNotificationsByPk?.id,
     });
   } else {
-    refetchNotifications();
     notify({
       title: "Email Notification Updated",
       description: "Email Notification Updated successfully",
@@ -125,6 +124,7 @@ editDone(({ data }) => {
       borderClass: "border-l-8 border-green-300",
     });
     open.value = false;
+    refetchNotifications();
   }
 });
 
@@ -198,7 +198,7 @@ editError((error) => {
             <Icon
               v-if="!isPublish && editLoading"
               name="eos-icons:bubble-loading"
-              class="text-2xl text-white"
+              class="text-2xl text-primary-600"
             />
           </button>
           <button

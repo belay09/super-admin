@@ -1,5 +1,7 @@
 <script setup>
 import deleteMutation from "@/graphql/mutations/broadcast/delete-push-notification.gql";
+import publishMutation from "@/graphql/mutations/broadcast/broadcast-push-notification.gql";
+
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import useNotify from "@/use/notify";
 
@@ -44,10 +46,58 @@ deleteError((error) => {
   });
 });
 
+/**----------------------Publish push notification------------------- */
+
+const {
+  mutate: publishMutate,
+  onDone: publishDone,
+  onError: publishError,
+  loading: publishLoading,
+} = authMutation(publishMutation);
+
+publishDone(() => {
+  isPublish.value = false;
+  notify({
+    title: "Push Notification Published",
+    description: "Push Notification published successfully",
+    type: "success",
+    borderClass: "border-l-8 border-green-300",
+  });
+  refetchNotifications();
+  open.value = false;
+});
+
+publishError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+const handlePublish = () => {
+  publishMutate({
+    target_group: props.item?.targetGroup,
+    push_notification_id: props.item?.id,
+  });
+};
+
+/**----------------------------Modals------------------------ */
+
 const showDeletePushNotificationModal = ref(false);
+const openComposeEditPushNotifications = ref(false);
+const openPublishModal = ref(false);
 </script>
 <template>
-  <!-- -----------------------Delete email notification Modal---------------- -->
+  <!-- -----------------Edit Push notification Modal---------------- -->
+
+  <ModalsComposeEditNotification
+    v-if="openComposeEditPushNotifications"
+    :item="item"
+    v-model="openComposeEditPushNotifications"
+  />
+  <!-- -----------------------Delete push notification Modal---------------- -->
   <ModalsConfirmation
     @confirm="handleDelete"
     v-model="showDeletePushNotificationModal"
@@ -55,9 +105,18 @@ const showDeletePushNotificationModal = ref(false);
     sure-question="Are you sure you want to delete this push notification?"
     description="This action is irreversible and will permanently remove the push notification"
   ></ModalsConfirmation>
+
+  <!-- -----------------------Publish push notification Modal---------------- -->
+  <ModalsConfirmation
+    @confirm="handlePublish"
+    v-model="openPublishModal"
+    title="Publish Push Notification"
+    sure-question="Are you sure you want to publish this push notification?"
+    description="This action send the push notification to all users."
+  ></ModalsConfirmation>
   <div class="p-4 space-y-3 border border-gray-300 rounded-lg">
     <div class="flex items-center justify-between">
-      <p class="text-lg font-medium leading-7">Message</p>
+      <p class="text-lg font-medium leading-7">{{ item.title }}</p>
       <Popover class="relative">
         <PopoverButton>
           <Icon
@@ -72,12 +131,16 @@ const showDeletePushNotificationModal = ref(false);
           <ul class="space-y-2">
             <li
               v-if="item.status != 'SENT'"
+              @click="openComposeEditPushNotifications = true"
               class="flex items-center text-base cursor-pointer gap-x-4"
             >
               <Icon class="text-xl" name="carbon:edit" />
               <span>Edit Message</span>
             </li>
-            <li class="flex items-center text-base cursor-pointer gap-x-4">
+            <li
+              class="flex items-center text-base cursor-pointer gap-x-4"
+              @click="openPublishModal = true"
+            >
               <Icon class="text-xl" name="bi:check-all" />
               <span>
                 {{ item.status == "SENT" ? "Resend" : "Publish" }} Message</span

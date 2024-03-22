@@ -1,5 +1,7 @@
 <script setup>
 import deleteMutation from "@/graphql/mutations/broadcast/delete-sms.gql";
+import publishMutation from "@/graphql/mutations/broadcast/broadcast-sms.gql";
+
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
 import useNotify from "@/use/notify";
 
@@ -10,7 +12,6 @@ const props = defineProps({
     required: true,
   },
 });
-
 const refetchNotifications = inject("refetch");
 
 /**-----------------------Delete email notification --------------------------- */
@@ -44,8 +45,47 @@ deleteError((error) => {
   });
 });
 
+/**---------------------Publish Sms-------------- */
+
+const {
+  mutate: publishMutate,
+  onDone: publishDone,
+  onError: publishError,
+  loading: publishLoading,
+} = authMutation(publishMutation);
+
+publishDone(() => {
+  refetchNotifications();
+  isPublish.value = false;
+  notify({
+    title: "Sms Notification Published",
+    description: "Sms Notification published successfully",
+    type: "error",
+    borderClass: "border-l-8 border-green-300",
+  });
+});
+
+publishError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+const handlePublish = () => {
+  publishMutate({
+    target_group: props.item?.targetGroup,
+    sms_id: props.item?.id,
+  });
+};
+
+/**----------------------Modals---------------- */
+
 const showDeleteSmsNotificationModal = ref(false);
 const openComposeEditSms = ref(false);
+const openPublishModal = ref(false);
 </script>
 <template>
   <!-- -----------------Edit email notification Modal---------------- -->
@@ -63,13 +103,18 @@ const openComposeEditSms = ref(false);
     sure-question="Are you sure you want to delete this sms notification?"
     description="This action is irreversible and will permanently remove the sms notification"
   ></ModalsConfirmation>
+
+  <!-- -----------------------Publish Email notification Modal---------------- -->
+  <ModalsConfirmation
+    @confirm="handlePublish"
+    v-model="openPublishModal"
+    title="Publish Sms Notification"
+    sure-question="Are you sure you want to publish this sms notification?"
+    description="This action send the sms notification to all users."
+  ></ModalsConfirmation>
   <div class="p-4 space-y-3 border border-gray-300 rounded-lg">
     <div class="flex items-center justify-between">
-      <p class="text-lg font-medium leading-7">
-        <!-- {{ item.title }} -->
-
-        Message
-      </p>
+      <p class="text-lg font-medium leading-7">Message</p>
       <Popover class="relative">
         <PopoverButton>
           <Icon
@@ -90,7 +135,10 @@ const openComposeEditSms = ref(false);
               <Icon class="text-xl" name="carbon:edit" />
               <span>Edit Message</span>
             </li>
-            <li class="flex items-center text-base cursor-pointer gap-x-4">
+            <li
+              @click="openPublishModal = true"
+              class="flex items-center text-base cursor-pointer gap-x-4"
+            >
               <Icon class="text-xl" name="bi:check-all" />
               <span>
                 {{ item.status == "SENT" ? "Resend" : "Publish" }} Message</span

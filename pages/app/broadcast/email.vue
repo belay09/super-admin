@@ -104,6 +104,8 @@ definePageMeta({
       </div>
     </div>
 
-    <p v-if="!loading && items.length == 0">No Results</p>
+    <p class="text-2xl font-medium" v-if="!loading && items.length == 0">
+      No Results
+    </p>
   </div>
 </template>

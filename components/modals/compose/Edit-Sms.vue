@@ -173,7 +173,7 @@ editError((error) => {
             <Icon
               v-if="!isPublish && editLoading"
               name="eos-icons:bubble-loading"
-              class="text-2xl text-white"
+              class="text-2xl text-primary-600"
             />
           </button>
           <button

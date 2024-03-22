@@ -21,7 +21,7 @@ const tabs = ref([
 
 /***---------------------push notifications  data fetch--------------------- */
 const items = ref([]);
-const limit = ref(100);
+const limit = ref(12);
 const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
 const offset = ref(0);
 const search = ref("");
@@ -107,6 +107,8 @@ definePageMeta({
       </div>
     </div>
 
-    <p v-if="!loading && items.length == 0">No Results</p>
+    <p class="text-2xl font-medium" v-if="!loading && items.length == 0">
+      No Results
+    </p>
   </div>
 </template>
