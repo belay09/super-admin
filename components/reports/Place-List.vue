@@ -22,6 +22,7 @@ defineProps({
 const emit = defineEmits(["refetch"]);
 
 const router = useRouter();
+const route = useRoute();
 
 /***--------------------------Table data------------------- */
 const sort = ref([{ name: "desc" }]);
@@ -110,6 +111,16 @@ onSuspendUserDone(() => {
   emit("refetch");
   showSuspendModal.value = false;
 });
+
+// view post
+function viewPost(item) {
+  console.log("item", item);
+  router.push({
+    name: "app-places-id",
+    params: { id: item.place_review?.place.id },
+    query: { tab: "reviews" },
+  });
+}
 </script>
 
 <template>
@@ -162,7 +173,18 @@ onSuspendUserDone(() => {
           <div class="secondary-flex-row">
             <div>
               <img
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                v-if="
+                  item?.place_review?.user?.photoUrl &&
+                  item?.place_review?.user?.photoUrl != ''
+                "
+                :src="item?.place_review?.user?.photoUrl"
+                alt="user image"
+                class="w-10 h-10 rounded-full"
+              />
+
+              <img
+                v-else
+                src="/images/temporary/default-profile.png"
                 alt="user image"
                 class="w-10 h-10 rounded-full"
               />
@@ -219,6 +241,7 @@ onSuspendUserDone(() => {
               </MenuItem>
               <MenuItem>
                 <button
+                  @click="viewPost(item)"
                   class="flex items-center gap-x-3 !text-base px-3 py-2 hover:bg-gray-100"
                 >
                   <icon name="lucide:text-select" /> View Post

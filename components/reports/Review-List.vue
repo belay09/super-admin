@@ -106,6 +106,15 @@ onSuspendUserDone(() => {
   emit("refetch");
   showSuspendModal.value = false;
 });
+
+// view post
+function viewPost(item) {
+  router.push({
+    name: "app-sheger-reviews-id",
+    params: { id: item?.review?.review?.id },
+    query: { tab: "reviews" },
+  });
+}
 </script>
 
 <template>
@@ -158,7 +167,18 @@ onSuspendUserDone(() => {
           <div class="secondary-flex-row">
             <div>
               <img
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                v-if="
+                  item?.review?.subject?.photoUrl &&
+                  item?.review?.subject?.photoUrl != ''
+                "
+                :src="item?.review?.subject?.photoUrl"
+                alt="user image"
+                class="w-10 h-10 rounded-full"
+              />
+
+              <img
+                v-else
+                src="/images/temporary/default-profile.png"
                 alt="user image"
                 class="w-10 h-10 rounded-full"
               />
@@ -187,11 +207,12 @@ onSuspendUserDone(() => {
             {{ item?.reporter?.fullName }}
           </p>
         </template>
-        <!-- <template v-slot:reported_at="{ item }">
+        <template v-slot:reported_at="{ item }">
           <p class="tertiary-text">
-            {{ format(parseISO(item?.createdAt), "LLL dd, yyyy") }}
+            <!-- {{ format(parseISO(item?.createdAt), "LLL dd, yyyy") }}
+             -->
           </p>
-        </template> -->
+        </template>
         <template v-slot:action="{ item }">
           <Menu>
             <MenuButton
@@ -211,6 +232,7 @@ onSuspendUserDone(() => {
               </MenuItem>
               <MenuItem>
                 <button
+                  @click="viewPost(item)"
                   class="flex items-center gap-x-3 !text-base px-3 py-2 hover:bg-gray-100"
                 >
                   <icon name="lucide:text-select" /> View Post

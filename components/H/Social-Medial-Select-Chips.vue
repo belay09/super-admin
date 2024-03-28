@@ -103,7 +103,7 @@ function selectSocialMedia(media) {
           placeholder="url"
           name="url"
           v-model="url"
-          rules="requiredN"
+          rules="requiredN|web_link"
           type="text"
           class="rounded-none h-full shadow-none border-none"
         >

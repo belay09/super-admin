@@ -114,7 +114,7 @@ onReviewReportResult(({ data }) => {
     <div class="relative">
       <div class="absolute right-0 flex">
         <div class="secondary-flex-row">
-          <H-ListSelect
+          <H-Listselect
             name="filter"
             :items="[
               { name: 'Place', id: 'place' },
@@ -122,7 +122,7 @@ onReviewReportResult(({ data }) => {
             ]"
             v-model="selectedFilter"
             class="!w-20 !px-3 !py-3 !box-content cursor-pointer"
-          ></H-ListSelect>
+          ></H-Listselect>
           <H-Textfield
             name="search"
             type="text"

@@ -110,7 +110,7 @@ const showUploadImageModal = ref(false);
   <div>
     <div class="flex flex-col space-y-4 border rounded-lg p-6">
       <div class="flex justify-between">
-        <p class="font-medium">Uploaded files</p>
+        <p class="font-medium">Uploaded file</p>
 
         <button
           @click="showUploadImageModal = true"
