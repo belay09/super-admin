@@ -1,9 +1,21 @@
 <script setup>
 import getPricingPlanQuery from "@/graphql/query/pricing/list.gql";
+import deletePricingPlanMutation from "@/graphql/mutations/pricing/delete.gql";
+import useNotify from "@/use/notify";
 /***---------------------Tab--------------------- */
 const router = useRouter();
+const { notify } = useNotify();
+
+/**----------------Fetch Pricing plan data--------------------------- */
 
 const pricingPlans = ref([]);
+const pricingPlansDisplay = computed(() => {
+	return pricingPlans.value.filter((item) => {
+		return item.pricing_plan_frequencies.find(
+			(item) => item.frequency === currentStatusId.value
+		);
+	});
+});
 
 const orderBy = ref([{}]);
 const {
@@ -17,14 +29,52 @@ pricingOnResult((result) => {
 	pricingPlans.value = result.data?.billingsPricingPlans;
 });
 
+/**----------------Delete Pricing plan data--------------------------- */
+const toBeDeletedPlanId = ref(null);
+const {
+	mutate: deleteMutation,
+	loading: deleteLoading,
+	onError: deleteError,
+	onDone: deleteOnDone,
+} = authMutation(deletePricingPlanMutation);
+
+const onDelete = (id) => {
+	deleteMutation({ id });
+};
+
+deleteOnDone(() => {
+	notify({
+		title: "Delete Pricing plan",
+		description: "Pricing plan deleted successfully",
+		type: "success",
+		borderClass: "border-l-8 border-green-300 bg-primary-200",
+	});
+	pricingRefetch();
+	openPricingDeleteConfirmModal.value = false;
+});
+
+deleteError(() => {
+	notify({
+		title: "Delete Pricing plan",
+		description: "Deleting Pricing Plan failed",
+		type: "error",
+		borderClass: "border-l-8 border-red-300 bg-primary-200",
+	});
+});
+
 /**----------------Billing status--------------------------- */
 const currentStatus = ref("Monthly");
+const currentStatusId = computed(() => {
+	return status.value.find((item) => item.name === currentStatus.value).id;
+});
 const status = ref([
-	{ name: "Monthly", icon: "solar:dollar-linear" },
-	{ name: "Yearly", icon: "lets-icons:money" },
-	{ name: "Quarterly", icon: "uil:money-bill-slash" },
-	{ name: "Bi-Annually", icon: "iconamoon:invoice" },
+	{ name: "Monthly", icon: "solar:dollar-linear", id: "MONTHLY" },
+	{ name: "Yearly", icon: "lets-icons:money", id: "YEARLY" },
+	{ name: "Quarterly", icon: "uil:money-bill-slash", id: "QUARTERLY" },
+	{ name: "Bi-Annually", icon: "iconamoon:invoice", id: "BIANNUALLY" },
 ]);
+
+const openPricingDeleteConfirmModal = ref(false);
 
 definePageMeta({
 	layout: "home",
@@ -32,6 +82,13 @@ definePageMeta({
 </script>
 
 <template>
+	<ModalsConfirmation
+		@confirm="onDelete(toBeDeletedPlanId)"
+		v-model="openPricingDeleteConfirmModal"
+		title="Delete Pricing Plan"
+		sure-question="Are you sure you want to delete the Pricing Plan?"
+		description="Deleting the plan will permanently remove it from our system, and the plan will be irretrievable. Please confirm your decision, as this action cannot be undone."
+	></ModalsConfirmation>
 	<div class="w-full py-6 pl-10 pr-16">
 		<div class="flex items-center justify-between">
 			<div
@@ -60,7 +117,7 @@ definePageMeta({
 			<div class="grid grid-cols-3 gap-6">
 				<div
 					class="flex flex-col px-5 py-6 space-y-5 border rounded-lg"
-					v-for="(pricing, index) in pricingPlans"
+					v-for="(pricing, index) in pricingPlansDisplay"
 					:key="index"
 				>
 					<!-- -------------------Pricing header--------------------- -->
@@ -69,7 +126,16 @@ definePageMeta({
 							{{ pricing.title }}
 						</p>
 						<div class="flex items-center space-x-4">
-							<Icon name="uil:trash-alt" class="text-2xl cursor-pointer" />
+							<Icon
+								@click="
+									[
+										(toBeDeletedPlanId = pricing.id),
+										(openPricingDeleteConfirmModal = true),
+									]
+								"
+								name="uil:trash-alt"
+								class="text-2xl cursor-pointer"
+							/>
 							<Icon
 								name="uil:edit-alt"
 								class="text-2xl cursor-pointer"
@@ -82,7 +148,13 @@ definePageMeta({
 
 					<p class="text-sheger-gray-100">{{ pricing.title }}</p>
 					<p class="text-xl font-medium text-sheger-gray-100">
-						ETB 500 / Monthly
+						ETB
+						{{
+							pricing.pricing_plan_frequencies.find(
+								(item) => item.frequency === currentStatusId
+							)?.price
+						}}
+						/ {{ currentStatus }}
 					</p>
 
 					<!-- ------------------Plan futures------------- -->
@@ -91,10 +163,10 @@ definePageMeta({
 						<div
 							v-for="(feature, index) in pricing.pricing_plan_features"
 							:key="index"
-							class="secondary-flex-row"
+							class="flex gap-x-2"
 						>
-							<Icon name="uil:check" class="text-2xl" />
-							<p>{{ feature.feature.title }}</p>
+							<div><Icon name="uil:check" class="!text-2xl" /></div>
+							<p class="line-clamp-3">{{ feature.feature.title }}</p>
 						</div>
 					</div>
 				</div>

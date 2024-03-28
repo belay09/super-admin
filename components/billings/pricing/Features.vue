@@ -57,7 +57,7 @@ const editFeature = handleSubmit(() => {
 </script>
 
 <template>
-	<form id="features" class="px-8 border-x">
+	<form id="features" class="px-8 overflow-y-auto border-x">
 		<p class="py-4 text-lg font-medium text-sheger-gray-100">Features</p>
 		<!-- -----------------Plan name---------------- -->
 		<H-Textfield
@@ -100,7 +100,7 @@ const editFeature = handleSubmit(() => {
 				:key="index"
 				class="relative flex flex-col items-start w-full p-2 overflow-hidden text-sm border border-gray-300 rounded-lg gap-y-1 group"
 			>
-				<p class="text-lg font-semibold text-sheger-gray-950">
+				<p class="text-lg font-semibold line-clamp-3 text-sheger-gray-950">
 					{{ item.title }}
 				</p>
 

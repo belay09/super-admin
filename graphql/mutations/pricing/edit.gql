@@ -1,0 +1,38 @@
+mutation (
+	$pricing_plan_id: bigint!
+	$pricing_plan_items: [BillingsPricingPlanItemsInsertInput!]!
+	$pricing_plan_feature: [BillingsPricingPlanFeaturesInsertInput!]!
+	$frequency_price: [BillingsPricingPlanFrequenciesInsertInput!]!
+	$pricing_plan: BillingsPricingPlansSetInput
+) {
+	deleteBillingsPricingPlanItems(
+		where: { pricingPlanId: { _eq: $pricing_plan_id } }
+	) {
+		affectedRows
+	}
+	deleteBillingsPricingPlanFeatures(
+		where: { pricingPlanId: { _eq: $pricing_plan_id } }
+	) {
+		affectedRows
+	}
+	deleteBillingsPricingPlanFrequencies(
+		where: { pricingPlanId: { _eq: $pricing_plan_id } }
+	) {
+		affectedRows
+	}
+	insertBillingsPricingPlanItems(objects: $pricing_plan_items) {
+		affectedRows
+	}
+	insertBillingsPricingPlanFeatures(objects: $pricing_plan_feature) {
+		affectedRows
+	}
+	insertBillingsPricingPlanFrequencies(objects: $frequency_price) {
+		affectedRows
+	}
+	updateBillingsPricingPlansByPk(
+		pkColumns: { id: $pricing_plan_id }
+		_set: $pricing_plan
+	) {
+		id
+	}
+}

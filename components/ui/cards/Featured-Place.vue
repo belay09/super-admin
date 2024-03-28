@@ -174,7 +174,7 @@ const showMoreAction = ref(false);
           <!-- ------------------Update button---------------- -->
           <button
             @click="showConfirmationModal = true"
-            class="primary-button border justify-center secondary-text"
+            class="justify-center border primary-button secondary-text"
           >
             Update Deadline
             <Icon
@@ -304,12 +304,12 @@ const showMoreAction = ref(false);
       <div v-if="mainLocation" class="flex items-center gap-3">
         <Icon name="carbon:map" class="h-5 w-5" />
 
-        <span class="decoration-sheger_brown-200 underline leading"
+        <span class="underline decoration-sheger_brown-200 leading"
           >{{ mainLocation.area?.name }}, {{ mainLocation.city?.name }}</span
         >
       </div>
       <!-- Tags -->
-      <div class="flex flex-wrap secondary-text pb-4">
+      <div class="flex flex-wrap pb-4 secondary-text">
         <p
           v-for="placeTag in place.placeTags"
           :key="placeTag.tag.id"
@@ -321,7 +321,7 @@ const showMoreAction = ref(false);
       <!-- menu update -->
 
       <div v-if="getFeaturedPlace()" class="flex items-center gap-3">
-        <Icon name="carbon:calendar" class="h-5 w-5" />
+        <Icon name="carbon:calendar" class="w-5 h-5" />
         <p class="">
           {{ getFeaturedPlace()?.startDate }} to
           {{ getFeaturedPlace()?.endDate }}
@@ -330,13 +330,13 @@ const showMoreAction = ref(false);
 
       <!-- last payed -->
       <div class="flex items-center gap-3">
-        <Icon name="carbon:calendar" class="h-5 w-5" />
+        <Icon name="carbon:calendar" class="w-5 h-5" />
         <p class="">Last payed: 2 days ago</p>
       </div>
 
       <!-- --------------------Award ----------------->
       <div v-if="place.shegerRecommendation" class="flex items-center gap-3">
-        <Icon name="uil:award-alt" class="h-5 w-5" />
+        <Icon name="uil:award-alt" class="w-5 h-5" />
         <p class="">{{ place.shegerRecommendation?.title }}</p>
       </div>
     </div>

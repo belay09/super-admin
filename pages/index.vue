@@ -153,7 +153,7 @@ const handleLogin = () => {
 			class="flex-[30%] bg-primary-600 flex flex-col items-center justify-center px-10"
 		>
 			<img src="/images/static/admin_login.png" alt="image" />
-			<p class="text-4xl text-white capitalize">Sheger gebete Administrator</p>
+			<p class="text-4xl text-white capitalize">Sheger gebeta Administrator</p>
 		</div>
 
 		<!-----------------------------------Right side ------------------------------->

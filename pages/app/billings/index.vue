@@ -19,6 +19,7 @@ const sort = ref([{ name: "desc" }]);
 const offset = ref(0);
 const limit = ref(7);
 const length = ref(100);
+const selectedBill = ref();
 
 const headers = [
 	{
@@ -151,7 +152,12 @@ definePageMeta({
 </script>
 
 <template>
-	<ModalsBillingInvoice :id="3" v-model="openBillingModal" />
+	<ModalsBillingInvoice
+		@refetch="billingReFetch"
+		:id="selectedBill"
+		v-model="openBillingModal"
+		v-if="openBillingModal"
+	/>
 
 	<div class="w-full py-6 pl-10 pr-16">
 		<!-- ---------search and filter--------- -->
@@ -174,9 +180,12 @@ definePageMeta({
 			</div>
 
 			<div class="flex items-center gap-x-4">
-				<button class="text-white primary-button bg-primary-600">
+				<NuxtLink
+					to="/app/billings/create-payment"
+					class="text-white primary-button bg-primary-600"
+				>
 					Create new
-				</button>
+				</NuxtLink>
 				<NuxtLink
 					class="px-4 border rounded-md primary-button text-gray-950 border-primary-600"
 					to="/app/billings/pricing"
@@ -208,6 +217,7 @@ definePageMeta({
 					<template v-slot:action="{ item }">
 						<Menu @click.stop="dum = !dum" as="div" class="relative">
 							<MenuButton
+								@click="selectedBill = item.id"
 								class="-m-4 flex justify-center w-12 h-12 group-hover hover:bg-gray-100 rounded-full items-center p-1.5"
 							>
 								<Icon name="fontisto:more-v" class="text-xl text-gray-950" />
