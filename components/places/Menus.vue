@@ -70,7 +70,11 @@ const showAddMenuModal = ref(false);
 
 <template>
   <!-- -------------------Add Menu--------------------- -->
-  <Modals-Modal :autoClose="true" v-model="showAddMenuModal">
+  <Modals-Modal
+    body-class="!w-[80rem]"
+    :autoClose="true"
+    v-model="showAddMenuModal"
+  >
     <template #header>
       <div class="flex items-center justify-between pb-4 px-10">
         <h3 class="text-lg font-medium text-gray-900">Add Menu Item</h3>

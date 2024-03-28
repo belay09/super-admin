@@ -46,6 +46,7 @@ query getPlaces(
 
     # featured places
     featured_places {
+      isActive
       id
       endDate
       startDate

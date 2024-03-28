@@ -1,0 +1,38 @@
+query getSmsNotifications(
+  $filter: SmsNotificationsBoolExp
+  $order: [SmsNotificationsOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  smsNotifications(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    message
+
+    createdAt
+    status
+    targetGroup
+  }
+
+  total: smsNotificationsAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
+
+  draft: smsNotificationsAggregate(where: { status: { _eq: DRAFT } }) {
+    aggregate {
+      count
+    }
+  }
+
+  published: smsNotificationsAggregate(where: { status: { _eq: SENT } }) {
+    aggregate {
+      count
+    }
+  }
+}

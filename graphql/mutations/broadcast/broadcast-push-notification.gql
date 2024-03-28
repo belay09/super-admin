@@ -1,0 +1,11 @@
+mutation broadcastPushNotification(
+  $push_notification_id: Int!
+  $target_group: String!
+) {
+  broadcast_push_notifications(
+    push_notification_id: $push_notification_id
+    target_group: $target_group
+  ) {
+    status
+  }
+}

@@ -1,0 +1,8 @@
+mutation updatePushNotifications(
+  $id: bigint!
+  $input: PushNotificationsSetInput
+) {
+  updatePushNotificationsByPk(pkColumns: { id: $id }, _set: $input) {
+    id
+  }
+}

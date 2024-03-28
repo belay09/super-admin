@@ -1,0 +1,39 @@
+query getPushNotifications(
+  $filter: PushNotificationsBoolExp
+  $order: [PushNotificationsOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  pushNotifications(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    title
+    body
+    category
+    createdAt
+    status
+    targetGroup
+  }
+
+  total: pushNotificationsAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
+
+  draft: pushNotificationsAggregate(where: { status: { _eq: DRAFT } }) {
+    aggregate {
+      count
+    }
+  }
+
+  published: pushNotificationsAggregate(where: { status: { _eq: SENT } }) {
+    aggregate {
+      count
+    }
+  }
+}

@@ -8,3 +8,6 @@ dist-ssr
 .output
 task.txt
 
+pages/test.vue
+```
+

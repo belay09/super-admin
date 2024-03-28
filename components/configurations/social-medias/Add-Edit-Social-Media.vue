@@ -130,15 +130,6 @@ watchEffect(() => {
         class="text-3xl text-red-600"
       />
     </button>
-
-    <button
-      v-if="!isAdd"
-      @click="emit('showAdd')"
-      class="primary-button block lg:px-8 mb-1 w-36 border"
-      type="button"
-    >
-      Add New
-    </button>
   </form>
   <!-- ----------------Modal---------------- -->
   <Common-UploadSvg

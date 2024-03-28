@@ -128,5 +128,6 @@ assignError((error) => {
         class="w-[40%] object-cover object-center rounded-t-lg h-36 py-4"
       />
     </div>
+    <div class="text-xl font-medium" v-else>No badge is selected</div>
   </div>
 </template>

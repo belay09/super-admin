@@ -1,66 +1,42 @@
 <script setup>
-import placesQuery from "@/graphql/query/places/list.gql";
+import listQuery from "@/graphql/query/broadcast/push-notification-categories.gql";
 import useNotify from "@/use/notify";
 
 /**-----------------Global Variables--------------------------- */
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
   modelValue: {
-    type: Number,
-  },
-  type: {
     type: String,
   },
 });
 
 const { notify } = useNotify();
 
-/***---------------------Place data fetch--------------------- */
-const places = ref([]);
-const place = ref(props.modelValue);
-const limit = ref(100);
-const length = ref(0);
-const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
-const offset = ref(0);
+/*---------------------------Place Places---------------------------**/
+const items = ref([]);
 const search = ref("");
+const item = ref(props.modelValue);
 
-/**-------------------Compute filter---------------- */
 const filter = computed(() => {
-  let query = {};
-  query._and = [
-    {
-      name: {
-        _ilike: `%${search.value}%`,
-      },
+  let query = {
+    name: {
+      _ilike: `%${search.value}%`,
     },
-    {
-      status: {
-        _eq: "ACTIVE",
-      },
-    },
-  ];
-  if (props.type) {
-    query._and.push({
-      type: {
-        _eq: props.type,
-      },
-    });
-  }
+  };
 
   return query;
 });
 
 const { onResult, onError, loading, refetch } = authListQuery(
-  placesQuery,
+  listQuery,
   filter,
-  sort,
-  offset,
-  limit
+  [{}],
+  0,
+  100
 );
 onResult((result) => {
-  if (result.data?.places) {
-    places.value = result.data.places;
-    length.value = result.data.placesAggregate?.aggregate?.count;
+  if (result.data?.broadcastMessageCategories) {
+    items.value = result.data.broadcastMessageCategories;
   }
 });
 
@@ -72,7 +48,6 @@ onError((error) => {
     borderClass: "border-l-8 border-red-300",
   });
 });
-
 function makeSearch(value) {
   search.value = value;
 }
@@ -80,12 +55,12 @@ function makeSearch(value) {
 watch(
   () => props.modelValue,
   (value) => {
-    place.value = value;
+    item.value = value;
   }
 );
 
 watch(
-  () => place.value,
+  () => item.value,
   (value) => {
     emit("update:modelValue", value);
   }
@@ -94,13 +69,13 @@ watch(
 
 <template>
   <H-SingleSelectWithSearch
-    :items="places"
-    v-model="place"
+    :items="items"
+    v-model="item"
     @search="makeSearch"
-    id="place"
-    name="place"
-    label="Place"
+    id="category"
+    name="category"
     rules="required"
+    label="Category"
     :loading="loading"
   ></H-SingleSelectWithSearch>
 </template>

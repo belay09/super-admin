@@ -43,7 +43,7 @@ const handleAdd = (addInput) => {
 onDone(() => {
   refetch();
   notify({
-    title: "Social Media added successfully",
+    title: "Social Media added ",
     description: "Social Media added successfully",
     type: "error",
     borderClass: "border-l-8 border-green-300",
@@ -73,7 +73,7 @@ const handleDelete = (id) => {
 deleteDone(() => {
   refetch();
   notify({
-    title: "Social Media deleted successfully",
+    title: "Social Media deleted ",
     description: "Social Media deleted successfully",
     type: "error",
     borderClass: "border-l-8 border-green-300",
@@ -153,8 +153,8 @@ editDone(() => {
   refetch();
 
   notify({
-    title: "Social Media edited successfully",
-    description: "Social Media edited successfully",
+    title: "Social Media updated ",
+    description: "Social Media updated successfully",
     type: "error",
     borderClass: "border-l-8 border-green-300",
   });
@@ -227,6 +227,8 @@ getError((error) => {
         v-else
         :items="items"
         :has-icon="true"
+        :isAdd="isAdd"
+        @addItem="isAdd = true"
         @deleteItem="handleDelete"
         @editItem="editSocialMedia"
       ></Configurations-List>

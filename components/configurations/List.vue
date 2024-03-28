@@ -1,5 +1,5 @@
 <script setup>
-const emit = defineEmits(["deleteItem", "editItem"]);
+const emit = defineEmits(["deleteItem", "editItem", "addItem"]);
 
 const props = defineProps({
   items: {
@@ -9,6 +9,10 @@ const props = defineProps({
   hasIcon: {
     type: Boolean,
     default: false,
+  },
+  isAdd: {
+    type: Boolean,
+    default: true,
   },
 });
 </script>
@@ -40,6 +44,12 @@ const props = defineProps({
             <Icon name="uil:trash-alt" class="w-10" />
           </button>
         </div>
+        <button @click="emit('addItem')" v-if="!isAdd">
+          <Icon
+            name="icon-park-outline:add-one"
+            class="text-3xl text-primary-600"
+          />
+        </button>
       </div>
     </div>
   </div>

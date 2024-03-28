@@ -1,0 +1,5 @@
+mutation insertSmsNotification($input: SmsNotificationsInsertInput!) {
+  insertSmsNotificationsOne(object: $input) {
+    id
+  }
+}

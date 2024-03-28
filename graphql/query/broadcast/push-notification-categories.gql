@@ -1,0 +1,16 @@
+query getPushNotificationsCategory(
+  $filter: BroadcastMessageCategoriesBoolExp
+  $order: [BroadcastMessageCategoriesOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  broadcastMessageCategories(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id: name
+    name
+  }
+}

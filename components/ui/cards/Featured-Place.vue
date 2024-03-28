@@ -40,12 +40,12 @@ function featuredPlaceValue(value) {
 	} else if (value === "WEEKLY_RECOMMENDED_PLACE") {
 		return {
 			name: "Recommendation",
-			class: "text-[#9747FF]",
+			class: "text-[#47FF6F]",
 		};
 	} else if (value === "SEASONAL_PLACE") {
 		return {
 			name: "Seasonal",
-			class: "text-[#477BFF]",
+			class: "text-[#47FF6F]",
 		};
 	}
 }
@@ -130,6 +130,11 @@ onMounted(() => {
 		) || props.place.placeLocations[0];
 });
 
+// place detail page
+function gotoDetailPage() {
+	router.push(`/app/places/${props.place.id}`);
+}
+
 /***-----------------Modals--------------------------- */
 const showExtendEndDateModal = ref(false);
 const showRemoveFromFeaturedModal = ref(false);
@@ -138,7 +143,7 @@ const showMoreAction = ref(false);
 <template>
 	<!-- -------------------Extend end date modal--------------- -->
 	<Modals-Modal
-		body-class="!w-[30rem]"
+		body-class="!max-w-[30rem]"
 		:autoClose="true"
 		:modelValue="showExtendEndDateModal"
 	>
@@ -236,10 +241,10 @@ const showMoreAction = ref(false);
 							<div
 								ref="featureActionsContainer"
 								v-if="showMoreAction"
-								class="absolute left-0 flex flex-col p-5 bg-white rounded-lg shadow-xl top-7 w-72 gap-y-4"
+								class="absolute top-7 left-0 w-72 flex flex-col gap-y-4 shadow-xl bg-white rounded-lg p-5"
 							>
 								<div
-									class="flex items-center gap-3"
+									class="flex gap-3 items-center"
 									@click="showExtendEndDateModal = true"
 								>
 									<Icon
@@ -250,7 +255,7 @@ const showMoreAction = ref(false);
 								</div>
 								<button
 									@click="showRemoveFromFeaturedModal = true"
-									class="flex items-center gap-3"
+									class="flex gap-3 items-center"
 								>
 									<Icon
 										name="heroicons:minus-16-solid"
@@ -265,17 +270,18 @@ const showMoreAction = ref(false);
 					</div>
 					<!-- status -->
 					<div class="flex flex-wrap gap-x-4 gap-y-2">
-						<div class="px-2 py-1 rounded-sm bg-primary-100">
-							<p class="font-medium capitalize text-primary-600">
+						<div class="bg-blue-300 px-2 py-1 rounded-sm">
+							<p class="text-primary-600 font-medium capitalize">
 								{{ place.type?.toLowerCase() }}
 							</p>
 						</div>
 						<div
 							v-for="featuredType in place?.featured_places"
-							class="px-2 py-1 bg-gray-100 rounded-sm"
+							class="px-2 py-1 rounded-sm"
 							:class="
-								featuredPlaceValue(featuredType.featured_place_type?.value)
-									.class
+								featuredType.isActive
+									? 'bg-green-200 text-primary-600'
+									: 'bg-primary-100 text-primary-600'
 							"
 						>
 							<p class="font-medium">
@@ -299,7 +305,7 @@ const showMoreAction = ref(false);
 			></CommonReviewRatingLike>
 			<!-------------------- Location------------------ -->
 			<div v-if="mainLocation" class="flex items-center gap-3">
-				<Icon name="carbon:map" class="w-5 h-5" />
+				<Icon name="carbon:map" class="h-5 w-5" />
 
 				<span class="underline decoration-sheger_brown-200 leading"
 					>{{ mainLocation.area?.name }}, {{ mainLocation.city?.name }}</span

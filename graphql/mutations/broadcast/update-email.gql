@@ -1,0 +1,8 @@
+mutation updateEmailNotifications(
+  $id: bigint!
+  $input: EmailNotificationsSetInput
+) {
+  updateEmailNotificationsByPk(pkColumns: { id: $id }, _set: $input) {
+    id
+  }
+}

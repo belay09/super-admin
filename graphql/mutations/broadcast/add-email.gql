@@ -1,0 +1,5 @@
+mutation insertEmailNotification($input: EmailNotificationsInsertInput!) {
+  insertEmailNotificationsOne(object: $input) {
+    id
+  }
+}

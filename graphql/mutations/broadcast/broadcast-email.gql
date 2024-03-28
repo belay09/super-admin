@@ -1,0 +1,8 @@
+mutation broadCastEmail($email_message_id: Int!, $target_group: String!) {
+  broadcast_email(
+    email_message_id: $email_message_id
+    target_group: $target_group
+  ) {
+    status
+  }
+}

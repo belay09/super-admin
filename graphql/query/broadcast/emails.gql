@@ -1,0 +1,39 @@
+query getEmailNotifications(
+  $filter: EmailNotificationsBoolExp
+  $order: [EmailNotificationsOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  emailNotifications(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    title
+    body
+    category
+    createdAt
+    status
+    targetGroup
+  }
+
+  total: emailNotificationsAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
+
+  draft: emailNotificationsAggregate(where: { status: { _eq: DRAFT } }) {
+    aggregate {
+      count
+    }
+  }
+
+  published: emailNotificationsAggregate(where: { status: { _eq: SENT } }) {
+    aggregate {
+      count
+    }
+  }
+}

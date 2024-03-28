@@ -1,101 +1,103 @@
 query getReview($id: bigint!) {
-	reviewsByPk(id: $id) {
-		id
-		title
-		youtubeVideoUrl
-		reviewedBy
+  reviewsByPk(id: $id) {
+    id
+    title
+    youtubeVideoUrl
+    tiktokUrl
+    instagramUrl
+    reviewedBy
 
-		description
-		view_count
+    description
+    view_count
 
-		description
+    description
 
-		# place
-		place {
-			shegerRecommendationId
-			id
+    # place
+    place {
+      shegerRecommendationId
+      id
 
-			status
-			name
-			dark_logo {
-				url
-			}
-			light_logo {
-				url
-			}
-			featuredReviewMediaUrl {
-				url
-			}
-			# locations
-			placeLocations {
-				id
-				location
-				isMainLocation
-				area {
-					name
-				}
-				city {
-					name
-				}
-			}
-		}
+      status
+      name
+      dark_logo {
+        url
+      }
+      light_logo {
+        url
+      }
+      featuredReviewMediaUrl {
+        url
+      }
+      # locations
+      placeLocations {
+        id
+        location
+        isMainLocation
+        area {
+          name
+        }
+        city {
+          name
+        }
+      }
+    }
 
-		placeLocationId
+    placeLocationId
 
-		# tags
-		review_tags {
-			tag {
-				id
-				title
-				# icon {
-				#   darkIconUrl
-				#   lightIconUrl
-				# }
-			}
-		}
+    # tags
+    review_tags {
+      tag {
+        id
+        title
+        # icon {
+        #   darkIconUrl
+        #   lightIconUrl
+        # }
+      }
+    }
 
-		# review aggregate
-		review_aggregate_summary {
-			avgRating
-			sumLikes
-		}
+    # review aggregate
+    review_aggregate_summary {
+      avgRating
+      sumLikes
+    }
 
-		reviewAggregate: reviewReviewsAggregate {
-			aggregate {
-				count
-			}
-		}
-		featured_image {
-			url
-			id
-		}
-		# medias
-		review_medias {
-			id
-			media {
-				url
-			}
-		}
-		menu_reviews {
-			menu {
-				id
-				name: title
-			}
-		}
+    reviewAggregate: reviewReviewsAggregate {
+      aggregate {
+        count
+      }
+    }
+    featured_image {
+      url
+      id
+    }
+    # medias
+    review_medias {
+      id
+      media {
+        url
+      }
+    }
+    menu_reviews {
+      menu {
+        id
+        name: title
+      }
+    }
 
-		# review drink
-		review_drink {
-			id
-			drink {
-				description
-				id
-				image
-				price
-				title
-				media {
-					url
-				}
-			}
-		}
-	}
+    # review drink
+    review_drink {
+      id
+      drink {
+        description
+        id
+        image
+        price
+        title
+        media {
+          url
+        }
+      }
+    }
+  }
 }
