@@ -241,7 +241,7 @@ const menuUpdatedAt = computed(() => {
           <div>
             <p class="primary-text lg:text-base">Preparation Time</p>
             <p class="primary-text lg:text-base">
-              {{}} {{ menu.timeToPrepare }} Minutes
+              {{ menu.timeToPrepare }} Minutes
             </p>
           </div>
         </div>

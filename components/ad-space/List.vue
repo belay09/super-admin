@@ -39,6 +39,8 @@ const placeTypeItems = ref([
 /*...................Aggregate data fetch.............*/
 
 const orderBy = ref([{}]);
+const length = ref(0);
+
 const {
   onResult: aggregateOnResult,
   onError: aggregateOnError,
@@ -51,6 +53,7 @@ aggregateOnResult((result) => {
     placeTypeItems.value.forEach((placeType) => {
       placeType.total = result.data?.[placeType.id]?.aggregate?.count;
     });
+    length.value = result.data?.totalPlaces?.aggregate?.count;
   }
 });
 aggregateOnError((error) => {
@@ -67,7 +70,6 @@ aggregateOnError((error) => {
 const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
 const placeAds = ref([]);
 const limit = ref(100);
-const length = ref(0);
 const search = ref("");
 const offset = ref(0);
 
@@ -153,7 +155,7 @@ watch(
         @click="placeType = 'All'"
         class="text-2xl font-medium hover:cursor-pointer"
       >
-        4 Ads Running
+        {{ length }} Ads Running
       </h3>
       <div class="secondary-flex-row">
         <H-Textfield

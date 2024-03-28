@@ -57,6 +57,38 @@ aggregateOnError((error) => {
 });
 
 /***---------------------Places data fetch--------------------- */
+
+const placeSortItems = ref([
+  {
+    name: "Name",
+    levels: ["name"],
+  },
+
+  {
+    name: "View",
+    levels: ["view_count"],
+  },
+  {
+    name: "Rating",
+    levels: ["place_aggregate_summary", "avgRating"],
+  },
+  {
+    name: "Like",
+    levels: ["place_aggregate_summary", "sumLikes"],
+  },
+
+  {
+    name: "Price",
+    levels: ["place_aggregate_summary", "avgDishPrice"],
+  },
+
+  {
+    name: "Created At",
+    levels: ["createdAt"],
+  },
+]);
+
+const selectedSort = ref("Created At");
 const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
 const places = ref([]);
 const limit = ref(16);
@@ -149,12 +181,12 @@ definePageMeta({
             trailing-icon="uil:search"
             v-model="search"
           ></H-Textfield>
-          <div class="px-4 py-3 border rounded-md">
-            <Icon
-              name="heroicons-outline:adjustments"
-              class="z-30 text-2xl cursor-pointer"
-            />
-          </div>
+          <!------------------------- sort -------------------------->
+          <H-Sort
+            v-model:selected="selectedSort"
+            v-model="sort"
+            :items="placeSortItems"
+          ></H-Sort>
         </div>
       </div>
     </div>

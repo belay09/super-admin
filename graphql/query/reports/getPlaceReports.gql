@@ -22,6 +22,7 @@ query GetPlaceReviewReports(
     place_review {
       place {
         name
+        id
       }
       user {
         id

@@ -52,6 +52,13 @@ query getPlace($id: bigint!, $include: Boolean = false) {
       }
     }
 
+    # place reviews
+    reviews {
+      id
+      title
+      youtubeVideoUrl
+    }
+
     # video  media
     featuredReviewMediaUrl {
       url

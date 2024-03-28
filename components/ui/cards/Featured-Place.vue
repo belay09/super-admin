@@ -7,6 +7,7 @@ const { handleSubmit, isSubmitting } = useForm({});
 
 /**------------------------Globals------------------------- */
 const { notify } = useNotify();
+const router = useRouter();
 const emit = defineEmits(["toggleSelect", "edit"]);
 const props = defineProps({
   place: {
@@ -52,8 +53,9 @@ function featuredPlaceValue(value) {
 
 /**---------------------------Select place to make it featured-------------- */
 const isSelected = ref(false);
-function makePlaceFeatured() {
+function handleCardClick() {
   if (!props.isAdd) {
+    router.push(`/app/places/${props.place.id}`);
     return;
   }
   isSelected.value = !isSelected.value;
@@ -130,11 +132,6 @@ onMounted(() => {
     ) || props.place.placeLocations[0];
 });
 
-// place detail page
-function gotoDetailPage() {
-  router.push(`/app/places/${props.place.id}`);
-}
-
 /***-----------------Modals--------------------------- */
 const showExtendEndDateModal = ref(false);
 const showRemoveFromFeaturedModal = ref(false);
@@ -204,7 +201,7 @@ const showMoreAction = ref(false);
   ></ModalsConfirmation>
   <!-- -----------------------Card---------------- -->
   <div
-    @click="makePlaceFeatured"
+    @click="handleCardClick"
     class="flex flex-col border max-w-lg p-[25px] rounded-xl text-sm hover:cursor-pointer"
     :class="isSelected ? 'border-primary-600' : ''"
   >

@@ -16,10 +16,27 @@ const route = useRoute();
 const router = useRouter();
 
 /**----------------------------------Place menu-------------------- */
-const filter = ref({
-  placeId: {
-    _eq: props.place.id,
-  },
+/*...................Place menus which are attached to review data fetch.............*/
+const filter = computed(() => {
+  let query = {};
+  query._and = [
+    {
+      placeId: {
+        _eq: props.place.id,
+      },
+    },
+    {
+      menu_reviewsAggregate: {
+        count: {
+          predicate: {
+            _gt: 0,
+          },
+        },
+      },
+    },
+  ];
+
+  return query;
 });
 const limit = ref(6);
 const offset = ref(0);
@@ -385,13 +402,11 @@ const openUploadFilesModal = ref(false);
         <button class="px-4 py-2 rounded-md secondary-border">View Menu</button>
       </div>
       <!-- ------------------Sheger video------------------ -->
-      <div>
-        <img
-          src="/images/temporary/sheger-review-video-small.png"
-          class="object-cover object-center w-full"
-          alt="Video image"
-        />
-      </div>
+
+      <ShegerReviewsReviewVideo
+        v-if="place.reviews.length > 0"
+        :video-url="place.reviews[0].youtubeVideoUrl"
+      />
 
       <!-- --------------Gallery and upload image---------------- -->
       <div>

@@ -44,6 +44,16 @@ query getMenus(
       # }
     }
 
+    # reviews
+    menu_reviews {
+      id
+      review {
+        id
+        title
+        placeId
+      }
+    }
+
     # last update
     last_updated_menus(orderBy: [{ lastUpdate: DESC_NULLS_LAST }], limit: 1) {
       id
