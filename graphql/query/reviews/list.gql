@@ -1,64 +1,72 @@
 query getReviews(
-	$filter: ReviewsBoolExp
-	$order: [ReviewsOrderBy!]
-	$limit: Int
-	$offset: Int
+  $filter: ReviewsBoolExp
+  $order: [ReviewsOrderBy!]
+  $limit: Int
+  $offset: Int
 ) {
-	reviews(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
-		id
-		title
-		reviewedBy
-		updatedAt
+  reviews(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+    id
+    title
+    reviewedBy
+    updatedAt
 
-		# review place
-		place {
-			id
-			name
-			status
-			type
-			light_logo {
-				url
-			}
-		}
+    # review place
+    place {
+      id
+      name
+      status
+      type
+      light_logo {
+        url
+      }
+    }
 
-		# review tags
-		review_tags {
-			id
-			tag {
-				id
-				title
-			}
-		}
-		# review aggregate
-		review_aggregate_summary {
-			avgRating
-			sumLikes
-		}
-		reviewAggregate: reviewReviewsAggregate {
-			aggregate {
-				count
-			}
-		}
+    # review tags
+    review_tags {
+      id
+      tag {
+        id
+        title
+      }
+    }
 
-		# review feautured media
+    # menu reviews
+    menu_reviews {
+      menu {
+        id
+        title
+      }
+    }
+    # review aggregate
+    review_aggregate_summary {
+      avgRating
+      sumLikes
+    }
+    reviewAggregate: reviewReviewsAggregate {
+      aggregate {
+        count
+      }
+    }
 
-		featured_image {
-			url
-		}
-		# review medias
+    # review featured media
 
-		review_medias {
-			media {
-				url
-			}
-		}
-	}
+    featured_image {
+      url
+    }
+    # review medias
 
-	# Review aggregate
+    review_medias {
+      media {
+        url
+      }
+    }
+  }
 
-	reviewsAggregate(where: $filter) {
-		aggregate {
-			count
-		}
-	}
+  # Review aggregate
+
+  reviewsAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
 }

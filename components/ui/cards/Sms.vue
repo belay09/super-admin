@@ -56,7 +56,7 @@ const {
 
 publishDone(() => {
   refetchNotifications();
-  isPublish.value = false;
+
   notify({
     title: "Sms Notification Published",
     description: "Sms Notification published successfully",

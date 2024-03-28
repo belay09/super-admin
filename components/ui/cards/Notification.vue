@@ -56,7 +56,6 @@ const {
 } = authMutation(publishMutation);
 
 publishDone(() => {
-  isPublish.value = false;
   notify({
     title: "Push Notification Published",
     description: "Push Notification published successfully",
@@ -64,7 +63,6 @@ publishDone(() => {
     borderClass: "border-l-8 border-green-300",
   });
   refetchNotifications();
-  open.value = false;
 });
 
 publishError((error) => {

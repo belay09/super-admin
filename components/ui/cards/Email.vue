@@ -54,13 +54,13 @@ const {
 } = authMutation(publishMutation);
 
 publishDone(() => {
-  isPublish.value = false;
   notify({
     title: "Email Notification Published",
     description: "Email Notification published successfully",
     type: "error",
     borderClass: "border-l-8 border-green-300",
   });
+  refetchNotifications();
 });
 
 publishError((error) => {

@@ -255,7 +255,7 @@ function openMoreAction(event) {
           <!-- Name -->
           <div class="flex justify-between">
             <h1 class="text-xl font-medium">{{ place.name }}</h1>
-            <!-- Option Icon -->
+            <!-- --------Option Icon and Actions ------------- -->
 
             <div class="relative">
               <button @click="openMoreAction" class="hover:cursor-pointer">

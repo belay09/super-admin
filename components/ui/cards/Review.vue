@@ -7,6 +7,7 @@ import useNotify from "@/use/notify";
 import { onClickOutside } from "@vueuse/core";
 
 /**-------------------------Globals------------------------- */
+const router = useRouter();
 const { notify } = useNotify();
 const props = defineProps({
   featured: {
@@ -19,11 +20,10 @@ const props = defineProps({
   },
 });
 
-/**--------------------------Review updated at-------------------------- */
-const formatDate = (date) => {
-  return formatRelative(new Date(date), new Date());
-};
+const reviewRefetch = inject("refetchReview");
+const reviewAggregateRefetch = inject("refetchAggregate");
 
+/**---------------------Place status----------------------- */
 function placeStatus(status) {
   if (status == "ACTIVE") {
     return {
@@ -48,8 +48,6 @@ function placeStatus(status) {
   }
 }
 
-const reviewRefetch = inject("refetchReview");
-const reviewAggregateRefetch = inject("refetchAggregate");
 /**-------------------------update review status------------------------- */
 const {
   mutate: editMutate,
@@ -128,15 +126,14 @@ const toggleRemoveModal = ref(false);
 
   <div
     @click="$router.push(`/app/sheger-reviews/${review.id}`)"
-    class="flex cursor-pointer flex-col border w-[397px] p-[25px] rounded-xl m-4 text-sm"
+    class="flex cursor-pointer flex-col border w-[28rem] p-6 rounded-xl m-4 text-sm"
   >
-    <!-- Header -->
+    <!-- --------------------Card Header -------------->
     <div class="flex items-start justify-between">
       <div>
-        <p class="">ETB 350</p>
         <p class="text-xl font-medium">{{ review.title }}</p>
       </div>
-      <!-- Option Icon -->
+      <!-- -----------Option Icon and Actions ------------->
 
       <div class="relative">
         <div
@@ -196,9 +193,9 @@ const toggleRemoveModal = ref(false);
         </div>
       </div>
     </div>
-    <!-- Body -->
+    <!-- ---------------------Card Body ------------------->
     <div class="flex flex-col gap-4 my-2 text-sheger-gray-100">
-      <!-- Rating and like -->
+      <!-- ----Rating and like ------>
 
       <CommonReviewRatingLike
         :rating="review.review_aggregate_summary?.avgRating || 0"
@@ -206,49 +203,50 @@ const toggleRemoveModal = ref(false);
         :review="review.reviewAggregate?.aggregate?.count || 0"
       ></CommonReviewRatingLike>
 
-      <div class="flex items-center gap-5">
-        <!-- time to prepare  -->
-        <div class="flex items-center gap-3">
-          <Icon name="wi:time-3" class="w-5 h-5" />
-          <p class="">{{ 10 }} Minutes</p>
-        </div>
-        <div class="flex items-center gap-3">
-          <Icon name="quill:paper" class="w-5 h-5" />
-          <p class="">Food</p>
-        </div>
-      </div>
-      <!-- Tags -->
+      <!-- -----------------------Review Tags--------------- -->
       <div class="flex flex-wrap pb-4 secondary-text">
         <p
           v-for="reviewTag in review.review_tags"
           :key="reviewTag.tag.id"
-          class="pr-2"
+          class="pr-2 capt"
         >
           #{{ reviewTag.tag.title }}
         </p>
       </div>
-      <!-- Description -->
-      <div v-if="review.sides != null" class="text-sm">
-        {{ review.sides }}
+
+      <!-- -----------------------Review menus--------------- -->
+      <div class="flex flex-wrap pb-4 secondary-text">
+        <p
+          v-for="reviewMenu in review.menu_reviews"
+          :key="reviewMenu.menu.id"
+          class="pr-2 capitalize"
+        >
+          {{ reviewMenu.menu.title }}
+        </p>
       </div>
+
+      <!-- ----------------------Review place-------------- -->
+
       <div class="flex w-full gap-3">
-        <!-- Logo -->
         <div class="h-20 mr-1 w-28">
-          <!-- Image -->
+          <!-- --------------------Logo------------------ -->
           <img
             :src="review.place.light_logo?.url"
             alt=""
             class="object-cover object-center w-full h-full rounded-xl"
           />
         </div>
-        <!-- Middle -->
+        <!-- -----------------------Place name and  status--------------- -->
         <div class="flex flex-col w-full gap-2">
-          <!-- Name -->
+          <!-- ---------Name ------->
           <div class="flex justify-between">
             <h1 class="text-xl font-medium">{{ review.place.name }}</h1>
           </div>
-          <!-- status -->
-          <div class="flex gap-4">
+          <!-- ---------Status---- -->
+          <div
+            @click.stop="router.push('/app/places/' + review.place?.id)"
+            class="flex gap-4"
+          >
             <div
               class="px-2 py-1"
               :class="placeStatus(review.place.status).class"
@@ -263,16 +261,6 @@ const toggleRemoveModal = ref(false);
               </p>
             </div>
           </div>
-        </div>
-      </div>
-      <!-- menu update -->
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <Icon name="carbon:calendar" class="w-5 h-5" />
-          <p class="">Last updated: {{ formatDate(review.updatedAt) }}</p>
-        </div>
-        <div class="cursor-pointer">
-          <Icon name="lets-icons:video-light" class="w-8 h-8" />
         </div>
       </div>
     </div>
