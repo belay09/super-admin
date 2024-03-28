@@ -82,6 +82,7 @@ watch(
     placeholder="Select Reviewer"
     name="reviewer"
     label="Select Reviewer"
+    rules="required"
     :loading="loading"
   ></HSingleSelectWithSearch>
 </template>

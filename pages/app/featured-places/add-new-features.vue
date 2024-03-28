@@ -83,11 +83,11 @@ const filter = computed(() => {
     {
       featured_places: {
         _and: [
-          {
-            isActive: {
-              _eq: true,
-            },
-          },
+          // {
+          //   isActive: {
+          //     _eq: true,
+          //   },
+          // },
           {
             featured_place_type: {
               value: {

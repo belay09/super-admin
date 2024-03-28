@@ -100,6 +100,7 @@ watch(
     id="place"
     name="place"
     label="Place"
+    rules="required"
     :loading="loading"
   ></H-SingleSelectWithSearch>
 </template>

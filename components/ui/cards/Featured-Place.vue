@@ -40,12 +40,12 @@ function featuredPlaceValue(value) {
   } else if (value === "WEEKLY_RECOMMENDED_PLACE") {
     return {
       name: "Recommendation",
-      class: "text-[#9747FF]",
+      class: "text-[#47FF6F]",
     };
   } else if (value === "SEASONAL_PLACE") {
     return {
       name: "Seasonal",
-      class: "text-[#477BFF]",
+      class: "text-[#47FF6F]",
     };
   }
 }
@@ -130,6 +130,11 @@ onMounted(() => {
     ) || props.place.placeLocations[0];
 });
 
+// place detail page
+function gotoDetailPage() {
+  router.push(`/app/places/${props.place.id}`);
+}
+
 /***-----------------Modals--------------------------- */
 const showExtendEndDateModal = ref(false);
 const showRemoveFromFeaturedModal = ref(false);
@@ -138,7 +143,7 @@ const showMoreAction = ref(false);
 <template>
   <!-- -------------------Extend end date modal--------------- -->
   <Modals-Modal
-    body-class="w-[30rem]"
+    body-class="!max-w-[30rem]"
     :autoClose="true"
     :modelValue="showExtendEndDateModal"
   >
@@ -265,17 +270,18 @@ const showMoreAction = ref(false);
           </div>
           <!-- status -->
           <div class="flex flex-wrap gap-x-4 gap-y-2">
-            <div class="bg-primary-100 px-2 py-1 rounded-sm">
+            <div class="bg-blue-300 px-2 py-1 rounded-sm">
               <p class="text-primary-600 font-medium capitalize">
                 {{ place.type?.toLowerCase() }}
               </p>
             </div>
             <div
               v-for="featuredType in place?.featured_places"
-              class="bg-gray-100 px-2 py-1 rounded-sm"
+              class="px-2 py-1 rounded-sm"
               :class="
-                featuredPlaceValue(featuredType.featured_place_type?.value)
-                  .class
+                featuredType.isActive
+                  ? 'bg-green-200 text-primary-600'
+                  : 'bg-primary-100 text-primary-600'
               "
             >
               <p class="font-medium">

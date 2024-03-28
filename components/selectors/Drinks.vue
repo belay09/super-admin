@@ -87,5 +87,6 @@ watch(
     name="drink"
     label="Drinks"
     :loading="loading"
+    rules="required"
   ></H-SingleSelectWithSearch>
 </template>

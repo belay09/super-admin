@@ -172,6 +172,8 @@ getError((error) => {
         v-else
         :items="items"
         :has-icon="false"
+        :is-add="isAdd"
+        @addItem="isAdd = true"
         @deleteItem="handleDelete"
         @editItem="editAmbiance"
       ></Configurations-List>

@@ -151,6 +151,20 @@ const handleAddMenu = handleSubmit(() => {
             </template>
           </HTextfield>
 
+          <!----------------------------------------Preparation Time (Minutes)---------------------------------------->
+
+          <HTextfield
+            type="number"
+            name="Preparation Time"
+            class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
+            rules="required"
+            v-model="menuPreparationTime"
+          >
+            <template #label>
+              <p class="text-sheger-gray-100">Preparation Time (Minutes)</p>
+            </template>
+          </HTextfield>
+
           <!----------------------------------------images Upload---------------------------------------->
           <p class="mb-2 text-sheger-gray-100">Upload images</p>
 
@@ -188,20 +202,6 @@ const handleAddMenu = handleSubmit(() => {
         <!-- -----------------------Right---------------------------------------- -->
 
         <div class="flex flex-col gap-5">
-          <!----------------------------------------Preparation Time (Minutes)---------------------------------------->
-
-          <HTextfield
-            type="number"
-            name="Preparation Time"
-            class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
-            rules="required"
-            v-model="menuPreparationTime"
-          >
-            <template #label>
-              <p class="text-sheger-gray-100">Preparation Time (Minutes)</p>
-            </template>
-          </HTextfield>
-
           <!----------------------------------------Menu Type---------------------------------------->
 
           <LazyHSingleSelect

@@ -101,10 +101,13 @@ function uploadDone() {}
 const thumbnail = computed({
   get() {
     if (props.thumbnails && props.thumbnails != "") {
+      emit("update:thumbnails", props.thumbnails);
       return props.thumbnails;
-    } else if (props.thumbnails && props.modelValue.length > 0) {
+    } else if (props.modelValue.length > 0) {
+      emit("update:thumbnails", props.modelValue[0]);
       return props.modelValue[0];
     } else {
+      emit("update:thumbnails", "");
       return "";
     }
   },

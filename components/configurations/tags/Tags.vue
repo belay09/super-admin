@@ -10,10 +10,10 @@ const { notify } = useNotify();
 
 /**-------------------------------Check weather add or edit--------------- */
 
-const isAddCategory = ref(true);
+const isAdd = ref(true);
 const category = ref(null);
 function editCategory(item) {
-  isAddCategory.value = false;
+  isAdd.value = false;
   category.value = item;
 }
 
@@ -36,8 +36,8 @@ const handleAdd = (addInput) => {
 onDone(() => {
   refetch();
   notify({
-    title: "Ad space added successfully",
-    description: "Ad space added successfully",
+    title: "Tag added",
+    description: "Tag added successfully",
     type: "error",
     borderClass: "border-l-8 border-green-300",
   });
@@ -66,8 +66,8 @@ const handleDelete = (id) => {
 deleteDone(() => {
   refetch();
   notify({
-    title: "Category deleted successfully",
-    description: "Category deleted successfully",
+    title: "Tag deleted",
+    description: "Tag deleted successfully",
     type: "error",
     borderClass: "border-l-8 border-green-300",
   });
@@ -147,8 +147,8 @@ editDone(() => {
   refetch();
 
   notify({
-    title: "Category edited successfully",
-    description: "Category edited successfully",
+    title: "Tag updated ",
+    description: "Tag edited successfully",
     type: "error",
     borderClass: "border-l-8 border-green-300",
   });
@@ -200,7 +200,7 @@ getError((error) => {
       <Configurations-Tags-AddEditTag
         @add="handleAdd"
         @edit="handleEdit"
-        :isAdd="isAddCategory"
+        :isAdd="isAdd"
         :item="category"
         :loading="loading || editLoading"
       ></Configurations-Tags-AddEditTag>
@@ -220,6 +220,8 @@ getError((error) => {
         v-else
         :items="items"
         :has-icon="true"
+        :is-add="isAdd"
+        @addItem="isAdd = true"
         @deleteItem="handleDelete"
         @editItem="editCategory"
       ></Configurations-List>

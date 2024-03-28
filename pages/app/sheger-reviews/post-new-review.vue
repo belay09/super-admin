@@ -36,10 +36,20 @@ const onSubmit = handleSubmit(() => {
     (image) => image !== selectedThumbnail.value
   );
 
+  if (images.value.length < 4) {
+    notify({
+      type: "error",
+      title: "Medias required",
+      description: "At least 4 medias are required",
+      borderClass: "border-l-8 border-red-300 ",
+    });
+
+    return;
+  }
+
   const review = ref({
     title: title.value,
     description: description.value,
-
     youtubeVideoUrl: youtubeVideoUrl.value,
     tiktokUrl: tiktokVideoUrl.value,
     instagramUrl: instagramVideoUrl.value,
@@ -118,9 +128,18 @@ definePageMeta({
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-medium">Post New Review</h1>
       <div class="font-medium text-white border primary-button bg-primary-600">
-        <button type="submit" form="addReview" class="mx-6">
-          <span v-if="!addReviewLoading">Post Now</span>
-          <Icon v-else name="eos-icons:bubble-loading" class="text-2xl" />
+        <button
+          :disabled="addReviewLoading"
+          type="submit"
+          form="addReview"
+          class="mx-6"
+        >
+          <span>Post Now</span>
+          <Icon
+            v-if="addReviewLoading"
+            name="eos-icons:bubble-loading"
+            class="text-2xl"
+          />
         </button>
       </div>
     </div>
@@ -168,6 +187,7 @@ definePageMeta({
           name="description"
           id="description"
           label="Description"
+          rules="required"
           v-model="description"
         />
 
@@ -182,7 +202,7 @@ definePageMeta({
         <!-- ------------------------------------You tube url ------------------------ -->
         <HTextfield
           type="text"
-          name="Video Url"
+          name="youtube"
           class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
           placeholder="https://www.youtube.com"
           rules="required"
@@ -196,7 +216,7 @@ definePageMeta({
 
         <HTextfield
           type="text"
-          name="Video Url"
+          name="instagram"
           class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
           placeholder="https://instagram.com"
           rules="required"
@@ -209,7 +229,7 @@ definePageMeta({
 
         <HTextfield
           type="text"
-          name="Video Url"
+          name="tiktok"
           class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
           placeholder="https://tiktok.com"
           rules="required"
@@ -227,7 +247,7 @@ definePageMeta({
         <HFileUploadWrapper
           name="file"
           :maxFileSize="1024 * 1024 * 10"
-          :fileLimit="3"
+          :fileLimit="20"
           folder="applications_form"
           description="upload file"
           placeholder="select multiple files"
@@ -237,6 +257,8 @@ definePageMeta({
           :showStar="false"
           v-model:thumbnails="selectedThumbnail"
         />
+
+        {{ selectedThumbnail }}
       </div>
     </form>
   </div>

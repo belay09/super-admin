@@ -44,7 +44,6 @@ onClickOutside(featureActionsContainer, (e) => (showMoreAction.value = false));
 /**----------------------Detail page-------------------------- */
 
 function gotoDetailPage() {
-  console.log("gotoDetailPage", props.place.id);
   router.push(`/app/places/${props.place.id}`);
 }
 

@@ -106,5 +106,6 @@ watch(
     name="PlaceLocation"
     label="Place Location"
     :loading="loading"
+    rules="required"
   ></H-SingleSelectWithSearch>
 </template>

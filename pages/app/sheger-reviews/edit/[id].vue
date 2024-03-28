@@ -105,6 +105,17 @@ const {
 } = authMutation(editReviewQuery);
 
 const onSubmit = handleSubmit(() => {
+  if (images.value?.length < 4) {
+    notify({
+      type: "error",
+      title: "Medias required",
+      description: "At least 4 medias are required",
+      borderClass: "border-l-8 border-red-300",
+    });
+
+    return;
+  }
+
   insertMedia({
     input: {
       url: selectedThumbnail.value,
@@ -221,9 +232,18 @@ definePageMeta({
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-medium">Update Review</h1>
       <div class="font-medium text-white border primary-button bg-primary-600">
-        <button form="addReview" type="submit" class="mx-6">
-          <span v-if="!editReviewLoading">Update Now</span>
-          <Icon v-else name="eos-icons:bubble-loading" class="text-2xl" />
+        <button
+          :disabled="editReviewLoading"
+          form="addReview"
+          type="submit"
+          class="mx-6"
+        >
+          <span>Update Now</span>
+          <Icon
+            v-if="editReviewLoading"
+            name="eos-icons:bubble-loading"
+            class="text-2xl"
+          />
         </button>
       </div>
     </div>
