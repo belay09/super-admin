@@ -1,0 +1,15 @@
+query priceCalulator($billingId: bigint!, $frequencyId: bigint!) {
+	billingsPricingPlanPriceCalculator(
+		args: {
+			place_billing_id: $billingId
+			pricing_plan_frequency_price_id: $frequencyId
+		}
+	) {
+		deduction
+		remainingBalance
+		subtotal
+		vat
+		total
+		withHolding
+	}
+}

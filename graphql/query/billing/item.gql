@@ -1,5 +1,5 @@
-query billingsPaymentsItem($id: bigint!) {
-	billingsPaymentsByPk(id: $id) {
+query billingsPaymentsItem($filter: bigint!) {
+	billingsPaymentsByPk(id: $filter) {
 		billingId
 		id
 		billing_address {

@@ -1,6 +1,10 @@
 <script setup>
 import getOneBillingQuery from "@/graphql/query/billing/item.gql";
-const emits = defineEmits(["update:modelValue"]);
+import updateBillingMutation from "@/graphql/mutations/billing/edit.gql";
+import useNotify from "@/use/notify";
+
+const { notify } = useNotify();
+const emits = defineEmits(["update:modelValue", "refetch"]);
 
 const props = defineProps({
 	modelValue: {
@@ -12,18 +16,93 @@ const props = defineProps({
 		required: true,
 	},
 });
+const isVerified = ref(false);
+const isDeclined = ref(false);
+/*------------------------------------Fetch Billing Data------------------------*/
 
 const billing = ref(null);
+
 const {
 	onResult: billingOnResult,
 	onError: billingOnError,
 	loading: billingLoading,
-} = authItemQuery(getOneBillingQuery, props.id);
+	refetch: refetchBilling,
+} = authFetch(getOneBillingQuery, {
+	client: toRef("authClient"),
+	role: toRef("shegeradmin"),
+	filter: toRef(props.id),
+});
 
 billingOnResult((result) => {
 	if (result.data?.billingsPaymentsByPk) {
+		console.log(result.data.billingsPaymentsByPk);
 		billing.value = result.data.billingsPaymentsByPk;
 	}
+});
+
+billingOnError((err) => {
+	console.log("dbvb", err);
+});
+
+/*------------------------------------Update Billing Data------------------------*/
+
+const {
+	mutate: updatePayment,
+	onDone: updatePaymentDone,
+	loading: updatePaymentLoading,
+	onError: updatePaymentError,
+} = authMutation(updateBillingMutation);
+
+const verifyPayment = () => {
+	updatePayment({
+		id: props.id,
+		input: {
+			isVerified: true,
+			isDeclined: false,
+		},
+	});
+};
+
+const declinePayment = () => {
+	updatePayment({
+		id: props.id,
+		input: {
+			isVerified: false,
+			isDeclined: true,
+		},
+	});
+};
+
+updatePaymentDone(() => {
+	if (isVerified.value) {
+		notify({
+			title: "Payment Approved",
+			message: "Payment has been approved successfully",
+			type: "success",
+			borderClass: "border-l-8 border-green-300",
+		});
+	} else {
+		notify({
+			title: "Payment Declined",
+			message: "Payment has been declined successfully",
+			type: "success",
+			borderClass: "border-l-8 border-green-300",
+		});
+	}
+
+	emits("refetch");
+	isVerified.value = false;
+	isDeclined.value = false;
+	open.value = false;
+});
+
+updatePaymentError((error) => {
+	notify({
+		title: "Some thing went wrong",
+		message: error.message,
+		type: "error",
+		borderClass: "border-l-8 border-primary-300",
+	});
 });
 
 const open = computed({
@@ -31,13 +110,21 @@ const open = computed({
 		return props.modelValue;
 	},
 	set(newVal) {
+		if (!newVal) {
+			isVerified.value = false;
+			isDeclined.value = false;
+		}
 		emits("update:modelValue", newVal);
 	},
 });
 </script>
 
 <template>
-	<ModalsModal body-class="max-w-[1500px] !p-2 " v-model="open">
+	<ModalsModal
+		v-if="!billingLoading"
+		body-class="max-w-[1500px] !p-2 "
+		v-model="open"
+	>
 		<template #content>
 			<div class="w-full p-4">
 				<div class="grid grid-cols-5 gap-x-4">
@@ -279,19 +366,24 @@ const open = computed({
 								<span class="">Cancel</span>
 							</button>
 							<button
-								@click="open = false"
+								@click="[(isDeclined = true), declinePayment()]"
 								class="block w-full text-white bg-primary-600 primary-button secondary-border"
 							>
 								<Icon name="fluent-mdl2:entry-decline" class="text-2xl"></Icon>
 
-								<span class="">Decline</span>
+								<span class="">{{
+									updatePaymentLoading && isDeclined ? "Declining" : "Decline"
+								}}</span>
 							</button>
 							<button
+								@click="[(isVerified = true), verifyPayment()]"
 								class="block w-full text-white bg-green-700 primary-button"
 							>
 								<Icon name="heroicons:credit-card" class="text-2xl"></Icon>
 
-								<span class="">Approve</span>
+								<span class="">{{
+									updatePaymentLoading && isVerified ? "Approving" : "Approve"
+								}}</span>
 							</button>
 						</div>
 					</div>

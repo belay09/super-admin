@@ -210,6 +210,17 @@ function openMoreAction(event) {
 	event.stopPropagation();
 	showMoreAction.value = !showMoreAction.value;
 }
+
+function gotoEditPage(event) {
+	event.stopPropagation();
+
+	router.push({
+		path: `/app/places/edit/${props.place.id}`,
+		query: {
+			step: 0,
+		},
+	});
+}
 </script>
 
 <template>

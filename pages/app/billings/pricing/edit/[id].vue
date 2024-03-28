@@ -120,7 +120,7 @@ const onSubmit = handleSubmit(() => {
 						itemType: item.itemType,
 						title: item.title,
 						rules: {
-							limit: item.limit,
+							limit: parseInt(item.limit),
 						},
 					},
 				},

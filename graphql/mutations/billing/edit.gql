@@ -1,0 +1,7 @@
+mutation verifyPayment($id: bigint!, $input: BillingsPaymentsSetInput) {
+	updateBillingsPaymentsByPk(pkColumns: { id: $id }, _set: $input) {
+		isVerified
+		isDeclined
+		id
+	}
+}
