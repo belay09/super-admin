@@ -1,0 +1,32 @@
+query billingsPayments(
+	$filter: BillingsInvoicesBoolExp
+	$order: [BillingsInvoicesOrderBy!]
+	$limit: Int
+	$offset: Int
+) {
+	invoices: billingsInvoices(
+		where: $filter
+		orderBy: $order
+		limit: $limit
+		offset: $offset
+	) {
+		id
+		payment {
+			paymentMethod
+			billing_address {
+				place {
+					name
+				}
+			}
+			total
+			paymentDate
+			pricing_plan_frequency {
+				pricingPlan {
+					description
+					title
+				}
+				price
+			}
+		}
+	}
+}
