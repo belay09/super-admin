@@ -1,4 +1,5 @@
 <script setup>
+import { useFullscreen } from "@vueuse/core";
 import getOneBillingQuery from "@/graphql/query/billing/item.gql";
 import updateBillingMutation from "@/graphql/mutations/billing/edit.gql";
 import priceCalculatorQuery from "@/graphql/query/billing/price-calculator.gql";
@@ -130,6 +131,7 @@ updatePaymentDone(() => {
 	emits("refetch");
 	isVerified.value = false;
 	isDeclined.value = false;
+	openApproveConfirmationModal.value = false;
 	open.value = false;
 });
 
@@ -141,6 +143,10 @@ updatePaymentError((error) => {
 		borderClass: "border-l-8 border-primary-300",
 	});
 });
+
+/*----------------------------Toggle Full Screen ----------------------------------*/
+const modal = ref(null);
+const { isFullscreen, enter, exit, toggle } = useFullscreen(modal);
 
 const open = computed({
 	get() {
@@ -154,16 +160,42 @@ const open = computed({
 		emits("update:modelValue", newVal);
 	},
 });
+
+const openApproveConfirmationModal = ref(false);
+const openDeclineConfirmationModal = ref(false);
 </script>
 
 <template>
+	<Modals-Confirmation
+		:auto-close="false"
+		v-model="openApproveConfirmationModal"
+		title="Approve Payment"
+		icon="lucide:file-check-2"
+		icon-class="self-center text-primary-600"
+		sureQuestion="Are you sure you want to approve this payment?"
+		confirm-button="Approve"
+		description="After approving  the payment will be marked as paid and the invoice will be generated."
+		@confirm="[(isVerified = true), verifyPayment()]"
+	/>
+	<Modals-Confirmation
+		:auto-close="false"
+		v-model="openDeclineConfirmationModal"
+		title="Decline Payment"
+		icon="fluent-mdl2:entry-decline"
+		icon-class="self-center text-primary-600"
+		sureQuestion="Are you sure you want to decline this payment?"
+		confirm-button="Decline"
+		description="After this action  the payment will be marked as declined and the invoice will not be generated."
+		@confirm="[(isDeclined = true), declinePayment()]"
+	/>
 	<ModalsModal
 		v-if="!billingLoading"
 		body-class="max-w-[1500px] !p-2 "
 		v-model="open"
+		:auto-close="false"
 	>
 		<template #content>
-			<div class="w-full p-4">
+			<div ref="modal" class="w-full p-4 bg-white">
 				<div class="flex justify-between">
 					<p
 						class="flex items-center text-2xl font-medium text-primary-600 gap-x-2"
@@ -374,7 +406,19 @@ const open = computed({
 						</div>
 
 						<div class="flex-grow space-y-4">
-							<p class="text-lg text-black underline">Reference File</p>
+							<div class="flex justify-between">
+								<p class="text-lg text-black underline">Reference File</p>
+								<button @click="toggle" class="p-1 rounded-md bg-primary-50">
+									<Icon
+										:name="
+											isFullscreen
+												? 'ic:baseline-fullscreen-exit'
+												: 'material-symbols:fullscreen'
+										"
+										class="text-2xl"
+									/>
+								</button>
+							</div>
 							<div class="flex items-center justify-center h-full">
 								<img
 									v-if="billing.recieptUrl"
@@ -408,24 +452,20 @@ const open = computed({
 							</button>
 
 							<button
-								@click="[(isDeclined = true), declinePayment()]"
+								@click="openDeclineConfirmationModal = true"
 								class="block w-full text-white bg-primary-600 primary-button secondary-border"
 							>
 								<Icon name="fluent-mdl2:entry-decline" class="text-2xl"></Icon>
 
-								<span class="">{{
-									updatePaymentLoading && isDeclined ? "Declining" : "Decline"
-								}}</span>
+								<span class="">Decline</span>
 							</button>
 							<button
-								@click="[(isVerified = true), verifyPayment()]"
+								@click="openApproveConfirmationModal = true"
 								class="block w-full border primary-button"
 							>
 								<Icon name="heroicons:credit-card" class="text-2xl"></Icon>
 
-								<span class="">{{
-									updatePaymentLoading && isVerified ? "Approving" : "Approve"
-								}}</span>
+								<span class="">Approve</span>
 							</button>
 						</div>
 					</div>

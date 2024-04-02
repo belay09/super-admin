@@ -1,4 +1,5 @@
 <script setup>
+import { useFullscreen } from "@vueuse/core";
 import useNotify from "@/use/notify";
 import getOneInvoiceQuery from "@/graphql/query/invoice/item.gql";
 
@@ -35,6 +36,10 @@ invoiceOnResult((result) => {
 	}
 });
 
+/*----------------------------Toggle Full Screen ----------------------------------*/
+const modal = ref(null);
+const { isFullscreen, enter, exit, toggle } = useFullscreen(modal);
+
 const open = computed({
 	get() {
 		return props.modelValue;
@@ -52,13 +57,14 @@ const open = computed({
 		v-model="open"
 	>
 		<template #content>
-			<div class="w-full p-4">
+			<div ref="modal" class="w-full p-4 bg-white">
 				<div class="flex justify-between">
 					<p
 						class="flex items-center text-2xl font-medium text-primary-600 gap-x-2"
 					>
 						<Icon name="iconamoon:invoice" /> Invoice
 					</p>
+
 					<button @click="open = false">
 						<Icon name="ic:round-close" class="text-2xl" />
 					</button>
@@ -290,7 +296,19 @@ const open = computed({
 						</div>
 
 						<div class="flex-grow space-y-4">
-							<p class="text-lg text-black underline">Reference File</p>
+							<div class="flex justify-between">
+								<p class="text-lg text-black underline">Reference File</p>
+								<button @click="toggle" class="p-1 rounded-md bg-primary-50">
+									<Icon
+										:name="
+											isFullscreen
+												? 'ic:baseline-fullscreen-exit'
+												: 'material-symbols:fullscreen'
+										"
+										class="text-2xl"
+									/>
+								</button>
+							</div>
 							<div class="flex flex-col items-center justify-center h-full">
 								<img
 									v-if="invoice.payment.recieptUrl"
