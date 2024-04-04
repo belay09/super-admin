@@ -49,6 +49,7 @@ function capitalizeFirstLetter(inputString) {
     return inputString;
   }
 }
+
 const place = ref(null);
 const {
   onResult: placeOnResult,
@@ -296,38 +297,28 @@ const handleEditPlace = handleSubmit(() => {
         <!------------------------------------Phone Number--------------------------------------->
 
         <HTextfield
-          placeholder="+251900000000"
-          rules="phoneNumber"
+          placeholder="900000000"
+          rules="ethio_phone"
           name="phoneNumber"
           v-model="phoneNumber"
           type="text"
+          leading-text-class="bg-sheger-gray-300 h-full rounded-l-md flex items-center px-2 absolute top-[2%] left-[0%]"
+          leading-text="+251"
+          label="Phone Number"
         >
-          <template #label>
-            <div class="lg:my-2">
-              <span
-                class="text-sheger_brown-200 dark:text-sheger_light_gray-400"
-                >Phone Number</span
-              >
-            </div>
-          </template>
         </HTextfield>
 
         <!---------------------------------Alternative Phone Number------------------------------------>
         <HTextfield
-          placeholder="+251900000000"
-          rules="phoneNumber"
+          placeholder="900000000"
+          rules="ethio_phone"
           name="alternativePhoneNumber"
           v-model="alternativePhoneNumber"
           type="text"
+          leading-text-class="bg-sheger-gray-300 h-full rounded-l-md flex items-center px-2 absolute top-[2%] left-[0%]"
+          leading-text="+251"
+          label="Alternative Phone Number"
         >
-          <template #label>
-            <div class="lg:my-2">
-              <span
-                class="text-sheger_brown-200 dark:text-sheger_light_gray-400"
-                >Alternative Phone Number</span
-              >
-            </div>
-          </template>
         </HTextfield>
 
         <!-------------------------------------Contact Email----------------------------->
@@ -388,40 +379,30 @@ const handleEditPlace = handleSubmit(() => {
 
           <HTextfield
             v-if="offerTakeout"
-            placeholder="+251900000000"
-            rules="phoneNumber"
+            placeholder="900000000"
+            rules="ethio_phone"
             name="orderNumber"
             v-model="orderNumber"
             type="text"
+            label="Order Number"
+            leading-text-class="bg-sheger-gray-300 h-full rounded-l-md flex items-center px-2 absolute top-[2%] left-[0%]"
+            leading-text="+251"
           >
-            <template #label>
-              <div class="lg:my-2">
-                <span
-                  class="text-sheger_brown-200 dark:text-sheger_light_gray-400"
-                  >Order Number</span
-                >
-              </div>
-            </template>
           </HTextfield>
 
           <!-- ----------------------------------------Alternative Order Number--------------------- -->
 
           <HTextfield
             v-if="offerTakeout"
-            placeholder="+251900000000"
-            rules="phoneNumber"
+            placeholder="900000000"
+            rules="ethio_phone"
             name="alternativeOrderNumber"
             v-model="alternativeOrderNumber"
             type="text"
+            leading-text-class="bg-sheger-gray-300 h-full rounded-l-md flex items-center px-2 absolute top-[2%] left-[0%]"
+            leading-text="+251"
+            label="Alternative Order Number"
           >
-            <template #label>
-              <div class="lg:my-2">
-                <span
-                  class="text-sheger_brown-200 dark:text-sheger_light_gray-400"
-                  >Alternative Order Number</span
-                >
-              </div>
-            </template>
           </HTextfield>
         </div>
       </div>

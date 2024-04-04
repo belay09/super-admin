@@ -5,12 +5,21 @@ const { handleSubmit } = useForm({});
 /**-----------------------Navigation----------------------------- */
 const router = useRouter();
 
+const emit = defineEmits(["update:modelValue"]);
+
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: "",
+  },
+});
+
 /**------------------------Data------------------------ */
 const image_url = ref("");
 const placeName = ref("");
 const placeCousins = ref("");
 const description = ref("");
-const placeType = ref("");
+const placeType = ref(props.modelValue);
 const placeTag = ref([]);
 const placeAmbiances = ref([]);
 const placeCategory = ref([]);
@@ -112,6 +121,12 @@ const handleAddPlace = handleSubmit(() => {
     obj: input,
   });
 });
+
+/**------------------------Emit place type to change the stepper---------------- */
+
+watch(placeType, (newValue) => {
+  emit("update:modelValue", newValue);
+});
 </script>
 
 <template>
@@ -132,6 +147,10 @@ const handleAddPlace = handleSubmit(() => {
           rules="required"
           name="placeLogo"
         ></CommonUploadSingleImage>
+
+        <!------------------------------------------------ Type--------------------------------------------->
+
+        <SelectorsPlaceType v-model="placeType" />
 
         <!--------------------------------------------------- Place Name------------------------------- -->
         <HTextfield
@@ -170,10 +189,6 @@ const handleAddPlace = handleSubmit(() => {
           rules="required"
           v-model="description"
         />
-
-        <!------------------------------------------------ Type--------------------------------------------->
-
-        <SelectorsPlaceType v-model="placeType" />
 
         <!-------------------------------------------------- Tag--------------------------------------->
         <SelectorsTag type="PLACE_TAG" v-model="placeTag" />
@@ -236,38 +251,28 @@ const handleAddPlace = handleSubmit(() => {
         <!------------------------------------Phone Number--------------------------------------->
 
         <HTextfield
-          placeholder="+251900000000"
-          rules="phoneNumber"
+          placeholder="900000000"
+          rules="ethio_phone"
           name="phoneNumber"
           v-model="phoneNumber"
           type="text"
+          leading-text-class="bg-sheger-gray-300 h-full rounded-l-md flex items-center px-2 absolute top-[2%] left-[0%]"
+          leading-text="+251"
+          label="Phone Number"
         >
-          <template #label>
-            <div class="lg:my-2">
-              <span
-                class="text-sheger_brown-200 dark:text-sheger_light_gray-400"
-                >Phone Number</span
-              >
-            </div>
-          </template>
         </HTextfield>
 
         <!---------------------------------Alternative Phone Number------------------------------------>
         <HTextfield
-          placeholder="+251900000000"
-          rules="phoneNumber"
+          placeholder="900000000"
+          rules="ethio_phone"
           name="alternativePhoneNumber"
           v-model="alternativePhoneNumber"
           type="text"
+          leading-text-class="bg-sheger-gray-300 h-full rounded-l-md flex items-center px-2 absolute top-[2%] left-[0%]"
+          leading-text="+251"
+          label="Alternative Phone Number"
         >
-          <template #label>
-            <div class="lg:my-2">
-              <span
-                class="text-sheger_brown-200 dark:text-sheger_light_gray-400"
-                >Alternative Phone Number</span
-              >
-            </div>
-          </template>
         </HTextfield>
 
         <!-------------------------------------Contact Email----------------------------->
@@ -329,40 +334,30 @@ const handleAddPlace = handleSubmit(() => {
 
           <HTextfield
             v-if="offerTakeout"
-            placeholder="+251900000000"
-            rules="phoneNumber"
+            placeholder="900000000"
+            rules="ethio_phone"
             name="orderNumber"
             v-model="orderNumber"
             type="text"
+            label="Order Number"
+            leading-text-class="bg-sheger-gray-300 h-full rounded-l-md flex items-center px-2 absolute top-[2%] left-[0%]"
+            leading-text="+251"
           >
-            <template #label>
-              <div class="lg:my-2">
-                <span
-                  class="text-sheger_brown-200 dark:text-sheger_light_gray-400"
-                  >Order Number</span
-                >
-              </div>
-            </template>
           </HTextfield>
 
           <!-- ----------------------------------------Alternative Order Number--------------------- -->
 
           <HTextfield
             v-if="offerTakeout"
-            placeholder="+251900000000"
-            rules="phoneNumber"
+            placeholder="900000000"
+            rules="ethio_phone"
             name="alternativeOrderNumber"
             v-model="alternativeOrderNumber"
             type="text"
+            leading-text-class="bg-sheger-gray-300 h-full rounded-l-md flex items-center px-2 absolute top-[2%] left-[0%]"
+            leading-text="+251"
+            label="Alternative Order Number"
           >
-            <template #label>
-              <div class="lg:my-2">
-                <span
-                  class="text-sheger_brown-200 dark:text-sheger_light_gray-400"
-                  >Alternative Order Number</span
-                >
-              </div>
-            </template>
           </HTextfield>
         </div>
       </div>

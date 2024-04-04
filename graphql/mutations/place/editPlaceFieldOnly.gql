@@ -1,0 +1,6 @@
+mutation editPlaceFieldOnly($placeObject: PlacesSetInput!, $id: bigint!) {
+  # update place
+  updatePlacesByPk(_set: $placeObject, pkColumns: { id: $id }) {
+    id
+  }
+}

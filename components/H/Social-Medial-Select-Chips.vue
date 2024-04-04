@@ -12,7 +12,7 @@ const props = defineProps({
 const openCombobox = ref(false);
 const selectedMedia = ref({});
 const addedMedia = ref(props.modelValue);
-const url = ref("https://");
+const url = ref("https://www.instagram.com/example");
 const socials = ref([]);
 
 /*---------------------------Place SocialMedia Query---------------------------**/
