@@ -46,7 +46,8 @@ const navs = ref([
 				<div
 					class="fixed top-0 left-0 flex flex-col h-screen px-6 overflow-y-auto border-r border-gray-200 grow gap-y-32 bg-primary-600 scroll"
 				>
-					<div
+					<NuxtLink
+						to="/app"
 						class="flex flex-col items-center justify-center h-16 gap-2 pt-20 mt-8 shrink-0"
 					>
 						<img
@@ -58,7 +59,7 @@ const navs = ref([
 							<p class="text-lg font-semibold text-white">Sheger Gebeta</p>
 							<!-- <p class="text-lg font-semibold text-white"></p> -->
 						</div>
-					</div>
+					</NuxtLink>
 					<nav class="flex flex-col flex-1">
 						<UiSidebar
 							:navs="navs"
