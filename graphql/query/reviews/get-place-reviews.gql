@@ -17,6 +17,17 @@ query getPlaceReviews(
     updatedAt
     createdAt
 
+    # service rating
+
+    place_review_by_services {
+      id
+      rate
+      reviewCategoryId
+      review_category {
+        name
+      }
+    }
+
     # user
     user {
       fullName

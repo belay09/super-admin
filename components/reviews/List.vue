@@ -44,7 +44,7 @@ watch(pageTracker, (newVal) => {
         :total-page="totalPage"
       ></H-Page>
     </div>
-    <div class="grid grid-cols-3 w-[85%]" v-if="!loading">
+    <div class="grid grid-cols-3 w-[85%] gap-8" v-if="!loading">
       <Ui-Cards-Review
         v-for="review in reviews"
         :review="review"

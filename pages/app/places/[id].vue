@@ -66,6 +66,7 @@ const {
   onResult: placeOnResult,
   onError: placeOnError,
   loading: placeLoading,
+  refetch,
 } = authItemQuery(getPlaceQuery, route.params.id);
 
 placeOnResult((result) => {
@@ -83,6 +84,7 @@ placeOnError((error) => {
   });
 });
 
+provide("refetchPlace", refetch);
 /*.................... page meta data.............*/
 
 definePageMeta({

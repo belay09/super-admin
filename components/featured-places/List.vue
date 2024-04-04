@@ -54,7 +54,7 @@ onMounted(() => {
 
       <div class="flex items-center gap-8">
         <nuxt-link
-          to="/app/featured-places/add-new-features"
+          to="/app/featured-places/feature-new-places"
           class="block primary-button bg-primary-600"
         >
           <Icon name="lucide:building-2" class="text-xl text-white" color="" />

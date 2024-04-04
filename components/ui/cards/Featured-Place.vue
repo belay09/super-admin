@@ -228,7 +228,7 @@ const showMoreAction = ref(false);
             </div>
             <div v-if="!isAdd" class="relative">
               <button
-                @click="showMoreAction = !showMoreAction"
+                @click.stop="showMoreAction = !showMoreAction"
                 class="hover:cursor-pointer"
               >
                 <Icon name="iwwa:option" class="text-3xl" />
@@ -242,7 +242,7 @@ const showMoreAction = ref(false);
               >
                 <div
                   class="flex gap-3 items-center"
-                  @click="showExtendEndDateModal = true"
+                  @click.stop="showExtendEndDateModal = true"
                 >
                   <Icon
                     name="heroicons:calendar-days-16-solid"
@@ -251,7 +251,7 @@ const showMoreAction = ref(false);
                   <p class="text-sm">Extend Deadline</p>
                 </div>
                 <button
-                  @click="showRemoveFromFeaturedModal = true"
+                  @click.stop="showRemoveFromFeaturedModal = true"
                   class="flex gap-3 items-center"
                 >
                   <Icon

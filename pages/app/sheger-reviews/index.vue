@@ -203,90 +203,23 @@ definePageMeta({
           >
         </div>
       </template>
-      <template #PUBLISHED>
-        <div>
-          <Reviews-List
-            :loading="loading"
-            :reviews="reviews"
-            :total-page="totalPage"
-            v-model:model-value="pageTracker"
-          />
-          <HPaginate
-            :items-per-page="limit"
-            v-model:offset="offset"
-            :total-data="length"
-            v-model="pageTracker"
-            class="w-full pt-16"
-          ></HPaginate>
-          <HZeroResult
-            class="py-8"
-            v-if="!loading && length == 0"
-          ></HZeroResult>
-        </div>
-      </template>
-      <template #PENDING>
-        <div>
-          <Reviews-List
-            :loading="loading"
-            :reviews="reviews"
-            :total-page="totalPage"
-            v-model:model-value="pageTracker"
-          />
-          <HPaginate
-            :items-per-page="limit"
-            v-model:offset="offset"
-            :total-data="length"
-            v-model="pageTracker"
-            class="w-full pt-16"
-          ></HPaginate>
-          <HZeroResult
-            class="py-8"
-            v-if="!loading && length == 0"
-          ></HZeroResult>
-        </div>
-      </template>
-      <template #DRAFT>
-        <div>
-          <Reviews-List
-            :loading="loading"
-            :reviews="reviews"
-            :total-page="totalPage"
-            v-model:model-value="pageTracker"
-          />
-          <HPaginate
-            :items-per-page="limit"
-            v-model:offset="offset"
-            :total-data="length"
-            v-model="pageTracker"
-            class="w-full pt-16"
-          ></HPaginate>
-          <HZeroResult
-            class="py-8"
-            v-if="!loading && length == 0"
-          ></HZeroResult>
-        </div>
-      </template>
-      <template #REMOVED>
-        <div>
-          <Reviews-List
-            :loading="loading"
-            :reviews="reviews"
-            :total-page="totalPage"
-            v-model:model-value="pageTracker"
-          />
-          <HPaginate
-            :items-per-page="limit"
-            v-model:offset="offset"
-            :total-data="length"
-            v-model="pageTracker"
-            class="w-full pt-16"
-          ></HPaginate>
-          <HZeroResult
-            class="py-8"
-            v-if="!loading && length == 0"
-          ></HZeroResult>
-        </div>
-      </template>
     </H-Tab>
+
+    <div>
+      <Reviews-List
+        :loading="loading"
+        :reviews="reviews"
+        :total-page="totalPage"
+        v-model:model-value="pageTracker"
+      />
+      <HPaginate
+        :items-per-page="limit"
+        v-model:offset="offset"
+        :total-data="length"
+        v-model="pageTracker"
+        class="w-full pt-16"
+      ></HPaginate>
+      <HZeroResult class="py-8" v-if="!loading && length == 0"></HZeroResult>
+    </div>
   </div>
 </template>

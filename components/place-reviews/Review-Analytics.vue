@@ -5,12 +5,11 @@ import useNotify from "@/use/notify";
 const { notify } = useNotify();
 const starCount = ref([]);
 const route = useRoute();
-const filter = ref( route.params.id );
-const avg= ref(0);
+const filter = ref(route.params.id);
+const avg = ref(0);
 const { onResult, onError } = list(getPlaceStarCount, filter);
 onResult((result) => {
   avg.value = result.data?.placeAggregateSummary[0].avgRating;
-  console.log("place avg", result.data?.placeAggregateSummary);
   if (result.data?.place_review_star_counter) {
     starCount.value = Array.from({ length: 5 }, (_, index) => {
       const existingItem = result.data?.place_review_star_counter.find(
@@ -23,11 +22,13 @@ onResult((result) => {
       return {
         rating: existingItem.star,
         barValue: existingItem.count,
-        barTotal: result.data?.place_review_star_counter.reduce((total, currentItem) => total + currentItem.count, 0),
+        barTotal: result.data?.place_review_star_counter.reduce(
+          (total, currentItem) => total + currentItem.count,
+          0
+        ),
       };
     });
   }
-  console.log("place star count", starCount.value);
 });
 onError((error) => {
   notify({
@@ -67,7 +68,7 @@ const dummyData = [
           <p
             class="font-poppins font-medium text-gray-700 text-8xl capitalize text-center"
           >
-            {{avg}}
+            {{ avg }}
           </p>
         </div>
         <div class="my-5">
@@ -79,7 +80,7 @@ const dummyData = [
 
         <div class="mb-5">
           <h1 class="font-poppins font-medium text-md capitalize text-center">
-            {{starCount[0].barTotal}} reviews
+            {{ starCount[0].barTotal }} reviews
           </h1>
         </div>
       </div>
@@ -92,7 +93,7 @@ const dummyData = [
       <h1
         class="font-poppins font-medium text-2xl text-gray-700 justify-center-center capitalize mb-2"
       >
-        Reviews- {{starCount[0].barTotal}}  reviews
+        Reviews- {{ starCount[0].barTotal }} reviews
       </h1>
     </div>
   </div>

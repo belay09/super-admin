@@ -204,83 +204,26 @@ definePageMeta({
           >
         </div>
       </template>
-
-      <template #WEEKLY_RECOMMENDED_PLACE>
-        <div>
-          <FeaturedPlaces-New-Featured-List
-            :loading="loading"
-            :places="places"
-            :total-page="totalPage"
-            v-model:model-value="pageTracker"
-            :currentTab="currentTab"
-            @refetch="refetch()"
-          />
-          <div class="grid grid-cols-3">
-            <HPaginate
-              :items-per-page="limit"
-              v-model:offset="offset"
-              :total-data="length"
-              v-model="pageTracker"
-              class="w-full col-span-2 pt-8"
-            ></HPaginate>
-          </div>
-
-          <HZeroResult
-            class="py-8"
-            v-if="!loading && length == 0"
-          ></HZeroResult>
-        </div>
-      </template>
-      <template #SEASONAL_PLACE>
-        <div>
-          <FeaturedPlaces-New-Featured-List
-            :loading="loading"
-            :places="places"
-            :total-page="totalPage"
-            v-model:model-value="pageTracker"
-            :currentTab="currentTab"
-            @refetch="refetch()"
-          />
-          <div class="grid grid-cols-3">
-            <HPaginate
-              :items-per-page="limit"
-              v-model:offset="offset"
-              :total-data="length"
-              v-model="pageTracker"
-              class="w-full col-span-2 pt-8"
-            ></HPaginate>
-          </div>
-          <HZeroResult
-            class="py-8"
-            v-if="!loading && length == 0"
-          ></HZeroResult>
-        </div>
-      </template>
-      <template #RECENTLY_OPENED_PLACE>
-        <div>
-          <FeaturedPlaces-New-Featured-List
-            :loading="loading"
-            :places="places"
-            :total-page="totalPage"
-            v-model:model-value="pageTracker"
-            :currentTab="currentTab"
-            @refetch="refetch()"
-          />
-          <div class="grid grid-cols-3">
-            <HPaginate
-              :items-per-page="limit"
-              v-model:offset="offset"
-              :total-data="length"
-              v-model="pageTracker"
-              class="w-full col-span-2 pt-8"
-            ></HPaginate>
-          </div>
-          <HZeroResult
-            class="py-8"
-            v-if="!loading && length == 0"
-          ></HZeroResult>
-        </div>
-      </template>
     </H-Tab>
+    <div>
+      <FeaturedPlaces-New-Featured-List
+        :loading="loading"
+        :places="places"
+        :total-page="totalPage"
+        v-model:model-value="pageTracker"
+        :currentTab="currentTab"
+        @refetch="refetch()"
+      />
+      <div class="grid grid-cols-3">
+        <HPaginate
+          :items-per-page="limit"
+          v-model:offset="offset"
+          :total-data="length"
+          v-model="pageTracker"
+          class="w-full col-span-2 pt-8"
+        ></HPaginate>
+      </div>
+      <HZeroResult class="py-8" v-if="!loading && length == 0"></HZeroResult>
+    </div>
   </div>
 </template>

@@ -312,7 +312,7 @@ const openUploadFilesModal = ref(false);
       <div class="flex flex-col gap-4">
         <p class="text-xl font-medium">Recommended Dishes</p>
 
-        <div class="flex my-3 overflow-x-scroll gap-7 scroll">
+        <div class="flex my-3 overflow-x-scroll gap-7 scroll w-full">
           <Ui-Cards-Dish v-for="menu in menus" :key="menu.id" :menu="menu" />
         </div>
         <div>

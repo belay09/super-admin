@@ -1,13 +1,24 @@
 <script setup>
 import RadialProgressBar from "vue-radial-progress";
+/**--------------------Imports------------------------------- */
+import { onClickOutside } from "@vueuse/core";
+import editMutation from "@/graphql/mutations/featured-places/edit.gql";
+import useNotify from "@/use/notify";
+const { handleSubmit, isSubmitting } = useForm({});
+
+/**------------------------Globals------------------------ */
+const { notify } = useNotify();
+
 const props = defineProps({
   item: {
     type: Object,
     required: true,
   },
 });
-const completedSteps = ref(); // Initial value, will be calculated based on start date
-const remainingTime = (endDate) => {
+
+const refetchPlace = inject("refetchPlace");
+
+const featuredAt = (endDate) => {
   const now = new Date();
   const startTime = new Date(endDate);
   const timeDifference = startTime - now;
@@ -46,19 +57,32 @@ const getStartColor = (completed, duration) => {
 const getInnerStrokeColor = (completed, duration) => {
   return completed <= duration ? "#ABE3C4" : "#FF0000"; // Use different color for expired
 };
-getInnerStrokeColor();
-getStartColor();
 
 // Function to calculate completed steps dynamically based on the start date
 const calculateCompletedSteps = (startDate) => {
   const now = new Date();
   const startTime = new Date(startDate);
   const timeDifference = now - startTime;
-  Math.floor(timeDifference / (24 * 60 * 60 * 1000)), "calculateCompletedSteps";
-  return Math.floor(timeDifference / (24 * 60 * 60 * 1000));
-
+  Math.ceil(timeDifference / (24 * 60 * 60 * 1000)), "calculateCompletedSteps";
+  return Math.ceil(timeDifference / (24 * 60 * 60 * 1000));
   // Assuming 1 step is equivalent to 1 day for the example, you may adjust this based on your requirement
 };
+
+function calculateRemainingDays(endDate) {
+  // Get the current date
+  var currentDate = new Date();
+
+  // Parse the expiry date string to Date object
+  var expiry = new Date(endDate);
+
+  // Calculate the difference in milliseconds
+  var difference = expiry - currentDate;
+
+  // Convert milliseconds to days
+  var remainingDays = Math.ceil(difference / (1000 * 60 * 60 * 24));
+
+  return remainingDays;
+}
 
 const getName = (type) => {
   switch (type) {
@@ -73,9 +97,119 @@ const getName = (type) => {
       return "";
   }
 };
+
+/**------------------------------Handle configure featured places--------------- */
+const {
+  mutate: editMutate,
+  onDone: editDone,
+  onError: editError,
+  loading: editLoading,
+} = authMutation(editMutation);
+
+/**-------------------------Remove from featured---------------- */
+const removeFromFeatured = () => {
+  let input = {
+    isActive: false,
+    // endDate: props.item.startDate,
+  };
+  editMutate({ input, id: props.item?.id });
+};
+
+/**--------------------------Extend date------------------------ */
+const endDate = ref("");
+const extendDate = handleSubmit(() => {
+  let input = {
+    endDate: endDate.value,
+  };
+  editMutate({ input, id: props.item?.id });
+});
+
+/***-----------------------Edit on done------------------------ */
+editDone(() => {
+  showExtendEndDateModal.value = false;
+  notify({
+    title: "Updated  successfully",
+    description: "Updated  successfully",
+    type: "error",
+    borderClass: "border-l-8 border-green-300",
+  });
+  refetchPlace();
+});
+
+editError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
+/***-----------------Modals--------------------------- */
+const showExtendEndDateModal = ref(false);
+const showRemoveFromFeaturedModal = ref(false);
 </script>
 
 <template>
+  <!-- -------------------Extend end date modal--------------- -->
+  <Modals-Modal
+    body-class="!max-w-[30rem]"
+    :autoClose="true"
+    :modelValue="showExtendEndDateModal"
+  >
+    <template #header>
+      <div class="flex items-center justify-between pb-4">
+        <h3 class="text-lg font-medium text-gray-900">Extend Deadline</h3>
+        <button @click="showExtendEndDateModal = false">
+          <Icon name="system-uicons:close" class="text-4xl" />
+        </button>
+      </div>
+    </template>
+    <template #content>
+      <div>
+        <form
+          @submit.prevent="extendDate"
+          class="flex flex-col gap-y-3"
+          action=""
+        >
+          <!-- ---------------------Date------------- -->
+          <HDatePickers
+            id="end_date"
+            name="end_date"
+            rules="required"
+            label="End Date"
+            trailing-icon="uil:calender"
+            trailing-icon-class=""
+            class="w-full"
+            v-model="endDate"
+          ></HDatePickers>
+
+          <!-- ------------------Update button---------------- -->
+          <button
+            @click="showConfirmationModal = true"
+            class="justify-center border primary-button secondary-text"
+          >
+            Update Deadline
+            <Icon
+              v-if="editLoading"
+              name="eos-icons:bubble-loading"
+              class="text-3xl text-red-600"
+            />
+          </button>
+        </form>
+      </div>
+    </template>
+  </Modals-Modal>
+
+  <!-- -----------------Remove from featured ---------------- -->
+
+  <ModalsConfirmation
+    @confirm="removeFromFeatured"
+    v-model="showRemoveFromFeaturedModal"
+    :title="`Remove from Featured`"
+    v-bind:sure-question="`Are you sure you want to remove ${item?.name} ?`"
+    description=""
+  ></ModalsConfirmation>
   <!-- -----------------Icon and name---------------- -->
 
   <div
@@ -91,18 +225,8 @@ const getName = (type) => {
           :strokeWidth="4"
           :innerStrokeWidth="4"
           :completed-steps="calculateCompletedSteps(item.startDate)"
-          :startColor="
-            getStartColor(
-              calculateCompletedSteps(item.startDate),
-              totalSteps(item.endDate, item.startDate)
-            )
-          "
-          :stopColor="
-            getStartColor(
-              calculateCompletedSteps(item.startDate),
-              totalSteps(item.endDate, item.startDate)
-            )
-          "
+          startColor="red"
+          stopColor="red"
           :innerStrokeColor="
             getInnerStrokeColor(
               calculateCompletedSteps(item.startDate),
@@ -111,7 +235,7 @@ const getName = (type) => {
           "
           :total-steps="totalSteps(item.endDate, item.startDate)"
         >
-          {{ calculateCompletedSteps(item.startDate) }}
+          {{ calculateRemainingDays(item.endDate) }}
         </radial-progress-bar>
       </div>
 
@@ -124,26 +248,27 @@ const getName = (type) => {
         <p
           class="mt-2 text-ellipsis overflow-hidden text-sm font-medium text-gray-500"
         >
-          Featured: {{ remainingTime(item.startDate) }} days ago
+          Featured: {{ featuredAt(item.startDate) }} days ago
         </p>
       </div>
     </div>
     <!-- -----------------------Action--------------------- -->
-
-    <div v-if="false">
-      <Icon
-        name="system-uicons:scale-extend"
-        class="text-2xl"
-        aria-hidden="true"
-      />
-    </div>
-
-    <div v-else>
+    <button
+      v-if="calculateRemainingDays(item.endDate) > 0"
+      @click="showRemoveFromFeaturedModal = !showRemoveFromFeaturedModal"
+    >
       <Icon
         name="solar:map-point-remove-linear"
         class="text-2xl"
         aria-hidden="true"
       />
-    </div>
+    </button>
+    <button v-else @click="showExtendEndDateModal = !showExtendEndDateModal">
+      <Icon
+        name="system-uicons:scale-extend"
+        class="text-2xl"
+        aria-hidden="true"
+      />
+    </button>
   </div>
 </template>

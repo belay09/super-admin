@@ -155,6 +155,7 @@ query getPlace($id: bigint!, $include: Boolean = false) {
 
     # featured place
     featured_places {
+      id
       startDate
       endDate
       isActive

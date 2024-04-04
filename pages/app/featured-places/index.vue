@@ -203,76 +203,24 @@ definePageMeta({
           >
         </div>
       </template>
-
-      <template #WEEKLY_RECOMMENDED_PLACE>
-        <div>
-          <FeaturedPlaces-List
-            :loading="loading"
-            :places="places"
-            :total-page="totalPage"
-            v-model:model-value="pageTracker"
-            :current-tab="currentTab"
-            @refetch="refetch()"
-          />
-          <HPaginate
-            :items-per-page="limit"
-            v-model:offset="offset"
-            :total-data="length"
-            v-model="pageTracker"
-            class="w-full pt-16"
-          ></HPaginate>
-          <HZeroResult
-            class="py-8"
-            v-if="!loading && length == 0"
-          ></HZeroResult>
-        </div>
-      </template>
-      <template #SEASONAL_PLACE>
-        <div>
-          <FeaturedPlaces-List
-            :loading="loading"
-            :places="places"
-            :total-page="totalPage"
-            v-model:model-value="pageTracker"
-            :current-tab="currentTab"
-            @refetch="refetch()"
-          />
-          <HPaginate
-            :items-per-page="limit"
-            v-model:offset="offset"
-            :total-data="length"
-            v-model="pageTracker"
-            class="w-full pt-16"
-          ></HPaginate>
-          <HZeroResult
-            class="py-8"
-            v-if="!loading && length == 0"
-          ></HZeroResult>
-        </div>
-      </template>
-      <template #RECENTLY_OPENED_PLACE>
-        <div>
-          <FeaturedPlaces-List
-            :loading="loading"
-            :places="places"
-            :total-page="totalPage"
-            v-model:model-value="pageTracker"
-            :current-tab="currentTab"
-            @refetch="refetch()"
-          />
-          <HPaginate
-            :items-per-page="limit"
-            v-model:offset="offset"
-            :total-data="length"
-            v-model="pageTracker"
-            class="w-full pt-16"
-          ></HPaginate>
-          <HZeroResult
-            class="py-8"
-            v-if="!loading && length == 0"
-          ></HZeroResult>
-        </div>
-      </template>
     </H-Tab>
+    <div>
+      <FeaturedPlaces-List
+        :loading="loading"
+        :places="places"
+        :total-page="totalPage"
+        v-model:model-value="pageTracker"
+        :current-tab="currentTab"
+        @refetch="refetch()"
+      />
+      <HPaginate
+        :items-per-page="limit"
+        v-model:offset="offset"
+        :total-data="length"
+        v-model="pageTracker"
+        class="w-full pt-16"
+      ></HPaginate>
+      <HZeroResult class="py-8" v-if="!loading && length == 0"></HZeroResult>
+    </div>
   </div>
 </template>

@@ -78,10 +78,46 @@ query getReview($id: bigint!) {
         url
       }
     }
+
+    # review menu
     menu_reviews {
+      id
       menu {
         id
+        price
+        sides
+        timeToPrepare
+        title
         name: title
+        isHouseSpecial
+        isFeatured
+        description
+        type
+        updatedAt
+        menuTags {
+          id
+          tag {
+            iconId
+            title
+            id
+          }
+        }
+        media {
+          url
+        }
+        menuMedias {
+          media {
+            url
+          }
+        }
+
+        last_updated_menus(
+          orderBy: [{ lastUpdate: DESC_NULLS_LAST }]
+          limit: 1
+        ) {
+          id
+          lastUpdate
+        }
       }
     }
 

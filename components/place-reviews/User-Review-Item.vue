@@ -10,9 +10,14 @@ const props = defineProps({
   },
 });
 
-const buttonModal = ref(null);
-onClickOutside(buttonModal, () => {
-  showRemoveReviewButton.value = false;
+const serviceReview = ref(null);
+onClickOutside(serviceReview, () => {
+  showServiceReview.value = false;
+});
+
+const actionModal = ref(null);
+onClickOutside(actionModal, () => {
+  showActionLists.value = false;
 });
 
 const handleDelete = () => {
@@ -23,6 +28,8 @@ const handleDelete = () => {
 /**------------------------------Modal------------------------- */
 const showRemoveReviewModal = ref(false);
 const showRemoveReviewButton = ref(false);
+const showServiceReview = ref(false);
+const showActionLists = ref(false);
 </script>
 
 <template>
@@ -61,33 +68,86 @@ const showRemoveReviewButton = ref(false);
             </div>
           </div>
         </div>
-        <button
-          @click="showRemoveReviewButton = !showRemoveReviewButton"
-          class=""
-        >
+        <button @click="showActionLists = !showActionLists" class="">
           <Icon name="fontisto:more-v" class="text-xl" />
         </button>
       </div>
-      <div class="flex space-x-2 items-center">
-        <HRating
-          :rating="userReview.rating || 0"
-          image-class="w-5"
-          container-class=""
-        ></HRating>
-        <p class="font-medium">({{ userReview.rating }}/5)</p>
+      <!-- ------------------Rating Average--------------- -->
+
+      <ShegerReviewsRatingAverage
+        class="pr-4"
+        :rating="userReview.rating || 0"
+        :show-all-stars="true"
+        text-class=" pl-2 text-gray-500 font-medium"
+        :rating-size="24"
+      ></ShegerReviewsRatingAverage>
+
+      <!-- ------------------Service Review--------------- -->
+      <div
+        ref="serviceReview"
+        v-if="showServiceReview"
+        class="flex flex-col gap-y-4 pt-6 pb-6 border-b transition-all duration-300"
+      >
+        <div
+          v-for="service in userReview.place_review_by_services"
+          class="flex justify-between w-full"
+        >
+          <!-- -----------_Service name----------- -->
+          <div class="flex items-center space-x-4">
+            <p
+              class="whitespace-nowrap text-sm text-sheger_dark_gray-100 dark:text-white"
+            >
+              {{ service.review_category?.name }}
+            </p>
+          </div>
+          <!-- -----------_Rating----------- -->
+
+          <ShegerReviewsRatingAverage
+            class="pr-4"
+            :rating="service.rate"
+            :show-all-stars="true"
+            text-class=" pl-2 text-gray-500 font-medium"
+            :rating-size="24"
+          ></ShegerReviewsRatingAverage>
+        </div>
       </div>
+
+      <!-- ---------------------Comment----------------- -->
       <p class="dark:text-sheger_light_gray-400">
         {{ userReview.comment }}
       </p>
-      <button
-        ref="buttonModal"
-        v-if="showRemoveReviewButton"
-        @click="showRemoveReviewModal = true"
-        class="absolute z-50 py-3 px-2 text-red-600 border rounded-md right-10 flex items-center space-x-2"
+
+      <!-- ---------------------Actions lists--------------- -->
+
+      <div
+        ref="actionModal"
+        v-if="showActionLists"
+        class="absolute bg-white z-50 py-3 px-2 border rounded-md right-10 flex flex-col"
       >
-        <Icon name="uil:trash-alt" class="text-xl" />
-        <p class="whitespace-nowrap">Remove Review</p>
-      </button>
+        <!-- ---------------Report review-------------- -->
+        <button
+          @click="showRemoveReviewModal = !showRemoveReviewModal"
+          class="flex items-center space-x-2 text-primary-600 border-b pb-3"
+          :class="isPlaceReview ? 'pb-3 border-b' : ''"
+        >
+          <Icon name="uil:trash-alt" class="text-xl" />
+          <p class="whitespace-nowrap">Remove Review</p>
+        </button>
+
+        <!-- ---------------View review lists-------------- -->
+
+        <button
+          @click="showServiceReview = !showServiceReview"
+          class="flex items-center space-x-2 pt-3"
+        >
+          <Icon
+            name="lucide:list-start"
+            class="text-black text-xl dark:text-white"
+          />
+
+          <p class="whitespace-nowrap dark:text-white">View Review</p>
+        </button>
+      </div>
     </div>
   </div>
 </template>

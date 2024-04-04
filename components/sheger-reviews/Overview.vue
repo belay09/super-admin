@@ -104,24 +104,15 @@ const openUploadFilesModal = ref(false);
   <div class="grid grid-cols-4">
     <!-- ----------------------Left side--------------------- -->
     <div class="flex flex-col col-span-3 pt-2 space-y-6">
+      <UiTagsPlaceReviewDishTags :tags="review.review_tags" />
       <!-- ---------------------Review description----------------- -->
-      <p class="max-w-2xl secondary-text">
-        {{ review.description }}
-      </p>
+      <p class="max-w-2xl secondary-text">{{ review.description }}</p>
 
       <!-- --------------------Review sides---------------------- -->
       <div v-if="review.sides">
         <p class="py-2 text-2xl font-medium dark:text-white">Sides</p>
         <p class="dark:text-sheger_light_gray-400">
           {{ review.sides }}
-        </p>
-      </div>
-
-      <!-- -------------------------Review prepare time------------- -->
-      <div v-if="review.timeToPrepare">
-        <p class="text-2xl font-medium dark:text-white">Times to prepare</p>
-        <p class="dark:text-sheger_light_gray-400">
-          {{ review.timeToPrepare }} Minutes
         </p>
       </div>
 
@@ -146,6 +137,15 @@ const openUploadFilesModal = ref(false);
             </p>
           </div>
         </div>
+      </div>
+
+      <!-- ------------------------Review menus-------------------- -->
+      <div class="flex flex-col gap-4 py-4">
+        <UiCardsMenu
+          v-for="menuReview in review.menu_reviews"
+          :key="menuReview.id"
+          :menu="menuReview.menu"
+        ></UiCardsMenu>
       </div>
     </div>
 

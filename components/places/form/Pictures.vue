@@ -146,26 +146,35 @@ const handleDelete = (id) => {
     id: id,
   });
 };
+
+const openUploadFilesModal = ref(false);
 </script>
 
 <template>
+  <!-- ----------------File Upload Modal---------------- -->
+  <HFileUploadModal
+    @uploadDone="handleInsert"
+    v-model:openModal="openUploadFilesModal"
+    v-model="selectedPlaceMedias"
+    :fileLimit="10"
+  />
   <div>
     <div class="flex flex-col">
       <!-------------------------------------- image upload------------------------------------------------- -->
-      <HFileUploadWrapper
-        name="file"
-        :maxFileSize="1024 * 1024 * 10"
-        :fileLimit="20"
-        folder="applications_form"
-        description="upload file"
-        placeholder="select multiple files"
-        v-model="selectedPlaceMedias"
-        :init="selectedPlaceMedias"
-        :disabled="false"
-        :showStar="false"
-        :emit-submit="true"
-        @submitToDatabase="handleInsert"
-      />
+
+      <div
+        @click="openUploadFilesModal = true"
+        class="flex flex-col items-center justify-center w-full gap-4 p-8 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
+      >
+        <Icon name="uil:cloud-upload" class="w-20 h-20" />
+        <div class="flex flex-col mx-auto text-center input_field w-max">
+          <div>
+            {{ placeholder }} <span class="text-primary-600">Browse</span>
+          </div>
+
+          <div class="">Select images that are Square and 10MB</div>
+        </div>
+      </div>
 
       <!-----------------------------Images------------------------------------------------>
       <div class="grid grid-cols-4 gap-4 my-6">

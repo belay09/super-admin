@@ -9,7 +9,9 @@ const props = defineProps({
 });
 </script>
 <template>
-  <div class="relative rounded-xl border block w-[28rem]">
+  <div
+    class="relative rounded-xl border block min-w-[24rem] w-full max-w-[28rem]"
+  >
     <div class="w-full mx-auto">
       <img
         :src="menu.media.url"

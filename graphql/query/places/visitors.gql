@@ -1,0 +1,6 @@
+query getPlaceVisitors($filter: place_visitors_arguments!) {
+  place_visitors(args: $filter) {
+    date
+    visitor
+  }
+}
