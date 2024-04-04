@@ -49,6 +49,7 @@ function capitalizeFirstLetter(inputString) {
     return inputString;
   }
 }
+
 const place = ref(null);
 const {
   onResult: placeOnResult,

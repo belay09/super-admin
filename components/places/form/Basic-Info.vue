@@ -5,12 +5,21 @@ const { handleSubmit } = useForm({});
 /**-----------------------Navigation----------------------------- */
 const router = useRouter();
 
+const emit = defineEmits(["update:modelValue"]);
+
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: "",
+  },
+});
+
 /**------------------------Data------------------------ */
 const image_url = ref("");
 const placeName = ref("");
 const placeCousins = ref("");
 const description = ref("");
-const placeType = ref("");
+const placeType = ref(props.modelValue);
 const placeTag = ref([]);
 const placeAmbiances = ref([]);
 const placeCategory = ref([]);
@@ -112,6 +121,12 @@ const handleAddPlace = handleSubmit(() => {
     obj: input,
   });
 });
+
+/**------------------------Emit place type to change the stepper---------------- */
+
+watch(placeType, (newValue) => {
+  emit("update:modelValue", newValue);
+});
 </script>
 
 <template>
@@ -132,6 +147,10 @@ const handleAddPlace = handleSubmit(() => {
           rules="required"
           name="placeLogo"
         ></CommonUploadSingleImage>
+
+        <!------------------------------------------------ Type--------------------------------------------->
+
+        <SelectorsPlaceType v-model="placeType" />
 
         <!--------------------------------------------------- Place Name------------------------------- -->
         <HTextfield
@@ -170,10 +189,6 @@ const handleAddPlace = handleSubmit(() => {
           rules="required"
           v-model="description"
         />
-
-        <!------------------------------------------------ Type--------------------------------------------->
-
-        <SelectorsPlaceType v-model="placeType" />
 
         <!-------------------------------------------------- Tag--------------------------------------->
         <SelectorsTag type="PLACE_TAG" v-model="placeTag" />
