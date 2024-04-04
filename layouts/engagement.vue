@@ -44,17 +44,19 @@ const navs = ref([
 			>
 				<!-- Sidebar component, swap this element with another sidebar if you like -->
 				<div
-					class="fixed top-0 left-0 flex flex-col h-screen px-6 space-y-12 overflow-y-auto border-r border-gray-200 grow gap-y-5 bg-primary-600 scroll"
+					class="fixed top-0 left-0 flex flex-col h-screen px-6 overflow-y-auto border-r border-gray-200 grow gap-y-32 bg-primary-600 scroll"
 				>
-					<div class="flex items-center h-16 gap-x-2 shrink-0">
+					<div
+						class="flex flex-col items-center justify-center h-16 gap-2 pt-20 mt-8 shrink-0"
+					>
 						<img
-							class="w-auto h-12"
-							src="/images/static/logo.png"
+							class="object-contain w-auto h-24"
+							src="/images/static/sheger-logo.png"
 							alt="Sheger Admin Logo"
 						/>
 						<div>
-							<p class="text-lg font-semibold text-white">Sheger</p>
-							<p class="text-lg font-semibold text-white">Gebeta</p>
+							<p class="text-lg font-semibold text-white">Sheger Gebeta</p>
+							<!-- <p class="text-lg font-semibold text-white"></p> -->
 						</div>
 					</div>
 					<nav class="flex flex-col flex-1">

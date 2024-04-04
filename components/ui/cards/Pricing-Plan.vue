@@ -34,7 +34,7 @@ const status = ref([
 				<Icon
 					name="uil:edit-alt"
 					class="text-2xl cursor-pointer"
-					@click="$router.push(`/app/billings/pricing/edit/${pricing.id}`)"
+					@click="$router.push(`/app/pricing/edit/${pricing.id}`)"
 				/>
 			</div>
 		</div>
