@@ -135,7 +135,7 @@ markAsAddressedError((error) => {
 });
 
 const clickRow = (item) => {
-	router.push(`/app/supports/${item.id}`);
+	router.push(`/app/support-contact/${item.id}`);
 };
 
 const openMarkAsAddressedModal = ref(false);

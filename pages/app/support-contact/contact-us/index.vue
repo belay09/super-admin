@@ -139,7 +139,7 @@ markAsAddressedError((error) => {
 const openMarkAsAddressedModal = ref(false);
 
 const clickRow = (item) => {
-	router.push(`/app/contact_us/${item.id}`);
+	router.push(`/app/support-contact/contact-us/${item.id}`);
 };
 
 definePageMeta({
