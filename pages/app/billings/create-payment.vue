@@ -89,7 +89,7 @@ placeOnResult((result) => {
 const openCreatePaymentModal = ref(false);
 
 definePageMeta({
-	layout: "home",
+	layout: "billing",
 });
 </script>
 

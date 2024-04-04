@@ -29,8 +29,7 @@ watchEffect(() => {
 });
 
 definePageMeta({
-	title: "Edit Place",
-	layout: "home",
+	layout: "engagement",
 });
 </script>
 <template>

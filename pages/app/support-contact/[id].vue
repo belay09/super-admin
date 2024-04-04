@@ -103,7 +103,7 @@ deleteSupportError((error) => {
 const openMarkAsAddressedModal = ref(false);
 const openDeleteConfirmModal = ref(false);
 definePageMeta({
-	layout: "home",
+	layout: "engagement",
 });
 </script>
 

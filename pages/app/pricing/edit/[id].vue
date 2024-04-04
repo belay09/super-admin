@@ -73,10 +73,6 @@ const {
 	onDone: onEditDone,
 } = authMutation(updatePricingQuery);
 
-definePageMeta({
-	layout: "home",
-});
-
 const onSubmit = handleSubmit(() => {
 	// if (!pricingItems.value.length) {
 	// 	notify({
@@ -161,6 +157,10 @@ onEditError(() => {
 		type: "error",
 		borderClass: "border-l-8 border-red-300 bg-primary-200",
 	});
+});
+
+definePageMeta({
+	layout: "billing",
 });
 </script>
 

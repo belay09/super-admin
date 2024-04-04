@@ -1,7 +1,6 @@
 <script setup>
 definePageMeta({
-	title: "Register New Place",
-	layout: "home",
+	layout: "engagement",
 });
 </script>
 <template>

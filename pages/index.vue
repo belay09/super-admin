@@ -109,7 +109,7 @@ createTokenDone((result) => {
 	onLogin(result.data?.create_custom_token?.hasura_access_token, "authClient");
 
 	if (!!getToken("authClient")) {
-		router.replace("/app/dashboard");
+		router.replace("/app");
 	}
 });
 
