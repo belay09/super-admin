@@ -19,6 +19,12 @@ query getPlace($id: bigint!, $include: Boolean = false) {
     contactPhoneNumber
     contactAltPhoneNumber
 
+    # featured image
+    featured_medias {
+      id
+      url
+    }
+
     # place aggregate
     place_aggregate_summary {
       minDishPrice
