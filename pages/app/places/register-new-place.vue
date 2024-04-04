@@ -31,9 +31,9 @@ definePageMeta({
       <div
         class="stepper-button"
         :class="
-          currentStep == 4
+          currentStep == 2
             ? '!bg-primary-300'
-            : currentStep > 4
+            : currentStep > 2
             ? '!bg-primary-600 text-white'
             : ''
         "
@@ -43,9 +43,9 @@ definePageMeta({
       <div
         class="stepper-button"
         :class="
-          currentStep == 5
+          currentStep == 3
             ? '!bg-primary-300'
-            : currentStep > 5
+            : currentStep > 3
             ? '!bg-primary-600 text-white'
             : ''
         "
@@ -58,9 +58,9 @@ definePageMeta({
         v-if="placeType == 'Hotels'"
         class="stepper-button"
         :class="
-          currentStep == 2
+          currentStep == 4
             ? '!bg-primary-300'
-            : currentStep > 2
+            : currentStep > 4
             ? '!bg-primary-600 text-white'
             : ''
         "
@@ -74,9 +74,9 @@ definePageMeta({
         v-if="placeType == 'Caterings'"
         class="stepper-button"
         :class="
-          currentStep == 3
+          currentStep == 5
             ? '!bg-primary-300'
-            : currentStep > 3
+            : currentStep > 5
             ? '!bg-primary-600 text-white'
             : ''
         "
