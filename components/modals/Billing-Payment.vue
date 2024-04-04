@@ -1,7 +1,10 @@
 <script setup>
 import { useFullscreen } from "@vueuse/core";
+import getOneBillingQuery from "@/graphql/query/billing/item.gql";
+import updateBillingMutation from "@/graphql/mutations/billing/edit.gql";
+import priceCalculatorQuery from "@/graphql/query/billing/price-calculator.gql";
 import useNotify from "@/use/notify";
-import getOneInvoiceQuery from "@/graphql/query/invoice/item.gql";
+import { get } from "@vueuse/core";
 
 const { notify } = useNotify();
 const emits = defineEmits(["update:modelValue", "refetch"]);
@@ -15,25 +18,130 @@ const props = defineProps({
 		type: Number,
 		required: true,
 	},
+	currentStatus: {
+		type: Object,
+		required: true,
+	},
 });
+const isVerified = ref(false);
+const isDeclined = ref(false);
+/*------------------------------------Fetch Billing Data------------------------*/
 
-const invoice = ref(null);
+const billing = ref(null);
 
 const {
-	onResult: invoiceOnResult,
-	onError: invoiceOnError,
-	loading: invoiceLoading,
-	refetch: refetchInvoice,
-} = authFetch(getOneInvoiceQuery, {
+	onResult: billingOnResult,
+	onError: billingOnError,
+	loading: billingLoading,
+	refetch: refetchBilling,
+} = authFetch(getOneBillingQuery, {
 	client: toRef("authClient"),
 	role: toRef("shegeradmin"),
 	filter: toRef(props.id),
 });
 
-invoiceOnResult((result) => {
-	if (result.data?.billingsInvoicesByPk) {
-		invoice.value = result.data.billingsInvoicesByPk;
+billingOnResult((result) => {
+	if (result.data?.billingsPaymentsByPk) {
+		console.log(result.data.billingsPaymentsByPk);
+		billing.value = result.data.billingsPaymentsByPk;
+		priceFetchEnabled.value = true;
 	}
+});
+
+billingOnError((err) => {
+	console.log("dbvb", err);
+});
+
+/*------------------------------------Price Calculator------------------------*/
+
+const priceFetchEnabled = ref(false);
+const billingPrice = ref();
+
+const pricingCalculatorFilter = computed(() => {
+	return {
+		place_billing_id: billing.value.billingId,
+		pricing_plan_frequency_price_id: billing.value?.pricing_plan_frequency?.id,
+	};
+});
+
+const {
+	onResult: priceOnResult,
+	onError: priceOnError,
+	loading: priceLoading,
+	refetch: refetchPrice,
+} = authFetch(priceCalculatorQuery, {
+	client: toRef("authClient"),
+	role: toRef("shegeradmin"),
+	filter: pricingCalculatorFilter,
+	enabled: priceFetchEnabled,
+});
+
+priceOnResult((result) => {
+	if (result.data?.price) {
+		billingPrice.value = result.data.price;
+	}
+});
+
+/*------------------------------------Update Billing Data------------------------*/
+
+const {
+	mutate: updatePayment,
+	onDone: updatePaymentDone,
+	loading: updatePaymentLoading,
+	onError: updatePaymentError,
+} = authMutation(updateBillingMutation);
+
+const verifyPayment = () => {
+	updatePayment({
+		id: props.id,
+		input: {
+			isVerified: true,
+			isDeclined: false,
+		},
+	});
+};
+
+const declinePayment = () => {
+	updatePayment({
+		id: props.id,
+		input: {
+			isVerified: false,
+			isDeclined: true,
+		},
+	});
+};
+
+updatePaymentDone(() => {
+	if (isVerified.value) {
+		notify({
+			title: "Payment Approved",
+			message: "Payment has been approved successfully",
+			type: "success",
+			borderClass: "border-l-8 border-green-300",
+		});
+	} else {
+		notify({
+			title: "Payment Declined",
+			message: "Payment has been declined successfully",
+			type: "success",
+			borderClass: "border-l-8 border-green-300",
+		});
+	}
+
+	emits("refetch");
+	isVerified.value = false;
+	isDeclined.value = false;
+	openApproveConfirmationModal.value = false;
+	open.value = false;
+});
+
+updatePaymentError((error) => {
+	notify({
+		title: "Some thing went wrong",
+		message: error.message,
+		type: "error",
+		borderClass: "border-l-8 border-primary-300",
+	});
 });
 
 /*----------------------------Toggle Full Screen ----------------------------------*/
@@ -45,16 +153,46 @@ const open = computed({
 		return props.modelValue;
 	},
 	set(newVal) {
+		if (!newVal) {
+			isVerified.value = false;
+			isDeclined.value = false;
+		}
 		emits("update:modelValue", newVal);
 	},
 });
+
+const openApproveConfirmationModal = ref(false);
+const openDeclineConfirmationModal = ref(false);
 </script>
 
 <template>
+	<Modals-Confirmation
+		:auto-close="false"
+		v-model="openApproveConfirmationModal"
+		title="Approve Payment"
+		icon="lucide:file-check-2"
+		icon-class="self-center text-primary-600"
+		sureQuestion="Are you sure you want to approve this payment?"
+		confirm-button="Approve"
+		description="After approving  the payment will be marked as paid and the invoice will be generated."
+		@confirm="[(isVerified = true), verifyPayment()]"
+	/>
+	<Modals-Confirmation
+		:auto-close="false"
+		v-model="openDeclineConfirmationModal"
+		title="Decline Payment"
+		icon="fluent-mdl2:entry-decline"
+		icon-class="self-center text-primary-600"
+		sureQuestion="Are you sure you want to decline this payment?"
+		confirm-button="Decline"
+		description="After this action  the payment will be marked as declined and the invoice will not be generated."
+		@confirm="[(isDeclined = true), declinePayment()]"
+	/>
 	<ModalsModal
-		v-if="!invoiceLoading"
+		v-if="!billingLoading"
 		body-class="max-w-[1500px] !p-2 "
 		v-model="open"
+		:auto-close="false"
 	>
 		<template #content>
 			<div ref="modal" class="w-full p-4 bg-white">
@@ -62,9 +200,8 @@ const open = computed({
 					<p
 						class="flex items-center text-2xl font-medium text-primary-600 gap-x-2"
 					>
-						<Icon name="iconamoon:invoice" /> Invoice
+						<Icon :name="currentStatus.icon" /> {{ currentStatus.name }}
 					</p>
-
 					<button @click="open = false">
 						<Icon name="ic:round-close" class="text-2xl" />
 					</button>
@@ -132,29 +269,26 @@ const open = computed({
 									<p class="secondary-text">
 										Bill To :
 										<span class="font-medium">{{
-											invoice?.payment?.billing_address?.place?.name
+											billing?.billing_address?.place?.name
 										}}</span>
 									</p>
 									<p class="secondary-text">
 										Address :
-										<span class="font-medium"
-											>{{ invoice?.payment?.billing_address?.city?.name }}
-
-											{{ invoice?.payment?.billing_address?.area?.name }}</span
-										>
+										<span class="font-medium">Kirikos Addis Ababa</span>
 									</p>
-
+									<p class="secondary-text">
+										Contact : <span class="font-medium">Selamu Dawit</span>
+									</p>
 									<p class="secondary-text">
 										Phone :
 										<span class="font-medium">{{
-											invoice?.payment?.billing_address?.place
-												?.contactPhoneNumber
+											billing?.billing_address?.place?.contactPhoneNumber
 										}}</span>
 									</p>
 									<p class="secondary-text">
 										Email :
 										<span class="font-medium">{{
-											invoice?.payment?.billing_address?.place?.contactEmail
+											billing?.billing_address?.place?.contactEmail
 										}}</span>
 									</p>
 								</div>
@@ -162,24 +296,17 @@ const open = computed({
 								<!-- ----- -->
 
 								<div class="flex flex-col space-y-5">
-									<p class="space-x-2 secondary-text">
+									<p class="secondary-text">
 										<span class="font-light underline"> Date </span>:
-										<span class="font-medium">{{
-											invoice?.payment?.paymentDate
-										}}</span>
-									</p>
-									<p class="flex space-x-2 secondary-text whitespace-nowrap">
-										<span class="font-light underline">Invoice Number </span>
-										:
-										<span class="font-medium">
-											{{ invoice?.invoiceNumber }}</span
-										>
+
+										<span class="font-medium">{{ billing?.paymentDate }}</span>
 									</p>
 
-									<p class="space-x-2 secondary-text">
+									<p class="secondary-text">
 										<span class="font-light underline"> Tin Number </span>:
+
 										<span class="font-medium">{{
-											invoice?.payment?.billing_address?.place?.tinNumber
+											billing?.billing_address?.place?.tinNumber
 										}}</span>
 									</p>
 								</div>
@@ -197,21 +324,17 @@ const open = computed({
 									</tr>
 									<tr class="text-lg font-medium">
 										<td>
-											{{
-												invoice?.payment?.pricing_plan_frequency?.pricingPlan
-													?.title
-											}}
-											<span class="text-sm font-light">
-												/{{
-													invoice?.payment?.pricing_plan_frequency?.frequency
-												}}</span
+											{{ billing?.pricing_plan_frequency?.pricingPlan?.title }}
+
+											<span class="text-sm font-light"
+												>/{{ billing?.pricing_plan_frequency?.frequency }}</span
 											>
 										</td>
 										<td>
-											{{ invoice.subTotal }}
+											{{ billingPrice[0].subtotal }}
 										</td>
 										<td>1</td>
-										<td>{{ invoice.total }}</td>
+										<td>{{ billingPrice[0].total }}</td>
 									</tr>
 								</table>
 							</div>
@@ -224,27 +347,28 @@ const open = computed({
 										Subtotal
 									</p>
 									<p
-										class="max-w-[8rem] flex items-center gap-x-2 mx-auto secondary-text lg:text-lg text-right"
+										class="max-w-[8rem] mx-auto flex items-center gap-x-2 secondary-text lg:text-lg text-right"
 									>
-										{{ invoice.subTotal }}<span class="text-sm">Br.</span>
+										{{ billingPrice[0].subtotal }}
+										<span class="text-sm">Br.</span>
 									</p>
 
 									<p class="text-xl font-medium text-right text-primary-600">
-										Vat
+										Vat(15%)
 									</p>
 									<p
-										class="max-w-[8rem] flex items-center gap-x-2 mx-auto secondary-text lg:text-lg text-right"
+										class="max-w-[8rem] mx-auto flex items-center gap-x-2 secondary-text lg:text-lg text-right"
 									>
-										{{ invoice.vat }}<span class="text-sm">Br.</span>
+										{{ billingPrice[0].vat }} <span class="text-sm">Br.</span>
 									</p>
 
 									<p class="text-xl font-medium text-right text-primary-600">
 										Total Amount Due
 									</p>
 									<p
-										class="text-primary-600 max-w-[8rem] mx-auto flex items-center gap-x-2 lg:text-lg text-right"
+										class="text-primary-600 font-medium flex items-center gap-x-2 max-w-[8rem] mx-auto lg:text-lg text-right"
 									>
-										{{ invoice.total }} <span class="text-sm">Br.</span>
+										{{ billingPrice[0].total }} <span class="text-sm">Br.</span>
 									</p>
 								</div>
 							</div>
@@ -256,17 +380,6 @@ const open = computed({
 										Please pay your invoice in person at the head office of
 										Sheger Gebeta before the due date.
 									</p>
-
-									<button
-										class="block hover:bg-primary-200 primary-button secondary-border"
-									>
-										<Icon
-											name="heroicons:arrow-down-tray-16-solid"
-											class="text-2xl text-sheger-gray-100"
-										></Icon>
-
-										<span class="text-sheger-gray-100">Download</span>
-									</button>
 								</div>
 							</div>
 						</div>
@@ -282,16 +395,13 @@ const open = computed({
 							<p class="secondary-text">
 								Bill To :
 								<span class="font-medium">{{
-									invoice?.payment?.billing_address?.place?.name
+									billing?.billing_address?.place?.name
 								}}</span>
 							</p>
-							<p class="secondary-text">
-								Invoice Number :
-								<span class="font-medium">{{ invoice?.invoiceNumber }}</span>
-							</p>
+
 							<p class="secondary-text">
 								Transaction Id :
-								<span class="font-medium">{{ invoice?.transactionId }}</span>
+								<span class="font-medium">{{ billing?.transactionId }}</span>
 							</p>
 						</div>
 
@@ -309,10 +419,10 @@ const open = computed({
 									/>
 								</button>
 							</div>
-							<div class="flex flex-col items-center justify-center h-full">
+							<div class="flex items-center justify-center h-full">
 								<img
-									v-if="invoice.payment.recieptUrl"
-									:src="invoice?.payment?.recieptUrl"
+									v-if="billing.recieptUrl"
+									:src="billing?.recieptUrl"
 									alt=" payment file"
 									class="object-cover h-[540px] rounded-md"
 								/>
@@ -324,6 +434,39 @@ const open = computed({
 									<P class="text-3xl">No file attached</P>
 								</div>
 							</div>
+						</div>
+						<div
+							v-if="!billing.isVerified && !billing.isDeclined"
+							class="justify-between w-full secondary-flex-row"
+						>
+							<button
+								@click="open = false"
+								class="block w-full border border-primary-300 text-primary-600 primary-button"
+							>
+								<Icon
+									name="heroicons:arrow-left-20-solid"
+									class="text-2xl"
+								></Icon>
+
+								<span class="">Cancel</span>
+							</button>
+
+							<button
+								@click="openDeclineConfirmationModal = true"
+								class="block w-full text-white bg-primary-600 primary-button secondary-border"
+							>
+								<Icon name="fluent-mdl2:entry-decline" class="text-2xl"></Icon>
+
+								<span class="">Decline</span>
+							</button>
+							<button
+								@click="openApproveConfirmationModal = true"
+								class="block w-full border primary-button"
+							>
+								<Icon name="heroicons:credit-card" class="text-2xl"></Icon>
+
+								<span class="">Approve</span>
+							</button>
 						</div>
 					</div>
 				</div>

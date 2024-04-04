@@ -1,0 +1,47 @@
+query getInvoice($filter: bigint!) {
+	billingsInvoicesByPk(id: $filter) {
+		withHolding
+		vat
+		transactionId
+		total
+
+		subTotal
+		startDate
+		pricingPlanFrequencyPriceId
+		reason
+		invoiceNumber
+		payment {
+			billingId
+			id
+			billing_address {
+				city {
+					name
+				}
+				area {
+					name
+				}
+				place {
+					name
+					tinNumber
+					contactAltPhoneNumber
+					contactPhoneNumber
+					contactEmail
+				}
+				id
+			}
+			paymentDate
+			recieptUrl
+			transactionNote
+			paymentMethod
+			pricing_plan_frequency {
+				id
+				price
+				pricingPlan {
+					title
+					description
+				}
+				frequency
+			}
+		}
+	}
+}

@@ -9,22 +9,22 @@ query billingsPaymentsItem($filter: bigint!) {
 				contactPhoneNumber
 				contactEmail
 			}
-
 			id
 		}
 		subtotal
 		total
+		transactionId
 		vat
 		paymentDate
 		paymentStatus
 		isVerified
-
+		isDeclined
+		recieptUrl
 		transactionNote
 		verifiedBy
 		vat
 		paymentMethod
 		withHolding
-
 		pricing_plan_frequency {
 			id
 			price
@@ -34,7 +34,6 @@ query billingsPaymentsItem($filter: bigint!) {
 			}
 			frequency
 		}
-
 		subscription_plans {
 			id
 		}

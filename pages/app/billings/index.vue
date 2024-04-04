@@ -10,6 +10,7 @@ import {
 	TransitionRoot,
 } from "@headlessui/vue";
 import getBillingQuery from "@/graphql/query/billing/list.gql";
+import getInvoiceQuery from "@/graphql/query/invoice/list.gql";
 const router = useRouter();
 
 /***--------------------------Table data------------------- */
@@ -55,9 +56,50 @@ const headers = [
 	},
 ];
 
+const headersInvoice = [
+	{
+		text: "Company Name",
+		value: "payment.billing_address.place.name",
+	},
+
+	{
+		text: "Payment method",
+		value: "payment.paymentMethod",
+	},
+	{
+		text: "pricing plan",
+		value: "payment.pricing_plan_frequency.pricingPlan.title",
+	},
+
+	{
+		text: "price",
+		value: "payment.pricing_plan_frequency.price",
+	},
+	{
+		text: "paid amount",
+		value: "payment.total",
+	},
+	{
+		text: "payment date",
+		value: "payment.paymentDate",
+	},
+
+	{
+		text: "Action",
+		value: "action",
+	},
+];
+
+const status = ref([
+	{ name: "Payments", icon: "solar:dollar-linear" },
+	{ name: "Verified Payments", icon: "lets-icons:money" },
+	{ name: "Declined Payments", icon: "uil:money-bill-slash" },
+	{ name: "Invoice", icon: "iconamoon:invoice" },
+]);
+
 const currentStatus = ref("Payments");
 const totalData = ref(0);
-
+/**----------------Fetch Payments--------------------------- */
 const filter = computed(() => {
 	let query = {};
 	query._and = [
@@ -130,21 +172,53 @@ billingOnResult((result) => {
 	}
 });
 
-const loading = ref(true);
-loading.value = false;
+/**------------------Fetch Invoice------------------------- */
+const invoiceFilter = computed(() => {
+	return {
+		payment: {
+			billing_address: {
+				place: {
+					name: {
+						_ilike: `%${searchTerm.value}%`,
+					},
+				},
+			},
+		},
+	};
+});
+const invoices = ref([]);
+
+const {
+	onResult: invoiceOnResult,
+	onError: invoiceOnError,
+	loading: invoiceLoading,
+	refetch: invoiceReFetch,
+} = authListQuery(getInvoiceQuery, invoiceFilter, [], offset, limit);
+
+invoiceOnResult((result) => {
+	if (result.data?.invoices) {
+		invoices.value = result.data?.invoices;
+	}
+});
 const clickRow = (item) => {
 	router.push("/app/billings/12");
 };
 
+const openSelectBill = (id) => {
+	selectedBill.value = id;
+	openBillingModal.value = true;
+};
+
+const openSelectInvoice = (id) => {
+	selectedInvoice.value = id;
+	openInvoiceModal.value = true;
+};
+
+const selectedInvoice = ref();
+
 const dum = ref(false);
 const openBillingModal = ref(false);
-/**----------------Billing status--------------------------- */
-const status = ref([
-	{ name: "Payments", icon: "solar:dollar-linear" },
-	{ name: "Verified Payments", icon: "lets-icons:money" },
-	{ name: "Declined Payments", icon: "uil:money-bill-slash" },
-	{ name: "Invoice", icon: "iconamoon:invoice" },
-]);
+const openInvoiceModal = ref(false);
 
 definePageMeta({
 	layout: "home",
@@ -152,14 +226,21 @@ definePageMeta({
 </script>
 
 <template>
-	<ModalsBillingInvoice
+	<ModalsBillingPayment
 		@refetch="billingReFetch"
 		:id="selectedBill"
+		:current-status="status.find((item) => item.name === currentStatus)"
 		v-model="openBillingModal"
 		v-if="openBillingModal"
 	/>
 
-	<div class="w-full py-6 pl-10 pr-16">
+	<ModalsBillingInvoice
+		:id="selectedInvoice"
+		v-model="openInvoiceModal"
+		v-if="openInvoiceModal"
+	/>
+
+	<div class="w-full py-6">
 		<!-- ---------search and filter--------- -->
 
 		<div class="flex items-center justify-between">
@@ -168,7 +249,8 @@ definePageMeta({
 					name="search"
 					type="text"
 					placeholder="Search here"
-					trailing-icon="uil:search"
+					leading-icon="uil:search"
+					leading-icon-container-class="border-none"
 					v-model="searchTerm"
 				></H-Textfield>
 				<!-- <div class="px-4 py-3 border rounded-md">
@@ -199,15 +281,14 @@ definePageMeta({
 
 		<div class="flex flex-col py-6 space-y-8">
 			<Billings-Filter v-model:model-value="currentStatus" :status="status" />
-
-			<div class="">
+			<div v-if="currentStatus !== 'Invoice'">
 				<h-table
 					:headers="headers"
 					:items="items"
 					v-model:sort="sort"
-					:loading="loading"
+					:loading="billingLoading"
 					@click:row="clickRow"
-					supporterClass="shadow-md  overflow-x-auto overflow-y-hidden pb-12 rounded-md border border-gray-200"
+					supporterClass=" overflow-x-auto overflow-y-hidden pb-12 rounded-md border border-gray-200"
 					supportHeaderClass="bg-gray-100 border"
 					tableHeaderStyle="secondary-border  bg-gray-50"
 					tableBodyRowStyle="border py-6"
@@ -217,7 +298,6 @@ definePageMeta({
 					<template v-slot:action="{ item }">
 						<Menu @click.stop="dum = !dum" as="div" class="relative">
 							<MenuButton
-								@click="selectedBill = item.id"
 								class="-m-4 flex justify-center w-12 h-12 group-hover hover:bg-gray-100 rounded-full items-center p-1.5"
 							>
 								<Icon name="fontisto:more-v" class="text-xl text-gray-950" />
@@ -233,10 +313,7 @@ definePageMeta({
 								<MenuItems
 									class="bg-white hover:bg-primary-600 hover:text-white absolute right-32 z-50 mt-2.5 w-fit origin-top-right rounded-md py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
 								>
-									<MenuItem
-										@click="openBillingModal = true"
-										v-slot="{ active }"
-									>
+									<MenuItem @click="openSelectBill(item.id)">
 										<button
 											type="button"
 											class="flex items-center w-full px-4 py-2 text-sm rounded-md group gap-x-4"
@@ -248,6 +325,32 @@ definePageMeta({
 								</MenuItems>
 							</transition>
 						</Menu>
+					</template>
+				</h-table>
+			</div>
+			<div v-else>
+				<h-table
+					:headers="headersInvoice"
+					:items="invoices"
+					v-model:sort="sort"
+					:loading="invoiceLoading"
+					@click:row="clickRow"
+					supporterClass="shadow-md  overflow-x-auto overflow-y-hidden pb-12 rounded-md border border-gray-200"
+					supportHeaderClass="bg-gray-100 border"
+					tableHeaderStyle="secondary-border  bg-gray-50"
+					tableBodyRowStyle="border py-6"
+					rowHeadStyle="secondary-text"
+					row-style="lg:text-sheger-gray-400 hover:bg-primary-50/60"
+				>
+					<template v-slot:action="{ item }">
+						<button
+							@click.stop="openSelectInvoice(item.id)"
+							type="button"
+							class="flex items-center px-2 py-1 text-sm border rounded-md w-fit text-primary-600 bg-primary-50 border-primary-400 group gap-x-2"
+						>
+							<Icon name="iconamoon:invoice" width="17" height="17" />
+							<span class="whitespace-nowrap"> Invoice</span>
+						</button>
 					</template>
 				</h-table>
 			</div>
