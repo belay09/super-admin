@@ -300,7 +300,7 @@ const open = computed({
 							</p>
 						</div>
 
-						<div class="flex-grow space-y-4">
+						<div class="flex-grow space-y-4 overflow-clip">
 							<div class="flex justify-between">
 								<p class="text-lg text-black underline">Reference File</p>
 								<button @click="toggle" class="p-1 rounded-md bg-primary-50">
@@ -319,7 +319,7 @@ const open = computed({
 									v-if="invoice.payment.recieptUrl"
 									:src="invoice?.payment?.recieptUrl"
 									alt=" payment file"
-									class="object-cover h-[540px] rounded-md"
+									class="object-cover h-full rounded-md"
 								/>
 								<div v-else class="space-y-6 text-center text-gray-500">
 									<Icon
