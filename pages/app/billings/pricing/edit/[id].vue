@@ -17,22 +17,18 @@ const frequencies = ref([
 		id: "MONTHLY",
 	},
 	{
-		name: "Yearly",
-		id: "YEARLY",
+		name: "Annually",
+		id: "ANNUALLY",
 	},
 	{
 		name: "Quarterly",
 		id: "QUARTERLY",
 	},
-	{
-		name: "Bi-Annually",
-		id: "BIANNUALLY",
-	},
 ]);
 
 const formInput = ref({});
 const lampPrices = ref([]);
-const pricingItems = ref([]);
+// const pricingItems = ref([]);
 const features = ref([]);
 
 /**----------------Fetch Pricing plan data--------------------------- */
@@ -58,14 +54,14 @@ pricingOnResult((result) => {
 			description: feature.description,
 		};
 	});
-	pricingItems.value = formInput.value.pricing_plan_items.map(({ item }) => {
-		return {
-			title: item.title,
-			description: item.description,
-			itemType: item.itemType,
-			limit: item.rules.limit,
-		};
-	});
+	// pricingItems.value = formInput.value.pricing_plan_items.map(({ item }) => {
+	// 	return {
+	// 		title: item.title,
+	// 		description: item.description,
+	// 		itemType: item.itemType,
+	// 		limit: item.rules.limit,
+	// 	};
+	// });
 });
 
 /*---------------------Edit Pricing Plan--------------------- */
@@ -82,15 +78,15 @@ definePageMeta({
 });
 
 const onSubmit = handleSubmit(() => {
-	if (!pricingItems.value.length) {
-		notify({
-			title: "Add pricing items",
-			description: "At lease one pricing items is required",
-			type: "error",
-			borderClass: "border-l-8 border-red-300 bg-primary-200",
-		});
-		return;
-	}
+	// if (!pricingItems.value.length) {
+	// 	notify({
+	// 		title: "Add pricing items",
+	// 		description: "At lease one pricing items is required",
+	// 		type: "error",
+	// 		borderClass: "border-l-8 border-red-300 bg-primary-200",
+	// 	});
+	// 	return;
+	// }
 	if (!features.value.length) {
 		notify({
 			title: "Add features",
@@ -110,22 +106,22 @@ const onSubmit = handleSubmit(() => {
 
 	editMutation({
 		pricing_plan_id: route.params.id,
-		pricing_plan_items: pricingItems.value.map((item) => {
-			return {
-				pricingPlanId: route.params.id,
-				item: {
-					data: {
-						name: item.title,
-						description: item.description,
-						itemType: item.itemType,
-						title: item.title,
-						rules: {
-							limit: parseInt(item.limit),
-						},
-					},
-				},
-			};
-		}),
+		// pricing_plan_items: pricingItems.value.map((item) => {
+		// 	return {
+		// 		pricingPlanId: route.params.id,
+		// 		item: {
+		// 			data: {
+		// 				name: item.title,
+		// 				description: item.description,
+		// 				itemType: item.itemType,
+		// 				title: item.title,
+		// 				rules: {
+		// 					limit: parseInt(item.limit),
+		// 				},
+		// 			},
+		// 		},
+		// 	};
+		// }),
 
 		pricing_plan_feature: features.value.map((item) => {
 			return {
@@ -194,7 +190,7 @@ onEditError(() => {
 
 		<!-- -------------------Add pricing plan-------------------- -->
 
-		<div class="grid grid-cols-3 !h-[750px] overflow-hidden gap-8">
+		<div class="grid grid-cols-2 !h-[750px] overflow-hidden gap-8">
 			<!-- -----------------Basic info---------------- -->
 			<div>
 				<p class="py-4 text-lg font-medium text-sheger-gray-100">Basic Info</p>
@@ -239,8 +235,8 @@ onEditError(() => {
 				/>
 				<!-- --------------------Plan visibility---------------- -->
 			</div>
-			<!-- -----------------Pricing Items---------------- -->
-			<BillingsPricingItem v-model="pricingItems" />
+			<!-- -----------------Pricing Items----------------
+			<BillingsPricingItem v-model="pricingItems" /> -->
 			<!-- -------------------------------Features---------------- -->
 			<BillingsPricingFeatures v-model="features" />
 		</div>

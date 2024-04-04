@@ -2,6 +2,7 @@
 import { useFullscreen } from "@vueuse/core";
 import useNotify from "@/use/notify";
 import getOneInvoiceQuery from "@/graphql/query/invoice/item.gql";
+import html2pdf from "html2pdf.js";
 
 const { notify } = useNotify();
 const emits = defineEmits(["update:modelValue", "refetch"]);
@@ -35,6 +36,20 @@ invoiceOnResult((result) => {
 		invoice.value = result.data.billingsInvoicesByPk;
 	}
 });
+
+const invoiceDiv = document.getElementById("invoiceDiv");
+
+function generatePDF() {
+	const opt = {
+		margin: 0,
+		filename: "converted.pdf",
+		image: { type: "jpeg", quality: 0.98 },
+		html2canvas: { scale: 2 },
+		jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+	};
+
+	html2pdf().set(opt).from(invoiceDiv).save();
+}
 
 /*----------------------------Toggle Full Screen ----------------------------------*/
 const modal = ref(null);
@@ -72,6 +87,7 @@ const open = computed({
 				<div class="grid grid-cols-5 mt-4 gap-x-4">
 					<!--  -----------------------Left side---------------- -->
 					<div
+						id="invoiceDiv"
 						class="col-span-3 pb-2 space-y-3 overflow-hidden border rounded-md"
 					>
 						<div class="grid items-center grid-cols-4 p-10 bg-primary-50">
@@ -256,17 +272,6 @@ const open = computed({
 										Please pay your invoice in person at the head office of
 										Sheger Gebeta before the due date.
 									</p>
-
-									<button
-										class="block hover:bg-primary-200 primary-button secondary-border"
-									>
-										<Icon
-											name="heroicons:arrow-down-tray-16-solid"
-											class="text-2xl text-sheger-gray-100"
-										></Icon>
-
-										<span class="text-sheger-gray-100">Download</span>
-									</button>
 								</div>
 							</div>
 						</div>
@@ -324,6 +329,19 @@ const open = computed({
 									<P class="text-3xl">No file attached</P>
 								</div>
 							</div>
+						</div>
+						<div class="flex justify-end">
+							<button
+								@click="generatePDF()"
+								class="block hover:bg-primary-200 primary-button secondary-border"
+							>
+								<Icon
+									name="heroicons:arrow-down-tray-16-solid"
+									class="text-2xl text-sheger-gray-100"
+								></Icon>
+
+								<span class="text-sheger-gray-100">Download Invoice</span>
+							</button>
 						</div>
 					</div>
 				</div>

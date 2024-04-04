@@ -1,0 +1,32 @@
+query getPlaces(
+	$filter: PlacesBoolExp
+	$order: [PlacesOrderBy!]
+	$limit: Int
+	$offset: Int
+) {
+	places(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+		name
+		id
+		email: contactEmail
+		phone_no: contactPhoneNumber
+		createdAt
+		tinNumber
+
+		billing_addresses {
+			id
+		}
+
+		plans: subscription_plans(where: { isActive: { _eq: true } }) {
+			frequency: pricingPlanFrequency {
+				plan: pricingPlan {
+					title
+				}
+			}
+		}
+	}
+	total: placesAggregate(where: $filter) {
+		aggregate {
+			count
+		}
+	}
+}

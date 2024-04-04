@@ -7,15 +7,14 @@ const props = defineProps({
 });
 
 /**----------------Billing status--------------------------- */
-const currentStatus = ref(props.currentStatus);
+const currentStatus = computed(() => props.currentStatus);
 const currentStatusId = computed(() => {
 	return status.value.find((item) => item.name === currentStatus.value).id;
 });
 const status = ref([
 	{ name: "Monthly", icon: "solar:dollar-linear", id: "MONTHLY" },
-	{ name: "Yearly", icon: "lets-icons:money", id: "YEARLY" },
+	{ name: "Annually", icon: "lets-icons:money", id: "ANNUALLY" },
 	{ name: "Quarterly", icon: "uil:money-bill-slash", id: "QUARTERLY" },
-	{ name: "Bi-Annually", icon: "iconamoon:invoice", id: "BIANNUALLY" },
 ]);
 </script>
 

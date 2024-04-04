@@ -69,9 +69,8 @@ const currentStatusId = computed(() => {
 });
 const status = ref([
 	{ name: "Monthly", icon: "solar:dollar-linear", id: "MONTHLY" },
-	{ name: "Yearly", icon: "lets-icons:money", id: "YEARLY" },
+	{ name: "Annually", icon: "lets-icons:money", id: "ANNUALLY" },
 	{ name: "Quarterly", icon: "uil:money-bill-slash", id: "QUARTERLY" },
-	{ name: "Bi-Annually", icon: "iconamoon:invoice", id: "BIANNUALLY" },
 ]);
 
 const openPricingDeleteConfirmModal = ref(false);

@@ -13,16 +13,12 @@ const frequencies = ref([
 		id: "MONTHLY",
 	},
 	{
-		name: "Yearly",
-		id: "YEARLY",
+		name: "Annually",
+		id: "ANNUALLY",
 	},
 	{
 		name: "Quarterly",
 		id: "QUARTERLY",
-	},
-	{
-		name: "Bi-Annually",
-		id: "BIANNUALLY",
 	},
 ]);
 

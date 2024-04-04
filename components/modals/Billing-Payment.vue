@@ -405,7 +405,7 @@ const openDeclineConfirmationModal = ref(false);
 							</p>
 						</div>
 
-						<div class="flex-grow space-y-4">
+						<div class="flex-grow space-y-4 overflow-clip">
 							<div class="flex justify-between">
 								<p class="text-lg text-black underline">Reference File</p>
 								<button @click="toggle" class="p-1 rounded-md bg-primary-50">
@@ -424,7 +424,7 @@ const openDeclineConfirmationModal = ref(false);
 									v-if="billing.recieptUrl"
 									:src="billing?.recieptUrl"
 									alt=" payment file"
-									class="object-cover h-[540px] rounded-md"
+									class="object-cover h-full rounded-md"
 								/>
 								<div v-else class="space-y-6 text-center text-gray-500">
 									<Icon
@@ -437,7 +437,7 @@ const openDeclineConfirmationModal = ref(false);
 						</div>
 						<div
 							v-if="!billing.isVerified && !billing.isDeclined"
-							class="justify-between w-full secondary-flex-row"
+							class="justify-between w-full h-fit secondary-flex-row"
 						>
 							<button
 								@click="open = false"

@@ -16,7 +16,7 @@ const router = useRouter();
 /***--------------------------Table data------------------- */
 const searchTerm = ref("");
 const items = ref([]);
-const sort = ref([{ name: "desc" }]);
+const sort = ref([{ createdAt: "DESC" }]);
 const offset = ref(0);
 const limit = ref(7);
 const length = ref(100);
@@ -163,7 +163,7 @@ const {
 	onError: billingOnError,
 	loading: billingLoading,
 	refetch: billingReFetch,
-} = authListQuery(getBillingQuery, filter, [], offset, limit);
+} = authListQuery(getBillingQuery, filter, sort, offset, limit);
 
 billingOnResult((result) => {
 	if (result.data?.billingsPayments) {

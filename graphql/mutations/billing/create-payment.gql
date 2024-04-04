@@ -1,0 +1,22 @@
+mutation addPayment($input: [BillingsPaymentsInsertInput!]!) {
+	insertBillingsPayments(
+		objects: $input
+		onConflict: {
+			constraint: payments_payment_status_billing_id_key
+			updateColumns: [
+				transactionNote
+				recieptUrl
+				billingId
+				paymentMethod
+				transactionId
+				pricingPlanFrequencyId
+				paymentDate
+			]
+		}
+	) {
+		returning {
+			billingId
+			paymentDate
+		}
+	}
+}

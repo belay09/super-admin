@@ -23,6 +23,7 @@ query pricingPlans(
 			id
 		}
 		pricing_plan_frequencies {
+			id
 			price
 			frequency
 		}
