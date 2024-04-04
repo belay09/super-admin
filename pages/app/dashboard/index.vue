@@ -6,7 +6,7 @@ definePageMeta({
 	title: "Dashboard",
 	description: "Dashboard page description",
 	keywords: "dashboard, page, description",
-	layout: "home",
+	layout: "engagement",
 });
 
 const dateRangeValue = ref([

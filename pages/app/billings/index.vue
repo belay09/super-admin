@@ -221,7 +221,7 @@ const openBillingModal = ref(false);
 const openInvoiceModal = ref(false);
 
 definePageMeta({
-	layout: "home",
+	layout: "billing",
 });
 </script>
 
@@ -267,12 +267,6 @@ definePageMeta({
 					class="text-white primary-button bg-primary-600"
 				>
 					Create new
-				</NuxtLink>
-				<NuxtLink
-					class="px-4 border rounded-md primary-button text-gray-950 border-primary-600"
-					to="/app/billings/pricing"
-				>
-					Pricing
 				</NuxtLink>
 			</div>
 		</div>

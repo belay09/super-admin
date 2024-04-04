@@ -1,9 +1,9 @@
 <script setup>
 definePageMeta({
-  layout: "home",
+	layout: "configuration",
 });
 </script>
 
 <template>
-  <Administrators-List></Administrators-List>
+	<Administrators-List></Administrators-List>
 </template>

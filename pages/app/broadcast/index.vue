@@ -1,5 +1,5 @@
 <script setup>
-import listQuery from "@/graphql/query/broadcast/push-notifications.gql";
+import listQuery from "@/graphql/query/broadcast/sms.gql";
 import useNotify from "@/use/notify";
 
 const { notify } = useNotify();
@@ -24,7 +24,6 @@ const items = ref([]);
 const limit = ref(12);
 const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
 const offset = ref(0);
-const search = ref("");
 const length = ref(0);
 
 /**-------------------Compute filter---------------- */
@@ -46,8 +45,8 @@ const { onResult, onError, loading, refetch } = authListQuery(
 	limit
 );
 onResult((result) => {
-	if (result.data?.pushNotifications) {
-		items.value = result.data.pushNotifications;
+	if (result.data?.smsNotifications) {
+		items.value = result.data.smsNotifications;
 		length.value = result.data.total?.aggregate?.count;
 		tabs.value[0].length = result.data.published?.aggregate?.count;
 		tabs.value[1].length = result.data.draft?.aggregate?.count;
@@ -62,11 +61,9 @@ onError((error) => {
 		borderClass: "border-l-8 border-red-300",
 	});
 });
-
 provide("refetch", () => {
 	refetch();
 });
-
 definePageMeta({
 	layout: "broadcast",
 });
@@ -90,12 +87,9 @@ definePageMeta({
 			</H-Tab>
 			<BroadCastActions />
 		</div>
+
 		<div class="grid flex-grow grid-cols-3 gap-6">
-			<Ui-Cards-Notification
-				v-for="item in items"
-				:item="item"
-				:key="item.id"
-			/>
+			<Ui-Cards-Sms v-for="item in items" :item="item" :key="item.id" />
 		</div>
 		<div v-if="!loading && items.length" class="flex flex-col py-6 space-y-8">
 			<div class="mt-5">

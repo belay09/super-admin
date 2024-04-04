@@ -76,7 +76,7 @@ const status = ref([
 const openPricingDeleteConfirmModal = ref(false);
 
 definePageMeta({
-	layout: "home",
+	layout: "billing",
 });
 </script>
 

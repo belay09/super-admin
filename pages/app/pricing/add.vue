@@ -28,7 +28,7 @@ const lampPrices = ref([]);
 const features = ref([]);
 
 definePageMeta({
-	layout: "home",
+	layout: "billing",
 });
 
 const {

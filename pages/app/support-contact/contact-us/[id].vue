@@ -1,8 +1,8 @@
 <script setup>
 import { format, parseISO } from "date-fns";
-import getBusinessReqQuery from "@/graphql/query/business-request/item.gql";
-import editBusinessReqMutation from "@/graphql/mutations/business-request/edit.gql";
-import deleteBusinessReqMutation from "@/graphql/mutations/business-request/delete.gql";
+import getContactUsQuery from "@/graphql/query/contact-us/item.gql";
+import editContactUsMutation from "@/graphql/mutations/contact-us/edit.gql";
+import deleteContactUsMutation from "@/graphql/mutations/contact-us/delete.gql";
 
 import useNotify from "@/use/notify";
 
@@ -11,27 +11,31 @@ const route = useRoute();
 const router = useRouter();
 
 /**------------------------Get Support Data----------------------- */
-const businessReq = ref();
+const contactUs = ref();
 const {
-	onResult: businessReqOnResult,
-	onError: businessReqOnError,
-	loading: businessReqLoading,
-	refetch: businessReqRefetch,
-} = authItemQuery(getBusinessReqQuery, route.params.id);
+	onResult: contactUsOnResult,
+	onError: contactUsOnError,
+	loading: contactUsLoading,
+	refetch: contactUsRefetch,
+} = authItemQuery(getContactUsQuery, route.params.id);
 
-businessReqOnResult(({ data }) => {
-	businessReq.value = data.businessRequestsByPk;
+contactUsOnResult(({ data }) => {
+	contactUs.value = data.contactUsByPk;
 });
 
 /*--------------------------------- mark as addressed------------------------- */
 const selectedMarkAsAddressed = ref(null);
+
+const mark = (selectedMark) => {
+	selectedMarkAsAddressed.value = selectedMark;
+};
 
 const {
 	mutate: markAsAddressed,
 	onError: markAsAddressedError,
 	onDone: markAsAddressedDone,
 	loading: markAsAddressedLoading,
-} = authMutation(editBusinessReqMutation);
+} = authMutation(editContactUsMutation);
 
 const onSubmit = () => {
 	markAsAddressed({
@@ -47,7 +51,7 @@ markAsAddressedDone(() => {
 	openMarkAsAddressedModal.value = false;
 	notify({
 		title: "Marked as Addressed",
-		description: "the message has been updated",
+		description: "the message has been marked as addressed",
 		type: "success",
 		borderClass: "border-l-8 border-green-300",
 	});
@@ -64,28 +68,28 @@ markAsAddressedError((error) => {
 
 /**------------------------Delete Support----------------------- */
 const {
-	mutate: deleteBusinessReq,
-	onError: deleteBusinessReqError,
-	onDone: deleteBusinessReqDone,
-	loading: deleteBusinessReqLoading,
-} = authMutation(deleteBusinessReqMutation);
+	mutate: deletecontactUs,
+	onError: deletecontactUsError,
+	onDone: deletecontactUsDone,
+	loading: deletecontactUsLoading,
+} = authMutation(deleteContactUsMutation);
 
-const onDeleteBusinessReq = () => {
-	deleteBusinessReq({
+const onDeletecontactUs = () => {
+	deletecontactUs({
 		id: route.params.id,
 	});
 };
 
-deleteBusinessReqDone(() => {
+deletecontactUsDone(() => {
 	notify({
-		title: "business request deleted",
+		title: "contactUs Deleted",
 		type: "success",
 		borderClass: "border-l-8 border-green-300",
 	});
-	router.push("/app/service_requests");
+	router.push("/app/contact_us");
 });
 
-deleteBusinessReqError((error) => {
+deletecontactUsError((error) => {
 	notify({
 		title: "Some thing went wrong",
 		description: error.message,
@@ -97,13 +101,13 @@ deleteBusinessReqError((error) => {
 const openMarkAsAddressedModal = ref(false);
 const openDeleteConfirmModal = ref(false);
 definePageMeta({
-	layout: "home",
+	layout: "engagement",
 });
 </script>
 
 <template>
 	<ModalsConfirmation
-		@confirm="onDeleteBusinessReq()"
+		@confirm="onDeletecontactUs()"
 		v-model="openDeleteConfirmModal"
 		title="Delete contact us Message"
 		sure-question="Are you sure you want to delete this contact us?"
@@ -225,7 +229,7 @@ definePageMeta({
 				<NuxtLink
 					class="block primary-button secondary-border"
 					@click.stop
-					:to="`mailto:${businessReq.email}`"
+					:to="`mailto:${contactUs.email}`"
 				>
 					<Icon class="text-2xl cursor-pointer" name="material-symbols:reply" />
 					<span class="">Reply</span>
@@ -245,22 +249,27 @@ definePageMeta({
 		<div class="flex items-center justify-between py-6">
 			<!-- -----------------Profile Picture----------------- -->
 			<div class="secondary-flex-row">
-				<p>{{ businessReq.fullName }}</p>
+				<!-- <div>
+					<img
+						:src="support.user.photoUrl"
+						alt="user image"
+						class="w-10 h-10 rounded-full"
+					/>
+				</div> -->
 				<div>
-					<p>{{ businessReq.phoneNumber }}</p>
-
-					<p class="secondary-text">{{ businessReq.email }}</p>
+					<p>{{ contactUs.fullName }}</p>
+					<p class="secondary-text">{{ contactUs.email }}</p>
 				</div>
 			</div>
 			<!-- -------------------Time----------------------- -->
 			<p class="secondary-text">
-				{{ format(parseISO(businessReq.createdAt), "dd MMM yyyy") }}
+				{{ format(parseISO(contactUs.createdAt), "dd MMM yyyy") }}
 			</p>
 		</div>
 
 		<!-- -------------------------Body------------------------ -->
 		<div
-			v-html="businessReq.message"
+			v-html="contactUs.message"
 			class="flex flex-col w-9/12 space-y-6"
 		></div>
 	</div>

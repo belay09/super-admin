@@ -1,13 +1,13 @@
 <script setup>
 definePageMeta({
-  layout: "home",
+	layout: "configuration",
 });
 </script>
 <template>
-  <div>
-    <ProfilePhoto />
-    <ProfilePersonal />
-    <ProfileContact />
-    <ProfilePassword />
-  </div>
+	<div>
+		<ProfilePhoto />
+		<ProfilePersonal />
+		<ProfileContact />
+		<ProfilePassword />
+	</div>
 </template>

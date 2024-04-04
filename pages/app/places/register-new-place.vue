@@ -2,8 +2,7 @@
 const placeType = ref("");
 
 definePageMeta({
-  title: "Register New Place",
-  layout: "home",
+  layout: "engagement",
 });
 </script>
 <template>

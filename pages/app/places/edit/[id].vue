@@ -57,8 +57,7 @@ watchEffect(() => {
 });
 
 definePageMeta({
-  title: "Edit Place",
-  layout: "home",
+  layout: "engagement",
 });
 
 const pricingIndex = computed(() => {
