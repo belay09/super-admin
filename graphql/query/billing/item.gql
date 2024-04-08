@@ -4,6 +4,7 @@ query billingsPaymentsItem($filter: bigint!) {
 		id
 		billing_address {
 			place {
+				id
 				name
 				contactAltPhoneNumber
 				contactPhoneNumber

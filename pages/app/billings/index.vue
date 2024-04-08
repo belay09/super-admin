@@ -201,7 +201,21 @@ invoiceOnResult((result) => {
 	}
 });
 const clickRow = (item) => {
-	router.push("/app/billings/12");
+	router.push({
+		path: `/app/billings/${item.billing_address.place.id}`,
+		query: {
+			name: item.billing_address.place.name,
+		},
+	});
+};
+
+const clickRowInvoice = (item) => {
+	router.push({
+		path: `/app/billings/${item.payment.billing_address.place.id}`,
+		query: {
+			name: item.payment.billing_address.place.name,
+		},
+	});
 };
 
 const openSelectBill = (id) => {
@@ -328,7 +342,7 @@ definePageMeta({
 					:items="invoices"
 					v-model:sort="sort"
 					:loading="invoiceLoading"
-					@click:row="clickRow"
+					@click:row="clickRowInvoice"
 					supporterClass="shadow-md  overflow-x-auto overflow-y-hidden pb-12 rounded-md border border-gray-200"
 					supportHeaderClass="bg-gray-100 border"
 					tableHeaderStyle="secondary-border  bg-gray-50"

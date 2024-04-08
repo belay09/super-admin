@@ -1,4 +1,4 @@
-query billingsPayments(
+query billingsInvoice(
 	$filter: BillingsInvoicesBoolExp
 	$order: [BillingsInvoicesOrderBy!]
 	$limit: Int
@@ -15,6 +15,7 @@ query billingsPayments(
 			paymentMethod
 			billing_address {
 				place {
+					id
 					name
 				}
 			}
@@ -27,6 +28,14 @@ query billingsPayments(
 				}
 				price
 			}
+			subscription_plans {
+				id
+			}
+		}
+	}
+	length: billingsInvoicesAggregate(where: $filter) {
+		aggregate {
+			count
 		}
 	}
 }

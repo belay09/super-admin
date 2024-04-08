@@ -98,7 +98,7 @@ definePageMeta({
 				<p class="text-4xl font-semibold">Pricing Plans</p>
 			</div>
 			<button
-				@click="router.push('/app/billings/pricing/add')"
+				@click="router.push('/app/pricing/add')"
 				class="block primary-button bg-primary-600"
 			>
 				<Icon name="uil:plus" class="text-xl text-white" color="" />
