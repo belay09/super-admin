@@ -29,14 +29,9 @@ const ratedStars = computed(() => {
   return stars;
 });
 
-const showClear = ref(false);
 const updateRating = (newRating) => {
   if (props.readonly) return;
-  if (newRating > 0) {
-    showClear.value = true;
-  } else {
-    showClear.value = false;
-  }
+
   emit("update:rating", newRating);
 };
 </script>
@@ -59,14 +54,11 @@ const updateRating = (newRating) => {
         :key="i"
         @click="updateRating(ratedStars.length + i)"
         @mouseenter="updateRating(ratedStars.length + i)"
-        src="/images/static/unrated-star.png"
+        src="/images/static/un-rated.png"
         alt="unrated star image"
         class="shrink-0"
         :class="[!readonly ? 'cursor-pointer' : '', imageClass]"
       />
     </div>
-    <button @click="updateRating(0)" v-if="showClear" class="dark:text-white">
-      Clear
-    </button>
   </div>
 </template>
