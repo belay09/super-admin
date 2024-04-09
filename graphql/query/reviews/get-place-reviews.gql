@@ -39,6 +39,7 @@ query getPlaceReviews(
       id
       name
       placeMedias(limit: 1) {
+        isImage
         media {
           url
         }

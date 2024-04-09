@@ -1,0 +1,14 @@
+query getPlaces(
+  $filter: PlacesBoolExp
+  $order: [PlacesOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  places(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+    id
+    name
+    title: name
+    status
+    type
+  }
+}

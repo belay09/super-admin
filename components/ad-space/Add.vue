@@ -7,25 +7,6 @@ const emit = defineEmits(["add"]);
 
 const { handleSubmit, isSubmitting } = useForm({});
 
-const placeTypeItems = ref([
-  {
-    name: "Hotels",
-    id: "HOTELS",
-  },
-  {
-    name: "Restaurants",
-    id: "RESTAURANTS",
-  },
-  {
-    name: "Cafes",
-    id: "CAFES",
-  },
-  {
-    name: "Caterings",
-    id: "CATERINGS",
-  },
-]);
-
 const placeType = ref("");
 const place = ref("");
 const slogan = ref("");
@@ -76,16 +57,8 @@ onError((error) => {
 
 <template>
   <form @submit.prevent="handleAdd" class="flex flex-col" action="">
-    <!-- ----------------Add space or place type----- -->
-    <H-SingleSelect
-      name="ad_space"
-      id="ad_space"
-      label="AD Space"
-      :items="placeTypeItems"
-      v-model="placeType"
-      rules="required"
-    ></H-SingleSelect>
-
+    <!------------------------------- Place Type--------------------------- -->
+    <SelectorsPlaceType v-model="placeType" />
     <!-- ------------------Place---------------- -->
 
     <Selectors-Place :type="placeType" v-model="place"> </Selectors-Place>

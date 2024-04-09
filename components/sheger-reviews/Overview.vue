@@ -178,14 +178,15 @@ const openUploadFilesModal = ref(false);
         <div
           class="flex flex-col max-h-screen space-y-3 overflow-scroll scroll"
         >
-          <Places-Gallery
-            v-for="reviewMedia in medias"
-            :key="reviewMedia.id"
-            :media="reviewMedia"
-            type="review"
-            @on-deleted="mediasRefetch()"
-          >
-          </Places-Gallery>
+          <div v-for="reviewMedia in medias" :key="reviewMedia.id">
+            <Places-Gallery
+              v-if="reviewMedia?.isImage"
+              :media="reviewMedia"
+              type="review"
+              @on-deleted="mediasRefetch()"
+            >
+            </Places-Gallery>
+          </div>
         </div>
       </div>
     </div>

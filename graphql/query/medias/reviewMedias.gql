@@ -11,6 +11,7 @@ query reviewMedias(
     offset: $offset
   ) {
     id
+    isImage
     media {
       url
     }

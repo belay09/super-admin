@@ -26,7 +26,7 @@ const props = defineProps({
     <div class="flex items-center gap-2">
       <Icon name="iwwa:star" class="w-6 h-6" />
       <p class="">
-        {{ rating + 0 }}/5
+        {{ (rating + 0).toFixed(1) }}/5
         <span class="pl-2">({{ formatNumber(review) }} reviews)</span>
       </p>
     </div>

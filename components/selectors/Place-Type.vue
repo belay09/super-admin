@@ -6,30 +6,18 @@ import useNotify from "@/use/notify";
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
   modelValue: {
-    type: Number,
+    type: String,
   },
 });
 
 const { notify } = useNotify();
 
-/*---------------------------Place Places---------------------------**/
-const items = ref([]);
-const search = ref("");
+/*---------------------------Place types data fetch---------------------------**/
 const item = ref(props.modelValue);
-
-const filter = computed(() => {
-  let query = {
-    value: {
-      _ilike: `%${search.value}%`,
-    },
-  };
-
-  return query;
-});
-
+const items = ref([]);
 const { onResult, onError, loading, refetch } = authListQuery(
   listQuery,
-  filter,
+  ref({}),
   [{}],
   0,
   100
@@ -68,13 +56,12 @@ watch(
 </script>
 
 <template>
-  <H-SingleSelectWithSearch
-    :items="items"
-    v-model="item"
-    @search="makeSearch"
+  <H-SingleSelect
     id="placeType"
     name="placeType"
     label="Place Type"
-    :loading="loading"
-  ></H-SingleSelectWithSearch>
+    :items="items"
+    v-model="item"
+    rules="required"
+  ></H-SingleSelect>
 </template>

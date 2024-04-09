@@ -61,7 +61,7 @@ const props = defineProps({
           v-if="menu.menu_reviews?.length > 0 && menu.menu_reviews[0]?.review"
           :to="`/app/sheger-reviews/${menu.menu_reviews[0].review.id}`"
         >
-          <Icon name="bx:detail" class="text-primary-600 text-2xl" />
+          <Icon name="pajamas:live-preview" class="text-primary-600 text-2xl" />
         </NuxtLink>
       </div>
 

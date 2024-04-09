@@ -17,6 +17,8 @@ query getReview($id: bigint!) {
       shegerRecommendationId
       id
 
+      type
+
       status
       name
       dark_logo {

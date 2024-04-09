@@ -1,5 +1,5 @@
 <script setup>
-import placesQuery from "@/graphql/query/places/list.gql";
+import placesQuery from "@/graphql/query/places/mini.gql";
 import useNotify from "@/use/notify";
 
 /**-----------------Global Variables--------------------------- */
@@ -42,7 +42,7 @@ const filter = computed(() => {
   if (props.type) {
     query._and.push({
       type: {
-        _eq: props.type,
+        _eq: props.type.toUpperCase(),
       },
     });
   }

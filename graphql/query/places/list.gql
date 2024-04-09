@@ -1,88 +1,89 @@
 query getPlaces(
-	$filter: PlacesBoolExp
-	$order: [PlacesOrderBy!]
-	$limit: Int
-	$offset: Int
+  $filter: PlacesBoolExp
+  $order: [PlacesOrderBy!]
+  $limit: Int
+  $offset: Int
 ) {
-	places(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
-		name
-		id
+  places(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+    name
+    id
 
-		status
-		type
+    status
+    type
 
-		light_logo {
-			url
-		}
+    light_logo {
+      url
+    }
 
-		# place tags
-		placeTags {
-			id
-			tag {
-				title
-				id
-			}
-		}
-		# place medias
-		placeMedias {
-			media {
-				url
-			}
-		}
+    # place tags
+    placeTags {
+      id
+      tag {
+        title
+        id
+      }
+    }
+    # place medias
+    placeMedias {
+      isImage
+      media {
+        url
+      }
+    }
 
-		# place aggregate
-		place_aggregate_summary {
-			avgDishPrice
-			avgRating
-			sumLikes
-			minDishPrice
-		}
-		# review aggregate
-		placeReviewsAggregate {
-			aggregate {
-				count
-			}
-		}
+    # place aggregate
+    place_aggregate_summary {
+      avgDishPrice
+      avgRating
+      sumLikes
+      minDishPrice
+    }
+    # review aggregate
+    placeReviewsAggregate {
+      aggregate {
+        count
+      }
+    }
 
-		# featured places
-		featured_places {
-			isActive
-			id
-			endDate
-			startDate
-			featured_place_type {
-				value
-			}
-		}
-		# locations
-		placeLocations {
-			id
-			location
-			isMainLocation
-			area {
-				name
-			}
-			city {
-				name
-			}
-		}
+    # featured places
+    featured_places {
+      isActive
+      id
+      endDate
+      startDate
+      featured_place_type {
+        value
+      }
+    }
+    # locations
+    placeLocations {
+      id
+      location
+      isMainLocation
+      area {
+        name
+      }
+      city {
+        name
+      }
+    }
 
-		# recommendation
+    # recommendation
 
-		shegerRecommendation {
-			id
-			title
-			description
-			badge
-			shegerRecommendationBadge {
-				url
-			}
-		}
-	}
+    shegerRecommendation {
+      id
+      title
+      description
+      badge
+      shegerRecommendationBadge {
+        url
+      }
+    }
+  }
 
-	placesAggregate(where: $filter) {
-		aggregate {
-			count
-		}
-	}
+  placesAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
 }

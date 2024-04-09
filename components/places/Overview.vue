@@ -97,6 +97,16 @@ mediasOnResult((result) => {
 });
 mediasOnError((error) => {});
 
+/**---------------------Place video--------------------- */
+const placeVideo = computed(() => {
+  if (props.place?.youtubeVideoUrl) {
+    console.log("there is place");
+    return props.place?.youtubeVideoUrl;
+  } else {
+    return medias.value.find((placeMedia) => !placeMedia.isImage)?.media?.url;
+  }
+});
+
 /*------------------------------Map-----------------------------*/
 
 const center = ref([9.010631945576197, 38.76055205651439]);
@@ -127,7 +137,6 @@ center.value = getPlaceCenter();
  * @param {number} index - The index of the coordinates in the array.
  */
 const flyTo = (coordinates) => {
-  console.log(coordinates);
   zoom.value = 14;
   center.value = coordinates;
 };
@@ -135,7 +144,6 @@ const flyTo = (coordinates) => {
 /*------------------------Upload images----------------------*/
 
 const selectedGalleryImages = ref([]);
-
 const {
   mutate: addPlaceMedia,
   onDone: addPlaceMediaDone,
@@ -403,10 +411,7 @@ const openUploadFilesModal = ref(false);
       </div>
       <!-- ------------------Sheger video------------------ -->
 
-      <ShegerReviewsReviewVideo
-        v-if="place.reviews.length > 0"
-        :video-url="place.reviews[0].youtubeVideoUrl"
-      />
+      <ShegerReviewsReviewVideo v-if="placeVideo" :video-url="placeVideo" />
 
       <!-- --------------Gallery and upload image---------------- -->
       <div>
@@ -428,13 +433,14 @@ const openUploadFilesModal = ref(false);
         <div
           class="flex flex-col max-h-screen space-y-3 overflow-scroll scroll"
         >
-          <Places-Gallery
-            v-for="placeMedia in medias"
-            :key="placeMedia.id"
-            :media="placeMedia"
-            @on-deleted="mediasRefetch()"
-          >
-          </Places-Gallery>
+          <div v-for="placeMedia in medias" :key="placeMedia.id">
+            <Places-Gallery
+              v-if="placeMedia?.isImage"
+              :media="placeMedia"
+              @on-deleted="mediasRefetch()"
+            >
+            </Places-Gallery>
+          </div>
         </div>
       </div>
     </div>

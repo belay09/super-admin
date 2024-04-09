@@ -21,6 +21,7 @@ query getPlaces(
       }
     }
     placeMedias {
+      isImage
       media {
         url
       }
@@ -43,6 +44,7 @@ query getPlaces(
       }
     }
     placeMedias {
+      isImage
       media {
         url
       }

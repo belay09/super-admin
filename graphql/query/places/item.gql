@@ -19,6 +19,8 @@ query getPlace($id: bigint!, $include: Boolean = false) {
     contactPhoneNumber
     contactAltPhoneNumber
 
+    youtubeVideoUrl
+
     # featured image
     featured_medias {
       id
@@ -38,6 +40,7 @@ query getPlace($id: bigint!, $include: Boolean = false) {
 
     # place medias
     placeMedias {
+      isImage
       media {
         url
       }

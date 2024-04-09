@@ -1,0 +1,8 @@
+query getPlaceServiceCategories($filter: BasicsReviewCategoriesBoolExp) {
+  basicsReviewCategories(where: $filter) {
+    description
+    id
+    name
+    type
+  }
+}

@@ -456,26 +456,3 @@ function gotoEditPage(event) {
     </div>
   </div>
 </template>
-
-<style>
-.container {
-  display: flex;
-}
-
-.left,
-.right {
-  width: 150px;
-  height: 150px;
-  margin-top: 24px;
-}
-
-.divider {
-  display: block;
-  margin: 20px 0;
-  background-color: red;
-
-  text-align: center;
-  min-height: 2px;
-  position: relative;
-}
-</style>

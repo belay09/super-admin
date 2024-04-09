@@ -111,11 +111,19 @@ onErrorInsertPlaceMedia((error) => {
   });
 });
 
+function isImage(url) {
+  if (url.includes("mp4")) {
+    return false;
+  } else {
+    return true;
+  }
+}
 const handleInsert = () => {
   insertPlaceMediasMutate({
     obj: selectedPlaceMedias.value.map((image) => {
       return {
         placeId: props.placeId,
+        isImage: isImage(image),
         media: {
           data: {
             url: image,
@@ -236,46 +244,50 @@ const openUploadFilesModal = ref(false);
           />
         </div>
 
-        <!-- ----------------Test video---------------- -->
-        <div class="relative group">
-          <video
-            class="h-96 w-full"
-            autoplay
-            controls
-            src="/videos/food_video.mp4"
-          ></video>
-
-          <div
-            class="absolute top-0 bg-black h-full w-full opacity-60 hidden group-hover:block"
-          />
-          <div
-            class="flex flex-col items-center justify-center gap-2 absolute inset-0 text-white opacity-0 group-hover:opacity-100 transition-opacity ease-in-out duration-150"
-          >
-            <!-- ----------------If type is video---------------- -->
-            <button @click="handleDelete(id)">
-              <Icon name="uil:trash-alt" class="text-3xl" /> Remove
-            </button>
-          </div>
-        </div>
-        <div v-for="image in images" class="relative group h-96">
-          <img
-            loading="lazy"
-            :src="image.media.url"
-            class="w-full h-full object-cover object-center"
-          />
-          <div
-            class="absolute top-0 bg-black h-full w-full opacity-60 hidden group-hover:block"
-          />
-          <div
-            class="flex flex-col items-center justify-center gap-2 absolute inset-0 text-white opacity-0 group-hover:opacity-100 transition-opacity ease-in-out duration-150"
-          >
+        <div v-for="(image, index) in images" :key="index" class="">
+          <div v-if="image.isImage" class="relative group h-96">
             <!-- ----------------If type is image---------------- -->
-            <button @click="handleEdit(image)" class="pl-2">
-              <Icon name="dashicons:cover-image" class="text-3xl" /> Thumbnail
-            </button>
-            <button @click="handleDelete(image.id)">
-              <Icon name="uil:trash-alt" class="text-3xl" /> Remove
-            </button>
+            <img
+              loading="lazy"
+              :src="image.media.url"
+              class="w-full h-full object-cover object-center"
+            />
+            <div
+              class="absolute top-0 bg-black h-full w-full opacity-60 hidden group-hover:block"
+            />
+            <div
+              class="flex flex-col items-center justify-center gap-2 absolute inset-0 text-white opacity-0 group-hover:opacity-100 transition-opacity ease-in-out duration-150"
+            >
+              <!-- ----------------If type is image---------------- -->
+              <button @click="handleEdit(image)" class="pl-2">
+                <Icon name="dashicons:cover-image" class="text-3xl" /> Thumbnail
+              </button>
+              <button @click="handleDelete(image.id)">
+                <Icon name="uil:trash-alt" class="text-3xl" /> Remove
+              </button>
+            </div>
+          </div>
+
+          <!-- ----------------If type is video---------------- -->
+          <div v-else class="relative group">
+            <video
+              class="h-96 w-full"
+              autoplay
+              controls
+              :src="image.media?.url"
+            ></video>
+
+            <div
+              class="absolute top-0 bg-black h-full w-full opacity-60 hidden group-hover:block"
+            />
+            <div
+              class="flex flex-col items-center justify-center gap-2 absolute inset-0 text-white opacity-0 group-hover:opacity-100 transition-opacity ease-in-out duration-150"
+            >
+              <!-- ----------------If type is video---------------- -->
+              <button @click="handleDelete(image.id)">
+                <Icon name="uil:trash-alt" class="text-3xl" /> Remove
+              </button>
+            </div>
           </div>
         </div>
       </div>
