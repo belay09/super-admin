@@ -1,0 +1,12 @@
+query getReviews(
+  $filter: ReviewsBoolExp
+  $order: [ReviewsOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  reviews(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
+    id
+    name: title
+    title
+  }
+}

@@ -1,0 +1,27 @@
+query getReviewAds($filter: ReviewAdsBoolExp) {
+  reviewAds(where: $filter) {
+    id
+
+    review_ad_medias {
+      media {
+        id
+        url
+      }
+    }
+
+    review {
+      id
+      title
+      description
+      place {
+        id
+        name
+        type
+
+        light_logo {
+          url
+        }
+      }
+    }
+  }
+}

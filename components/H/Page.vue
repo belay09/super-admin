@@ -22,7 +22,6 @@ watch(
 
 function pageUp() {
   if (props.modelValue < props.totalPage) {
-    console.log("page up", props.totalPage, props.modelValue);
     pageTracker.value = pageTracker.value + 1;
     emit("update:modelValue", props.modelValue + 1);
   }

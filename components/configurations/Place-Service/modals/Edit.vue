@@ -1,6 +1,7 @@
 <script setup>
 import EditCategory from "@/graphql/mutations/configurations/place-service/updateBasicsReviewCategory.gql";
 import mutator from "@/composables/auth-mutation.js";
+import addIconMutation from "@/graphql/mutations/icons/add-icon.gql";
 
 import useNotify from "@/use/notify.js";
 
@@ -44,6 +45,24 @@ const types = ref([
 ]);
 
 const category = ref({ ...props.categoryData });
+const iconUrl = ref(category.value?.icon?.lightIconUrl);
+
+/**----------------------------Add media--------------------- */
+const {
+  mutate: addIconMutate,
+  onDone: addIconOnDone,
+  onError: addIconOnError,
+  loading: addIconLoading,
+} = authMutation(addIconMutation);
+
+addIconOnError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
 
 /*--------------- Edit Category ----------------*/
 const {
@@ -53,12 +72,39 @@ const {
 } = mutator(EditCategory);
 
 const { handleSubmit } = useForm({});
-const handleEditSubmit = handleSubmit((values) => {
-  editCategory({
-    id: category.value.id,
-    changes: {
-      ...values,
+const handleEditSubmit = handleSubmit(() => {
+  if (iconUrl.value == category.value?.icon?.lightIconUrl) {
+    editCategory({
+      id: category.value.id,
+      changes: {
+        name: category.value.name,
+        type: category.value.type,
+        description: category.value.description,
+      },
+    });
+    return;
+  }
+
+  addIconMutate({
+    input: {
+      lightIconUrl: iconUrl.value,
+      darkIconUrl: "",
     },
+  });
+
+  // Execute edit after icon uploaded
+  addIconOnDone((result) => {
+    if (result.data?.insertBasicsIconsOne?.id) {
+      editCategory({
+        id: category.value.id,
+        changes: {
+          name: category.value.name,
+          type: category.value.type,
+          description: category.value.description,
+          iconId: result.data?.insertBasicsIconsOne.id,
+        },
+      });
+    }
   });
 });
 
@@ -107,6 +153,15 @@ onEditCategoryDone(() => {
               </template>
             </H-Textfield>
           </div>
+
+          <!-- ------------------Icon------------------- -->
+          <p class="py-4">Icon</p>
+          <CommonUploadSingleImage
+            folder=""
+            v-model:model-value="iconUrl"
+            rules="required"
+            name="categoryIcon"
+          ></CommonUploadSingleImage>
 
           <!-- Types Field -->
           <div>

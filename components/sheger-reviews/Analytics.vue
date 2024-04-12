@@ -171,11 +171,12 @@ const toggleRemoveModal = ref(false);
             </div>
 
             <!-- -----------------Review rating and like----------- -->
-            <CommonReviewRatingLike
-              :rating="review.review_aggregate_summary?.avgRating || 0"
+
+            <ShegerReviewsRatingAndLike
+              :rating="review.place_sheger_review?.rate || 0"
               :like="review.review_aggregate_summary?.sumLikes || 0"
-              :review="review.reviewReviewsAggregate?.aggregate?.count || 0"
-            ></CommonReviewRatingLike>
+            ></ShegerReviewsRatingAndLike>
+
             <!-- menu update -->
             <div class="flex items-center gap-3">
               <Icon name="carbon:calendar" class="w-5 h-5" />
@@ -264,5 +265,3 @@ const toggleRemoveModal = ref(false);
     ></PlacesVisitors>
   </div>
 </template>
-
-<style>

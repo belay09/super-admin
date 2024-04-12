@@ -1,0 +1,24 @@
+query getReviewAd($id: bigint!) {
+  reviewAdsByPk(id: $id) {
+    id
+
+    review_ad_medias {
+      media {
+        id
+        url
+      }
+    }
+    review {
+      id
+      title
+      description
+      place {
+        id
+        name
+        light_logo {
+          url
+        }
+      }
+    }
+  }
+}

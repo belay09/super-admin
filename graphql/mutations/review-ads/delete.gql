@@ -1,0 +1,5 @@
+mutation deleteReviewAds($id: bigint!) {
+  deleteReviewAdsByPk(id: $id) {
+    id
+  }
+}

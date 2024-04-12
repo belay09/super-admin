@@ -155,6 +155,17 @@ const openEditModal = ref(false);
         supporter-class="border border-gray-300 rounded-lg"
         row-style="border-b border-gray-300"
       >
+        <template #name="{ item }">
+          <div class="flex items-center gap-x-2">
+            <img
+              v-if="item?.icon?.lightIconUrl"
+              :src="item?.icon?.lightIconUrl"
+              class="w-8 h-8"
+              alt=" icon image"
+            />
+            <p>{{ item.name }}</p>
+          </div>
+        </template>
         <template #actions="{ item }">
           <div>
             <Menu as="div" class="relative inline-block text-left">

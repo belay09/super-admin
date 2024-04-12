@@ -32,6 +32,9 @@ const youtubeVideoUrl = ref("");
 const tiktokVideoUrl = ref("");
 const instagramVideoUrl = ref("");
 const reviewedBy = ref();
+const serviceRatings = ref([]);
+const averageRating = ref(0);
+const serviceComment = ref("");
 
 /*...................Review detail data fetch.............*/
 function capitalize(word) {
@@ -39,6 +42,7 @@ function capitalize(word) {
   return lowerCase.charAt(0).toUpperCase() + lowerCase.slice(1);
 }
 
+const review = ref([]);
 const {
   onResult: reviewOnResult,
   onError: reviewOnError,
@@ -47,6 +51,7 @@ const {
 
 reviewOnResult(({ data }) => {
   if (data.reviewsByPk) {
+    review.value = data.reviewsByPk;
     title.value = data.reviewsByPk.title;
 
     description.value = data.reviewsByPk.description;
@@ -92,6 +97,23 @@ reviewOnError((error) => {
     type: "error",
     borderClass: "border-l-8 border-red-300",
   });
+});
+
+provide("setServiceRatings", ({ serviceCategories, comment }) => {
+  serviceRatings.value = serviceCategories;
+  serviceComment.value = comment;
+
+  if (serviceRatings.value.length == 0) {
+    return;
+  }
+
+  let totalValue = 0;
+  for (let i = 0; i < serviceRatings.value.length; i++) {
+    totalValue += serviceRatings.value[i].value;
+  }
+  averageRating.value = totalValue / serviceRatings.value.length;
+
+  // Calculate the average
 });
 
 /**------------------------Insert and drink Media----------------------- */
@@ -159,7 +181,6 @@ insertMediaDone(({ data }) => {
   const reviewMenu = selectedDishIds.value.map((dish) => {
     return {
       menuId: dish,
-
       reviewId: route.params.id,
     };
   });
@@ -188,12 +209,28 @@ insertMediaDone(({ data }) => {
     };
   });
 
+  // review service rating
+
+  // const reviewServiceRatingInput = {
+  //   comment: serviceComment.value,
+  //   reviewId: review.value?.id,
+  //   place_sheger_review_by_services: {
+  //     data: serviceRatings.value.map((serviceRating) => {
+  //       return {
+  //         reviewCategoryId: serviceRating.id,
+  //         rate: serviceRating.value,
+  //       };
+  //     }),
+  //   },
+  // };
+
   editReview({
     id: route.params.id,
     input: reviewInput.value,
     reviewMediaInput: reviewMedia,
     reviewMenuInput: reviewMenu,
     reviewTagInput: reviewTag,
+    // reviewServiceRatingInput: reviewServiceRatingInput,
   });
 });
 
@@ -307,6 +344,14 @@ definePageMeta({
       <div class="flex-[50%] space-y-4">
         <!----------------------------------------Reviewer---------------------------------------->
         <SelectorsAdminstrators v-model="reviewedBy" />
+
+        <!-- ------------------------------------Sheger Review Value------------------------ -->
+
+        <!-- <ShegerReviewsReviewReview
+          :model-value="serviceRatings"
+          :average-rating="averageRating"
+        >
+        </ShegerReviewsReviewReview> -->
 
         <!-- ------------------------------------You tube url ------------------------ -->
         <HTextfield

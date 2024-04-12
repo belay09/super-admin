@@ -1,42 +1,54 @@
 mutation editPlace(
-	$input: ReviewsSetInput!
-	$id: bigint!
-	$reviewMediaInput: [ReviewMediasInsertInput!]!
-	$reviewMenuInput: [MenuReviewsInsertInput!]!
-	$reviewTagInput: [ReviewTagsInsertInput!]!
+  $input: ReviewsSetInput!
+  $id: bigint!
+  $reviewMediaInput: [ReviewMediasInsertInput!]!
+  $reviewMenuInput: [MenuReviewsInsertInput!]!
+  $reviewTagInput: [ReviewTagsInsertInput!]! # $reviewServiceRatingInput: [PlaceShegerReviewsInsertInput!]!
 ) {
-	updateReviewsByPk(_set: $input, pkColumns: { id: $id }) {
-		id
-	}
-	deleteReviewMedias(where: { reviewId: { _eq: $id } }) {
-		returning {
-			id
-		}
-	}
-	deleteReviewTags(where: { reviewId: { _eq: $id } }) {
-		returning {
-			id
-		}
-	}
-	deleteMenuReviews(where: { reviewId: { _eq: $id } }) {
-		returning {
-			id
-		}
-	}
-	insertReviewMedias(objects: $reviewMediaInput) {
-		returning {
-			id
-		}
-	}
-	insertMenuReviews(objects: $reviewMenuInput) {
-		returning {
-			id
-		}
-	}
+  updateReviewsByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+  deleteReviewMedias(where: { reviewId: { _eq: $id } }) {
+    returning {
+      id
+    }
+  }
+  deleteReviewTags(where: { reviewId: { _eq: $id } }) {
+    returning {
+      id
+    }
+  }
+  deleteMenuReviews(where: { reviewId: { _eq: $id } }) {
+    returning {
+      id
+    }
+  }
 
-	insertReviewTags(objects: $reviewTagInput) {
-		returning {
-			id
-		}
-	}
+  # delete review services rating
+  # deletePlaceShegerReviews(where: { reviewId: { _eq: $id } }) {
+  #   affectedRows
+  # }
+  #   insert Review service rating
+  # insertPlaceShegerReviews(objects: $reviewServiceRatingInput) {
+  #   returning {
+  #     id
+  #   }
+  # }
+
+  insertReviewMedias(objects: $reviewMediaInput) {
+    returning {
+      id
+    }
+  }
+  insertMenuReviews(objects: $reviewMenuInput) {
+    returning {
+      id
+    }
+  }
+
+  insertReviewTags(objects: $reviewTagInput) {
+    returning {
+      id
+    }
+  }
 }

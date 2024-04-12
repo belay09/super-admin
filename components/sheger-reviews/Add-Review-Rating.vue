@@ -7,12 +7,19 @@ import useNotify from "@/use/notify";
 
 const { handleSubmit } = useForm({});
 const emit = defineEmits(["close"]);
+
 const props = defineProps({
   placeType: {
     type: String,
-    default:"HOTELS",
+    default: "HOTELS",
   },
+  modelValue: {
+    type: Array,
+    default: () => [],
+  },
+  
 });
+
 
 const { notify } = useNotify();
 /**--------------------------Report category data fetch---------------- */
@@ -22,14 +29,17 @@ const filter = ref({
     _eq: props.placeType,
   },
 });
-const serviceCategories = ref([]);
 
+
+const serviceCategories = ref([]);
 const { onResult, onError, loading, refetch } = authListQuery(
   categoryListQuery,
   filter,
  
 );
 
+
+// if there is already entered data it will be added
 onResult((result) => {
   if (result.data?.basicsReviewCategories) {
     serviceCategories.value = result.data.basicsReviewCategories.map(
@@ -47,61 +57,30 @@ onResult((result) => {
   }
 });
 
-onError((error) => {});
 
 const reviewValue = ref();
 
 /**----------------------Handle add review-------------------------- */
 
-// const {
-//   mutate: addReviewMutate,
-//   onDone: addReviewDone,
-//   onError: addReviewError,
-//   loading: addReviewLoading,
-// } = authMutation(addPlaceReviewMutation);
+const setServiceRatings = inject("setServiceRatings");
 
-// addReviewDone((result) => {
-//   placeItemRefetch();
-//   placeReviewRefetch();
-//   emit("close");
-//   notify({
-//     title: "Place reviewed",
-//     description: "Thank you for your feedback",
-//     type: "success",
-//     borderClass: "border-l-8 border-green-300",
-//   });
-// });
-// addReviewError((error) => {
-//   notify({
-//     title: "Some thing went wrong",
-//     description: `Some thing went wrong or you reviewed the place before`,
-//     type: "error",
-//     borderClass: "border-l-8 border-red-300",
-//   });
-//   emit("close");
-// });
+const handleAddReview = handleSubmit(() => {
+  serviceCategories.value = serviceCategories.value.filter((service) => {
+    if (service.value > 0) {
+      return service;
+    }
+  });
+  setServiceRatings({
+    serviceCategories: serviceCategories.value,
+    comment: reviewValue.value,
+  });
 
-// const handleAddReview = handleSubmit(() => {
-//   serviceCategories.value = serviceCategories.value.filter((service) => {
-//     if (service.value > 0) {
-//       return service;
-//     }
-//   });
-//   addReviewMutate({
-//     input: {
-//       comment: reviewValue.value,
-//       placeId: props.place.id,
-//       place_review_by_services: {
-//         data: serviceCategories.value.map((serviceCategory) => {
-//           return {
-//             reviewCategoryId: serviceCategory.id,
-//             rate: serviceCategory.value,
-//           };
-//         }),
-//       },
-//     },
-//   });
-// });
+
+  emit("close");
+
+
+
+});
 </script>
 
 <template>
@@ -172,10 +151,7 @@ const reviewValue = ref();
         </div>
       </div>
     </div>
-     
-  
-      
-
+    
       <HTextarea
         v-model="reviewValue"
         class="sheger_brown-200"
@@ -201,7 +177,7 @@ const reviewValue = ref();
       </HTextarea>
 
       <button
-        :disabled="false"
+        
         class="bg-primary-600 py-3 px-6 text-center block w-full mt-8 rounded-md font-bold text-white"
       >
         Submit
@@ -209,4 +185,3 @@ const reviewValue = ref();
     </form>
   </div>
 </template>
-<!-- :class="props.disabled ? 'bg-opacity-40' : ''" -->

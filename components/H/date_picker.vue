@@ -82,14 +82,14 @@ const input = (e) => {
 </script>
 
 <template>
-  <div>
+  <div class="w-full">
     <label :class="labelClass" :for="id" class="block"
       >{{ label }}
       <span v-show="rules !== '' && props.showStar" class="text-red-500"
         >*</span
       ></label
     >
-    <div class="relative rounded-md shadow-sm">
+    <div class="relative rounded-md shadow-sm w-full">
       <input
         v-model="inputValue"
         :disabled="disabled"

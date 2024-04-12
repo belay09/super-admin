@@ -197,11 +197,10 @@ const toggleRemoveModal = ref(false);
     <div class="flex flex-col gap-4 my-2 text-sheger-gray-100">
       <!-- ----Rating and like ------>
 
-      <CommonReviewRatingLike
-        :rating="review.review_aggregate_summary?.avgRating || 0"
+      <ShegerReviewsRatingAndLike
+        :rating="review.place_sheger_review?.rate || 0"
         :like="review.review_aggregate_summary?.sumLikes || 0"
-        :review="review.reviewAggregate?.aggregate?.count || 0"
-      ></CommonReviewRatingLike>
+      ></ShegerReviewsRatingAndLike>
 
       <!-- -----------------------Review Tags--------------- -->
       <div class="flex flex-wrap pb-4 secondary-text">

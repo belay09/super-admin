@@ -9,9 +9,26 @@ query getReview($id: bigint!) {
 
     description
     view_count
-
+    placeLocationId
     description
 
+    # service rating
+    place_sheger_review {
+      comment
+      rate
+      place_sheger_review_by_services {
+        rate
+        reviewCategoryId
+        review_category {
+          id
+          name
+          type
+          icon {
+            lightIconUrl
+          }
+        }
+      }
+    }
     # place
     place {
       shegerRecommendationId
@@ -43,8 +60,6 @@ query getReview($id: bigint!) {
         }
       }
     }
-
-    placeLocationId
 
     # tags
     review_tags {

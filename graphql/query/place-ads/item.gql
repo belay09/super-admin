@@ -4,17 +4,27 @@ query getPlaceAd($id: bigint!) {
     media {
       url
     }
+    place_ad_medias {
+      media {
+        id
+        url
+      }
+    }
     description
     slogan
     startDate
     endDate
     place {
-      type
-      name
       id
+      name
+      type
+
       contactAltPhoneNumber
       contactEmail
       contactWebsite
+      light_logo {
+        url
+      }
     }
   }
 }

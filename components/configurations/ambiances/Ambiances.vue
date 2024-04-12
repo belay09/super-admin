@@ -4,6 +4,7 @@ import editMutation from "@/graphql/mutations/configurations/ambiances/edit.gql"
 import deleteMutation from "@/graphql/mutations/configurations/ambiances/delete.gql";
 import listQuery from "@/graphql/query/ambiances/list.gql";
 import useNotify from "@/use/notify";
+import addIconMutation from "@/graphql/mutations/icons/add-icon.gql";
 
 const { notify } = useNotify();
 
@@ -21,6 +22,12 @@ const { mutate, onDone, onError, loading } = authMutation(addMutation);
 const handleAdd = (addInput) => {
   let input = {
     title: addInput.title,
+    icon: {
+      data: {
+        darkIconUrl: "",
+        lightIconUrl: addInput.url,
+      },
+    },
   };
   mutate({ input });
 };
@@ -82,6 +89,24 @@ deleteError((error) => {
 
 //**------------------------------Handle edit--------------- */
 
+/**----------------------------Add media--------------------- */
+
+const {
+  mutate: addIconMutate,
+  onDone: addIconOnDone,
+  onError: addIconOnError,
+  loading: addIconLoading,
+} = authMutation(addIconMutation);
+
+addIconOnError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "error",
+    borderClass: "border-l-8 border-red-300",
+  });
+});
+
 const {
   mutate: editMutate,
   onDone: editDone,
@@ -89,10 +114,31 @@ const {
   loading: editLoading,
 } = authMutation(editMutation);
 const handleEdit = (editInput) => {
-  let input = {
-    title: editInput.title,
-  };
-  editMutate({ input, id: ambiance.value.id });
+  if (editInput.url === ambiance.value?.icon?.lightIconUrl) {
+    let input = {
+      title: editInput.title,
+    };
+    editMutate({ input, id: amenity.value.id });
+
+    return;
+  }
+
+  addIconMutate({
+    input: {
+      lightIconUrl: editInput.url,
+      darkIconUrl: "",
+    },
+  });
+
+  addIconOnDone((result) => {
+    if (result.data?.insertBasicsIconsOne?.id) {
+      let input = {
+        title: editInput.title,
+        iconId: result.data?.insertBasicsIconsOne.id,
+      };
+      editMutate({ input, id: ambiance.value.id });
+    }
+  });
 };
 
 editDone(() => {
@@ -171,7 +217,7 @@ getError((error) => {
       <Configurations-List
         v-else
         :items="items"
-        :has-icon="false"
+        :has-icon="true"
         :is-add="isAdd"
         @addItem="isAdd = true"
         @deleteItem="handleDelete"

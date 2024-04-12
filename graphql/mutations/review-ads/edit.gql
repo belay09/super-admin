@@ -1,0 +1,17 @@
+mutation editReviewAd(
+  $input: ReviewAdsSetInput!
+  $id: bigint!
+  $reviewAdMedias: [ReviewAdMediasInsertInput!]!
+) {
+  # delete Review ad media
+  deleteReviewAdMedias(where: { ReviewAdId: { _eq: $id } }) {
+    affectedRows
+  }
+  updateReviewAdsByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+  # insert Review ad  medias
+  insertReviewAdMedias(objects: $reviewAdMedias) {
+    affectedRows
+  }
+}

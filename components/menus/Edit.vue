@@ -368,7 +368,7 @@ const handleEditMenu = handleSubmit(() => {
             <Icon
               v-if="editLoading"
               name="eos-icons:bubble-loading"
-              class="text-3xl text-red-600"
+              class="text-3xl text-white"
             />
           </button>
         </div>

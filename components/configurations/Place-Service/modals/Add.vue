@@ -43,6 +43,8 @@ const category = ref({
   type: "HOTELS",
 });
 
+const iconUrl = ref("");
+
 /*--------------- Insert Category ----------------*/
 const {
   mutate: insertCategory,
@@ -51,10 +53,16 @@ const {
 } = mutator(InsertCategory);
 
 const { handleSubmit } = useForm({});
-const handleAddSubmit = handleSubmit((values) => {
+const handleAddSubmit = handleSubmit(() => {
   insertCategory({
     data: {
       ...category.value,
+      icon: {
+        data: {
+          lightIconUrl: iconUrl.value,
+          darkIconUrl: "",
+        },
+      },
     },
   });
 });
@@ -104,6 +112,16 @@ onInsertCategoryDone(() => {
               </template>
             </H-Textfield>
           </div>
+
+          <!-- ------------------Icon------------------- -->
+          <p class="py-4">Icon</p>
+
+          <CommonUploadSingleImage
+            folder=""
+            v-model:model-value="iconUrl"
+            rules="required"
+            name="categoryIcon"
+          ></CommonUploadSingleImage>
 
           <!-- Types Field -->
           <div>

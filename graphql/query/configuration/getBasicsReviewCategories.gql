@@ -12,6 +12,9 @@ query GetBasicsReviewCategories(
   ) {
     id
     name
+    icon {
+      lightIconUrl
+    }
     type
     description
   }

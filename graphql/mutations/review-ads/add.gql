@@ -1,0 +1,5 @@
+mutation addReviewAd($input: ReviewAdsInsertInput!) {
+  insertReviewAdsOne(object: $input) {
+    id
+  }
+}

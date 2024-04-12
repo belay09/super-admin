@@ -1,11 +1,31 @@
 <script setup>
 const openAddReviewModal = ref(false);
+
 const props = defineProps({
+  modelValue: {
+    type: Array,
+    default: () => [],
+  },
   placeType: {
     type: String,
     default: "HOTELS",
   },
+  averageRating: {
+    type: Number,
+    default: 0,
+  },
 });
+
+const showAverageRating = ref(true);
+watch(
+  () => props.averageRating,
+  (newVal) => {
+    showAverageRating.value = false;
+    setTimeout(() => {
+      showAverageRating.value = true;
+    }, 10);
+  }
+);
 </script>
 
 <template>
@@ -17,6 +37,7 @@ const props = defineProps({
     <template #content>
       <ShegerReviewsAddReviewRating
         :placeType="placeType"
+        :modelValue="modelValue"
         @close="openAddReviewModal = false"
       ></ShegerReviewsAddReviewRating>
     </template>
@@ -29,13 +50,13 @@ const props = defineProps({
       @click="openAddReviewModal = true"
       class="w-full flex justify-between items-center border py-3 rounded-md px-2 hover:border-primary-600"
     >
-      <ShegerReviewsRatingAverage
-        class="pr-4"
-        :rating="3"
-        :show-all-stars="true"
-        text-class=" pl-2 text-gray-500 font-medium"
-        :rating-size="24"
-      ></ShegerReviewsRatingAverage>
+      <NuxtRating
+        v-if="showAverageRating"
+        class="w-6 h-6"
+        :rating-value="averageRating"
+        :active-color="'#d34553'"
+        :inactive-color="'#BBC3CF'"
+      ></NuxtRating>
 
       <button type="button">
         <Icon name="fluent:open-12-filled" class="text-2xl text-primary-600" />

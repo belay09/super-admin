@@ -21,6 +21,24 @@ query getReviews(
       }
     }
 
+    # service rating
+    place_sheger_review {
+      comment
+      rate
+      place_sheger_review_by_services {
+        rate
+        reviewCategoryId
+        review_category {
+          id
+          name
+          type
+          icon {
+            lightIconUrl
+          }
+        }
+      }
+    }
+
     # review tags
     review_tags {
       id

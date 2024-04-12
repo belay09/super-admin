@@ -1,5 +1,17 @@
-mutation editPlaceAd($input: PlaceAdsSetInput!, $id: bigint!) {
+mutation editPlaceAd(
+  $input: PlaceAdsSetInput!
+  $id: bigint!
+  $placeAdMedias: [PlaceAdMediasInsertInput!]!
+) {
+  # delete place ad media
+  deletePlaceAdMedias(where: { placeAdId: { _eq: $id } }) {
+    affectedRows
+  }
   updatePlaceAdsByPk(_set: $input, pkColumns: { id: $id }) {
     id
+  }
+  # insert place ad  medias
+  insertPlaceAdMedias(objects: $placeAdMedias) {
+    affectedRows
   }
 }

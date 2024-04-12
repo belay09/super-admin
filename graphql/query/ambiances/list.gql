@@ -13,5 +13,9 @@ query getAmbiances(
     id
     title
     name: title
+    icon {
+      lightIconUrl
+      darkIconUrl
+    }
   }
 }

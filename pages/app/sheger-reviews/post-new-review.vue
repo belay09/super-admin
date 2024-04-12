@@ -4,7 +4,6 @@ import { useForm } from "vee-validate";
 import useNotify from "@/use/notify";
 
 const { notify } = useNotify();
-
 const { handleSubmit } = useForm();
 
 const images = ref([]);
@@ -23,6 +22,9 @@ const instagramVideoUrl = ref("");
 const reviewedBy = ref();
 const socialMedias = ref([]);
 const socials = ref([]);
+const serviceRatings = ref([]);
+const averageRating = ref(0);
+const serviceComment = ref("");
 
 const {
   mutate: addReview,
@@ -38,6 +40,23 @@ function isImage(url) {
     return true;
   }
 }
+
+provide("setServiceRatings", ({ serviceCategories, comment }) => {
+  serviceRatings.value = serviceCategories;
+  serviceComment.value = comment;
+
+  if (serviceRatings.value.length == 0) {
+    return;
+  }
+
+  let totalValue = 0;
+  for (let i = 0; i < serviceRatings.value.length; i++) {
+    totalValue += serviceRatings.value[i].value;
+  }
+  averageRating.value = totalValue / serviceRatings.value.length;
+
+  // Calculate the average
+});
 const onSubmit = handleSubmit(() => {
   // remove thumbnail from images
   let imagesWithOutThumbnails = images.value.filter(
@@ -102,6 +121,20 @@ const onSubmit = handleSubmit(() => {
           },
         };
       }),
+    },
+
+    place_sheger_review: {
+      data: {
+        comment: serviceComment.value,
+        place_sheger_review_by_services: {
+          data: serviceRatings.value.map((serviceRating) => {
+            return {
+              reviewCategoryId: serviceRating.id,
+              rate: serviceRating.value,
+            };
+          }),
+        },
+      },
     },
   });
   addReview({ input: review.value });
@@ -212,7 +245,11 @@ definePageMeta({
         <SelectorsAdminstrators v-model="reviewedBy" />
 
         <!-- ------------------------------------Sheger Review Value------------------------ -->
-        <ShegerReviewsReviewReview></ShegerReviewsReviewReview>
+        <ShegerReviewsReviewReview
+          :model-value="serviceRatings"
+          :average-rating="averageRating"
+        >
+        </ShegerReviewsReviewReview>
 
         <!-- ------------------------------------You tube url ------------------------ -->
         <HTextfield

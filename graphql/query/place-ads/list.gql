@@ -4,17 +4,29 @@ query getPlaceAds($filter: PlaceAdsBoolExp) {
     media {
       url
     }
+    place_ad_medias {
+      media {
+        id
+        url
+      }
+    }
     description
     slogan
     startDate
     endDate
     place {
+      light_logo {
+        url
+      }
       type
       name
       id
       contactAltPhoneNumber
       contactEmail
       contactWebsite
+      light_logo {
+        url
+      }
     }
   }
 }

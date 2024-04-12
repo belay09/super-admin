@@ -1,4 +1,7 @@
 mutation deletePlaceAds($id: bigint!) {
+  deletePlaceAdMedias(where: { placeAdId: { _eq: $id } }) {
+    affectedRows
+  }
   deletePlaceAdsByPk(id: $id) {
     id
   }
