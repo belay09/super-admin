@@ -1,7 +1,10 @@
 query getReviewAd($id: bigint!) {
   reviewAdsByPk(id: $id) {
     id
-
+    slogan
+    startDate
+    endDate
+    isCurrentlyOpen
     review_ad_medias {
       media {
         id

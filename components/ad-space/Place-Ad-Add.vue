@@ -46,6 +46,7 @@ const handleAdd = handleSubmit(() => {
 
     return;
   }
+
   let input = {
     description: description.value,
     slogan: slogan.value,
@@ -105,7 +106,7 @@ onError((error) => {
         <!-- ------------------Place---------------- -->
         <Selectors-Place :type="placeType" v-model="place"> </Selectors-Place>
 
-        <!-- -----------------Start and End Date -->
+        <!-- -----------------Start and End Date  -->
         <div class="flex items-center justify-between pt-6 gap-x-6">
           <HDatePicker
             id="start_date"
@@ -137,13 +138,12 @@ onError((error) => {
           id="slogan"
           name="slogan"
           label="Slogan"
-          placeholder="Write here"
+          placeholder="Write here...."
           v-model="slogan"
           rules="required"
         ></H-Textfield>
 
         <!-- ---------------------Description---------------- -->
-
         <H-Textarea
           id="description"
           name="description"

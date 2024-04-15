@@ -4,7 +4,7 @@ mutation editReviewAd(
   $reviewAdMedias: [ReviewAdMediasInsertInput!]!
 ) {
   # delete Review ad media
-  deleteReviewAdMedias(where: { ReviewAdId: { _eq: $id } }) {
+  deleteReviewAdMedias(where: { reviewAdId: { _eq: $id } }) {
     affectedRows
   }
   updateReviewAdsByPk(_set: $input, pkColumns: { id: $id }) {

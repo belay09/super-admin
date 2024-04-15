@@ -1,0 +1,5 @@
+mutation editCousins($input: BasicsCousinsSetInput!, $id: bigint!) {
+  updateBasicsCousinsByPk(_set: $input, pkColumns: { id: $id }) {
+    id
+  }
+}

@@ -1,7 +1,10 @@
 query getReviewAds($filter: ReviewAdsBoolExp) {
   reviewAds(where: $filter) {
     id
-
+    slogan
+    startDate
+    endDate
+    isCurrentlyOpen
     review_ad_medias {
       media {
         id

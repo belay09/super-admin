@@ -56,8 +56,21 @@ function selectSocialMedia(media) {
       <div
         v-for="(media, index) in addedMedia"
         class="flex items-center gap-3 border border-sheger-gray-300 w-fit py-1 px-2"
+        :title="media.url"
       >
-        <img :src="media.icon.darkIconUrl" class="w-7 h-7" />
+        <!-- {{ media.url }} -->
+
+        <!-- <img
+          :src="`${media.icon.lightIconUrl}?url`"
+          v-if="media.icon.lightIconUrl"
+          class="w-7 h-7"
+        /> -->
+
+        <CommonSVG
+          v-if="media.icon.lightIconUrl"
+          :url="media.icon.lightIconUrl"
+          svgStyle="lg:text-white"
+        ></CommonSVG>
         <p>{{ media.name }}</p>
         <Icon
           name="mdi:close"
@@ -76,7 +89,13 @@ function selectSocialMedia(media) {
             class="text-white w-fit flex items-center py-1 px-2 hover:cursor-pointer gap-3 border-r"
             @click="openCombobox = !openCombobox"
           >
-            <img :src="selectedMedia?.icon?.darkIconUrl" class="w-10 h-10" />
+            <!-- <img :src="selectedMedia?.icon?.darkIconUrl" class="w-10 h-10" /> -->
+
+            <CommonSVG
+              v-if="selectedMedia.icon.lightIconUrl"
+              :url="selectedMedia.icon.lightIconUrl"
+              svgStyle="lg:text-white"
+            ></CommonSVG>
 
             <Icon
               name="mdi:chevron-down"
@@ -93,7 +112,12 @@ function selectSocialMedia(media) {
               class="p-3 hover:cursor-pointer hover:bg-primary/20"
               @click="selectSocialMedia(social)"
             >
-              <img :src="social.icon.darkIconUrl" class="w-10" />
+              <!-- <img :src="social.icon.darkIconUrl" class="w-10" /> -->
+              <CommonSVG
+                v-if="social.icon.lightIconUrl"
+                :url="social.icon.lightIconUrl"
+                svgStyle="lg:text-white"
+              ></CommonSVG>
             </div>
           </div>
         </div>

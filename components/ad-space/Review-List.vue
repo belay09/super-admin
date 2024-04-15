@@ -62,7 +62,7 @@ const openAddAdSpace = ref(false);
 
 <template>
   <!-- -----------------------Add ad space modal----------------------- -->
-  <AdSpace-ReviewAdAdd v-model="openAddAdSpace" />
+  <AdSpace-ReviewAdAdd v-if="openAddAdSpace" v-model="openAddAdSpace" />
 
   <div class="col-span-2 pl-10">
     <div class="flex justify-end">

@@ -18,17 +18,14 @@ const contents = ref([
     id: "amenity",
   },
   {
+    name: "Cousins",
+    id: "cousins",
+  },
+  {
     name: "Social Media",
     id: "socialMedia",
   },
-  // {
-  //   name: "Report Type",
-  //   id: "reportType",
-  // },
-  // {
-  //   name: "Support Type",
-  //   id: "supportType",
-  // },
+
   {
     name: "Badge",
     id: "badge",
@@ -123,7 +120,7 @@ definePageMeta({
     <div class="col-span-4">
       <div id="content" class="pb-44">
         <!-- ------------------Section 1 for scroll---------- -->
-        <div v-if="activeIndex < 5">
+        <div v-if="activeIndex < 6">
           <!-- ------------------Categories section---------------- -->
           <div :id="'content-' + 0" class="my-6 content">
             <Configurations-Categories />
@@ -140,15 +137,20 @@ definePageMeta({
           <div :id="'content-' + 3" class="my-6 content">
             <Configurations-Amenities />
           </div>
+          <!-- -----------------Cousins section---------- -->
+
+          <div :id="'content-' + 4" class="my-6 content">
+            <ConfigurationsCousins />
+          </div>
 
           <!-- ------------------Social Medias section---------------- -->
-          <div :id="'content-' + 4" class="my-6 content">
+          <div :id="'content-' + 5" class="my-6 content">
             <Configurations-SocialMedias />
           </div>
         </div>
         <!-- ------------------Badges---------------- -->
         <div
-          v-else-if="activeIndex == 5"
+          v-else-if="activeIndex == 6"
           :id="'content-' + 5"
           class="my-6 content"
         >
@@ -157,7 +159,7 @@ definePageMeta({
 
         <!-- ------------------Location---------------- -->
         <div
-          v-else-if="activeIndex == 6"
+          v-else-if="activeIndex == 7"
           :id="'content-' + 6"
           class="my-6 content"
         >

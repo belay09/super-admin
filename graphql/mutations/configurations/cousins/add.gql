@@ -1,0 +1,5 @@
+mutation addCousin($input: BasicsCousinsInsertInput!) {
+  insertBasicsCousinsOne(object: $input) {
+    id
+  }
+}

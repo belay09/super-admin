@@ -31,9 +31,11 @@ const { handleSubmit, isSubmitting } = useForm({});
 
 /*...................Place detail data fetch.............*/
 const reviewId = ref(0);
+const slogan = ref("");
 const startDate = ref("");
 const endDate = ref("");
 const images = ref([]);
+const reviewAd = ref(null);
 
 const {
   onResult: reviewAdOnResult,
@@ -43,10 +45,12 @@ const {
 
 reviewAdOnResult((result) => {
   if (result.data?.reviewAdsByPk) {
+    slogan.value = result.data.reviewAdsByPk.slogan;
+    reviewAd.value = result.data.reviewAdsByPk;
     reviewId.value = result.data.reviewAdsByPk.review?.id;
-    // startDate.value = reviewAdsByPk.startDate;
-    // endDate.value = reviewAdsByPk.endDate;
-    images.value = reviewAdsByPk.review_ad_medias?.map(
+    startDate.value = result.data.reviewAdsByPk.startDate;
+    endDate.value = result.data.reviewAdsByPk.endDate;
+    images.value = result.data.reviewAdsByPk.review_ad_medias?.map(
       (adMedia) => adMedia.media?.url
     );
   }
@@ -74,11 +78,11 @@ const handleEdit = handleSubmit(() => {
 
     return;
   }
+
   let input = {
     slogan: slogan.value,
     startDate: startDate.value,
     endDate: endDate.value,
-
     reviewId: reviewId.value,
   };
 
@@ -123,7 +127,6 @@ onError((error) => {
       <h2 class="leading-6 text-xl text-gray-900 pb-6">Edit Ad Space</h2>
     </template>
     <template #content>
-      {{ id }}
       <!-- Skeleton container for the form -->
       <div v-if="reviewAdLoading" class="flex flex-col space-y-4">
         <!-- Title skeleton -->
@@ -157,6 +160,17 @@ onError((error) => {
       >
         <!-- ------------------Review---------------- -->
         <Selectors-Review v-model="reviewId"> </Selectors-Review>
+
+        <!-- ----------------------Slogan------------------- -->
+
+        <H-Textfield
+          id="slogan"
+          name="slogan"
+          label="Slogan"
+          placeholder="Write here"
+          v-model="slogan"
+          rules="required"
+        ></H-Textfield>
 
         <!-- -----------------Start and End Date -->
         <div class="flex items-center justify-between pt-6 gap-x-6">

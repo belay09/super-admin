@@ -1,5 +1,5 @@
 <script setup>
-import deletereviewAdMutation from "@/graphql/mutations/place-ads/delete.gql";
+import deleteReviewAdMutation from "@/graphql/mutations/review-ads/delete.gql";
 import useNotify from "@/use/notify";
 
 /**-------------------------Globals------------------------- */
@@ -15,7 +15,7 @@ const props = defineProps({
 const refetchAds = inject("refetchAds");
 /**------------------------Handle delete--------------------- */
 const { mutate, onDone, onError, loading } = authMutation(
-  deletereviewAdMutation
+  deleteReviewAdMutation
 );
 
 function handleDelete() {
@@ -27,8 +27,8 @@ onDone((result) => {
   showConfirmationModal.value = false;
 
   notify({
-    title: "Success",
-    description: "Place  deleted successfully",
+    title: "Review Ad Deleted",
+    description: "Review Ad  deleted successfully",
     type: "success",
     borderClass: "border-l-8 border-green-300",
   });
@@ -95,6 +95,9 @@ const showEditAddSpaceModal = ref(false);
       >
         {{ reviewAd.review.place?.type.toLowerCase() }}
       </p>
+
+      <!-- ------------------Slogan title------------ -->
+      <p class="text-xl font-medium">{{ reviewAd.slogan }}</p>
 
       <!-- ------------------Description------------- -->
       <p class="secondary-text line-clamp-4">

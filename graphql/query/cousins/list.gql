@@ -1,0 +1,17 @@
+query getCousins(
+  $filter: BasicsCousinsBoolExp
+  $order: [BasicsCousinsOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  basicsCousins(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    title
+    name: title
+  }
+}

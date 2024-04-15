@@ -1,0 +1,5 @@
+mutation deleteCousins($id: bigint!) {
+  deleteBasicsCousinsByPk(id: $id) {
+    id
+  }
+}

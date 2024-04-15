@@ -20,7 +20,8 @@ const { notify } = useNotify();
 /**------------------------Data------------------------ */
 const placeLog = ref("");
 const placeName = ref("");
-const placeCousins = ref("");
+const initPlaceCousins = ref([]);
+const placeCousins = ref([]);
 const description = ref("");
 const placeType = ref("");
 const placeTags = ref([]);
@@ -74,7 +75,18 @@ placeOnResult((result) => {
       };
     });
 
+    // init place cousins
+    initPlaceCousins.value = tempPlace.place_cousins.map((placeCousin) => {
+      return {
+        name: placeCousin.cousin.title,
+        id: placeCousin.cousin.id,
+      };
+    });
+
     placeTags.value = tempPlace.placeTags.map((placeTag) => placeTag.tag.id);
+    placeCousins.value = tempPlace.place_cousins.map(
+      (placeCousin) => placeCousin.cousinId
+    );
 
     // init place ambiances
     initPlaceAmbiances.value = tempPlace.placeAmbiances.map((placeAmbiance) => {
@@ -156,7 +168,7 @@ addMediaOnDone((result) => {
     id: props.placeId,
     placeObject: {
       name: placeName.value,
-      cousins: placeCousins.value,
+      cousins: "",
       description: description.value,
       type: placeType.value.toUpperCase(),
       categoryId: placeCategory.value,
@@ -167,7 +179,6 @@ addMediaOnDone((result) => {
       offerTakeouts: offerTakeout.value,
       featuredReviewMedia: 3,
       featuredMedia: result.data?.insertBasicsMediaOne?.id,
-
       orderPhoneNumber1: orderNumber.value,
       orderPhoneNumber2: alternativeOrderNumber.value,
     },
@@ -177,6 +188,14 @@ addMediaOnDone((result) => {
       return {
         placeId: props.placeId,
         tagId: tag,
+      };
+    }),
+
+    // place tags
+    placeCousinObject: placeCousins.value.map((cousin) => {
+      return {
+        placeId: props.placeId,
+        cousinId: cousin,
       };
     }),
 
@@ -241,19 +260,11 @@ const handleEditPlace = handleSubmit(() => {
         </HTextfield>
 
         <!------------------------------------------------ Cousins ----------------------------------------->
-
-        <HTextfield
-          type="text"
-          id="cousins"
-          name="cousins"
-          class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
+        <SelectorsCousinChips
+          :init="initPlaceCousins"
           v-model="placeCousins"
-          rules="required"
-        >
-          <template #label>
-            <p class="text-sheger-gray-100">Cousins</p>
-          </template>
-        </HTextfield>
+          name="placeCousin"
+        />
 
         <!-- ------------------------------Description-------------------------->
 

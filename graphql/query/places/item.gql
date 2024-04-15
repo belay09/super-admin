@@ -87,6 +87,16 @@ query getPlace($id: bigint!, $include: Boolean = false) {
       }
     }
 
+    # cousins
+    place_cousins {
+      id
+      cousinId
+      cousin {
+        id
+        title
+      }
+    }
+
     # locations
     placeLocations {
       id

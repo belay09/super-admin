@@ -17,11 +17,12 @@ const props = defineProps({
 /**------------------------Data------------------------ */
 const image_url = ref("");
 const placeName = ref("");
-const placeCousins = ref("");
 const description = ref("");
 const placeType = ref(props.modelValue);
 const placeTag = ref([]);
 const placeAmbiances = ref([]);
+const placeCousins = ref([]);
+
 const placeCategory = ref([]);
 const featureAsRecentlyOpened = ref(false);
 const recentlyOpenedStartDate = ref(new Date().toISOString().split("T")[0]);
@@ -72,16 +73,12 @@ const handleAddPlace = handleSubmit(() => {
       },
     },
     name: placeName.value,
-    cousins: placeCousins.value,
+    cousins: "",
     description: description.value,
     type: placeType.value.toUpperCase(),
-    placeTags: {
-      data: placeTag.value.map((id) => ({ tagId: id })),
-    },
+
     categoryId: placeCategory.value,
-    placeAmbiances: {
-      data: placeAmbiances.value.map((id) => ({ ambianceId: id })),
-    },
+
     contactPhoneNumber: phoneNumber.value,
     contactAltPhoneNumber: alternativePhoneNumber.value,
     contactEmail: email.value,
@@ -94,6 +91,16 @@ const handleAddPlace = handleSubmit(() => {
         socialMediaId: social.id,
         url: social.url,
       })),
+    },
+    placeAmbiances: {
+      data: placeAmbiances.value.map((id) => ({ ambianceId: id })),
+    },
+
+    placeTags: {
+      data: placeTag.value.map((id) => ({ tagId: id })),
+    },
+    place_cousins: {
+      data: placeCousins.value.map((id) => ({ cousinId: id })),
     },
   };
 
@@ -167,18 +174,7 @@ watch(placeType, (newValue) => {
 
         <!------------------------------------------------ Cousins ----------------------------------------->
 
-        <HTextfield
-          type="text"
-          id="cousins"
-          name="cousins"
-          class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
-          v-model="placeCousins"
-          rules="required"
-        >
-          <template #label>
-            <p class="text-sheger-gray-100">Cousins</p>
-          </template>
-        </HTextfield>
+        <SelectorsCousinChips v-model="placeCousins" name="placeCousin" />
 
         <!-- ------------------------------Description-------------------------->
 

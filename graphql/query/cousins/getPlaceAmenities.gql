@@ -1,0 +1,33 @@
+query getPlaceAmenities(
+  $filter: PlaceAmenitiesBoolExp
+  $order: [PlaceAmenitiesOrderBy!]
+  $limit: Int
+  $offset: Int
+) {
+  amenities: placeAmenities(
+    where: $filter
+    orderBy: $order
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    amenity {
+     
+      id
+      title
+    }
+
+    placeAmenityResources {
+      media {
+        url
+      }
+    }
+  }
+
+  # aggregate
+  amenitiesAggregate: placeAmenitiesAggregate(where: $filter) {
+    aggregate {
+      count
+    }
+  }
+}

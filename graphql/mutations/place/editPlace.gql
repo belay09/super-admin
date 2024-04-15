@@ -1,12 +1,18 @@
 mutation editPlace(
   $placeObject: PlacesSetInput!
   $placeTagObject: [PlaceTagsInsertInput!]!
+  $placeCousinObject: [PlaceCousinsInsertInput!]!
   $placeAmbianceObject: [PlaceAmbiancesInsertInput!]!
   $placeSocialMediaObject: [PlaceSocialMediasInsertInput!]!
   $id: bigint!
 ) {
   #  delete place tag
   deletePlaceTags(where: { placeId: { _eq: $id } }) {
+    affectedRows
+  }
+
+  #  delete place cousins
+  deletePlaceCousins(where: { placeId: { _eq: $id } }) {
     affectedRows
   }
 
@@ -22,6 +28,11 @@ mutation editPlace(
 
   # insert place tag
   insertPlaceTags(objects: $placeTagObject) {
+    affectedRows
+  }
+
+  # insert place cousins
+  insertPlaceCousins(objects: $placeCousinObject) {
     affectedRows
   }
 
