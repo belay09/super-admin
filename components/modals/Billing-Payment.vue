@@ -107,6 +107,7 @@ const declinePayment = () => {
 		input: {
 			isVerified: false,
 			isDeclined: true,
+			paymentStatus: null,
 		},
 	});
 };
