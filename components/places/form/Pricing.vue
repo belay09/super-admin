@@ -132,7 +132,6 @@ const openCreatePayment = ref(false);
 		v-model="openCreatePayment"
 	/>
 	<div class="space-y-12">
-		{{ coordinates }}
 		<form action="" class="grid p-4 gap-x-8 gap-y-12 grid-cols-3">
 			<h1 class="text-xl text-sheger-gray-600">Basic Billing Info</h1>
 			<h1 class="text-xl text-sheger-gray-600">Address</h1>

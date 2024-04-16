@@ -118,10 +118,6 @@ const openModal = ref(false);
 
 <template>
 	<div class="space-y-1">
-		{{ position.lat || userLocation.lat || defaultLocation.lat }}
-
-		{{ position.lng || userLocation.lng || defaultLocation.lng }}
-
 		<p class="mb-2 text-sheger-gray-100">Location</p>
 		<button
 			v-html="

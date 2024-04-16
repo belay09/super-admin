@@ -17,11 +17,16 @@ const props = defineProps({
 
 <template>
 	<NuxtLink
-		class="border-2 ease-in-out flex flex-col justify-center group h-[310px] w-[330px] border-primary-600 overflow-clip rounded-2xl"
+		class="relative border-2 ease-in-out flex flex-col justify-center group h-[360px] w-[330px] border-primary-600 overflow-clip rounded-2xl"
 		:to="link"
 	>
+		<span
+			v-if="layout.totalNotification"
+			class="absolute group-hover:text-white group-hover:bg-primary-600 bg-white text-black top-2 right-2 w-8 flex items-center justify-center text-sm h-8 rounded-full"
+			>{{ layout.totalNotification }}</span
+		>
 		<div
-			class="flex flex-col items-center justify-center w-[330px] h-[310px] text-white group-hover:text-gray-900 ease-out duration-500 rounded-xl bg-primary-600 group-hover:bg-white group-hover:h-[40%] gap-y-4"
+			class="flex flex-col items-center justify-center w-[330px] h-[360px] text-white group-hover:text-gray-900 ease-out duration-500 rounded-xl bg-primary-600 group-hover:bg-white group-hover:h-[40%] gap-y-4"
 		>
 			<Icon
 				:name="layout.icon"
@@ -42,6 +47,11 @@ const props = defineProps({
 				>
 					<Icon class="text-xl" :name="item.icon" />
 					<span>{{ item.name }}</span>
+					<span
+						v-if="item.notifications"
+						class="text-white bg-primary-600 w-6 flex items-center text-xs justify-center text-sm h-6 rounded-full"
+						>{{ item.notifications }}</span
+					>
 				</li>
 			</ul>
 		</div>
