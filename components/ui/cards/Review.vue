@@ -126,7 +126,7 @@ const toggleRemoveModal = ref(false);
 
   <div
     @click="$router.push(`/app/sheger-reviews/${review.id}`)"
-    class="flex cursor-pointer flex-col border w-full max-w-[28rem] p-6 rounded-xl text-sm"
+    class="flex cursor-pointer hover:border-primary-600 hover:shadow-md flex-col border w-full max-w-[28rem] p-6 rounded-xl text-sm"
   >
     <!-- --------------------Card Header -------------->
     <div class="flex items-start justify-between">

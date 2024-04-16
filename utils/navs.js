@@ -40,7 +40,7 @@ const navs = [
 		to: "/app/administrators",
 	},
 	{
-		name: "Reports",
+		name: "Moderation",
 		icon: "ph:flag-light",
 		to: "/app/reports",
 	},

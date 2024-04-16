@@ -1,0 +1,43 @@
+mutation addBilling($input: [BillingsBillingAddressInsertInput!]!) {
+	billingAddress: insertBillingsBillingAddress(
+		objects: $input
+		onConflict: {
+			constraint: billing_address_place_id_key
+			updateColumns: [
+				areaId
+				businessLicenseUrl
+				cityId
+				contactEmail
+				contactPersonAltPhone
+				contactPersonName
+				contactPersonPhone
+				location
+				tinNumberUrl
+				tinNumber
+				placeId
+				paymentMethod
+				organizationLegalName
+			]
+		}
+	) {
+		returning {
+			area {
+				id
+			}
+			city {
+				id
+			}
+			paymentMethod
+			cityId
+			id
+			placeId
+			place {
+				id
+				billing_addresses {
+					id
+				}
+				name
+			}
+		}
+	}
+}

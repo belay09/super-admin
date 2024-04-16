@@ -17,7 +17,7 @@ const navs = ref([
 		to: "/app/sheger-reviews",
 	},
 	{
-		name: "Reports",
+		name: "Moderation",
 		icon: "ph:flag-light",
 		to: "/app/reports",
 	},

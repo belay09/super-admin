@@ -27,7 +27,7 @@ const props = defineProps({
 
 		<nuxt-link
 			to="/app"
-			class="flex flex-col space-y-3 items-center px-6 w-full py-8 mx-auto border-2 border-white rounded-lg cursor-pointer hover:shadow-xl duration-200 bg-white !text-gray-950"
+			class="flex flex-col space-y-3 items-center px-6 w-full py-8 mx-auto border border-white rounded-lg cursor-pointer hover:shadow-xl duration-200 bg-primary-600 !text-white"
 		>
 			<Icon :name="layout.icon" class="text-5xl" color="" />
 			<div>
