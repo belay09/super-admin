@@ -268,7 +268,17 @@ function openMoreAction(event) {
 								v-if="showMoreAction"
 								class="absolute left-0 flex flex-col p-5 bg-white rounded-lg shadow-xl top-7 w-72 gap-y-4"
 							>
-								<button class="flex items-center gap-3">
+								<button
+									@click.stop="
+										$router.push({
+											path: `/app/billings/${place.id}`,
+											query: {
+												name: place.name,
+											},
+										})
+									"
+									class="flex items-center gap-3"
+								>
 									<Icon
 										name="icon-park-outline:bill"
 										class="text-2xl shrink-0"

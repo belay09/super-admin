@@ -56,7 +56,7 @@ markAsAddressedDone(() => {
 		type: "success",
 		borderClass: "border-l-8 border-green-300",
 	});
-	refetch();
+	supportRefetch();
 });
 
 markAsAddressedError((error) => {

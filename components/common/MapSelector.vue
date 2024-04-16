@@ -19,6 +19,8 @@ const defaultLocation = ref({
 	lng: props.long || 38.7859123,
 });
 
+const selectedLocation = ref();
+
 const emit = defineEmits(["updateMapVal"]);
 
 const tileProvider = ref({
@@ -100,6 +102,13 @@ const onMapClick = async (value) => {
 	//   });
 };
 
+watch(
+	() => selectedLocation.value,
+	(value) => {
+		position.value = value.latlng;
+	}
+);
+
 const tooltipContent = computed(() => {
 	if (dragging.value) return "...";
 	if (loading.value) return "Loading...";
@@ -137,35 +146,10 @@ const openModal = ref(false);
 					@click="openModal = false"
 					class="absolute cursor-pointer -top-6 -right-4 text-2xl"
 				/>
-				<div class="flex gap-x-4 w-full">
-					<!-- <HTextfield name="search" class="w-auto" type="text">
-						<template v-slot:label>
-							<h1>Search Location</h1>
-						</template>
-					</HTextfield> -->
-					<HTextfield
-						name="lat"
-						rules="required"
-						class="w-auto"
-						type="number"
-						v-model="position.lat"
-					>
-						<template v-slot:label>
-							<h1>Latitude</h1>
-						</template>
-					</HTextfield>
-					<HTextfield
-						name="lng"
-						rules="required"
-						class=""
-						type="number"
-						v-model="position.lng"
-					>
-						<template v-slot:label>
-							<h1>Longtiude</h1>
-						</template>
-					</HTextfield>
-				</div>
+				<SelectorsMapSearch
+					v-model="selectedLocation"
+					class="overflow-visible"
+				/>
 				<h1
 					class="text-xs font-light tracking-tight text-gray-700 flex mb-2 items-center gap-x-2 mt-5"
 				>
@@ -173,7 +157,7 @@ const openModal = ref(false);
 					Double click the map to set the location! / Ctrl + scroll to Zoom in
 					and out
 				</h1>
-				<div class="h-[40vh] relative">
+				<div class="h-[40vh] relative -z-[1000]">
 					<button
 						@click.prevent="toggle"
 						:title="isFullscreen ? 'Exit Full Screen' : 'Full Screen'"
@@ -225,6 +209,7 @@ const openModal = ref(false);
 						</LMarker>
 					</LMap>
 				</div>
+
 				<div class="flex justify-end mt-4">
 					<button
 						@click="openModal = false"
