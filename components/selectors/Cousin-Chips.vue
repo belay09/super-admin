@@ -13,8 +13,9 @@ const props = defineProps({
 });
 
 /*---------------------------Place or Menu Or Review cousins---------------------------**/
+const items = ref();
 const search = ref("");
-const items = ref(props.modelValue);
+const cousins = ref(props.modelValue);
 const filter = computed(() => {
   let query = {};
   query._and = [
@@ -49,12 +50,12 @@ function makeSearch(value) {
 watch(
   () => props.modelValue,
   (value) => {
-    items.value = value;
+    cousins.value = value;
   }
 );
 
 watch(
-  () => items.value,
+  () => cousins.value,
   (value) => {
     emit("update:modelValue", value);
   }
@@ -67,7 +68,7 @@ watch(
     chipsStyle="rounded-full border-[1px] border-gray-600 py-1 px-2 hover:border-primary/40"
     :items="items"
     :init="init"
-    v-model="items"
+    v-model="cousins"
     value="id"
     showBy="name"
     listClass="h-40"

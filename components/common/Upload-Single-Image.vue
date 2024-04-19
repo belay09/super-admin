@@ -95,7 +95,7 @@ const showUploadImageModal = ref(false);
     <template #content>
       <div class="flex items-center justify-between pb-5">
         <p class="text-xl font-medium">Upload Image</p>
-        <button @click="showUploadImageModal = false">
+        <button type="button" @click="showUploadImageModal = false">
           <Icon name="heroicons:x-mark-20-solid" class="text-2xl" />
         </button>
       </div>
@@ -114,6 +114,7 @@ const showUploadImageModal = ref(false);
 
         <button
           @click="showUploadImageModal = true"
+          type="button"
           class="flex space-x-2 items-center border rounded-md p-2"
         >
           <Icon name="heroicons:cloud-arrow-up" class="text-2xl" />

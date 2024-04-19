@@ -168,8 +168,8 @@ definePageMeta({
 
         <!-- ------------------Place Service---------------- -->
         <div
-          v-else-if="activeIndex == 7"
-          :id="'content-' + 7"
+          v-else-if="activeIndex == 8"
+          :id="'content-' + 8"
           class="h-full my-6 content"
         >
           <Configurations-PlaceService />

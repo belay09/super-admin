@@ -80,7 +80,7 @@ watch(
     listClass="h-40"
     returnBy="id"
     name="tag"
-    label="Tag"
+    label="Tags"
     placeholder="Select Tag"
     @search="makeSearch"
     :loading="loadingTag"

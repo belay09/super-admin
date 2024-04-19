@@ -1,6 +1,9 @@
 <script setup>
 import placeSocialMediaQuery from "@/graphql/query/basics/getSocialMedias.gql";
+import { onClickOutside } from "@vueuse/core";
+import useNotify from "@/use/notify";
 
+const { notify } = useNotify();
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
   modelValue: {
@@ -12,7 +15,7 @@ const props = defineProps({
 const openCombobox = ref(false);
 const selectedMedia = ref({});
 const addedMedia = ref(props.modelValue);
-const url = ref("https://www.instagram.com/example");
+const url = ref("");
 const socials = ref([]);
 
 /*---------------------------Place SocialMedia Query---------------------------**/
@@ -30,7 +33,29 @@ onResultSocialMedia((result) => {
 });
 
 const handleAddMedia = () => {
-  if (!url.value) return;
+  console.log(selectedMedia);
+  if (!url.value) {
+    notify({
+      title: "Url is required",
+      description: "Add  url",
+      type: "error",
+      borderClass: "border-l-8 border-red-300",
+    });
+    return;
+  }
+
+  if (
+    !/^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+\.[a-z]+(\/[a-zA-Z0-9#]+\/?)*$/.test(
+      url.value
+    )
+  ) {
+    notify({
+      title: "In valid url",
+      description: "Add valid url",
+      type: "error",
+      borderClass: "border-l-8 border-red-300",
+    });
+  }
   addedMedia.value.push({ ...selectedMedia.value, url: url.value });
 
   emit("update:modelValue", addedMedia.value);
@@ -46,6 +71,9 @@ function selectSocialMedia(media) {
   selectedMedia.value = media;
   openCombobox.value = false;
 }
+
+const combobox = ref(null);
+onClickOutside(combobox, (e) => (openCombobox.value = false));
 </script>
 
 <template>
@@ -103,6 +131,7 @@ function selectSocialMedia(media) {
             />
           </div>
           <div
+            ref="combobox"
             v-show="openCombobox"
             class="absolute shadow-lg min-w-fit max-h-40 overflow-y-scroll bg-white border border-sheger-gray-500 rounded-md z-10"
           >
@@ -127,7 +156,6 @@ function selectSocialMedia(media) {
           placeholder="url"
           name="url"
           v-model="url"
-          rules="requiredN|web_link"
           type="text"
           class="rounded-none h-full shadow-none border-none"
         >

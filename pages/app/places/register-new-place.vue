@@ -10,7 +10,6 @@ definePageMeta({
     <!-- Top -->
 
     <!-- stepper -->
-    {{ placeType }} place type
 
     <div class="flex justify-between h-20 my-4">
       <div class="stepper-button rounded-tl-lg !bg-primary-300">Basic Info</div>

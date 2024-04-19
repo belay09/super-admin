@@ -56,12 +56,12 @@ watch(
 </script>
 
 <template>
-  <H-SingleSelect
+  <HSingleSelectWithSearch
     id="placeType"
     name="placeType"
     label="Place Type"
     :items="items"
     v-model="item"
     rules="required"
-  ></H-SingleSelect>
+  ></HSingleSelectWithSearch>
 </template>

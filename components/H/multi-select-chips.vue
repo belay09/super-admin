@@ -118,6 +118,8 @@ const select = (val) => {
     "onChange",
     props.returnBy ? chips.value.map((e) => e[props.returnBy]) : chips.value
   );
+  search.value = "";
+  queryList();
 };
 
 const queryList = () => {

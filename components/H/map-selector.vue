@@ -34,7 +34,7 @@ const defaultLocation = ref({
 
 // console.log("and other lat and long", defaultLocation.value);
 
-const emit = defineEmits(["updateMapVal","close"]);
+const emit = defineEmits(["updateMapVal", "close"]);
 const icons = ref(
   icon({
     iconRetinaUrl: marker_icon_2x,
@@ -133,8 +133,7 @@ const tooltipContent = computed(() => {
 </script>
 
 <template>
-  <div class="w-full h-full flex flex-col " >
-
+  <div class="w-full h-full flex flex-col">
     <div class="h-[500px]" :class="mapClass">
       <l-map
         ref="map"
@@ -165,7 +164,11 @@ const tooltipContent = computed(() => {
       </l-map>
     </div>
 
-    <div class="primary-button bg-primary-600 text-white w-fit px-3 my-3" @click="emit('close')">
+    <div
+      type="button"
+      class="primary-button bg-primary-600 text-white w-fit px-3 my-3"
+      @click="emit('close')"
+    >
       Confirm & Add
     </div>
   </div>
