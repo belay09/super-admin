@@ -193,7 +193,13 @@ const {
 	onError: invoiceOnError,
 	loading: invoiceLoading,
 	refetch: invoiceReFetch,
-} = authListQuery(getInvoiceQuery, invoiceFilter, [], offset, limit);
+} = authListQuery(
+	getInvoiceQuery,
+	invoiceFilter,
+	ref([{ createdAt: "DESC" }]),
+	offset,
+	limit
+);
 
 invoiceOnResult((result) => {
 	if (result.data?.invoices) {

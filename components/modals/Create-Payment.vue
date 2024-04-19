@@ -1,6 +1,6 @@
 <script setup>
 import addPayment from "@/graphql/mutations/billing/create-payment.gql";
-const emits = defineEmits(["update:modelValue", "refetch"]);
+const emits = defineEmits(["update:modelValue", "refetch", "createDone"]);
 import { useForm } from "vee-validate";
 import useNotify from "@/use/notify";
 
@@ -66,6 +66,7 @@ addPaymentDone(() => {
 	});
 	navigateTo("/app/billings");
 	emits("update:modelValue", false);
+	emits("createDone");
 });
 
 addPaymentError((error) => {
@@ -108,6 +109,9 @@ const open = computed({
 					</button>
 				</div>
 				<form @submit.prevent="onSubmit" class="grid grid-cols-2 gap-x-8">
+					<div class="space-y-3">
+						<BillingsPricingList v-model="input.pricingPlanFrequencyId" />
+					</div>
 					<div class="space-y-4">
 						<HTextfield
 							name=" place name"
@@ -164,9 +168,6 @@ const open = computed({
 						</div>
 					</div>
 
-					<div class="space-y-3">
-						<BillingsPricingList v-model="input.pricingPlanFrequencyId" />
-					</div>
 					<div class="flex justify-end col-span-2 gap-x-2">
 						<Button
 							type="button"

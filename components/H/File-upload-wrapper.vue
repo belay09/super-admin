@@ -130,6 +130,8 @@ function submitToDatabase() {
 function getFileType(file) {
 	if (file.includes("mp4")) {
 		return "video";
+	} else if (file.includes("pdf")) {
+		return "pdf";
 	} else {
 		return "Image";
 	}
@@ -155,18 +157,22 @@ function getFileType(file) {
 
 		<div class="flex flex-col items-center justify-center">
 			<div
+				class="w-full cursor-pointer"
 				v-if="!uploadedFiles.length"
 				@click="openModal = true"
-				class="flex flex-col items-center justify-center w-full gap-4 p-8 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
 			>
-				<Icon name="uil:cloud-upload" class="w-20 h-20" />
-				<div class="flex flex-col mx-auto text-center input_field w-max">
-					<div>
-						{{ placeholder }} <span class="text-primary-600">Browse</span>
+				<slot name="wrapper">
+					<div
+						class="flex flex-col items-center justify-center w-full gap-4 p-8 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
+					>
+						<Icon name="uil:cloud-upload" class="w-20 h-20" />
+						<div class="flex flex-col mx-auto text-center input_field w-max">
+							<div>
+								{{ placeholder }} <span class="text-primary-600">Browse</span>
+							</div>
+						</div>
 					</div>
-
-					<div class="">Select images that are Square and 10MB</div>
-				</div>
+				</slot>
 			</div>
 
 			<div
@@ -192,6 +198,12 @@ function getFileType(file) {
 										autoplay
 										controls
 									></video>
+									<object
+										:data="i"
+										class="object-cover w-[600px]"
+										type="application/pdf"
+										v-else-if="getFileType(i) == 'pdf'"
+									/>
 									<img
 										v-else
 										:src="i"
@@ -200,9 +212,6 @@ function getFileType(file) {
 									/>
 
 									<div class="flex items-center gap-x-2">
-										<p class="text-lg font-medium capitalize">
-											{{ getFileType(i) }}
-										</p>
 										<span
 											v-if="thumbnail === i"
 											class="text-sm font-light text-primary-600"

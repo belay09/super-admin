@@ -1,0 +1,30 @@
+query {
+	report: placeReviewReportAggregate(where: { isAddressed: { _eq: false } }) {
+		aggregate {
+			count
+		}
+	}
+	support: supportsAggregate(where: { isAddressed: { _eq: false } }) {
+		aggregate {
+			count
+		}
+	}
+	contact: contactUsAggregate(where: { isAddressed: { _eq: false } }) {
+		aggregate {
+			count
+		}
+	}
+	service: businessRequestsAggregate(where: { isAddressed: { _eq: false } }) {
+		aggregate {
+			count
+		}
+	}
+
+	billing: billingsPaymentsAggregate(
+		where: { isVerified: { _eq: false }, isDeclined: { _eq: false } }
+	) {
+		aggregate {
+			count
+		}
+	}
+}

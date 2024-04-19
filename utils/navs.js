@@ -22,7 +22,7 @@ const navs = [
 	{
 		name: "Ad Space",
 		icon: "icons8:advertising",
-		to: "/app/ad_space",
+		to: "/app/ad-space",
 	},
 	{
 		name: "User",
@@ -40,7 +40,7 @@ const navs = [
 		to: "/app/administrators",
 	},
 	{
-		name: "Reports",
+		name: "Moderation",
 		icon: "ph:flag-light",
 		to: "/app/reports",
 	},
