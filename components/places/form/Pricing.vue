@@ -69,23 +69,23 @@ const { loading, onError, onResult, refetch } = authFetch(getBillingAddress, {
 	role: toRef("shegeradmin"),
 });
 
-onResult((result) => {
-	if (result.data?.billingsBillingAddress) {
-		cityId.value = result.data.billingsBillingAddress[0].city;
-		areaId.value = result.data.billingsBillingAddress[0].area;
-		coordinates.value = {
-			lat: result.data.billingsBillingAddress[0].location.coordinates[0],
-			long: result.data.billingsBillingAddress[0].location.coordinates[1],
-		};
-		console.log("coordinates", coordinates.value);
-		place.value = result.data.billingsBillingAddress[0].place;
-		billingAddress.value = result.data.billingsBillingAddress[0];
-		tinNumberUrl.value.push(result.data.billingsBillingAddress[0].tinNumberUrl);
-		businessLicenseUrl.value.push(
-			result.data.billingsBillingAddress[0].businessLicenseUrl
-		);
-	}
-});
+// onResult((result) => {
+// 	if (result.data?.billingsBillingAddress) {
+// 		cityId.value = result.data.billingsBillingAddress[0].city;
+// 		areaId.value = result.data.billingsBillingAddress[0].area;
+// 		coordinates.value = {
+// 			lat: result.data.billingsBillingAddress[0].location.coordinates[0],
+// 			long: result.data.billingsBillingAddress[0].location.coordinates[1],
+// 		};
+// 		console.log("coordinates", coordinates.value);
+// 		place.value = result.data.billingsBillingAddress[0].place;
+// 		billingAddress.value = result.data.billingsBillingAddress[0];
+// 		tinNumberUrl.value.push(result.data.billingsBillingAddress[0].tinNumberUrl);
+// 		businessLicenseUrl.value.push(
+// 			result.data.billingsBillingAddress[0].businessLicenseUrl
+// 		);
+// 	}
+// });
 
 /**-----------------------Add Billing Address----------------------------- */
 
