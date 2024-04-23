@@ -39,7 +39,7 @@ const geocode = async (query) => {
 
 const debounceFn = useDebounceFn(() => {
 	geocode(searchTerm.value);
-}, 1000);
+}, 500);
 
 const temp = (itm) => {
 	searchTerm.value = itm;
