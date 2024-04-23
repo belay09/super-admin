@@ -216,13 +216,13 @@ getError((error) => {
           </div>
         </div>
       </div>
-      <Configurations-List
+      <ConfigurationsCategoriesList
         v-else
         :items="items"
         :has-icon="true"
         @deleteItem="handleDelete"
         @editItem="editCategory"
-      ></Configurations-List>
+      ></ConfigurationsCategoriesList>
     </div>
   </div>
 </template>

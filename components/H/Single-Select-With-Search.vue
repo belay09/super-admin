@@ -190,11 +190,11 @@ watchEffect(() => {
         :for="props.id ? props.id : ''"
         >{{ props.label }}</label
       >
-      <span
+      <!-- <span
         v-if="rules.includes('required') && !props.disabled"
         class="text-red-600"
         >*</span
-      >
+      > -->
     </div>
     <!-- -------------------Header---------- -->
     <div class="relative rounded-md shadow-sm font-body">

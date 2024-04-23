@@ -75,10 +75,6 @@ onErrorPlaceAmenities((error) => {
 /**************************Add and Edit Data ******************************/
 const selectedAmenity = ref("");
 const placeAmenityDescription = ref("");
-// const image_urls = ref([
-//   "https://cdn.hahu.jobs/public/sheger-gebeta/37a06044-d763-4b6b-adc7-a418235e5179.png",
-//   "https://cdn.hahu.jobs/public/sheger-gebeta/37a06044-d763-4b6b-adc7-a418235e5179.png",
-// ]);
 
 const image_urls = ref([]);
 

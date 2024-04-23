@@ -33,7 +33,6 @@ onResultSocialMedia((result) => {
 });
 
 const handleAddMedia = () => {
-  console.log(selectedMedia);
   if (!url.value) {
     notify({
       title: "Url is required",
@@ -50,11 +49,13 @@ const handleAddMedia = () => {
     )
   ) {
     notify({
-      title: "In valid url",
+      title: "Invalid url ",
       description: "Add valid url",
       type: "error",
       borderClass: "border-l-8 border-red-300",
     });
+
+    return;
   }
   addedMedia.value.push({ ...selectedMedia.value, url: url.value });
 

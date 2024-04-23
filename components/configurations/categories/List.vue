@@ -28,12 +28,13 @@ const props = defineProps({
         >
           <div class="flex gap-x-2 items-center self-start py-1.5">
             <div v-if="hasIcon">
-              <img
-                :src="item?.icon?.lightIconUrl"
-                width="35"
+              <CommonSVG
                 v-if="item?.icon?.lightIconUrl"
-              />
+                :url="item?.icon?.lightIconUrl"
+              ></CommonSVG>
+              <Icon v-else name="mdi:null" class="text-xl" />
             </div>
+
             <p class="primary-text">{{ item.title }}</p>
           </div>
 

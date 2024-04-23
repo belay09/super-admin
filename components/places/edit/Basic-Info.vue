@@ -191,7 +191,7 @@ addMediaOnDone((result) => {
       };
     }),
 
-    // place tags
+    // place cousins
     placeCousinObject: placeCousins.value.map((cousin) => {
       return {
         placeId: props.placeId,

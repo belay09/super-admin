@@ -57,7 +57,7 @@ onMounted(() => {
 watchEffect(() => {
   if (props.item) {
     title.value = props.item?.title;
-    // url.value = props.item?.icon?.lightIconUrl;
+    url.value = props.item?.icon?.lightIconUrl;
   }
 });
 </script>
@@ -81,23 +81,7 @@ watchEffect(() => {
         icon-leading-class=" pl-28 lg:focus:border-sheger-gray-300"
       >
         <template #leading>
-          <button
-            type="button"
-            @click.stop="showUploadImageModal = !showUploadImageModal"
-            class="z-40 absolute inset-y-0 left-0 flex items-center px-8 bg-gray-300 w-24"
-          >
-            <Icon
-              v-if="url == ''"
-              name="heroicons:cloud-arrow-up"
-              class="text-2xl"
-            />
-            <div v-else>
-              <CommonSVG
-                defaultIcon="heroicons:cloud-arrow-up"
-                :url="url"
-              ></CommonSVG>
-            </div>
-          </button>
+          <ConfigurationsUploadIcon v-model="url" />
         </template>
       </HTextfield>
       <p v-if="noImageIsSelected" class="text-red-500 text-sm">
@@ -107,7 +91,7 @@ watchEffect(() => {
 
     <button
       :disabled="loading"
-      class="primary-button block bg-primary-600 lg:px-8 mb-1 w-36"
+      class="primary-button block bg-primary-600 lg:px-8 w-36"
     >
       <Icon
         :name="isAdd ? 'heroicons:plus-small-solid' : 'uil:edit'"

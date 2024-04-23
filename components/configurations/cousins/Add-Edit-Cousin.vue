@@ -59,7 +59,7 @@ watchEffect(() => {
 
     <button
       :disabled="loading"
-      class="primary-button block bg-primary-600 lg:px-8 mb-1 w-36"
+      class="primary-button block bg-primary-600 lg:px-8 w-36"
     >
       <Icon
         :name="isAdd ? 'heroicons:plus-small-solid' : 'uil:edit'"

@@ -213,7 +213,10 @@ const handleAddLocation = handleSubmit(() => {
       </div>
     </div>
 
-    <form class="flex flex-col gap-3" @submit.prevent="handleAddLocation">
+    <form
+      class="flex flex-col gap-3 min-w-[24rem]"
+      @submit.prevent="handleAddLocation"
+    >
       <!-- ------------------------------------City---------------------------------- -->
 
       <SelectorsCity v-model="city"></SelectorsCity>
@@ -222,32 +225,15 @@ const handleAddLocation = handleSubmit(() => {
       <SelectorsArea v-model="area" :cityId="city?.id"></SelectorsArea>
 
       <!---------------------------------------Coordinates--------------------------------------->
-      <div class="flex">
-        <HTextfield
-          placeholder="8.984989, 16.904549"
-          name="Coordinates"
-          v-model="coordinates"
-          rules="requiredN"
-          type="text"
-        >
-          <template #label>
-            <div class="iphone5:my-2 lg:my-2">
-              <span
-                class="text-sheger_brown-200 dark:text-sheger_light_gray-400"
-                >Coordinates</span
-              >
-            </div>
-          </template>
-        </HTextfield>
-        <div class="flex items-end">
-          <button
-            @click="mapModel = true"
-            class="items-center rounded border-gray-100 px-1 py-5 font-sans text-xs text-gray-400"
-          >
-            <Icon name="ion:locate" color="black" class="w-5 h-5" />
-          </button>
-        </div>
-      </div>
+
+      <CommonMapSelector
+        name="location"
+        class="w-full"
+        @updateMapVal="updateMapVal"
+        :lat="coordinates.lat"
+        :long="coordinates.long"
+        v-if="!loadingLocation"
+      />
 
       <!-- ----------------------------------------Set as main location-------------------------------- -->
       <div class="flex justify-between">

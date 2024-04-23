@@ -20,6 +20,7 @@ query getPlaceAmenities(
       icon {
         id
         darkIconUrl
+        lightIconUrl
       }
     }
     placeAmenityResources {

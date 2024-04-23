@@ -194,7 +194,7 @@ watchEffect(() => {
 });
 </script>
 <template>
-  <div class="relative" ref="singleSelect">
+  <div class="relative w-full" ref="singleSelect">
     <div class="flex gap-x-2">
       <!-- -----------------Label----------------- -->
 
@@ -206,18 +206,13 @@ watchEffect(() => {
         :for="props.id ? props.id : ''"
         >{{ props.label }}</label
       >
-      <span
-        v-if="rules.includes('required') && !props.disabled"
-        class="text-red-600"
-        >*</span
-      >
     </div>
 
     <!-- -----------------Heading---------------- -->
 
     <div
       @click="show = !show"
-      class="flex items-center justify-between px-3 py-3 rounded-md shadow-sm font-body secondary-border"
+      class="flex items-center justify-between px-3 py-3 rounded-md shadow-sm font-body secondary-border w-full"
       :class="[props.headerClass, errorMessage ? 'border-red-500' : '']"
     >
       <!------------------- Leading icon----------- -->

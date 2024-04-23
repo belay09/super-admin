@@ -109,13 +109,17 @@ const deleteAmenity = () => {
       <div
         class="absolute inset-x-0 bottom-0 bg-gray-900/40 bg-opacity-75 flex h-28"
       >
+        <!-- <pre>
+        {{ props.amenity.amenity.icon.lightIconUrl }}
+      </pre
+        > -->
         <div class="text-white">
-          <div class="flex items-center gap-4 px-4 my-2">
-            <img
-              class="w-[30px] h-[30px] rounded-lg"
-              :src="props.amenity.amenity.icon.darkIconUrl"
-              alt="default"
-            />
+          <div class="flex items-center gap-2 px-4 my-2">
+            <CommonIcon
+              v-if="props.amenity.amenity.icon.lightIconUrl"
+              :url="props.amenity.amenity.icon.lightIconUrl"
+              iconStyle=""
+            ></CommonIcon>
             <p class="text-white text-xl font-bold">
               {{ amenity.amenity?.title }}
             </p>

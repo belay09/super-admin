@@ -95,6 +95,8 @@ onMounted(() => {
 definePageMeta({
   layout: "configuration",
 });
+
+const open = ref("false");
 </script>
 
 <template>

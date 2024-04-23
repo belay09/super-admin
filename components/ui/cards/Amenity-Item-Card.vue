@@ -47,9 +47,7 @@ const cancelTimer = () => {
 </script>
 
 <template>
-  <div
-    class="relative block rounded-lg max-w-sm hover:cursor-pointer"
-  >
+  <div class="relative block rounded-lg max-w-sm hover:cursor-pointer">
     <div
       class="relative w-full"
       @mouseenter="startTimer"
@@ -98,7 +96,7 @@ const cancelTimer = () => {
           </p>
         </div>
         <p class="text-white">
-          {{ amenity.amenity?.description}}
+          {{ amenity.amenity?.description }}
         </p>
       </div>
     </div>
