@@ -157,19 +157,17 @@ const handleAddLocation = handleSubmit(() => {
 });
 </script>
 <template>
-  <div>
-    <ModalsModal body-class="!w-[40rem]" :auto-close="false" v-model="mapModel">
-      <template #content>
-        <HMapSelector
-          @updateMapVal="updateMapVal"
-          titleClass="text-xs"
-          :lat="item.latitude"
-          :long="item.longitude"
-          @close="mapModel = false"
-        />
-      </template>
-    </ModalsModal>
-  </div>
+  <ModalsModal body-class="!w-[40rem]" :auto-close="false" v-model="mapModel">
+    <template #content>
+      <HMapSelector
+        @updateMapVal="updateMapVal"
+        titleClass="text-xs"
+        :lat="item.latitude"
+        :long="item.longitude"
+        @close="mapModel = false"
+      />
+    </template>
+  </ModalsModal>
 
   <div class="flex flex-col justify-center items-center mt-10 gap-5">
     <!-----------------------------Selected location list-------------------------------------->
@@ -259,6 +257,7 @@ const handleAddLocation = handleSubmit(() => {
 
       <!----------------------------------------------Add Location------------------------------------>
       <button
+        @click="handleAddLocation"
         class="flex items-center gap-3 primary-button border"
         type="submit"
       >

@@ -125,6 +125,7 @@ const selectItem = (item) => {
   } else {
     emit("update:modelValue", item.id);
   }
+  search.value = "";
 };
 const outside = useDebounceFn(() => {
   show.value = false;
@@ -147,7 +148,6 @@ const clear = () => {
   selectedItem.value = null;
   search.value = undefined;
   inputValue.value = "";
-  selected.value = "";
   show.value = false;
   emit("update:modelValue", undefined);
   emit("update:selected", undefined);

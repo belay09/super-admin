@@ -253,10 +253,8 @@ const handleEditPlace = handleSubmit(() => {
           class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
           v-model="placeName"
           rules="required"
+          label="Place Name"
         >
-          <template #label>
-            <p class="text-sheger-gray-100">Place Name</p>
-          </template>
         </HTextfield>
 
         <!------------------------------------------------ Cousins ----------------------------------------->
@@ -339,15 +337,8 @@ const handleEditPlace = handleSubmit(() => {
           v-model="email"
           rules="requiredN|email"
           type="text"
+          label="Contact Email"
         >
-          <template #label>
-            <div class="iphone5:my-2 lg:my-2">
-              <span
-                class="text-sheger_brown-200 dark:text-sheger_light_gray-400"
-                >Contact Email</span
-              >
-            </div>
-          </template>
         </HTextfield>
 
         <!---------------------------------------------Website-------------------------- -->
@@ -356,15 +347,8 @@ const handleEditPlace = handleSubmit(() => {
           name="Website"
           v-model="website"
           type="text"
+          label="Contact Website"
         >
-          <template #label>
-            <div class="iphone5:my-2 lg:my-2">
-              <span
-                class="text-sheger_brown-200 dark:text-sheger_light_gray-400"
-                >Contact Website</span
-              >
-            </div>
-          </template>
         </HTextfield>
 
         <!-- ------------------------------------Social Media ------------------------ -->
