@@ -71,7 +71,7 @@ const open = computed({
 								class="relative z-50 w-full p-12 text-left transition-all transform bg-white rounded-lg"
 								:class="[
 									overflowVisible ? 'overflow-visible' : 'overflow-hidden ',
-									bodyClass ? bodyClass : ' max-w-lg',
+									bodyClass ? bodyClass : 'max-w-lg',
 								]"
 							>
 								<slot name="header" />

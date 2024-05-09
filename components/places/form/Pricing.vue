@@ -69,23 +69,32 @@ const { loading, onError, onResult, refetch } = authFetch(getBillingAddress, {
 	role: toRef("shegeradmin"),
 });
 
-// onResult((result) => {
-// 	if (result.data?.billingsBillingAddress) {
-// 		cityId.value = result.data.billingsBillingAddress[0].city;
-// 		areaId.value = result.data.billingsBillingAddress[0].area;
-// 		coordinates.value = {
-// 			lat: result.data.billingsBillingAddress[0].location.coordinates[0],
-// 			long: result.data.billingsBillingAddress[0].location.coordinates[1],
-// 		};
-// 		console.log("coordinates", coordinates.value);
-// 		place.value = result.data.billingsBillingAddress[0].place;
-// 		billingAddress.value = result.data.billingsBillingAddress[0];
-// 		tinNumberUrl.value.push(result.data.billingsBillingAddress[0].tinNumberUrl);
-// 		businessLicenseUrl.value.push(
-// 			result.data.billingsBillingAddress[0].businessLicenseUrl
-// 		);
-// 	}
-// });
+onResult((result) => {
+	if (result.data?.billingsBillingAddress) {
+		cityId.value = result.data.billingsBillingAddress[0].city;
+		areaId.value = result.data.billingsBillingAddress[0].area;
+
+		coordinates.value = {
+			lat: result.data.billingsBillingAddress[0].location[0],
+			long: result.data.billingsBillingAddress[0].location[1],
+		};
+		console.log("coordinates", coordinates.value);
+		place.value = result.data.billingsBillingAddress[0].place;
+
+		billingAddress.value = result.data.billingsBillingAddress[0];
+
+		if (result.data.billingsBillingAddress[0].tinNumberUrl) {
+			tinNumberUrl.value.push(
+				result.data.billingsBillingAddress[0].tinNumberUrl
+			);
+		}
+		if (result.data.billingsBillingAddress[0].businessLicenseUrl) {
+			businessLicenseUrl.value.push(
+				result.data.billingsBillingAddress[0].businessLicenseUrl
+			);
+		}
+	}
+});
 
 /**-----------------------Add Billing Address----------------------------- */
 
@@ -109,6 +118,11 @@ addBillingDone((result) => {
 });
 
 const handleSubmit = () => {
+	delete billingAddress.value.city;
+	delete billingAddress.value.area;
+	delete billingAddress.value.place;
+	delete billingAddress.value.__typename;
+
 	addBillingMutate({
 		input: {
 			...billingAddress.value,
@@ -119,6 +133,8 @@ const handleSubmit = () => {
 				parseFloat(coordinates.value.lat),
 				parseFloat(coordinates.value.long),
 			],
+			tinNumberUrl: tinNumberUrl.value[0],
+			businessLicenseUrl: businessLicenseUrl.value[0],
 		},
 	});
 };

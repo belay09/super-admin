@@ -51,7 +51,7 @@ const onSubmit = handleSubmit(() => {
 	addPaymentMutate({
 		input: {
 			...input.value,
-			billingId: props.place?.billing_addresses[0]?.id,
+			entityId: props.place?.id,
 			recieptUrl: image.value[0],
 		},
 	});
@@ -117,7 +117,7 @@ const open = computed({
 							name=" place name"
 							class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
 							rules="required"
-							v-model="place.name"
+							v-model="place.organizationLegalName"
 							disabled="true"
 							label="Place Name"
 							label-class="!text-gray-700"

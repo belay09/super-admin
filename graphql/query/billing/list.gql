@@ -11,21 +11,15 @@ query billingsPayments(
 		offset: $offset
 	) {
 		id
-		billingId
-
-		billing_address {
-			place {
-				id
-				name
-			}
-			id
-		}
 		subtotal
+		entity {
+			id
+			organizationLegalName
+		}
 		total
 		paymentDate
 		paymentStatus
 		isVerified
-
 		transactionNote
 		verifiedBy
 		vat
@@ -37,12 +31,12 @@ query billingsPayments(
 				title
 			}
 		}
-
 		subscription_plans {
 			id
 		}
+		entityId
+		isDeclined
 	}
-
 	billingsPaymentsAggregate(where: $filter) {
 		aggregate {
 			count

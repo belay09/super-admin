@@ -1,17 +1,14 @@
 query getCurrentPlan($filter: bigint) {
 	currentPlan: billingsSubscriptionPlans(
 		where: {
-			_and: [{ subStatus: { _eq: "ACTIVE" } }, { placeId: { _eq: $filter } }]
+			_and: [{ subStatus: { _eq: "ACTIVE" } }, { entityId: { _eq: $filter } }]
 		}
 	) {
 		isActive
 		endDate
-		place {
-			name
+		entity {
 			id
-			billing_addresses {
-				id
-			}
+			organizationLegalName
 			tinNumber
 		}
 		pricingPlanFrequency {

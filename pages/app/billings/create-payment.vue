@@ -12,14 +12,14 @@ import {
 	TransitionRoot,
 } from "@headlessui/vue";
 
-import getPlacesQuery from "@/graphql/query/places/getPlacesMini.gql";
+import getPlacesQuery from "@/graphql/query/places/getEntities.gql";
 
 const router = useRouter();
 
 const headers = [
 	{
-		text: "Place Name",
-		value: "name",
+		text: "Company Name",
+		value: "organizationLegalName",
 	},
 
 	{
@@ -59,7 +59,7 @@ const filter = computed(() => {
 	let query = {};
 	query._and = [
 		{
-			name: {
+			organizationLegalName: {
 				_ilike: `%${searchTerm.value}%`,
 			},
 		},
@@ -80,8 +80,8 @@ const {
 } = authListQuery(getPlacesQuery, filter, [], offset, limit);
 
 placeOnResult((result) => {
-	if (result.data?.places) {
-		places.value = result.data?.places;
+	if (result.data?.entitiesEntities) {
+		places.value = result.data?.entitiesEntities;
 		totalData.value = result.data?.total.aggregate.count;
 	}
 });
@@ -100,7 +100,6 @@ definePageMeta({
 	/>
 	<div class="w-full space-y-4">
 		<!-- ---------search and filter--------- -->
-
 		<div class="flex items-center gap-x-4">
 			<H-Textfield
 				name="search"

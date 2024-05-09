@@ -13,11 +13,9 @@ query billingsInvoice(
 		id
 		payment {
 			paymentMethod
-			billing_address {
-				place {
-					id
-					name
-				}
+			entity {
+				id
+				organizationLegalName
 			}
 			total
 			paymentDate

@@ -157,7 +157,7 @@ const openModal = ref(false);
 					Double click the map to set the location! / Ctrl + scroll to Zoom in
 					and out
 				</h1>
-				<div class="h-[40vh] relative -z-[1000]">
+				<div class="h-[40vh] relative z-0">
 					<button
 						@click.prevent="toggle"
 						:title="isFullscreen ? 'Exit Full Screen' : 'Full Screen'"

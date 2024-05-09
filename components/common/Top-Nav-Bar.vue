@@ -69,11 +69,7 @@ const openNotificationSideBar = ref(false);
 			<p>{{ currNav?.name }}</p>
 		</div>
 
-		<!----------------------------- Profile and notification----------------------- -->
 		<div class="flex items-center">
-			<!-- ---------Broadcast ---------- -->
-
-			<!-- -----------------Notification --------- -->
 			<button
 				@click="openNotificationSideBar = true"
 				type="button"
