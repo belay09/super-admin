@@ -1,5 +1,8 @@
 mutation MyMutation($isSeen: Boolean = true) {
-  updateNotifications(_set: {isSeen: $isSeen}, where: {isSeen: {_eq: false}}) {
-    affectedRows
-  }
+	updateNotifications: updateNotificationNotifications(
+		_set: { isSeen: $isSeen }
+		where: { isSeen: { _eq: false } }
+	) {
+		affectedRows
+	}
 }
