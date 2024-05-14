@@ -1,0 +1,17 @@
+query getEntity($filter: bigint!) {
+	entity: entitiesEntitiesByPk(id: $filter) {
+		contactEmail
+		contactPersonName
+		businessLicenseUrl
+		areaId
+		cityId
+		contactPersonAltPhone
+		contactPersonPhone
+
+		location
+		organizationLegalName
+		paymentMethod
+		tinNumberUrl
+		tinNumber
+	}
+}

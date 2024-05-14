@@ -53,7 +53,7 @@ const selectedPlan = computed({
 			v-for="(plan, i) in pricingPlansDisplay"
 			:key="i"
 			:class="selectedPlan == plan.frequency.id ? 'border-red-600' : ''"
-			class="min-h-[200px] h-fit cursor-pointer space-y-4 w-fit hover:border-red-600 flex flex-col justify-between max-w-[300px] border rounded-lg p-4"
+			class="min-h-[200px] h-fit cursor-pointer space-y-4 hover:border-red-600 border rounded-lg p-4"
 		>
 			<div class="space-y-3">
 				<div class="flex items-center justify-between">

@@ -79,7 +79,6 @@ watch(
 		placeholder="Select City"
 		name="city"
 		label="City"
-		:return-object="true"
 		:loading="loading"
 		rules="required"
 	></HSingleSelectWithSearch>

@@ -1,0 +1,30 @@
+query entities(
+	$filter: EntitiesEntitiesBoolExp
+	$order: [EntitiesEntitiesOrderBy!]
+	$limit: Int
+	$offset: Int
+) {
+	entity: entitiesEntities(
+		where: $filter
+		orderBy: $order
+		limit: $limit
+		offset: $offset
+	) {
+		id
+		organizationLegalName
+		contactEmail
+		contactPersonName
+		contactPersonAltPhone
+		location
+		tinNumberUrl
+		tinNumber
+		businessLicenseUrl
+		paymentMethod
+		contactPersonPhone
+	}
+	total: entitiesEntitiesAggregate(where: $filter) {
+		aggregate {
+			count
+		}
+	}
+}
