@@ -52,6 +52,7 @@ query getReview($id: bigint!) {
         id
         location
         isMainLocation
+
         area {
           name
         }
@@ -66,10 +67,10 @@ query getReview($id: bigint!) {
       tag {
         id
         title
-        # icon {
-        #   darkIconUrl
-        #   lightIconUrl
-        # }
+        icon {
+          darkIconUrl
+          lightIconUrl
+        }
       }
     }
 

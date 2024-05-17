@@ -90,6 +90,7 @@ const {
 } = authMutation(insertPlaceMediasMutation);
 
 onDoneInsertPlaceMedia((result) => {
+  showSelectPortraitOrLandscape.value = false;
   if (result.data) {
     notify({
       title: "Pictures Added",
@@ -127,6 +128,7 @@ const handleInsert = () => {
         media: {
           data: {
             url: image,
+            isPortrait: mediaType.value === "portrait",
           },
         },
       };
@@ -204,32 +206,74 @@ const handleDelete = (id) => {
   });
 };
 
+const mediaType = ref("");
 const openUploadFilesModal = ref(false);
+const showSelectPortraitOrLandscape = ref(false);
+
+const selectPortraitOrLandscape = (type) => {
+  showSelectPortraitOrLandscape.value = false;
+  mediaType.value = type;
+  openUploadFilesModal.value = true;
+};
 </script>
 
 <template>
   <!-- ----------------File Upload Modal---------------- -->
-  <HFileUploadModal
+  <HFileUploadModalNew
     @uploadDone="handleInsert"
     v-model:openModal="openUploadFilesModal"
     v-model="selectedPlaceMedias"
     :fileLimit="10"
+    :max-file-size="10485760"
+    :media-type="mediaType"
+    name="Pictures"
+    description="upload file"
+    placeholder="select multiple files"
   />
   <div>
     <div class="flex flex-col">
       <!-------------------------------------- image upload------------------------------------------------- -->
 
-      <div
-        @click="openUploadFilesModal = true"
-        class="flex flex-col items-center justify-center w-full gap-4 p-8 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
-      >
-        <Icon name="uil:cloud-upload" class="w-20 h-20" />
-        <div class="flex flex-col mx-auto text-center input_field w-max">
-          <div>
-            {{ placeholder }} <span class="text-primary-600">Browse</span>
-          </div>
+      <div class="p-8 border-2 border-gray-300 border-dashed rounded-lg">
+        <!-- ----------------Select from landscape and portrait---- -->
+        <div
+          v-if="showSelectPortraitOrLandscape"
+          class="flex flex-col items-center justify-center w-full gap-4 cursor-pointer"
+        >
+          <!-- ------------------Landscape---------------- -->
 
-          <div class="">Select images that are Square and 10MB</div>
+          <button
+            @click="selectPortraitOrLandscape('landscape')"
+            class="primary-button w-52 !px-8 border flex items-center gap-4 hover:bg-primary-600 hover:text-white"
+          >
+            <Icon name="ri:landscape-line" class="text-xl" />
+            Landscape
+          </button>
+
+          <!-- -----------------Portrait---------------- -->
+          <button
+            @click="selectPortraitOrLandscape('portrait')"
+            class="primary-button w-52 !px-8 border flex items-center gap-4 hover:bg-primary-600 hover:text-white"
+          >
+            <Icon name="ion:phone-portrait-outline" class="text-xl" />
+            Portrait
+          </button>
+        </div>
+
+        <!-- ------------------Browse medias------------ -->
+        <div
+          v-else
+          @click="showSelectPortraitOrLandscape = true"
+          class="flex flex-col items-center justify-center w-full gap-4 cursor-pointer"
+        >
+          <Icon name="uil:cloud-upload" class="w-20 h-20" />
+          <div class="flex flex-col mx-auto text-center input_field w-max">
+            <div>
+              {{ placeholder }} <span class="text-primary-600">Browse</span>
+            </div>
+
+            <div class="">Select images and videos that are under 10MB</div>
+          </div>
         </div>
       </div>
 

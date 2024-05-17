@@ -178,7 +178,7 @@ addMediaOnDone((result) => {
       contactWebsite: website.value,
       offerTakeouts: offerTakeout.value,
       featuredReviewMedia: 3,
-      featuredMedia: result.data?.insertBasicsMediaOne?.id,
+      lightLogoId: result.data?.insertBasicsMediaOne?.id,
       orderPhoneNumber1: orderNumber.value,
       orderPhoneNumber2: alternativeOrderNumber.value,
     },

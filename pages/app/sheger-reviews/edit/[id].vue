@@ -400,7 +400,7 @@ definePageMeta({
           >Click the image to make it thumbnail image</span
         >
 
-        <HFileUploadWrapper
+        <HFileUploadWrapperNew
           name="file"
           :maxFileSize="1024 * 1024 * 20"
           :fileLimit="10"

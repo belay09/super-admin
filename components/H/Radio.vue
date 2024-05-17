@@ -54,9 +54,9 @@ watch(
 </script>
 <template>
   <label :class="labelClass" :for="label" class="block">{{ label }} </label>
-  <div :class="props.class" class="flex">
+  <div :class="props.class" class="flex gap-x-4">
     <div
-      class="relative flex items-start flex-wrap"
+      class="relative flex items-center"
       :class="item.class"
       v-for="item in props.items"
       :key="item.value"

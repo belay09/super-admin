@@ -168,7 +168,7 @@ const handleAddMenu = handleSubmit(() => {
           <!----------------------------------------images Upload---------------------------------------->
           <p class="mb-2 text-sheger-gray-100">Upload images</p>
 
-          <HFileUploadWrapper
+          <HFileUploadWrapperNew
             name="file"
             :maxFileSize="1024 * 1024 * 10"
             :fileLimit="3"
