@@ -5,12 +5,12 @@ import useNotify from "@/use/notify";
 /**-----------------Global Variables--------------------------- */
 const emit = defineEmits(["update:modelValue"]);
 const props = defineProps({
-  modelValue: {
-    type: Object,
-  },
-  cityId: {
-    type: Number,
-  },
+	modelValue: {
+		type: Object,
+	},
+	cityId: {
+		type: Number,
+	},
 });
 
 const { notify } = useNotify();
@@ -25,74 +25,73 @@ const offset = ref(0);
 
 /**------------------Filter---------------- */
 const filter = computed(() => {
-  let query = {};
-  query._and = [
-    {
-      name: {
-        _ilike: `%${search.value}%`,
-      },
-    },
-    {
-      cityId: {
-        _eq: props.cityId,
-      },
-    },
-  ];
+	let query = {};
+	query._and = [
+		{
+			name: {
+				_ilike: `%${search.value}%`,
+			},
+		},
+		{
+			cityId: {
+				_eq: props.cityId,
+			},
+		},
+	];
 
-  return query;
+	return query;
 });
 
 const { onResult, onError, loading } = authListQuery(
-  listQuery,
-  filter,
-  sort,
-  offset,
-  limit
+	listQuery,
+	filter,
+	sort,
+	offset,
+	limit
 );
 onResult((result) => {
-  if (result.data?.basicsAreas) {
-    items.value = result.data.basicsAreas;
-  }
+	if (result.data?.basicsAreas) {
+		items.value = result.data.basicsAreas;
+	}
 });
 
 onError((error) => {
-  notify({
-    title: "Some thing went wrong",
-    description: error.message,
-    type: "error",
-    borderClass: "border-l-8 border-red-300",
-  });
+	notify({
+		title: "Some thing went wrong",
+		description: error.message,
+		type: "error",
+		borderClass: "border-l-8 border-red-300",
+	});
 });
 
 function makeSearch(value) {
-  search.value = value;
+	search.value = value;
 }
 watch(
-  () => props.modelValue,
-  (value) => {
-    selectedItem.value = value;
-  }
+	() => props.modelValue,
+	(value) => {
+		selectedItem.value = value;
+	}
 );
 
 watch(
-  () => selectedItem.value,
-  (value) => {
-    emit("update:modelValue", value);
-  }
+	() => selectedItem.value,
+	(value) => {
+		emit("update:modelValue", value);
+	}
 );
 </script>
 
 <template>
-  <HSingleSelectWithSearch
-    :items="items"
-    v-model="selectedItem"
-    @search="makeSearch"
-    id="area"
-    placeholder="Select Area"
-    name="area"
-    label="Area"
-    :loading="loading"
-    rules="required"
-    :returnObject="true"
-  ></HSingleSelectWithSearch>
+	<HSingleSelectWithSearch
+		:items="items"
+		v-model="selectedItem"
+		@search="makeSearch"
+		id="area"
+		placeholder="Select Area"
+		name="area"
+		label="Area"
+		:loading="loading"
+		rules="required"
+	></HSingleSelectWithSearch>
 </template>

@@ -1,26 +1,19 @@
 <script setup>
-import addBillingAddressMutation from "@/graphql/mutations/billing/add-billing-address.gql";
-import getBillingAddress from "@/graphql/mutations/billing/get-address.gql";
+import addEntity from "@/graphql/mutations/billing/add-billing-address.gql";
+import getEntity from "@/graphql/query/entity/item.gql";
+import { useForm } from "vee-validate";
 
 /**-----------------------Navigation----------------------------- */
 
-const props = defineProps({
-	placeId: {
-		type: Number,
-		required: true,
-	},
-});
-
 import useNotify from "@/use/notify";
+
+const { handleSubmit } = useForm();
 
 const { notify } = useNotify();
 const router = useRouter();
 const route = useRoute();
 
 const emit = defineEmits(["next", "prev"]);
-const next = () => {
-	router.push(`/app/places/${props.placeId}`);
-};
 const prev = () => {
 	emit("prev");
 };
@@ -48,7 +41,7 @@ const cityId = ref();
 const areaId = ref();
 const tinNumberUrl = ref([]);
 const businessLicenseUrl = ref([]);
-const billingAddress = ref({});
+const entityAddress = ref({});
 const place = ref();
 
 const coordinates = ref({});
@@ -57,41 +50,28 @@ const updateMapVal = (v) => {
 	coordinates.value.long = v.position.lng;
 };
 
-const filter = ref({
-	placeId: {
-		_eq: props.placeId,
-	},
-});
 /**-----------------------Get Billing Address----------------------------- */
-const { loading, onError, onResult, refetch } = authFetch(getBillingAddress, {
+const filter = ref(parseInt(route.query?.id));
+const { loading, onError, onResult, refetch } = authFetch(getEntity, {
 	filter: filter,
 	client: toRef("authClient"),
 	role: toRef("shegeradmin"),
 });
 
 onResult((result) => {
-	if (result.data?.billingsBillingAddress) {
-		cityId.value = result.data.billingsBillingAddress[0].city;
-		areaId.value = result.data.billingsBillingAddress[0].area;
+	const entity = result.data.entity;
+	if (result.data?.entity) {
+		cityId.value = entity.cityId;
+		areaId.value = entity.areaId;
+		entityAddress.value = entity;
+		coordinates.value.lat = entity.location[0];
+		coordinates.value.long = entity.location[1];
 
-		coordinates.value = {
-			lat: result.data.billingsBillingAddress[0].location[0],
-			long: result.data.billingsBillingAddress[0].location[1],
-		};
-		console.log("coordinates", coordinates.value);
-		place.value = result.data.billingsBillingAddress[0].place;
-
-		billingAddress.value = result.data.billingsBillingAddress[0];
-
-		if (result.data.billingsBillingAddress[0].tinNumberUrl) {
-			tinNumberUrl.value.push(
-				result.data.billingsBillingAddress[0].tinNumberUrl
-			);
+		if (entity.businessLicenseUrl) {
+			businessLicenseUrl.value.push(entity.businessLicenseUrl);
 		}
-		if (result.data.billingsBillingAddress[0].businessLicenseUrl) {
-			businessLicenseUrl.value.push(
-				result.data.billingsBillingAddress[0].businessLicenseUrl
-			);
+		if (entity.tinNumberUrl) {
+			tinNumberUrl.value.push(entity.tinNumberUrl);
 		}
 	}
 });
@@ -99,36 +79,35 @@ onResult((result) => {
 /**-----------------------Add Billing Address----------------------------- */
 
 const {
-	mutate: addBillingMutate,
-	onError: addBillingError,
-	onDone: addBillingDone,
-	loading: addBillingLoading,
-} = authMutation(addBillingAddressMutation);
+	mutate: addEntityMutate,
+	onError: addEntityError,
+	onDone: addEntityDone,
+	loading: addEntityLoading,
+} = authMutation(addEntity);
 
-addBillingDone((result) => {
-	console.log("place data", result.data.billingAddress.returning[0].place);
-	place.value = result.data.billingAddress.returning[0].place;
-	notify({
-		title: "Billing Address Added",
-		description: "Billing Address Added Successfully",
-		type: "success",
-		borderClass: "border-l-8 border-green-300",
+addEntityDone((result) => {
+	router.push({
+		path: route.path,
+		query: {
+			step: 1,
+			id: result.data.insertEntity.returning[0].id,
+			name: result.data.insertEntity.returning[0].organizationLegalName,
+		},
 	});
-	openCreatePayment.value = true;
 });
 
-const handleSubmit = () => {
-	delete billingAddress.value.city;
-	delete billingAddress.value.area;
-	delete billingAddress.value.place;
-	delete billingAddress.value.__typename;
+const onSubmit = handleSubmit(() => {
+	delete entityAddress.value.city;
+	delete entityAddress.value.area;
+	delete entityAddress.value.place;
+	delete entityAddress.value.__typename;
 
-	addBillingMutate({
+	entityAddress.value.cityId = cityId.value;
+	entityAddress.value.areaId = areaId.value;
+
+	addEntityMutate({
 		input: {
-			...billingAddress.value,
-			placeId: props.placeId,
-			cityId: cityId.value.id,
-			areaId: areaId.value.id,
+			...entityAddress.value,
 			location: [
 				parseFloat(coordinates.value.lat),
 				parseFloat(coordinates.value.long),
@@ -137,19 +116,12 @@ const handleSubmit = () => {
 			businessLicenseUrl: businessLicenseUrl.value[0],
 		},
 	});
-};
-
-const openCreatePayment = ref(false);
+});
 </script>
 <template>
-	<ModalsCreatePayment
-		@createDone="next"
-		:place="place"
-		v-model="openCreatePayment"
-	/>
-	<div class="space-y-12">
-		<form action="" class="grid p-4 gap-x-8 gap-y-12 grid-cols-3">
-			<h1 class="text-xl text-sheger-gray-600">Basic Billing Info</h1>
+	<div class="space-y-6">
+		<form action="" class="grid gap-x-8 gap-y-6 grid-cols-3">
+			<h1 class="text-xl text-sheger-gray-600">Basic Info</h1>
 			<h1 class="text-xl text-sheger-gray-600">Address</h1>
 			<h1 class="text-xl text-sheger-gray-600">Contact Person</h1>
 			<div class="space-y-6">
@@ -158,7 +130,7 @@ const openCreatePayment = ref(false);
 					class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
 					rules="required"
 					placeholder="Organization Name"
-					v-model="billingAddress.organizationLegalName"
+					v-model="entityAddress.organizationLegalName"
 				>
 					<template #label>
 						<p class="mb-2 text-sheger-gray-100">Org Legal Name</p>
@@ -169,7 +141,7 @@ const openCreatePayment = ref(false);
 					class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
 					rules="required"
 					placeholder="01938739277"
-					v-model="billingAddress.tinNumber"
+					v-model="entityAddress.tinNumber"
 				>
 					<template #label>
 						<p class="mb-2 text-sheger-gray-100">TIN Number</p>
@@ -180,7 +152,7 @@ const openCreatePayment = ref(false);
 					class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
 					rules="required"
 					placeholder="01938739277"
-					v-model="billingAddress.contactEmail"
+					v-model="entityAddress.contactEmail"
 				>
 					<template #label>
 						<p class="mb-2 text-sheger-gray-100">Contact Email</p>
@@ -188,22 +160,21 @@ const openCreatePayment = ref(false);
 				</HTextfield>
 				<HSingleSelect
 					name="payment-method"
-					v-model="billingAddress.paymentMethod"
+					v-model="entityAddress.paymentMethod"
 					label="Payment Method"
 					:items="paymentMethods"
+					rules="required"
 				/>
 			</div>
 			<div class="space-y-6">
-				<SelectorsCity :init="cityId" name="city" v-model="cityId" />
-
-				<SelectorsArea :init="areaId" name="area" v-model="areaId" />
+				<SelectorsCity name="city" v-model="cityId" />
+				<SelectorsArea name="area" v-model="areaId" />
 				<CommonMapSelector
 					name="location"
 					class="w-full"
 					@updateMapVal="updateMapVal"
 					:lat="coordinates.lat"
 					:long="coordinates.long"
-					v-if="!loading"
 				/>
 			</div>
 			<div class="space-y-6">
@@ -212,7 +183,7 @@ const openCreatePayment = ref(false);
 					class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
 					rules="required"
 					placeholder="Contact Person’s Full Name"
-					v-model="billingAddress.contactPersonName"
+					v-model="entityAddress.contactPersonName"
 				>
 					<template #label>
 						<p class="mb-2 text-sheger-gray-100">Full Name</p>
@@ -224,7 +195,7 @@ const openCreatePayment = ref(false);
 					class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
 					rules="required"
 					placeholder="01938739277"
-					v-model="billingAddress.contactPersonPhone"
+					v-model="entityAddress.contactPersonPhone"
 				>
 					<template #label>
 						<p class="mb-2 text-sheger-gray-100">Phone Number</p>
@@ -235,7 +206,7 @@ const openCreatePayment = ref(false);
 					class="border-gray-300 focus:border-primary-600 dark:bg-transparent"
 					rules="required"
 					placeholder="01938739277"
-					v-model="billingAddress.contactPersonAltPhone"
+					v-model="entityAddress.contactPersonAltPhone"
 				>
 					<template #label>
 						<p class="mb-2 text-sheger-gray-100">Alternative Phone Number</p>
@@ -281,19 +252,20 @@ const openCreatePayment = ref(false);
 		<!-- --------------------------------------navigation-------------------------------- -->
 		<div class="flex items-center justify-between my-2">
 			<button
-				class="primary-button border flex items-center gap-4"
-				@click="prev()"
+				class="primary-button border disabled:opacity-50 disabled:cursor-not-allowed flex items-center !px-12 gap-4 text-white bg-primary-600"
+				disabled="true"
+				@click="$emit('prev')"
 			>
-				<Icon name="uil:arrow-left" class="w-6 h-6" />
+				<Icon name="material-symbols:arrow-back-ios" />
 				Previous
 			</button>
-
 			<button
 				type="button"
-				class="primary-button border flex items-center gap-4 text-white bg-primary-600"
-				@click="handleSubmit()"
+				class="primary-button border flex items-center !px-12 gap-4 text-white bg-primary-600"
+				@click="onSubmit()"
 			>
-				{{ addBillingLoading ? "Submitting..." : "Submit" }}
+				{{ addEntityLoading ? "Submitting..." : "Next" }}
+				<Icon name="material-symbols:arrow-forward-ios" />
 			</button>
 		</div>
 	</div>

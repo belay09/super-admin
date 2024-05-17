@@ -1,7 +1,9 @@
 query MyQuery {
-  notificationsAggregate(where: {isSeen: {_eq: false}}) {
-    aggregate {
-      count
-    }
-  }
+	notificationsAggregate: notificationNotificationsAggregate(
+		where: { isSeen: { _eq: false } }
+	) {
+		aggregate {
+			count
+		}
+	}
 }

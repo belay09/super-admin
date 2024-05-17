@@ -6,6 +6,11 @@ const navs = ref([
 		to: "/app/dashboard",
 	},
 	{
+		name: "Entity",
+		icon: "mdi:company",
+		to: "/app/entity",
+	},
+	{
 		name: "Place",
 		icon: "uil:shop",
 		to: "/app/places",

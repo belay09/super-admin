@@ -4,30 +4,26 @@ query getInvoice($filter: bigint!) {
 		vat
 		transactionId
 		total
-
 		subTotal
 		startDate
 		pricingPlanFrequencyPriceId
 		reason
 		invoiceNumber
 		payment {
-			billingId
 			id
-			billing_address {
-				city {
-					name
-				}
+			entity {
+				organizationLegalName
+				tinNumber
+				contactPersonAltPhone
+				contactPersonName
+				contactPersonPhone
+				contactEmail
 				area {
 					name
 				}
-				place {
+				city {
 					name
-					tinNumber
-					contactAltPhoneNumber
-					contactPhoneNumber
-					contactEmail
 				}
-				id
 			}
 			paymentDate
 			recieptUrl

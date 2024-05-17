@@ -1,16 +1,20 @@
 query billingsPaymentsItem($filter: bigint!) {
 	billingsPaymentsByPk(id: $filter) {
-		billingId
 		id
-		billing_address {
-			place {
-				id
-				name
-				contactAltPhoneNumber
-				contactPhoneNumber
-				contactEmail
-			}
+		entity {
 			id
+			organizationLegalName
+			tinNumber
+			contactPersonAltPhone
+			contactPersonName
+			contactPersonPhone
+			contactEmail
+			area {
+				name
+			}
+			city {
+				name
+			}
 		}
 		subtotal
 		total

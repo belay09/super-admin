@@ -25,7 +25,7 @@ const selectedBill = ref();
 const headers = [
 	{
 		text: "Company Name",
-		value: "billing_address.place.name",
+		value: "entity.organizationLegalName",
 	},
 
 	{
@@ -59,7 +59,7 @@ const headers = [
 const headersInvoice = [
 	{
 		text: "Company Name",
-		value: "payment.billing_address.place.name",
+		value: "payment.entity.organizationLegalName",
 	},
 
 	{
@@ -114,11 +114,9 @@ const filter = computed(() => {
 		{
 			_or: [
 				{
-					billing_address: {
-						place: {
-							name: {
-								_ilike: `%${searchTerm.value}%`,
-							},
+					entity: {
+						organizationLegalName: {
+							_ilike: `%${searchTerm.value}%`,
 						},
 					},
 				},
@@ -176,11 +174,9 @@ billingOnResult((result) => {
 const invoiceFilter = computed(() => {
 	return {
 		payment: {
-			billing_address: {
-				place: {
-					name: {
-						_ilike: `%${searchTerm.value}%`,
-					},
+			entity: {
+				organizationLegalName: {
+					_ilike: `%${searchTerm.value}%`,
 				},
 			},
 		},
@@ -208,18 +204,18 @@ invoiceOnResult((result) => {
 });
 const clickRow = (item) => {
 	router.push({
-		path: `/app/billings/${item.billing_address.place.id}`,
+		path: `/app/billings/${item.entity.id}`,
 		query: {
-			name: item.billing_address.place.name,
+			name: item.entity.organizationLegalName,
 		},
 	});
 };
 
 const clickRowInvoice = (item) => {
 	router.push({
-		path: `/app/billings/${item.payment.billing_address.place.id}`,
+		path: `/app/billings/${item.payment.entity.id}`,
 		query: {
-			name: item.payment.billing_address.place.name,
+			name: item.payment.entity.organizationLegalName,
 		},
 	});
 };

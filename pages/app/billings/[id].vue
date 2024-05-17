@@ -6,17 +6,12 @@ const router = useRouter();
 const route = useRoute();
 const headersInvoice = [
 	{
-		text: "Company Name",
-		value: "payment.billing_address.place.name",
+		text: "pricing plan",
+		value: "payment.pricing_plan_frequency.pricingPlan.title",
 	},
-
 	{
 		text: "Payment method",
 		value: "payment.paymentMethod",
-	},
-	{
-		text: "pricing plan",
-		value: "payment.pricing_plan_frequency.pricingPlan.title",
 	},
 
 	{
@@ -48,10 +43,8 @@ const length = ref(0);
 const invoiceFilter = computed(() => {
 	let query = {
 		payment: {
-			billing_address: {
-				placeId: {
-					_eq: route.params.id,
-				},
+			entityId: {
+				_eq: route.params.id,
 			},
 		},
 	};
@@ -80,7 +73,10 @@ invoiceOnResult((result) => {
 });
 
 /**------------------Fetch Current Plan------------------------- */
-const selectedPlace = ref({});
+const selectedPlace = ref({
+	id: route.params.id,
+	organizationLegalName: route.query.name,
+});
 const placeCurrentPlan = ref();
 
 const {
@@ -97,7 +93,7 @@ const {
 currentPlanOnResult((result) => {
 	if (result.data?.currentPlan.length > 0) {
 		placeCurrentPlan.value = result.data.currentPlan[0];
-		selectedPlace.value = result.data.currentPlan[0].place;
+		// selectedPlace.value = result.data.currentPlan[0].place;
 	}
 });
 

@@ -1,0 +1,27 @@
+mutation addInput(
+	$entity_id: Int!
+	$email: String!
+	$FamilyName: String!
+	$GivenName: String!
+	$invitation_uri: String!
+	$MiddleName: String!
+	$phone_number: String!
+	$profile_picture: String!
+	$redirect_uri: String!
+	$role: String!
+) {
+	invite_place_admin(
+		entity_id: $entity_id
+		email: $email
+		FamilyName: $FamilyName
+		GivenName: $GivenName
+		invitation_uri: $invitation_uri
+		MiddleName: $MiddleName
+		phone_number: $phone_number
+		profile_picture: $profile_picture
+		redirect_uri: $redirect_uri
+		role: $role
+	) {
+		success
+	}
+}

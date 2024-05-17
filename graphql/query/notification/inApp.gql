@@ -1,9 +1,12 @@
 query MyQuery {
-  notifications(limit: 10, orderBy: {createdAt: DESC}) {
-    createdAt
-    message
-    title
-    type
-    isSeen
-  }
+	notifications: notificationNotifications(
+		limit: 10
+		orderBy: { createdAt: DESC }
+	) {
+		createdAt
+		message
+		title
+		type
+		isSeen
+	}
 }

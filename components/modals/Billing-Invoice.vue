@@ -147,31 +147,28 @@ const open = computed({
 										<p class="secondary-text">
 											Bill To :
 											<span class="font-medium">{{
-												invoice?.payment?.billing_address?.place?.name
+												invoice?.payment?.entity?.organizationLegalName
 											}}</span>
 										</p>
 										<p class="secondary-text">
 											Address :
 											<span class="font-medium"
-												>{{ invoice?.payment?.billing_address?.city?.name }}
+												>{{ invoice?.payment?.entity?.city?.name }}
 
-												{{
-													invoice?.payment?.billing_address?.area?.name
-												}}</span
+												{{ invoice?.payment?.entity?.area?.name }}</span
 											>
 										</p>
 
 										<p class="secondary-text">
 											Phone :
 											<span class="font-medium">{{
-												invoice?.payment?.billing_address?.place
-													?.contactPhoneNumber
+												invoice?.payment?.entity?.contactPersonPhone
 											}}</span>
 										</p>
 										<p class="secondary-text">
 											Email :
 											<span class="font-medium">{{
-												invoice?.payment?.billing_address?.place?.contactEmail
+												invoice?.payment?.entity?.contactEmail
 											}}</span>
 										</p>
 									</div>
@@ -202,7 +199,7 @@ const open = computed({
 												Tin Number </span
 											>:
 											<span class="font-medium">{{
-												invoice?.payment?.billing_address?.place?.tinNumber
+												invoice?.payment?.entity?.tinNumber
 											}}</span>
 										</p>
 									</div>
@@ -295,7 +292,7 @@ const open = computed({
 							<p class="secondary-text">
 								Bill To :
 								<span class="font-medium">{{
-									invoice?.payment?.billing_address?.place?.name
+									invoice?.payment?.entity?.organizationLegalName
 								}}</span>
 							</p>
 							<p class="secondary-text">

@@ -59,7 +59,7 @@ const billingPrice = ref();
 
 const pricingCalculatorFilter = computed(() => {
 	return {
-		place_billing_id: billing.value.billingId,
+		entity_entity_id: billing.value.entity.id,
 		pricing_plan_frequency_price_id: billing.value?.pricing_plan_frequency?.id,
 	};
 });
@@ -93,7 +93,7 @@ const {
 
 const verifyPayment = () => {
 	updatePayment({
-		id: props.id,
+		id: billing.value.id,
 		input: {
 			isVerified: true,
 			isDeclined: false,

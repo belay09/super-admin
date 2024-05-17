@@ -1,8 +1,8 @@
-mutation addBilling($input: [BillingsBillingAddressInsertInput!]!) {
-	billingAddress: insertBillingsBillingAddress(
+mutation addEntity($input: [EntitiesEntitiesInsertInput!]!) {
+	insertEntity: insertEntitiesEntities(
 		objects: $input
 		onConflict: {
-			constraint: billing_address_place_id_key
+			constraint: entities_tin_number_key
 			updateColumns: [
 				areaId
 				businessLicenseUrl
@@ -14,30 +14,14 @@ mutation addBilling($input: [BillingsBillingAddressInsertInput!]!) {
 				location
 				tinNumberUrl
 				tinNumber
-				placeId
 				paymentMethod
 				organizationLegalName
 			]
 		}
 	) {
 		returning {
-			area {
-				id
-			}
-			city {
-				id
-			}
-			paymentMethod
-			cityId
 			id
-			placeId
-			place {
-				id
-				billing_addresses {
-					id
-				}
-				name
-			}
+			organizationLegalName
 		}
 	}
 }

@@ -1,0 +1,36 @@
+query getEntities(
+	$filter: EntitiesEntitiesBoolExp
+	$order: [EntitiesEntitiesOrderBy!]
+	$limit: Int
+	$offset: Int
+) {
+	entitiesEntities(
+		where: $filter
+		orderBy: $order
+		limit: $limit
+		offset: $offset
+	) {
+		area {
+			id
+		}
+		organizationLegalName
+		id
+		email: contactEmail
+		phone_no: contactPersonPhone
+		createdAt
+		tinNumber
+		plans: subscription_plans(where: { isActive: { _eq: true } }) {
+			frequency: pricingPlanFrequency {
+				plan: pricingPlan {
+					title
+				}
+			}
+		}
+	}
+
+	total: entitiesEntitiesAggregate(where: $filter) {
+		aggregate {
+			count
+		}
+	}
+}
