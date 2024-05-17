@@ -83,12 +83,7 @@ const input = (e) => {
 
 <template>
   <div class="w-full">
-    <label :class="labelClass" :for="id" class="block"
-      >{{ label }}
-      <span v-show="rules !== '' && props.showStar" class="text-red-500"
-        >*</span
-      ></label
-    >
+    <label :class="labelClass" :for="id" class="block">{{ label }} </label>
     <div class="relative rounded-md shadow-sm w-full">
       <input
         v-model="inputValue"
@@ -118,7 +113,6 @@ const input = (e) => {
     </div>
     <p
       :visible="errorMessage"
-      v-if="errorMessage"
       class="mt-2 text-sm text-red-600"
       id="email-error"
     >
