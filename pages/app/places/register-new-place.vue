@@ -81,18 +81,6 @@ definePageMeta({
       >
         Portfolio
       </div>
-      <div
-        class="rounded-tr-lg stepper-button"
-        :class="
-          currentStep == 6
-            ? '!bg-primary-300'
-            : currentStep > 6
-            ? '!bg-primary-600 text-white'
-            : ''
-        "
-      >
-        Pricing Plan
-      </div>
     </div>
     <div class="min-h-[70%] border flex flex-col justify-between px-5 py-2">
       <div class="h-full">
