@@ -63,7 +63,6 @@ adminDone((result) => {
   // selectTags.value=result.data.basicsTags;
   people.value = result?.data?.usersUsers;
   count.value = result?.data?.usersUsersAggregate.aggregate.count;
-  console.log("admin", people.value);
   loading.value = false;
 });
 
