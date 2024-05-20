@@ -47,15 +47,6 @@ onResult((result) => {
   }
 });
 
-onError((error) => {
-  notify({
-    title: "Some thing went wrong",
-    description: error.message,
-    type: "error",
-    borderClass: "border-l-8 border-red-300",
-  });
-});
-
 function makeSearch(value) {
   search.value = value;
 }

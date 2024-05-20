@@ -18,6 +18,11 @@ function editAmenity(item) {
   amenity.value = item;
 }
 
+function addAmenity() {
+  isAdd.value = true;
+  amenity.value = null;
+}
+
 /**-----------------------Handle add --------------------------- */
 const { mutate, onDone, onError, loading } = authMutation(addMutation);
 const handleAdd = (addInput) => {
@@ -218,7 +223,7 @@ getError((error) => {
         :items="items"
         :has-icon="true"
         :is-add="isAdd"
-        @addItem="isAdd = true"
+        @addItem="addAmenity"
         @deleteItem="handleDelete"
         @editItem="editAmenity"
       ></Configurations-List>

@@ -16,6 +16,10 @@ function editAmbiance(item) {
   isAdd.value = false;
   ambiance.value = item;
 }
+function addAmbiance() {
+  isAdd.value = true;
+  ambiance.value = null;
+}
 
 /**-----------------------Handle add --------------------------- */
 const { mutate, onDone, onError, loading } = authMutation(addMutation);
@@ -219,7 +223,7 @@ getError((error) => {
         :items="items"
         :has-icon="true"
         :is-add="isAdd"
-        @addItem="isAdd = true"
+        @addItem="addAmbiance"
         @deleteItem="handleDelete"
         @editItem="editAmbiance"
       ></Configurations-List>

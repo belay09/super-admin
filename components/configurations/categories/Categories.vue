@@ -10,10 +10,10 @@ const { notify } = useNotify();
 
 /**-------------------------------Check weather add or edit--------------- */
 
-const isAddCategory = ref(true);
+const isAdd = ref(true);
 const category = ref(null);
 function editCategory(item) {
-  isAddCategory.value = false;
+  isAdd.value = false;
   category.value = item;
 }
 
@@ -201,7 +201,7 @@ getError((error) => {
       <Configurations-Categories-Add-EditCategories
         @add="handleAdd"
         @edit="handleEdit"
-        :isAdd="isAddCategory"
+        :isAdd="isAdd"
         :item="category"
         :loading="loading || editLoading"
       ></Configurations-Categories-Add-EditCategories>
@@ -219,6 +219,8 @@ getError((error) => {
       <ConfigurationsCategoriesList
         v-else
         :items="items"
+        :is-add="isAdd"
+        @addItem="isAdd = true"
         :has-icon="true"
         @deleteItem="handleDelete"
         @editItem="editCategory"

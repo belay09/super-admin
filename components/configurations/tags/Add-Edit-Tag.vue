@@ -1,5 +1,5 @@
 <script setup>
-const { handleSubmit, isSubmitting } = useForm({});
+const { handleSubmit, resetForm } = useForm({});
 
 const props = defineProps({
   loading: {
@@ -69,19 +69,12 @@ const open = (event) => {
   showUploadImageModal.value = !showUploadImageModal.value;
 };
 
-onMounted(() => {
-  if (props.item) {
-    title.value = props.item?.title;
-    url.value = props.item?.url;
-    type.value = props.item?.type;
-  }
-});
-
 watchEffect(() => {
-  if (props.item) {
-    title.value = props.item?.title;
-    url.value = props.item?.icon?.lightIconUrl;
-    type.value = props.item?.type;
+  title.value = props.item?.title;
+  url.value = props.item?.icon?.lightIconUrl;
+  type.value = props.item?.type;
+  if (props.isAdd) {
+    resetForm();
   }
 });
 </script>

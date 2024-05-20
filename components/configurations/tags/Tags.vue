@@ -12,9 +12,14 @@ const { notify } = useNotify();
 
 const isAdd = ref(true);
 const category = ref(null);
-function editCategory(item) {
+function editTag(item) {
   isAdd.value = false;
   category.value = item;
+}
+
+function addTag() {
+  isAdd.value = true;
+  category.value = null;
 }
 
 /**-----------------------Handle add --------------------------- */
@@ -221,9 +226,9 @@ getError((error) => {
         :items="items"
         :has-icon="true"
         :is-add="isAdd"
-        @addItem="isAdd = true"
+        @addItem="addTag"
         @deleteItem="handleDelete"
-        @editItem="editCategory"
+        @editItem="editTag"
       ></Configurations-List>
     </div>
   </div>

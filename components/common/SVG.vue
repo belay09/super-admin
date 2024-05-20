@@ -53,6 +53,8 @@ onMounted(() => {
     class="w-6 h-6"
     v-html="svgContent"
   />
+
+  <!-- <img class="w-6 h-6" :src="url" alt="" /> -->
   <Icon :class="svgStyle" v-else :name="defaultIcon" class="w-12" />
 </template>
 
