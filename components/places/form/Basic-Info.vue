@@ -1,7 +1,9 @@
 <script setup>
 import addPlaceMutation from "@/graphql/mutations/place/addPlace.gql";
 const { handleSubmit } = useForm({});
+import useNotify from "@/use/notify";
 
+const { notify } = useNotify();
 /**-----------------------Navigation----------------------------- */
 const router = useRouter();
 
@@ -21,9 +23,10 @@ const description = ref("");
 const placeType = ref(props.modelValue);
 const placeTag = ref([]);
 const placeAmbiances = ref([]);
+const placeAmenities = ref([]);
 const placeCousins = ref([]);
 
-const placeCategory = ref([]);
+const placeCategory = ref("");
 const featureAsRecentlyOpened = ref(false);
 const recentlyOpenedStartDate = ref(new Date().toISOString().split("T")[0]);
 const recentlyOpenedEndDate = ref();
@@ -94,6 +97,10 @@ const handleAddPlace = handleSubmit(() => {
     },
     placeAmbiances: {
       data: placeAmbiances.value.map((id) => ({ ambianceId: id })),
+    },
+
+    placeAmenities: {
+      data: placeAmenities.value.map((id) => ({ amenityId: id })),
     },
 
     placeTags: {
@@ -192,6 +199,11 @@ watch(placeType, (newValue) => {
         <!-- --------------------------------------------------Ambiance----------------------------------- -->
         <SelectorsAmbiance v-model="placeAmbiance" name="placeAmbiance" />
 
+        <!-- --------------------------------------------------Amenity----------------------------------- -->
+        <SelectorsAmenityWithOutIcon
+          v-model="placeAmenities"
+          name="placeAmenity"
+        />
         <!-- --------------------------------------------------Category----------------------------------- -->
         <SelectorsCategory
           type="PLACE_CATEGORY"
