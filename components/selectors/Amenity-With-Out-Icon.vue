@@ -1,5 +1,5 @@
 <script setup>
-import listQuery from "@/graphql/query/ambiances/list.gql";
+import listQuery from "@/graphql/query/amenities/list.gql";
 
 import useNotify from "@/use/notify";
 
@@ -19,7 +19,7 @@ const { notify } = useNotify();
 const items = ref([]);
 const menu = ref(props.modelValue);
 const limit = ref(100);
-const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
+const sort = ref([{ title: "ASC_NULLS_LAST" }]);
 const offset = ref(0);
 const search = ref("");
 
@@ -42,8 +42,8 @@ const { onResult, onError, loading, refetch } = authListQuery(
   limit
 );
 onResult((result) => {
-  if (result.data?.basicsAmbiances) {
-    items.value = result.data.basicsAmbiances;
+  if (result.data?.basicsAmenities) {
+    items.value = result.data.basicsAmenities;
   }
 });
 
@@ -77,9 +77,9 @@ watch(
     showBy="name"
     listClass="h-40"
     returnBy="id"
-    name="ambiance"
-    label="Ambiances"
-    placeholder="Select ambiance"
+    name="Amenity"
+    label="Amenities"
+    placeholder="Select amenities"
     @search="makeSearch"
     :loading="loading"
   >

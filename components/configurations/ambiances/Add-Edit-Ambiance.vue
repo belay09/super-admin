@@ -1,5 +1,5 @@
 <script setup>
-const { handleSubmit, isSubmitting } = useForm({});
+const { handleSubmit, resetForm } = useForm({});
 
 const props = defineProps({
   loading: {
@@ -45,19 +45,11 @@ watch(url, (value) => {
   }
 });
 
-const showUploadImageModal = ref(false);
-
-onMounted(() => {
-  if (props.item) {
-    title.value = props.item?.title;
-    url.value = props.item?.url;
-  }
-});
-
 watchEffect(() => {
-  if (props.item) {
-    title.value = props.item?.title;
-    url.value = props.item?.icon?.lightIconUrl;
+  title.value = props.item?.title || "";
+  url.value = props.item?.url || "";
+  if (props.isAdd) {
+    resetForm();
   }
 });
 </script>
@@ -85,7 +77,7 @@ watchEffect(() => {
         </template>
       </HTextfield>
       <p v-if="noImageIsSelected" class="text-red-500 text-sm">
-        No image is selected
+        No icon is selected
       </p>
     </div>
 
@@ -106,12 +98,4 @@ watchEffect(() => {
       />
     </button>
   </form>
-
-  <!-- ----------------Modal---------------- -->
-  <Common-UploadSvg
-    v-if="showUploadImageModal"
-    folder=""
-    v-model="url"
-    @close="showUploadImageModal = false"
-  ></Common-UploadSvg>
 </template>
