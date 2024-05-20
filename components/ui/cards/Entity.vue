@@ -5,6 +5,11 @@ const props = defineProps({
 		type: [Array, Object, String],
 		required: true,
 	},
+	hasAction: {
+		type: Boolean,
+		default: true,
+	},
+	wrapperClass: String,
 });
 
 const router = useRouter();
@@ -40,12 +45,16 @@ const openCreatePaymentModal = ref(false);
 </script>
 <template>
 	<ModalsCreatePayment :place="entity" v-model="openCreatePaymentModal" />
-	<div class="p-4 cursor-pointer space-y-4 border border-gray-300 rounded-lg">
+	<div
+		:class="wrapperClass"
+		@click="!hasAction ? goToPlaceCreation() : null"
+		class="p-4 cursor-pointer space-y-4 border border-gray-300 rounded-lg"
+	>
 		<div class="flex items-center justify-between">
 			<p class="text-lg font-medium leading-7">
 				{{ entity.organizationLegalName }}
 			</p>
-			<Popover class="relative">
+			<Popover v-if="hasAction" class="relative">
 				<PopoverButton class="hover:bg-gray-100 rounded-full w-9 h-9">
 					<Icon
 						class="text-2xl cursor-pointer"
@@ -148,23 +157,25 @@ const openCreatePaymentModal = ref(false);
 				</div>
 			</NuxtLink>
 		</div>
-		<div class="space-y-1">
+		<div v-if="entity.places.length > 0" class="space-y-1">
 			<p class="text-sm text-gray-600">Places</p>
 			<div class="flex gap-x-2 pb-2 w-full overflow-x-auto">
 				<div
-					v-for="i in 10"
+					@click="$router.push(`/app/places/${place.id}`)"
+					v-for="(place, i) in entity.places"
 					:key="i"
 					class="flex hover:border-primary-600 flex-shrink-0 items-center gap-x-2 border border-gray-200/80 w-fit px-2 py-1 rounded-xl"
 				>
 					<img
 						class="w-10 h-10 rounded-full"
-						src="https://img.freepik.com/premium-vector/hotel-ornament-logo-design_420872-4.jpg"
+						:src="place.light_logo?.url"
 						alt="logo"
 					/>
 					<div>
-						<p class="text-xs text-gray-600">Zion image</p>
-						<span class="text-xs bg-green-200 px-3 rounded-md text-green-600"
-							>Cafe</span
+						<p class="text-xs text-gray-600">{{ place.name }}</p>
+						<span
+							class="text-xs lowercase bg-gray-200 px-3 rounded-md text-gray-600"
+							>{{ place.type }}</span
 						>
 					</div>
 				</div>

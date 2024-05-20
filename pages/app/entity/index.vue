@@ -3,6 +3,12 @@ import getEntities from "@/graphql/query/entity/list.gql";
 
 const tabs = ref([
 	{
+		name: "All",
+		value: "ALL",
+		length: 0,
+	},
+
+	{
 		name: "Active",
 		value: "ACTIVE",
 		length: 0,
@@ -34,6 +40,15 @@ const filter = computed(() => {
 			},
 		},
 	];
+
+	if (currentTabIndex.value != 0) {
+		query._and.push({
+			status: {
+				_eq: tabs.value[currentTabIndex.value].value,
+			},
+		});
+	}
+
 	return query;
 });
 const offset = ref(0);
@@ -51,6 +66,11 @@ const { loading, onError, onResult, refetch } = authFetch(getEntities, {
 onResult((result) => {
 	entities.value = result.data.entity;
 	totalData.value = result.data.total.aggregate.count;
+
+	tabs.value[0].length = result.data.all.aggregate.count;
+	tabs.value[1].length = result.data.active.aggregate.count;
+	tabs.value[2].length = result.data.pending.aggregate.count;
+	tabs.value[3].length = result.data.closed.aggregate.count;
 });
 
 definePageMeta({

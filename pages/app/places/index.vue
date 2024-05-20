@@ -163,11 +163,13 @@ provide("refetch", () => {
 	aggregateReFetch();
 });
 
+const openPlaceAdd = ref(false);
 definePageMeta({
 	layout: "engagement",
 });
 </script>
 <template>
+	<ModalsPlaceAddSelect v-model="openPlaceAdd" />
 	<div class="w-full">
 		<!-- ---------search and filter and btn--------- -->
 
@@ -188,8 +190,8 @@ definePageMeta({
 						v-model="sort"
 						:items="placeSortItems"
 					></H-Sort>
-					<nuxt-link
-						to="places/register-new-place"
+					<button
+						@click="openPlaceAdd = true"
 						class="block primary-button bg-primary-600"
 					>
 						<Icon
@@ -198,7 +200,7 @@ definePageMeta({
 							color=""
 						/>
 						<span class="text-white">Register New Place</span>
-					</nuxt-link>
+					</button>
 				</div>
 			</div>
 		</div>

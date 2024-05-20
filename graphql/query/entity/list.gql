@@ -14,6 +14,7 @@ query entities(
 		organizationLegalName
 		contactEmail
 		contactPersonName
+		status
 		contactPersonAltPhone
 		location
 		tinNumberUrl
@@ -21,8 +22,38 @@ query entities(
 		businessLicenseUrl
 		paymentMethod
 		contactPersonPhone
+		places {
+			id
+			name
+			featuredMedia
+			light_logo {
+				id
+				url
+			}
+			type
+		}
 	}
 	total: entitiesEntitiesAggregate(where: $filter) {
+		aggregate {
+			count
+		}
+	}
+	all: entitiesEntitiesAggregate {
+		aggregate {
+			count
+		}
+	}
+	active: entitiesEntitiesAggregate(where: { status: { _eq: ACTIVE } }) {
+		aggregate {
+			count
+		}
+	}
+	pending: entitiesEntitiesAggregate(where: { status: { _eq: PENDING } }) {
+		aggregate {
+			count
+		}
+	}
+	closed: entitiesEntitiesAggregate(where: { status: { _eq: CLOSED } }) {
 		aggregate {
 			count
 		}
