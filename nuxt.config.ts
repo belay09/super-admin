@@ -57,7 +57,68 @@ export default defineNuxtConfig({
     authHeader: "Authorization",
     tokenStorage: "cookie",
     proxyCookies: true,
+    routeRules: {
+      "/login": { ssr: false },
+    },
+    apollo: {
+      autoImports: true,
+      authType: "Bearer",
+      authHeader: "Authorization",
+      tokenStorage: "cookie",
+      proxyCookies: true,
 
+      clients: {
+        shegerAnonymous: "./apollo/sheger-gebeta/anonymous.js",
+        authClient: "./apollo/sheger-gebeta/auth.js",
+        Authorizer: "./apollo/authorizer.js",
+      },
+    },
+    veeValidate: {
+      // disable or enable auto imports
+      autoImports: true,
+      // Use different names for components
+      componentNames: {
+        Form: "VeeForm",
+        Field: "VeeField",
+        FieldArray: "VeeFieldArray",
+        ErrorMessage: "VeeErrorMessage",
+      },
+    },
+    headlessui: {
+      prefix: "Headless",
+    },
+    content: {
+      documentDriven: true,
+      markdown: {
+        mdc: true,
+      },
+    },
+    build: {
+      transpile: ["@vuepic/vue-datepicker"],
+    },
+    colorMode: {
+      preference: "light", // default value of $colorMode.preference
+      fallback: "light", // fallback value if not system preference found
+      hid: "nuxt-color-mode-script",
+      globalName: "__NUXT_COLOR_MODE__",
+      componentName: "ColorScheme",
+      classPrefix: "",
+      classSuffix: "",
+      storageKey: "nuxt-color-mode",
+    },
+    primevue: {
+      options: {
+        unstyled: true,
+      },
+    },
+    device: {
+      refreshOnResize: true,
+    },
+    runtimeConfig: {
+      public: {
+        REDIRECT_URI: process.env.REDIRECT_URI,
+      },
+    },
     clients: {
       shegerAnonymous: "./apollo/sheger-gebeta/anonymous.js",
       authClient: "./apollo/sheger-gebeta/auth.js",

@@ -1,5 +1,4 @@
 <script setup>
-import addPlaceMutation from "@/graphql/mutations/place/addPlace.gql";
 import getPlaceQuery from "@/graphql/query/places/item.gql";
 import editPlaceMutation from "@/graphql/mutations/place/editPlace.gql";
 import addMediaMutation from "@/graphql/mutations/medias/add-media.gql";
@@ -28,6 +27,8 @@ const placeTags = ref([]);
 const initPlaceTags = ref([]);
 const placeAmbiances = ref([]);
 const initPlaceAmbiances = ref([]);
+const placeAmenities = ref([]);
+const initPlaceAmenities = ref([]);
 const placeCategory = ref([]);
 const phoneNumber = ref("");
 const alternativePhoneNumber = ref("");
@@ -98,6 +99,18 @@ placeOnResult((result) => {
 
     placeAmbiances.value = tempPlace.placeAmbiances.map(
       (placeAmbiance) => placeAmbiance.ambiance.id
+    );
+
+    // init place amenities
+    initPlaceAmenities.value = tempPlace.placeAmenities.map((placeAmenity) => {
+      return {
+        name: placeAmenity.amenity?.title,
+        id: placeAmenity.amenity?.id,
+      };
+    });
+
+    placeAmenities.value = tempPlace.placeAmenities.map(
+      (placeAmenity) => placeAmenity.amenity.id
     );
 
     placeCategory.value = tempPlace.categoryId;
@@ -207,6 +220,13 @@ addMediaOnDone((result) => {
       };
     }),
 
+    // place amenities
+    placeAmenityObject: placeAmenities.value.map((amenity) => {
+      return {
+        placeId: props.placeId,
+        amenityId: amenity,
+      };
+    }),
     // place social medias
     placeSocialMediaObject: socialMedias.value.map((social) => {
       return {
@@ -289,6 +309,13 @@ const handleEditPlace = handleSubmit(() => {
           v-model="placeAmbiances"
           :init="initPlaceAmbiances"
           name="placeAmbiance"
+        />
+
+        <!-- --------------------------------------------------Amenity----------------------------------- -->
+        <SelectorsAmenityWithOutIcon
+          v-model="placeAmenities"
+          :init="initPlaceAmenities"
+          name="placeAmenity"
         />
 
         <!-- --------------------------------------------------Category----------------------------------- -->
