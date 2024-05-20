@@ -21,7 +21,7 @@ const goToPlaceCreation = () => {
 	router.push({
 		path: "/app/places/register-new-place",
 		query: {
-			id: props.entity.id,
+			entityId: props.entity.id,
 		},
 	});
 };
