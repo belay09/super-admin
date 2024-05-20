@@ -15,6 +15,10 @@ const props = defineProps({
 		type: Number,
 		required: true,
 	},
+	entityId: {
+		type: Number,
+		required: true,
+	},
 });
 const next = () => {
 	if (placeLocations.value.length == 0) {
@@ -141,8 +145,9 @@ const handleAddLocation = handleSubmit(() => {
 		placeLocationObject: [
 			{
 				placeId: props.placeId,
-				cityId: city.value.id,
-				areaId: area.value.id,
+				entityId: props.entityId,
+				cityId: city.value,
+				areaId: area.value,
 				isMainLocation: isMainLocation.value,
 				description: "description",
 				location: {

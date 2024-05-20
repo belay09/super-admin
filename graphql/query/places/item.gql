@@ -1,224 +1,225 @@
 query getPlace($id: bigint!, $include: Boolean = false) {
-  place: placesByPk(id: $id) {
-    id
-    name
-    # logo
-    light_logo {
-      url
-    }
-    view_count
-    status
-    cousins
-    description
-    type
-    categoryId
+	place: placesByPk(id: $id) {
+		id
+		name
+		# logo
+		light_logo {
+			url
+		}
+		entitiyId
+		view_count
+		status
+		cousins
+		description
+		type
+		categoryId
 
-    # contact us
-    contactEmail
-    contactWebsite
-    contactPhoneNumber
-    contactAltPhoneNumber
+		# contact us
+		contactEmail
+		contactWebsite
+		contactPhoneNumber
+		contactAltPhoneNumber
 
-    youtubeVideoUrl
+		youtubeVideoUrl
 
-    # featured image
-    featured_medias {
-      id
-      url
-    }
+		# featured image
+		featured_medias {
+			id
+			url
+		}
 
-    # place aggregate
-    place_aggregate_summary {
-      minDishPrice
-      maxDishPrice
-    }
+		# place aggregate
+		place_aggregate_summary {
+			minDishPrice
+			maxDishPrice
+		}
 
-    # takeout
-    offerTakeouts
-    orderPhoneNumber1
-    orderPhoneNumber2
+		# takeout
+		offerTakeouts
+		orderPhoneNumber1
+		orderPhoneNumber2
 
-    # place medias
-    placeMedias {
-      isImage
-      media {
-        url
-      }
-    }
-    # place social media
-    placeSocialMedias {
-      id
-      url
+		# place medias
+		placeMedias {
+			isImage
+			media {
+				url
+			}
+		}
+		# place social media
+		placeSocialMedias {
+			id
+			url
 
-      socialMedia {
-        icon {
-          darkIconUrl
-          lightIconUrl
-          id
-        }
-        name
-        order
-      }
-    }
+			socialMedia {
+				icon {
+					darkIconUrl
+					lightIconUrl
+					id
+				}
+				name
+				order
+			}
+		}
 
-    # place reviews
-    reviews {
-      id
-      title
-      youtubeVideoUrl
-    }
+		# place reviews
+		reviews {
+			id
+			title
+			youtubeVideoUrl
+		}
 
-    # video  media
-    featuredReviewMediaUrl {
-      url
-    }
+		# video  media
+		featuredReviewMediaUrl {
+			url
+		}
 
-    # tags
-    placeTags {
-      id
-      tag {
-        id
-        title
+		# tags
+		placeTags {
+			id
+			tag {
+				id
+				title
 
-        # icon {
-        #   lightIconUrl
-        #   darkIconUrl
-        # }
-      }
-    }
+				# icon {
+				#   lightIconUrl
+				#   darkIconUrl
+				# }
+			}
+		}
 
-    # cousins
-    place_cousins {
-      id
-      cousinId
-      cousin {
-        id
-        title
-      }
-    }
+		# cousins
+		place_cousins {
+			id
+			cousinId
+			cousin {
+				id
+				title
+			}
+		}
 
-    # locations
-    placeLocations {
-      id
-      location
-      isMainLocation
-      area {
-        name
-      }
-      city {
-        name
-      }
-    }
+		# locations
+		placeLocations {
+			id
+			location
+			isMainLocation
+			area {
+				name
+			}
+			city {
+				name
+			}
+		}
 
-    # amenities
-    placeAmenities {
-      id
-      amenity {
-        id
-        # icon {
-        #   lightIconUrl
-        #   darkIconUrl
-        # }
-        title
-      }
-    }
+		# amenities
+		placeAmenities {
+			id
+			amenity {
+				id
+				# icon {
+				#   lightIconUrl
+				#   darkIconUrl
+				# }
+				title
+			}
+		}
 
-    # ambiance
-    placeAmbiances {
-      id
-      ambiance {
-        title
-        id
-      }
-      placeId
-    }
+		# ambiance
+		placeAmbiances {
+			id
+			ambiance {
+				title
+				id
+			}
+			placeId
+		}
 
-    # social media
-    placeSocialMedias {
-      url
-      socialMedia {
-        url
-        order
-        name
-        id
-      }
-    }
+		# social media
+		placeSocialMedias {
+			url
+			socialMedia {
+				url
+				order
+				name
+				id
+			}
+		}
 
-    # place aggregate
-    place_aggregate_summary {
-      avgDishPrice
-      avgRating
-      sumLikes
-      minDishPrice
-      maxDishPrice
-    }
+		# place aggregate
+		place_aggregate_summary {
+			avgDishPrice
+			avgRating
+			sumLikes
+			minDishPrice
+			maxDishPrice
+		}
 
-    # review aggregate
-    placeReviewsAggregate {
-      aggregate {
-        count
-      }
-    }
+		# review aggregate
+		placeReviewsAggregate {
+			aggregate {
+				count
+			}
+		}
 
-    # shegere recommendations
-    shegerRecommendationId
-    shegerRecommendation {
-      id
-      title
-      shegerRecommendationBadge {
-        url
-      }
-      badge
-      description
-    }
+		# shegere recommendations
+		shegerRecommendationId
+		shegerRecommendation {
+			id
+			title
+			shegerRecommendationBadge {
+				url
+			}
+			badge
+			description
+		}
 
-    # featured place
-    featured_places {
-      id
-      startDate
-      endDate
-      isActive
-      type
-    }
+		# featured place
+		featured_places {
+			id
+			startDate
+			endDate
+			isActive
+			type
+		}
 
-    # special menu
-    menus(
-      where: { isHouseSpecial: { _eq: true } }
-      orderBy: [{ createdAt: DESC }]
-      limit: 1
-      offset: 0
-    ) {
-      id
+		# special menu
+		menus(
+			where: { isHouseSpecial: { _eq: true } }
+			orderBy: [{ createdAt: DESC }]
+			limit: 1
+			offset: 0
+		) {
+			id
 
-      title
-      updatedAt
-      isHouseSpecial
-      timeToPrepare
-      media {
-        url
-      }
-      menuTags {
-        tag {
-          title
-          icon {
-            lightIconUrl
-            darkIconUrl
-          }
-        }
-      }
-    }
+			title
+			updatedAt
+			isHouseSpecial
+			timeToPrepare
+			media {
+				url
+			}
+			menuTags {
+				tag {
+					title
+					icon {
+						lightIconUrl
+						darkIconUrl
+					}
+				}
+			}
+		}
 
-    # menu last updated at
-    menuLastUpdatedAt: menus(
-      where: { isHouseSpecial: { _eq: true } }
-      orderBy: [{ createdAt: DESC }]
-      limit: 1
-      offset: 0
-    ) {
-      last_updated_menus(orderBy: [{ lastUpdate: DESC_NULLS_LAST }], limit: 1) {
-        id
-        lastUpdate
-      }
-    }
-  }
+		# menu last updated at
+		menuLastUpdatedAt: menus(
+			where: { isHouseSpecial: { _eq: true } }
+			orderBy: [{ createdAt: DESC }]
+			limit: 1
+			offset: 0
+		) {
+			last_updated_menus(orderBy: [{ lastUpdate: DESC_NULLS_LAST }], limit: 1) {
+				id
+				lastUpdate
+			}
+		}
+	}
 }
