@@ -19,9 +19,7 @@ query pricingPlans(
 		title
 		type
 		rank
-		pricing_plan_items {
-			id
-		}
+
 		pricing_plan_frequencies {
 			id
 			price
@@ -32,12 +30,6 @@ query pricingPlans(
 				title
 				description
 				id
-			}
-		}
-		pricing_plan_items {
-			item {
-				title
-				description
 			}
 		}
 	}

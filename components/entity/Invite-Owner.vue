@@ -159,7 +159,7 @@ const openSuccess = ref(false);
 			class="primary-button border flex items-center !px-12 gap-4 text-white bg-primary-600"
 			@click="onSubmit()"
 		>
-			{{ addInviteLoading ? "Submitting..." : "Finish" }}
+			{{ addInviteLoading ? "Submitting..." : "Next" }}
 			<Icon name="material-symbols:arrow-forward-ios" />
 		</button>
 	</div>

@@ -31,13 +31,13 @@ const currentStep = computed({
 </script>
 <template>
 	<div
-		class="grid grid-flow-col rounded-t-lg overflow-hidden bg-primary-200 h-20 my-4"
+		class="grid grid-flow-col rounded-t-lg overflow-hidden bg-primary-300 h-20 my-4"
 	>
 		<div
 			class="flex items-center gap-x-2 justify-center text-white"
 			:class="
 				currentStep == 0
-					? 'bg-primary-300'
+					? 'bg-primary-400'
 					: currentStep > 0
 					? '!bg-primary-600 text-white'
 					: ''
@@ -67,7 +67,7 @@ const currentStep = computed({
 			class="flex items-center gap-x-2 justify-center text-white"
 			:class="
 				currentStep == 2
-					? ''
+					? 'bg-primary-400'
 					: currentStep > 2
 					? '!bg-primary-600 text-white'
 					: ''
@@ -77,11 +77,26 @@ const currentStep = computed({
 
 			Invite Owner
 		</div>
+		<div
+			class="flex items-center gap-x-2 justify-center text-white"
+			:class="
+				currentStep == 3
+					? 'bg-primary-400'
+					: currentStep > 3
+					? '!bg-primary-600 text-white'
+					: ''
+			"
+		>
+			<Icon class="text-xl" name="lets-icons:flag-finish-light" />
+
+			Finish
+		</div>
 	</div>
 	<div>
 		<Entity-BasicInfo @prev="currentStep--" v-if="currentStep == 0" />
 
 		<Entity-Payment @prev="currentStep--" v-else-if="currentStep == 1" />
 		<Entity-InviteOwner v-else-if="currentStep == 2" />
+		<Entity-Finish @prev="currentStep--" v-else-if="currentStep == 3" />
 	</div>
 </template>

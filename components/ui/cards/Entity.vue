@@ -94,12 +94,12 @@ const openCreatePaymentModal = ref(false);
 							<Icon class="text-xl" name="mingcute:document-3-line" />
 							<span>Billing History</span>
 						</li>
-						<li
+						<!-- <li
 							class="text-primary-500 flex items-center text-base cursor-pointer gap-x-4"
 						>
 							<Icon class="text-xl" name="jam:close-rectangle" />
 							<span>Close Entity</span>
-						</li>
+						</li> -->
 					</ul>
 				</PopoverPanel>
 			</Popover>
