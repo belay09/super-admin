@@ -110,6 +110,7 @@ definePageMeta({
 	</div>
 	<div v-if="!loading" class="mt-6 grid grid-cols-3 gap-4">
 		<UiCardsEntity
+			@editDone="refetch"
 			:entity="entity"
 			v-for="entity in entities"
 			:key="entity.id"

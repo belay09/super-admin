@@ -1,32 +1,24 @@
-query getPlace($id: bigint!, $include: Boolean = false) {
+query getPlace($id: bigint!) {
 	place: placesByPk(id: $id) {
 		id
 		name
+		view_count
+
+		type
+
 		# logo
+
 		light_logo {
 			url
 		}
-		entitiyId
-		view_count
-		status
-		cousins
-		description
-		type
-		categoryId
 
+		# service rating
+		# review_average_rating_by_category
 		# contact us
 		contactEmail
 		contactWebsite
 		contactPhoneNumber
 		contactAltPhoneNumber
-
-		youtubeVideoUrl
-
-		# featured image
-		featured_medias {
-			id
-			url
-		}
 
 		# place aggregate
 		place_aggregate_summary {
@@ -39,8 +31,16 @@ query getPlace($id: bigint!, $include: Boolean = false) {
 		orderPhoneNumber1
 		orderPhoneNumber2
 
+		# featured place
+
+		featured_medias {
+			id
+			url
+		}
+
 		# place medias
 		placeMedias {
+			id
 			isImage
 			media {
 				url
@@ -50,16 +50,28 @@ query getPlace($id: bigint!, $include: Boolean = false) {
 		placeSocialMedias {
 			id
 			url
-
 			socialMedia {
-				icon {
-					darkIconUrl
-					lightIconUrl
-					id
-				}
 				name
 				order
 			}
+		}
+
+		#   media
+		featuredReviewMediaUrl {
+			url
+		}
+
+		# sheger recommendations
+
+		shegerRecommendationId
+		shegerRecommendation {
+			id
+			title
+			shegerRecommendationBadge {
+				url
+			}
+			badge
+			description
 		}
 
 		# place reviews
@@ -69,26 +81,32 @@ query getPlace($id: bigint!, $include: Boolean = false) {
 			youtubeVideoUrl
 		}
 
-		# video  media
-		featuredReviewMediaUrl {
-			url
+		# place ambiance
+		placeAmbiances {
+			id
+			ambiance {
+				icon {
+					lightIconUrl
+					darkIconUrl
+				}
+				id
+				title
+			}
 		}
 
 		# tags
 		placeTags {
-			id
+			tagId
 			tag {
 				id
 				title
-
-				# icon {
-				#   lightIconUrl
-				#   darkIconUrl
-				# }
+				icon {
+					lightIconUrl
+					darkIconUrl
+				}
 			}
 		}
 
-		# cousins
 		place_cousins {
 			id
 			cousinId
@@ -116,28 +134,21 @@ query getPlace($id: bigint!, $include: Boolean = false) {
 			id
 			amenity {
 				id
-				# icon {
-				#   lightIconUrl
-				#   darkIconUrl
-				# }
+				icon {
+					lightIconUrl
+					darkIconUrl
+				}
 				title
 			}
-		}
-
-		# ambiance
-		placeAmbiances {
-			id
-			ambiance {
-				title
-				id
-			}
-			placeId
 		}
 
 		# social media
 		placeSocialMedias {
 			url
 			socialMedia {
+				icon {
+					lightIconUrl
+				}
 				url
 				order
 				name
@@ -161,27 +172,6 @@ query getPlace($id: bigint!, $include: Boolean = false) {
 			}
 		}
 
-		# shegere recommendations
-		shegerRecommendationId
-		shegerRecommendation {
-			id
-			title
-			shegerRecommendationBadge {
-				url
-			}
-			badge
-			description
-		}
-
-		# featured place
-		featured_places {
-			id
-			startDate
-			endDate
-			isActive
-			type
-		}
-
 		# special menu
 		menus(
 			where: { isHouseSpecial: { _eq: true } }
@@ -190,7 +180,6 @@ query getPlace($id: bigint!, $include: Boolean = false) {
 			offset: 0
 		) {
 			id
-
 			title
 			updatedAt
 			isHouseSpecial
@@ -209,17 +198,6 @@ query getPlace($id: bigint!, $include: Boolean = false) {
 			}
 		}
 
-		# menu last updated at
-		menuLastUpdatedAt: menus(
-			where: { isHouseSpecial: { _eq: true } }
-			orderBy: [{ createdAt: DESC }]
-			limit: 1
-			offset: 0
-		) {
-			last_updated_menus(orderBy: [{ lastUpdate: DESC_NULLS_LAST }], limit: 1) {
-				id
-				lastUpdate
-			}
-		}
+		cousins
 	}
 }

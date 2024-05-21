@@ -1,0 +1,8 @@
+mutation changeEntityStatus($input: EntitiesEntitiesSetInput!, $id: bigint!) {
+	updateEntitiesEntities(where: { id: { _eq: $id } }, _set: $input) {
+		affectedRows
+		returning {
+			id
+		}
+	}
+}

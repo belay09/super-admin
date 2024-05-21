@@ -1,5 +1,10 @@
 <script setup>
+import editEditMutation from "@/graphql/mutations/entities/edit.gql";
+import useNotify from "@/use/notify";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/vue";
+
+const { notify } = useNotify();
+
 const props = defineProps({
 	entity: {
 		type: [Array, Object, String],
@@ -12,7 +17,41 @@ const props = defineProps({
 	wrapperClass: String,
 });
 
+const emits = defineEmits(["editDone"]);
+
 const router = useRouter();
+
+const {
+	mutate: editMutate,
+	onDone: editDone,
+	onError: editError,
+	loading: editLoading,
+} = authMutation(editEditMutation);
+
+editDone(() => {
+	notify({
+		title: "Updated successfully",
+		description: "Updated successfully",
+		type: "success",
+		borderClass: "border-l-8 border-green-300",
+	});
+
+	toggleActiveModal.value = true;
+	togglePendModal.value = true;
+	toggleCloseModal.value = true;
+});
+
+const onEditMutate = (newStatus) => {
+	editMutate({
+		input: {
+			status: newStatus,
+		},
+		id: props.entity.id,
+	});
+
+	emits("editDone");
+};
+
 const goToBillingDetail = () => {
 	router.push({
 		path: `/app/billings/${props.entity.id}`,
@@ -42,8 +81,32 @@ const goEditEntity = () => {
 };
 
 const openCreatePaymentModal = ref(false);
+const toggleActiveModal = ref(false);
+const togglePendModal = ref(false);
+const toggleCloseModal = ref(false);
 </script>
 <template>
+	<ModalsConfirmation
+		@confirm="onEditMutate('ACTIVE')"
+		v-model="toggleActiveModal"
+		title="Activate Entity"
+		sure-question="Are you sure you want to activate the entity?"
+	></ModalsConfirmation>
+
+	<ModalsConfirmation
+		@confirm="onEditMutate('PENDING')"
+		v-model="togglePendModal"
+		title="Pend Entity"
+		sure-question="Are you sure you want to pend the entity?"
+	></ModalsConfirmation>
+
+	<ModalsConfirmation
+		@confirm="onEditMutate('CLOSED')"
+		v-model="toggleCloseModal"
+		title="Close Entity"
+		sure-question="Are you sure you want to close the entity?"
+	></ModalsConfirmation>
+
 	<ModalsCreatePayment :place="entity" v-model="openCreatePaymentModal" />
 	<div
 		:class="wrapperClass"
@@ -94,12 +157,24 @@ const openCreatePaymentModal = ref(false);
 							<Icon class="text-xl" name="mingcute:document-3-line" />
 							<span>Billing History</span>
 						</li>
-						<!-- <li
+						<li
+							@click="toggleActiveModal = true"
+							class="flex items-center gap-3"
+						>
+							<Icon name="majesticons:open" class="text-xl shrink-0" />
+							<p>Activate Entity</p>
+						</li>
+						<li @click="togglePendModal = true" class="flex items-center gap-3">
+							<Icon name="carbon:pending" class="text-2xl shrink-0" />
+							<p class="whitespace-nowrap">Pend Entity</p>
+						</li>
+						<li
+							@click="toggleCloseModal = true"
 							class="text-primary-500 flex items-center text-base cursor-pointer gap-x-4"
 						>
 							<Icon class="text-xl" name="jam:close-rectangle" />
 							<span>Close Entity</span>
-						</li> -->
+						</li>
 					</ul>
 				</PopoverPanel>
 			</Popover>
@@ -168,9 +243,14 @@ const openCreatePaymentModal = ref(false);
 				>
 					<img
 						class="w-10 h-10 rounded-full"
-						:src="place.light_logo?.url"
+						:src="
+							place.light_logo && place.light_logo.url
+								? place.light_logo.url
+								: 'https://cdn.hahu.jobs/public/sheger-gebeta/6f1fedea-f5cf-4cea-afe8-1f0e807a4d3d.png'
+						"
 						alt="logo"
 					/>
+
 					<div>
 						<p class="text-xs text-gray-600">{{ place.name }}</p>
 						<span

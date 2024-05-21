@@ -41,9 +41,22 @@ const goPrev = () => {
 	router.push({ query: { step: currentStep.value } });
 };
 
+const openFinishModal = ref(true);
+
 // ---------------------------- Go Next Handler ----------------------------
 const goNext = () => {
+	if (
+		((placeType.value == "RESTAURANTS" || placeType.value == "CAFES") &&
+			currentStep.value == 3) ||
+		((placeType.value == "HOTELS" || placeType.value == "CATERINGS") &&
+			currentStep.value == 4)
+	) {
+		openFinishModal.value = true;
+		return;
+	}
+
 	currentStep.value += 1;
+
 	router.push({ query: { step: currentStep.value } });
 };
 
@@ -63,10 +76,8 @@ definePageMeta({
 });
 </script>
 <template>
+	<ModalsPlacePreview :type="placeType" v-model="openFinishModal" />
 	<div>
-		<!-- Top -->
-
-		<!-- stepper -->
 		<div class="flex justify-between h-20 my-4">
 			<div
 				class="rounded-tl-lg stepper-button"
