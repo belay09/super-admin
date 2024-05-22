@@ -37,7 +37,7 @@ const tabs = ref([
   },
 
   {
-    name: "Reviews",
+    name: "Review",
     value: "reviews",
   },
 ]);
@@ -79,27 +79,10 @@ definePageMeta({
   <div v-if="review">
     <!-- Top -->
     <Sheger-Reviews-Analytics v-if="review" :review="review" />
-    <!-- Tab -->
-    <div v-if="review" class="py-8">
-      <H-Tab
-        :tabs="tabs"
-        v-model:current-tab-index="currentTabIndex"
-        tab-class="text-xl "
-        tab-container-class="gap-x-12"
-      >
-        <template #overview>
-          <div class="py-8"><Sheger-Reviews-Overview :review="review" /></div>
-        </template>
 
-        <template #reviews>
-          <div class="py-6">
-            <ShegerReviews-ReviewAnalytics></ShegerReviews-ReviewAnalytics>
-            <ShegerReviews-UserReviewList
-              :review="review"
-            ></ShegerReviews-UserReviewList>
-          </div>
-        </template>
-      </H-Tab>
+    <!-- Tab -->
+    <div v-if="review" class="py-4 border-t">
+      <div class=""><Sheger-Reviews-Overview :review="review" /></div>
     </div>
   </div>
 </template>

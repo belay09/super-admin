@@ -16,7 +16,7 @@ onClickOutside(buttonModal, () => {
 });
 
 const handleDelete = () => {
-  emit("deleteReview", props.userReview.id);
+  emit("deleteReview", props.userReview.place_review.id);
   showRemoveReviewModal.value = false;
 };
 
@@ -27,7 +27,6 @@ const showRemoveReviewButton = ref(false);
 
 <template>
   <div>
-    <!-- -----------------------Revoke Badge Modal---------------- -->
     <ModalsConfirmation
       @confirm="handleDelete"
       v-model="showRemoveReviewModal"
@@ -61,29 +60,40 @@ const showRemoveReviewButton = ref(false);
             </div>
           </div>
         </div>
-        <button
-          @click="showRemoveReviewButton = !showRemoveReviewButton"
-          class=""
-        >
-          <Icon name="fontisto:more-v" class="text-xl" />
-        </button>
+        <div class="flex space-x-3">
+          <div class="flex px-2 py-1 border-[1px] rounded-3xl space-x-2">
+            <Icon
+              name="fontisto:flag"
+              class="text-2xl text-red-600 rounded-full"
+            />
+            <p class="text-sheger_brown-200 dark:text-sheger_light_gray-400">
+              {{ userReview.type.replace(/_/g, " ") }}
+            </p>
+          </div>
+          <button
+            @click="showRemoveReviewButton = !showRemoveReviewButton"
+            class=""
+          >
+            <Icon name="fontisto:more-v" class="text-xl" />
+          </button>
+        </div>
       </div>
       <div class="flex space-x-2 items-center">
         <HRating
-          :rating="userReview.rating || 0"
+          :rating="userReview.place_review.rating || 0"
           image-class="w-5"
           container-class=""
         ></HRating>
-        <p class="font-medium">({{ userReview.rating }}/5)</p>
+        <p class="font-medium">({{ userReview?.place_review?.rating }}/5)</p>
       </div>
       <p class="dark:text-sheger_light_gray-400">
-        {{ userReview.comment }}
+        {{ userReview.place_review.comment }}
       </p>
       <button
         ref="buttonModal"
         v-if="showRemoveReviewButton"
         @click="showRemoveReviewModal = true"
-        class="absolute z-50 py-3 px-2 text-red-600 border rounded-md right-10 flex items-center space-x-2"
+        class="absolute z-50 py-3 px-2 text-red-600 border rounded-md right-2 hover:bg-primary-100 bottom-5 flex items-center space-x-2"
       >
         <Icon name="uil:trash-alt" class="text-xl" />
         <p class="whitespace-nowrap">Remove Review</p>

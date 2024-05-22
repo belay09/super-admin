@@ -191,7 +191,7 @@ const toggleRemoveModal = ref(false);
             :key="reviewTag.tag.id"
             class="pr-2"
           >
-            #{{ reviewTag.tag.title }}
+            #{{ reviewTag.tag?.title }}
           </p>
         </div>
       </div>
@@ -259,9 +259,71 @@ const toggleRemoveModal = ref(false);
     </div>
 
     <!-- ------------------Visits---------------- -->
-    <PlacesVisitors
-      :place-id="review?.place.id"
-      class="w-full"
-    ></PlacesVisitors>
+    <div class="relative flex col-span-2">
+      <PlacesVisitors
+        :place-id="review?.place.id"
+        class="w-full"
+      ></PlacesVisitors>
+
+      <!-- -----------Option Icon and Actions ------------->
+
+      <div class="relative">
+        <button
+          @click.stop="openActions = !openActions"
+          class="hover:cursor-pointer"
+        >
+          <Icon name="iwwa:option" class="w-8 h-8" />
+        </button>
+
+        <!-- -----------------------Extend date and Remove from feature --------------- -->
+        <div
+          ref="actionDropDown"
+          v-if="openActions"
+          class="absolute right-0 flex flex-col p-5 bg-white rounded-lg shadow-xl top-7 w-72 gap-y-4"
+        >
+          <button
+            @click.stop="togglePublishModal = true"
+            class="flex items-center gap-3"
+          >
+            <Icon
+              name="material-symbols:publish-sharp"
+              class="text-2xl shrink-0"
+            />
+            <p class="text-lg">Publish Review</p>
+          </button>
+          <button
+            @click.stop="$router.push(`/app/sheger-reviews/edit/${review.id}`)"
+            class="flex items-center gap-3"
+          >
+            <Icon name="ri:edit-2-line" class="text-2xl shrink-0" />
+            <p class="text-lg">Update Review</p>
+          </button>
+          <button
+            @click.stop="toggleDraftModal = true"
+            class="flex items-center gap-3"
+          >
+            <Icon name="carbon:rule-draft" class="text-2xl shrink-0" />
+            <p class="text-lg">Save as Draft</p>
+          </button>
+          <button
+            @click.stop="togglePendingModal = true"
+            class="flex items-center gap-3"
+          >
+            <Icon
+              name="material-symbols:pending-actions-sharp"
+              class="text-2xl shrink-0"
+            />
+            <p class="text-lg">Change to Pending</p>
+          </button>
+          <button
+            @click.stop="toggleRemoveModal = true"
+            class="flex items-center gap-3 text-primary-600"
+          >
+            <Icon name="ion:remove" class="text-2xl shrink-0" />
+            <p class="text-lg">Remove Review</p>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>

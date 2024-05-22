@@ -1,16 +1,13 @@
 <script setup>
-import getReviewReviewsQuery from "@/graphql/query/reviews/get-review-reviews.gql";
+/**-------------------------Imports------------------------- */
+import getReviewReviewsQuery from "@/graphql/query/reviews/get-place-reviews.gql";
+import getReportReviewsQuery from "@/graphql/query/reviews/get-place-report-reviews.gql";
+import list from "@/composables/auth-list-query.js";
 import useNotify from "@/use/notify";
-import deleteMutation from "@/graphql/mutations/review-reviews/delete.gql";
+import deleteMutation from "@/graphql/mutations/place-reviews/delete.gql";
 
+const route = useRoute();
 const { notify } = useNotify();
-const props = defineProps({
-  review: {
-    type: Object,
-    required: true,
-  },
-});
-
 const tabs = [
   {
     name: "All",
@@ -22,12 +19,14 @@ const tabs = [
     value: "reported",
   },
 ];
-
 /*...................Review reviews data fetch.............*/
 const filter = ref({
-  reviewId: {
-    _eq: props.review.id,
+  placeId: {
+    _eq: route.params.id,
   },
+});
+const filterReport = ref({
+  place_review: { placeId: { _eq: route.params.id } },
 });
 const limit = ref(50);
 const offset = ref(0);
@@ -35,21 +34,42 @@ const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
 const reviewReviews = ref([]);
 const length = ref(0);
 
-const { onResult, onError, loading, refetch, fetchMore } = authListQuery(
+const { onResult, onError, loading, refetch, fetchMore } = list(
   getReviewReviewsQuery,
   filter,
   sort,
   offset,
   limit
 );
-
 onResult((result) => {
-  if (result.data?.reviewReviews) {
-    reviewReviews.value = result.data?.reviewReviews;
-    length.value = result.data?.reviewAggregate?.aggregate?.count;
+  if (result.data?.placeReviews) {
+    reviewReviews.value = result.data?.placeReviews;
   }
 });
 onError((error) => {
+  notify({
+    title: "Some thing went wrong",
+    description: error.message,
+    type: "success",
+    borderClass: "border-l-8 border-green-300",
+  });
+});
+const reportedReviews = ref([]);
+
+//reported reviews
+const {
+  onResult: resultReport,
+  onError: err,
+  loading: loadingReport,
+  refetch: refetchReport,
+} = list(getReportReviewsQuery, filterReport, sort, offset, limit);
+resultReport((result) => {
+  if (result.data?.placeReviewReport) {
+    reportedReviews.value = result.data?.placeReviewReport;
+    console.log("reportedReviews", reportedReviews.value);
+  }
+});
+err((error) => {
   notify({
     title: "Some thing went wrong",
     description: error.message,
@@ -123,24 +143,41 @@ deleteError((error) => {
     borderClass: "border-l-8 border-red-300",
   });
 });
-
+const currentTabIndex = ref(0);
+const currentTab = computed(() => {
+  return tabs.value[currentTabIndex.value];
+});
 const handleDelete = (id) => {
   deleteMutate({ id });
 };
 </script>
 
 <template>
+  <!-- <div>kk
+    {{ reviewReviews }}
+
+  </div> -->
+
   <div class="max-w-[57rem]">
     <H-Tab :tabs="tabs" tab-class="text-xl " tab-container-class="gap-x-12">
+      <template #all>
+        <div class="h-screen overflow-scroll scroll w-full">
+          <Place-UserReviewItem
+            v-for="userReview in reviewReviews"
+            :key="userReview.id"
+            :userReview="userReview"
+            @delete-review="handleDelete"
+          ></Place-UserReviewItem>
+        </div>
+      </template>
+      <template #reported>
+        <Place-UserReviewReportItem
+          v-for="userReview in reportedReviews"
+          :key="userReview.id"
+          :userReview="userReview"
+          @delete-review="handleDelete"
+        ></Place-UserReviewReportItem>
+      </template>
     </H-Tab>
-
-    <div class="h-screen overflow-scroll scroll">
-      <ShegerReviews-UserReviewItem
-        v-for="userReview in reviewReviews"
-        :key="userReview.id"
-        :userReview="userReview"
-        @delete-review="handleDelete"
-      ></ShegerReviews-UserReviewItem>
-    </div>
   </div>
 </template>

@@ -122,7 +122,10 @@ const openUploadFilesModal = ref(false);
         <div class="flex items-center space-x-4 xl:space-x-6">
           <img
             class="object-cover w-72"
-            src="/images/temporary/default-drink-image.png"
+            :src="
+              review.review_drink?.drink?.media?.url ||
+              '/images/static/placeholder.webp'
+            "
             alt="Negus drink"
           />
           <div class="flex flex-col iphone5:space-y-2 xl:space-y-4">

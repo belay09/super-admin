@@ -109,8 +109,8 @@ definePageMeta({
 
         <template #reviews>
           <div class="py-6">
-            <PlaceReviews-ReviewAnalytics />
-            <PlaceReviews-UserReviewList />
+            <Places-ReviewAnalytics />
+            <Places-UserReviewList />
           </div>
         </template>
       </H-Tab>

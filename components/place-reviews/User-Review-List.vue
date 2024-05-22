@@ -162,21 +162,21 @@ const handleDelete = (id) => {
     <H-Tab :tabs="tabs" tab-class="text-xl " tab-container-class="gap-x-12">
       <template #all>
         <div class="h-screen overflow-scroll scroll w-full">
-          <PlaceReviews-UserReviewItem
+          <Places-UserReviewItem
             v-for="userReview in reviewReviews"
             :key="userReview.id"
             :userReview="userReview"
             @delete-review="handleDelete"
-          ></PlaceReviews-UserReviewItem>
+          ></Places-UserReviewItem>
         </div>
       </template>
       <template #reported>
-        <PlaceReviews-UserReviewReportItem
+        <Places-UserReviewReportItem
           v-for="userReview in reportedReviews"
           :key="userReview.id"
           :userReview="userReview"
           @delete-review="handleDelete"
-        ></PlaceReviews-UserReviewReportItem>
+        ></Places-UserReviewReportItem>
       </template>
     </H-Tab>
   </div>
