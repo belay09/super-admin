@@ -5,14 +5,11 @@ query getMenus(
   $offset: Int
 ) {
   menus(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
-    id
-    id
     price
     sides
     timeToPrepare
     title
     type
-    ingridients
     updatedAt
     menuTags {
       id
@@ -52,12 +49,6 @@ query getMenus(
         title
         placeId
       }
-    }
-
-    # last update
-    last_updated_menus(orderBy: [{ lastUpdate: DESC_NULLS_LAST }], limit: 1) {
-      id
-      lastUpdate
     }
   }
   # menu aggregates

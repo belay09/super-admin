@@ -1,20 +1,21 @@
 mutation postReview($input: [ReviewsInsertInput!]!) {
-	insertReviews(objects: $input) {
-		affectedRows
-		returning {
-			id
-			featuredImageId
-			featured_image {
-				url
-				id
-			}
-			review_medias {
-				media {
-					url
-				}
-			}
-			__typename
-		}
-		__typename
-	}
+  insertReviews(objects: $input) {
+    affectedRows
+    returning {
+      id
+      featuredImageId
+      featured_image {
+        url
+        id
+      }
+      review_medias {
+        media {
+          url
+          isImage
+        }
+      }
+      __typename
+    }
+    __typename
+  }
 }

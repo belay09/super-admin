@@ -33,11 +33,6 @@ const filter = computed(() => {
         _ilike: `%${search.value}%`,
       },
     },
-    {
-      status: {
-        _eq: "ACTIVE",
-      },
-    },
   ];
   if (props.type) {
     query._and.push({

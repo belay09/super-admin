@@ -20,7 +20,7 @@ const sort = ref([{ createdAt: "DESC_NULLS_LAST" }]);
 const menus = ref([]);
 const length = ref(0);
 
-const { onResult, onError, loading, fetchMore } = anonymousListQuery(
+const { onResult, onError, loading, fetchMore } = authListQuery(
   getPlacesMenuQuery,
   filter,
   sort,
@@ -84,11 +84,11 @@ const callFetchMore = () => {
       class="absolute -top-1 hidden lg:block"
     ></HProgress>
     <div class="flex flex-col gap-4 py-4">
-      <CardsPlaceMenuItemCard
+      <PlacePreviewPlaceMenuItemCard
         v-for="menu in menus"
         :key="menu"
         :menu="menu"
-      ></CardsPlaceMenuItemCard>
+      ></PlacePreviewPlaceMenuItemCard>
     </div>
     <HPaginate
       v-model:offset="offset"

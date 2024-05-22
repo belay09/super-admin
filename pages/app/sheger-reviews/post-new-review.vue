@@ -1,5 +1,7 @@
 <script setup>
 import addReviewQuery from "@/graphql/mutations/reviews/add.gql";
+import getPlaceQuery from "@/graphql/query/places/item.gql";
+
 import { useForm } from "vee-validate";
 import useNotify from "@/use/notify";
 
@@ -12,7 +14,7 @@ const selectedPlaceLocation = ref();
 const placeType = ref("");
 const selectedPlaceID = ref();
 const selectedDrinkId = ref();
-const selectedDishId = ref();
+const selectedMenusId = ref();
 const title = ref("");
 const description = ref(""); //description
 const tags = ref();
@@ -26,6 +28,7 @@ const serviceRatings = ref([]);
 const averageRating = ref(0);
 const serviceComment = ref("");
 
+const review = ref(null);
 const {
   mutate: addReview,
   onError: addReviewError,
@@ -57,12 +60,25 @@ provide("setServiceRatings", ({ serviceCategories, comment }) => {
 
   // Calculate the average
 });
-const onSubmit = handleSubmit(() => {
-  // remove thumbnail from images
-  let imagesWithOutThumbnails = images.value.filter(
-    (image) => image !== selectedThumbnail.value
-  );
 
+// fetch reviewed place
+
+const place = ref();
+const {
+  onResult: placeOnResult,
+  onError: placeOnError,
+  loading: placeLoading,
+} = authItemQuery(getPlaceQuery, selectedPlaceID || -1);
+
+placeOnResult((result) => {
+  if (result.data?.place) {
+    place.value = result.data.place;
+  }
+});
+
+placeOnError((error) => {});
+
+const onSubmit = handleSubmit(() => {
   if (images.value.length < 4) {
     notify({
       type: "error",
@@ -75,6 +91,7 @@ const onSubmit = handleSubmit(() => {
   }
 
   const review = ref({
+    id: 1,
     title: title.value,
     description: description.value,
     youtubeVideoUrl: youtubeVideoUrl.value,
@@ -91,7 +108,7 @@ const onSubmit = handleSubmit(() => {
       },
     },
     menu_reviews: {
-      data: selectedDishId.value.map((dish) => {
+      data: selectedMenusId.value.map((dish) => {
         return {
           menuId: dish,
         };
@@ -138,7 +155,131 @@ const onSubmit = handleSubmit(() => {
     },
   });
   addReview({ input: review.value });
+
+  /**-------------------//TODO This used for preview the review data */
+  // const review = ref({
+  //   id: -2,
+  //   title: title.value,
+  //   description: description.value,
+  //   youtubeVideoUrl: youtubeVideoUrl.value,
+  //   tiktokUrl: tiktokVideoUrl.value,
+  //   instagramUrl: instagramVideoUrl.value,
+  //   placeId: selectedPlaceID.value,
+  //   placeLocationId: selectedPlaceLocation.value,
+  //   reviewedAt: new Date().toISOString(),
+  //   status: "DRAFT",
+  //   reviewedBy: reviewedBy.value,
+  //   review_drink: {
+  //     drinkId: selectedDrinkId.value,
+  //   },
+  //   menu_reviews: selectedMenusId.value,
+  //   review_tags: tags.value,
+
+  //   featured_image: {
+  //     media: {
+  //       url: selectedThumbnail.value,
+  //     },
+  //   },
+
+  //   review_medias: imagesWithOutThumbnails.map((image) => {
+  //     return {
+  //       isImage: isImage(image),
+  //       media: {
+  //         data: {
+  //           url: image,
+  //         },
+  //       },
+  //     };
+  //   }),
+
+  //   // place_sheger_review: {
+  //   //   comment: serviceComment.value,
+  //   //   place_sheger_review_by_services: serviceRatings.value.map(
+  //   //     (serviceRating) => {
+  //   //       return {
+  //   //         reviewCategoryId: serviceRating.id,
+  //   //         rate: serviceRating.value,
+  //   //       };
+  //   //     }
+  //   //   ),
+  //   // },
+  // });
+
+  openFinishModal.value = true;
 });
+
+// const confirmAddReview = () => {
+//   // remove thumbnail from images
+//   let imagesWithOutThumbnails = images.value.filter(
+//     (image) => image !== selectedThumbnail.value
+//   );
+
+//   const review = ref({
+//     id: 1,
+//     title: title.value,
+//     description: description.value,
+//     youtubeVideoUrl: youtubeVideoUrl.value,
+//     tiktokUrl: tiktokVideoUrl.value,
+//     instagramUrl: instagramVideoUrl.value,
+//     placeId: selectedPlaceID.value,
+//     placeLocationId: selectedPlaceLocation.value,
+//     reviewedAt: new Date().toISOString(),
+//     status: "DRAFT",
+//     reviewedBy: reviewedBy.value,
+//     review_drink: {
+//       data: {
+//         drinkId: selectedDrinkId.value,
+//       },
+//     },
+//     menu_reviews: {
+//       data: selectedMenusId.value.map((dish) => {
+//         return {
+//           menuId: dish,
+//         };
+//       }),
+//     },
+//     review_tags: {
+//       data: tags.value.map((tag) => {
+//         return {
+//           tagId: tag,
+//         };
+//       }),
+//     },
+//     featured_image: {
+//       data: {
+//         url: selectedThumbnail.value,
+//       },
+//     },
+
+//     review_medias: {
+//       data: imagesWithOutThumbnails.map((image) => {
+//         return {
+//           isImage: isImage(image),
+//           media: {
+//             data: {
+//               url: image,
+//             },
+//           },
+//         };
+//       }),
+//     },
+
+//     place_sheger_review: {
+//       data: {
+//         comment: serviceComment.value,
+//         place_sheger_review_by_services: {
+//           data: serviceRatings.value.map((serviceRating) => {
+//             return {
+//               reviewCategoryId: serviceRating.id,
+//               rate: serviceRating.value,
+//             };
+//           }),
+//         },
+//       },
+//     },
+//   });
+//   addReview({ input: review.value });
+// };
 
 addReviewDone((result) => {
   notify({
@@ -147,6 +288,8 @@ addReviewDone((result) => {
     type: "success",
     borderClass: "border-l-8 border-green-300",
   });
+  openFinishModal.value = false;
+
   navigateTo("/app/sheger-reviews");
 });
 
@@ -159,12 +302,20 @@ addReviewError((error) => {
   });
 });
 
+const openFinishModal = ref(false);
+
 definePageMeta({
   layout: "engagement",
 });
 </script>
 
 <template>
+  <!-- <ModalsAddReviewPreview
+    v-if="openFinishModal"
+    :review="review"
+    v-model="openFinishModal"
+    @confirm="confirmAddReview"
+  /> -->
   <div class="px-20 pb-20">
     <!-- --------------------------------Top-------------------------------- -->
     <div class="flex items-center justify-between">
@@ -209,14 +360,14 @@ definePageMeta({
 
         <LazySelectorsPlace :type="placeType" v-model="selectedPlaceID" />
         <!-- ------------------------------Place Location----------------------------->
-        <LazySelectorsPlaceLocation
+        <!-- <LazySelectorsPlaceLocation
           :place_Id="selectedPlaceID"
           v-model="selectedPlaceLocation"
-        />
+        /> -->
 
         <!-- ------------------------------Dish Title----------------------------->
         <LazySelectorsDish
-          v-model="selectedDishId"
+          v-model="selectedMenusId"
           :place_Id="selectedPlaceID"
         />
 

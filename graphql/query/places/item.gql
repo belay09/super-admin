@@ -1,203 +1,203 @@
 query getPlace($id: bigint!) {
-	place: placesByPk(id: $id) {
-		id
-		name
-		view_count
+  place: placesByPk(id: $id) {
+    id
+    name
+    view_count
 
-		type
+    type
 
-		# logo
+    # logo
 
-		light_logo {
-			url
-		}
+    light_logo {
+      url
+    }
 
-		# service rating
-		# review_average_rating_by_category
-		# contact us
-		contactEmail
-		contactWebsite
-		contactPhoneNumber
-		contactAltPhoneNumber
+    # service rating
+    # review_average_rating_by_category
+    # contact us
+    contactEmail
+    contactWebsite
+    contactPhoneNumber
+    contactAltPhoneNumber
 
-		# place aggregate
-		place_aggregate_summary {
-			minDishPrice
-			maxDishPrice
-		}
+    # place aggregate
+    place_aggregate_summary {
+      minDishPrice
+      maxDishPrice
+    }
 
-		# takeout
-		offerTakeouts
-		orderPhoneNumber1
-		orderPhoneNumber2
+    # takeout
+    offerTakeouts
+    orderPhoneNumber1
+    orderPhoneNumber2
 
-		# featured place
+    # featured place
 
-		featured_medias {
-			id
-			url
-		}
+    featured_medias {
+      id
+      url
+    }
 
-		# place medias
-		placeMedias {
-			id
-			isImage
-			media {
-				url
-			}
-		}
-		# place social media
-		placeSocialMedias {
-			id
-			url
-			socialMedia {
-				name
-				order
-			}
-		}
+    # place medias
+    placeMedias {
+      id
+      isImage
+      media {
+        url
+      }
+    }
+    # place social media
+    placeSocialMedias {
+      id
+      url
+      socialMedia {
+        name
+        order
+      }
+    }
 
-		#   media
-		featuredReviewMediaUrl {
-			url
-		}
+    #   media
+    featuredReviewMediaUrl {
+      url
+    }
 
-		# sheger recommendations
+    # sheger recommendations
 
-		shegerRecommendationId
-		shegerRecommendation {
-			id
-			title
-			shegerRecommendationBadge {
-				url
-			}
-			badge
-			description
-		}
+    shegerRecommendationId
+    shegerRecommendation {
+      id
+      title
+      shegerRecommendationBadge {
+        url
+      }
+      badge
+      description
+    }
 
-		# place reviews
-		reviews {
-			id
-			title
-			youtubeVideoUrl
-		}
+    # place reviews
+    reviews {
+      id
+      title
+      youtubeVideoUrl
+    }
 
-		# place ambiance
-		placeAmbiances {
-			id
-			ambiance {
-				icon {
-					lightIconUrl
-					darkIconUrl
-				}
-				id
-				title
-			}
-		}
+    # place ambiance
+    placeAmbiances {
+      id
+      ambiance {
+        icon {
+          lightIconUrl
+          darkIconUrl
+        }
+        id
+        title
+      }
+    }
 
-		# tags
-		placeTags {
-			tagId
-			tag {
-				id
-				title
-				icon {
-					lightIconUrl
-					darkIconUrl
-				}
-			}
-		}
+    # tags
+    placeTags {
+      tagId
+      tag {
+        id
+        title
+        icon {
+          lightIconUrl
+          darkIconUrl
+        }
+      }
+    }
 
-		place_cousins {
-			id
-			cousinId
-			cousin {
-				id
-				title
-			}
-		}
+    place_cousins {
+      id
+      cousinId
+      cousin {
+        id
+        title
+      }
+    }
 
-		# locations
-		placeLocations {
-			id
-			location
-			isMainLocation
-			area {
-				name
-			}
-			city {
-				name
-			}
-		}
+    # locations
+    placeLocations {
+      id
+      location
+      isMainLocation
+      area {
+        name
+      }
+      city {
+        name
+      }
+    }
 
-		# amenities
-		placeAmenities {
-			id
-			amenity {
-				id
-				icon {
-					lightIconUrl
-					darkIconUrl
-				}
-				title
-			}
-		}
+    # amenities
+    placeAmenities {
+      id
+      amenity {
+        id
+        icon {
+          lightIconUrl
+          darkIconUrl
+        }
+        title
+      }
+    }
 
-		# social media
-		placeSocialMedias {
-			url
-			socialMedia {
-				icon {
-					lightIconUrl
-				}
-				url
-				order
-				name
-				id
-			}
-		}
+    # social media
+    placeSocialMedias {
+      url
+      socialMedia {
+        icon {
+          lightIconUrl
+        }
+        url
+        order
+        name
+        id
+      }
+    }
 
-		# place aggregate
-		place_aggregate_summary {
-			avgDishPrice
-			avgRating
-			sumLikes
-			minDishPrice
-			maxDishPrice
-		}
+    # place aggregate
+    place_aggregate_summary {
+      avgDishPrice
+      avgRating
+      sumLikes
+      minDishPrice
+      maxDishPrice
+    }
 
-		# review aggregate
-		placeReviewsAggregate {
-			aggregate {
-				count
-			}
-		}
+    # review aggregate
+    placeReviewsAggregate {
+      aggregate {
+        count
+      }
+    }
 
-		# special menu
-		menus(
-			where: { isHouseSpecial: { _eq: true } }
-			orderBy: [{ createdAt: DESC }]
-			limit: 1
-			offset: 0
-		) {
-			id
-			title
-			updatedAt
-			isHouseSpecial
-			timeToPrepare
-			media {
-				url
-			}
-			menuTags {
-				tag {
-					title
-					icon {
-						lightIconUrl
-						darkIconUrl
-					}
-				}
-			}
-		}
+    # special menu
+    menus(
+      where: { isHouseSpecial: { _eq: true } }
+      orderBy: [{ createdAt: DESC }]
+      limit: 1
+      offset: 0
+    ) {
+      id
+      title
+      updatedAt
+      isHouseSpecial
+      timeToPrepare
+      media {
+        url
+      }
+      menuTags {
+        tag {
+          title
+          icon {
+            lightIconUrl
+            darkIconUrl
+          }
+        }
+      }
+    }
 
-		cousins
-	}
+    cousins
+  }
 }

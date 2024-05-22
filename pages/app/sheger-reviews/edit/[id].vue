@@ -35,6 +35,7 @@ const reviewedBy = ref();
 const serviceRatings = ref([]);
 const averageRating = ref(0);
 const serviceComment = ref("");
+const mediaType = ref("");
 
 /*...................Review detail data fetch.............*/
 function capitalize(word) {
@@ -133,6 +134,7 @@ const {
 } = authMutation(editReviewQuery);
 
 const onSubmit = handleSubmit(() => {
+  // check images length
   if (images.value?.length < 4) {
     notify({
       type: "error",
@@ -140,10 +142,13 @@ const onSubmit = handleSubmit(() => {
       description: "At least 4 medias are required",
       borderClass: "border-l-8 border-red-300",
     });
-
     return;
   }
+  // open preview modal
+  openFinishModal.value = true;
+});
 
+const confirmUpdateReview = () => {
   insertMedia({
     input: {
       url: selectedThumbnail.value,
@@ -152,7 +157,7 @@ const onSubmit = handleSubmit(() => {
       drinkId: selectedDrinkId.value,
     },
   });
-});
+};
 
 /**------------------------Call review input mutate ----------------------- */
 
@@ -203,6 +208,7 @@ insertMediaDone(({ data }) => {
       media: {
         data: {
           url: image,
+          isPortrait: mediaType.value === "portrait",
         },
       },
       reviewId: route.params.id,
@@ -252,6 +258,8 @@ editReviewDone(() => {
     borderClass: "border-l-8 border-green-300",
   });
 
+  openFinishModal.value = false;
+
   router.push("/app/sheger-reviews");
 });
 
@@ -264,12 +272,21 @@ editReviewError((error) => {
   });
 });
 
+const openFinishModal = ref(false);
+
 definePageMeta({
   layout: "engagement",
 });
 </script>
 
 <template>
+  <ModalsEditReviewPreview
+    v-if="openFinishModal"
+    :id="route.params.id"
+    v-model="openFinishModal"
+    @confirm="confirmUpdateReview"
+  />
+
   <div class="px-20 pb-20" v-if="!reviewLoading">
     <!-- --------------------------------Top-------------------------------- -->
     <div class="flex items-center justify-between">
@@ -281,7 +298,7 @@ definePageMeta({
           type="submit"
           class="mx-6"
         >
-          <span>Update Now</span>
+          <span>Preview</span>
           <Icon
             v-if="editReviewLoading"
             name="eos-icons:bubble-loading"
@@ -312,10 +329,10 @@ definePageMeta({
         <LazySelectorsPlace v-model="selectedPlaceID" :type="placeType" />
 
         <!-- ------------------------------Place Location----------------------------->
-        <SelectorsPlaceLocation
+        <!-- <SelectorsPlaceLocation
           :place_Id="selectedPlaceID"
           v-model="selectedPlaceLocation"
-        />
+        /> -->
         <!-- ------------------------------Dish Title----------------------------->
         <SelectorsDish
           v-model="selectedDishIds"
@@ -412,6 +429,7 @@ definePageMeta({
           :disabled="false"
           :showStar="false"
           v-model:thumbnails="selectedThumbnail"
+          v-model:selectedMediaType="mediaType"
           rules="required"
         />
       </div>

@@ -7,8 +7,7 @@ query getReviews(
   reviews(where: $filter, orderBy: $order, limit: $limit, offset: $offset) {
     id
     title
-    reviewedBy
-    updatedAt
+    # price
 
     # review place
     place {
@@ -20,7 +19,6 @@ query getReviews(
         url
       }
     }
-
     # service rating
     place_sheger_review {
       comment
@@ -39,15 +37,6 @@ query getReviews(
       }
     }
 
-    # review tags
-    review_tags {
-      id
-      tag {
-        id
-        title
-      }
-    }
-
     # menu reviews
     menu_reviews {
       menu {
@@ -55,10 +44,23 @@ query getReviews(
         title
       }
     }
+    # review tags
+    review_tags {
+      id
+      tag {
+        id
+        title
+        icon {
+          darkIconUrl
+          lightIconUrl
+        }
+      }
+    }
     # review aggregate
     review_aggregate_summary {
       avgRating
       sumLikes
+      bmCount
     }
     reviewAggregate: reviewReviewsAggregate {
       aggregate {
@@ -74,6 +76,8 @@ query getReviews(
     # review medias
 
     review_medias {
+      id
+      isImage
       media {
         url
       }

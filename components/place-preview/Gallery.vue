@@ -12,21 +12,23 @@ const props = defineProps({
   },
 });
 
-const imagesToShow = ref(props.images.slice(0, 5));
+const imagesToShow = props.images?.filter((placeMedia) => placeMedia?.isImage);
+imagesToShow.value = imagesToShow.slice(0, 5);
 </script>
 
 <template>
   <div class="py-6">
     <div class="grid grid-cols-2 gap-4">
-      <NuxtImg
-        v-for="(image, index) in imagesToShow"
-        class="h-96 w-full object-cover object-center"
-        :src="image.media?.url"
-        alt="pasta image"
-      />
+      <div v-for="(image, index) in imagesToShow">
+        <NuxtImg
+          class="h-96 w-full object-cover object-center"
+          :src="image.media?.url"
+          alt="pasta image"
+        />
+      </div>
 
       <button
-        v-if="images.length > 5"
+        v-if="imagesToShow.length > 5"
         @click="emit('showGalleryModal')"
         class="relative block"
       >
@@ -42,7 +44,7 @@ const imagesToShow = ref(props.images.slice(0, 5));
         <p
           class="absolute left-[40%] top-[45%] text-primary-600 text-3xl font-medium"
         >
-          + {{ images.length - 5 }} More
+          + {{ imagesToShow.length - 5 }} More
         </p>
       </button>
     </div>

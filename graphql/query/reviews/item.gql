@@ -92,7 +92,9 @@ query getReview($id: bigint!) {
     # medias
     review_medias {
       id
+      isImage
       media {
+        isPortrait
         url
       }
     }
@@ -103,6 +105,7 @@ query getReview($id: bigint!) {
       menu {
         id
         price
+
         sides
         timeToPrepare
         title
@@ -135,6 +138,23 @@ query getReview($id: bigint!) {
         ) {
           id
           lastUpdate
+        }
+
+        # place
+        place {
+          id
+          name
+          type
+
+          dark_logo {
+            url
+          }
+          light_logo {
+            url
+          }
+          featuredReviewMediaUrl {
+            url
+          }
         }
       }
     }

@@ -54,43 +54,5 @@ const showServiceReview = ref(false);
       :rating="place.place_aggregate_summary?.avgRating || 0"
       @post-review="showAddReviewModal = true"
     ></PlaceAggregateAndPostReviewButton>
-
-    <!-- -----------------------Review by service---------------------- -->
-    <div class="max-h-[30rem] overflow-y-scroll scroll">
-      <p class="dark:text-white">Public Review</p>
-      <div
-        v-if="place.review_average_rating_by_category"
-        class="flex flex-col gap-y-4 pt-2 pb-6 border-b transition-all duration-300"
-      >
-        <div
-          v-for="service in place.review_average_rating_by_category"
-          class="flex flex-col sm:flex-row sm:justify-between sm:items-center w-full"
-        >
-          <!-- -----------_Service name----------- -->
-          <div class="flex items-center space-x-4">
-            <img
-              v-if="service?.icon"
-              :src="service?.icon"
-              class="w-8 h-8 object-cover object-center"
-              alt=" icon image"
-            />
-            <p
-              class="whitespace-nowrap text-sm text-sheger_dark_gray-100 dark:text-white"
-            >
-              {{ service.category_name }}
-            </p>
-          </div>
-          <!-- -----------_Rating----------- -->
-
-          <ReviewsRatingsAndLikesRatingAverage
-            class="pr-4"
-            :rating="service.average_rating || 0"
-            :show-all-stars="true"
-            text-class=" pl-2 text-gray-500 font-medium"
-            :rating-size="24"
-          ></ReviewsRatingsAndLikesRatingAverage>
-        </div>
-      </div>
-    </div>
   </div>
 </template>

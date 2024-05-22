@@ -44,10 +44,10 @@ const showAddReviewModal = ref(false);
     class="px-4 samsg:px-5 md:px-8 xl:px-12 2xl:px-[100px] hidden lg:block relative"
   >
     <div class="relative rounded-lg overflow-hidden">
-      <CarouselMultiImage
+      <PlaceAndReviewMultiImageCarousel
         :images="imagesToShow"
         class="hidden lg:block"
-      ></CarouselMultiImage>
+      ></PlaceAndReviewMultiImageCarousel>
       <div
         class="flex flex-col space-y-2 absolute bottom-0 rounded-xl px-4 w-full pl-16 pb-6 pt-6 bg-no-repeat bg-center bg-cover bg-[url('/images/static/full-gradient.png')]"
       >
@@ -143,10 +143,10 @@ const showAddReviewModal = ref(false);
             src="/images/static/ambiance.png"
             alt=" ambiance icon"
           />
-          <TagsAmbiance
+          <PlaceAndReviewAmbiance
             class=""
             :ambiances="place.placeAmbiances"
-          ></TagsAmbiance>
+          ></PlaceAndReviewAmbiance>
         </div>
       </div>
     </div>
