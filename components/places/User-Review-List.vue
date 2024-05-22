@@ -153,30 +153,25 @@ const handleDelete = (id) => {
 </script>
 
 <template>
-  <!-- <div>kk
-    {{ reviewReviews }}
-
-  </div> -->
-
   <div class="max-w-[57rem]">
     <H-Tab :tabs="tabs" tab-class="text-xl " tab-container-class="gap-x-12">
       <template #all>
         <div class="h-screen overflow-scroll scroll w-full">
-          <Place-UserReviewItem
+          <Places-UserReviewItem
             v-for="userReview in reviewReviews"
             :key="userReview.id"
             :userReview="userReview"
             @delete-review="handleDelete"
-          ></Place-UserReviewItem>
+          ></Places-UserReviewItem>
         </div>
       </template>
       <template #reported>
-        <Place-UserReviewReportItem
+        <Places-UserReviewReportItem
           v-for="userReview in reportedReviews"
           :key="userReview.id"
           :userReview="userReview"
           @delete-review="handleDelete"
-        ></Place-UserReviewReportItem>
+        ></Places-UserReviewReportItem>
       </template>
     </H-Tab>
   </div>

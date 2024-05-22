@@ -89,9 +89,7 @@ definePageMeta({
   <div>
     <!-- Top -->
     <Places-Analytics v-if="place" :place="place" />
-    <!-- <div class="pl-96">
-      <pre>{{ place }}</pre>
-    </div> -->
+
     <!-- Tab -->
     <div class="py-8" v-if="place">
       <H-Tab

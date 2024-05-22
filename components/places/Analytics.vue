@@ -2,13 +2,9 @@
 import { onClickOutside } from "@vueuse/core";
 import editPlaceMutation from "@/graphql/mutations/place/changePlaceStatus.gql";
 import useNotify from "@/use/notify";
-/**-------------------------Imports------------------------- */
-import formatNumberToShow from "~/helpers/format-number-to-show";
-import { formatRelative } from "date-fns";
 
 /**----------------------Globals-------------------------- */
 const router = useRouter();
-const route = useRoute();
 
 const { notify } = useNotify();
 
@@ -43,63 +39,6 @@ function placeStatus(status) {
     };
   }
 }
-
-const series = ref([
-  {
-    name: "Score",
-    data: [],
-  },
-]);
-const options = ref({
-  chart: {
-    type: "area",
-  },
-  markers: {
-    size: 0,
-  },
-  dataLabels: {
-    enabled: false,
-  },
-  stroke: {
-    curve: "smooth",
-    width: 3,
-  },
-
-  colors: ["#D34553"],
-
-  plotOptions: {
-    bar: {
-      borderRadius: 10,
-      borderRadiusApplication: "around",
-    },
-  },
-});
-const updateChart = () => {
-  //generate array of random numbers of length 10
-  const data = Array.from({ length: 10 }, () =>
-    Math.floor(Math.random() * 100)
-  );
-  options.value = {
-    ...options.value,
-    xaxis: {
-      categories: Array.from(
-        { length: 10 },
-        (_, i) => new Date().getFullYear() - i
-      ), // array of last 10 years
-    },
-  };
-
-  series.value = [
-    {
-      name: "Score",
-      data: data,
-    },
-  ];
-};
-
-onMounted(() => {
-  updateChart();
-});
 
 /**----------------------update place status---------------------- */
 const featureActionsContainer = ref(null);

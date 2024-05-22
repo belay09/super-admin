@@ -72,7 +72,7 @@ onError((error) => {
         </div>
       </div>
       <div class="w-3/4 ml-5">
-        <ShegerReviews-RatingBar :rate="starCount" />
+        <Places-RatingBar :rate="starCount" />
       </div>
     </div>
     <div class="w-full flex my-5">
