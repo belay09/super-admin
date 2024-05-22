@@ -21,8 +21,15 @@ const frequencies = ref([
 		id: "QUARTERLY",
 	},
 ]);
-
 const emit = defineEmits(["update:modelValue"]);
+
+const title = ref("");
+const placeAddLimit = ref({});
+const reviewAddLimit = ref({});
+const placeBadge = ref({});
+const featuredPlace = ref({});
+const rules = ref({});
+const freqPrice = ref({});
 
 const features = computed({
 	get() {
@@ -33,27 +40,110 @@ const features = computed({
 	},
 });
 
-const singleFeature = ref({});
+/*---------------------------------Return single feature------------------------------*/
 
-const isEdit = ref(false);
-
-const addFeature = handleSubmit(() => {
-	features.value.push(singleFeature.value);
-	singleFeature.value = {};
-	isEdit.value = false;
+const singleFeature = computed(() => {
+	return {
+		...freqPrice.value,
+		pricing_plan_frequency_items: {
+			data: {
+				item: {
+					data: {
+						title: title.value,
+						name: title.value,
+						rules: {
+							...rules.value,
+							place_add: {
+								...placeAddLimit.value,
+							},
+							review_add: {
+								...reviewAddLimit.value,
+							},
+							place_badge: {
+								...placeBadge.value,
+							},
+							featured_place: {
+								...featuredPlace.value,
+							},
+						},
+					},
+				},
+			},
+		},
+	};
 });
 
+const isEdit = ref(false);
 const editIndex = ref(0);
 
+/*---------------------------------Add  Items Function------------------------------*/
+
+const addFeature = handleSubmit(() => {
+	features.value = [...features.value, { ...singleFeature.value }];
+
+	title.value = "";
+	placeAddLimit.value = {};
+	reviewAddLimit.value = {};
+	placeBadge.value = {};
+	featuredPlace.value = {};
+	rules.value = {};
+	freqPrice.value = {};
+});
+
+/*---------------------------------Initiate Edit Function------------------------------*/
+
+const initiateEdit = (index) => {
+	editIndex.value = index;
+	isEdit.value = true;
+
+	const editItem = { ...features.value[index] };
+	title.value = editItem?.pricing_plan_frequency_items?.data?.item?.data?.title;
+	placeAddLimit.value =
+		editItem?.pricing_plan_frequency_items?.data?.item?.data?.rules?.place_add;
+	reviewAddLimit.value =
+		editItem?.pricing_plan_frequency_items?.data?.item?.data?.rules?.review_add;
+	placeBadge.value =
+		editItem?.pricing_plan_frequency_items?.data?.item?.data?.rules?.place_badge;
+	featuredPlace.value =
+		editItem?.pricing_plan_frequency_items?.data?.item?.data?.rules?.featured_place;
+	freqPrice.value = {
+		price: editItem?.price,
+		frequency: editItem?.frequency,
+	};
+	rules.value = {
+		branch_address_limit:
+			editItem?.pricing_plan_frequency_items?.data?.item?.data?.rules
+				?.branch_address_limit,
+		place_profile_limit:
+			editItem?.pricing_plan_frequency_items?.data?.item?.data?.rules
+				?.place_profile_limit,
+		review_limit:
+			editItem?.pricing_plan_frequency_items?.data?.item?.data?.rules
+				?.review_limit,
+		menu_limit:
+			editItem?.pricing_plan_frequency_items?.data?.item?.data?.rules
+				?.menu_limit,
+	};
+};
+
+/*---------------------------------Edit Items Function------------------------------*/
 const editFeature = handleSubmit(() => {
 	features.value[editIndex.value] = singleFeature.value;
-	singleFeature.value = {};
+
 	isEdit.value = false;
+
+	title.value = "";
+	placeAddLimit.value = {};
+	reviewAddLimit.value = {};
+	placeBadge.value = {};
+	featuredPlace.value = {};
+	rules.value = {};
+	freqPrice.value = {};
 });
 </script>
 
 <template>
-	<form id="features" class="px-8 overflow-y-auto border-x">
+	<form id="features" class="px-8 overflow-y-auto border-l">
 		<p class="py-4 text-lg font-medium text-sheger-gray-100">Pricing Items</p>
 		<!-- -----------------Plan name---------------- -->
 		<H-Textfield
@@ -61,49 +151,97 @@ const editFeature = handleSubmit(() => {
 			name="title"
 			label="Title"
 			placeholder="Title"
-			v-model="singleFeature.title"
+			v-model="title"
 			rules="required"
 		></H-Textfield>
 
 		<!-- -----------------Frequency and Lamp Sum Price---------------- -->
 		<div class="grid grid-cols-2 pt-6 gap-x-6">
 			<H-Textfield
-				id="lamp_sum_price"
-				name="feature type price"
-				label="Limit"
+				id="price"
+				name="price"
+				label="Lump Sum Price"
 				type="number"
-				v-model="singleFeature.limit"
+				v-model="freqPrice.price"
 				rules="required"
 			></H-Textfield>
 
 			<H-SingleSelect
-				name="feature type"
+				name="frequency"
 				id="frequency"
-				label="Type"
+				label="Frequency"
 				:items="frequencies"
-				v-model="singleFeature.itemType"
+				v-model="freqPrice.frequency"
 				rules="required"
 			></H-SingleSelect>
 		</div>
-		<!-- -----------------Frequency and Lamp Sum Price---------------- -->
-		<!-- <BillingsPricingAddPrice
-			freq-label-name="Frequency"
-			price-label-name="Price"
-			:frequencies="frequencies"
-			v-model="prices"
-		/> -->
 
-		<!-- ---------------------Description---------------- -->
-
-		<H-Textarea
-			id="description"
-			name="feature description"
-			label="Description"
-			class="pt-2"
-			v-model="singleFeature.description"
-			rules="required"
-		></H-Textarea>
-
+		<div class="grid grid-cols-2 border-t gap-x-4 gap-y-2 mt-6 pt-4">
+			<H-Textfield
+				id="place add"
+				name="place add"
+				label="Place Add Week Limit"
+				type="number"
+				v-model="placeAddLimit.week_limit"
+				rules="required"
+			></H-Textfield>
+			<H-Textfield
+				id="Menu Limit"
+				name="Menu Limit"
+				label="Menu Limit"
+				type="number"
+				v-model="rules.menu_limit"
+				rules="required"
+			></H-Textfield>
+			<H-Textfield
+				id="Review Add"
+				name="Review Add"
+				label="Review Week Limit"
+				type="number"
+				v-model="reviewAddLimit.week_limit"
+				rules="required"
+			></H-Textfield>
+			<H-Textfield
+				id="Place Badge"
+				name="Place Badge"
+				label="Badge Week Limit"
+				type="number"
+				v-model="placeBadge.week_limit"
+				rules="required"
+			></H-Textfield>
+			<H-Textfield
+				id="Review Limit"
+				name="Review Limit"
+				label="Review Limit"
+				type="number"
+				v-model="rules.review_limit"
+				rules="required"
+			></H-Textfield>
+			<H-Textfield
+				id="Featured Place"
+				name="Featured Place"
+				label="Featured  Week Limit"
+				type="number"
+				v-model="featuredPlace.week_limit"
+				rules="required"
+			></H-Textfield>
+			<H-Textfield
+				id="Place Profile Limit"
+				name="Place Profile Limit"
+				label="Place Profile Limit"
+				type="number"
+				v-model="rules.place_profile_limit"
+				rules="required"
+			></H-Textfield>
+			<H-Textfield
+				id="Branch Address Limit"
+				name="Branch Address Limit"
+				label="Branch Address Limit"
+				type="number"
+				v-model="rules.branch_address_limit"
+				rules="required"
+			></H-Textfield>
+		</div>
 		<!-- ----------------------Submit------------------- -->
 		<button
 			form="features"
@@ -125,28 +263,21 @@ const editFeature = handleSubmit(() => {
 				class="relative flex flex-col items-start w-full p-2 overflow-hidden text-sm border border-gray-300 rounded-lg gap-y-1 group"
 			>
 				<p class="text-lg font-semibold text-sheger-gray-950">
-					{{ item.title }}
+					{{ item.pricing_plan_frequency_items.data.item.data.title }}
 				</p>
 				<p class="text-gray-950">
-					<span class="font-medium text-gray-950">limit:</span> {{ item.limit }}
+					<span class="font-medium text-gray-950">Frequency:</span>
+					{{ item.frequency }}
 				</p>
 				<p>
-					<span class="font-medium text-gray-950">type:</span
-					>{{ item.itemType }}
+					<span class="font-medium text-gray-950">Price:</span>{{ item.price }}
 				</p>
-				<p class="line-clamp-2">{{ item.description }}</p>
 
 				<div
 					class="absolute hidden items-center justify-center gap-x-4 group-hover:flex top-0 left-0 w-full h-full group-hover:bg-slate-100/10 group-hover:backdrop-blur-[2px]"
 				>
 					<Icon
-						@click="
-							[
-								(singleFeature = { ...item }),
-								(editIndex = index),
-								(isEdit = true),
-							]
-						"
+						@click="[initiateEdit(index)]"
 						class="text-3xl cursor-pointer"
 						name="tdesign:edit"
 					/>

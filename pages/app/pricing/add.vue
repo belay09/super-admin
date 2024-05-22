@@ -3,28 +3,12 @@ import { useForm } from "vee-validate";
 import useNotify from "@/use/notify";
 import addPricingQuery from "@/graphql/mutations/pricing/add.gql";
 
-const { notify } = useNotify();
-/***---------------------Tab--------------------- */
 const router = useRouter();
 const { handleSubmit } = useForm();
-const frequencies = ref([
-	{
-		name: "Monthly",
-		id: "MONTHLY",
-	},
-	{
-		name: "Annually",
-		id: "ANNUALLY",
-	},
-	{
-		name: "Quarterly",
-		id: "QUARTERLY",
-	},
-]);
+const { notify } = useNotify();
 
 const formInput = ref({});
-const lampPrices = ref([]);
-// const pricingItems = ref([]);
+const pricingItems = ref([]);
 const features = ref([]);
 
 definePageMeta({
@@ -39,15 +23,15 @@ const {
 } = authMutation(addPricingQuery);
 
 const onSubmit = handleSubmit(() => {
-	// if (!pricingItems.value.length) {
-	// 	notify({
-	// 		title: "Add pricing items",
-	// 		description: "At lease one pricing items is required",
-	// 		type: "error",
-	// 		borderClass: "border-l-8 border-red-300 bg-primary-200",
-	// 	});
-	// 	return;
-	// }
+	if (!pricingItems.value.length) {
+		notify({
+			title: "Add pricing items",
+			description: "At lease one pricing items is required",
+			type: "error",
+			borderClass: "border-l-8 border-red-300 bg-primary-200",
+		});
+		return;
+	}
 	if (!features.value.length) {
 		notify({
 			title: "Add features",
@@ -57,8 +41,8 @@ const onSubmit = handleSubmit(() => {
 		});
 		return;
 	}
+
 	formInput.value.rank = 1;
-	formInput.value.pricing_plan_frequencies = { data: lampPrices.value };
 	formInput.value.pricing_plan_features = {
 		data: features.value.map((item) => {
 			return {
@@ -68,23 +52,10 @@ const onSubmit = handleSubmit(() => {
 			};
 		}),
 	};
-	// formInput.value.pricing_plan_items = {
-	// 	data: pricingItems.value.map((item) => {
-	// 		return {
-	// 			item: {
-	// 				data: {
-	// 					name: item.title,
-	// 					description: item.description,
-	// 					itemType: item.itemType,
-	// 					title: item.title,
-	// 					rules: {
-	// 						limit: parseInt(item.limit),
-	// 					},
-	// 				},
-	// 			},
-	// 		};
-	// 	}),
-	// };
+
+	formInput.value.pricing_plan_frequencies = {
+		data: pricingItems,
+	};
 
 	addPricing({ object: formInput.value });
 });
@@ -96,7 +67,7 @@ addPricingDone((result) => {
 		type: "success",
 		borderClass: "border-l-8 border-green-300",
 	});
-	router.push("/app/billings/pricing");
+	router.push("/app/pricing");
 });
 
 addPricingError((error) => {
@@ -137,7 +108,7 @@ addPricingError((error) => {
 
 		<!-- -------------------Add pricing plan-------------------- -->
 
-		<div class="grid grid-cols-2 gap-8">
+		<div class="grid grid-cols-3 gap-8">
 			<!-- -----------------Basic info---------------- -->
 			<div>
 				<p class="py-4 text-lg font-medium text-sheger-gray-100">Basic Info</p>
@@ -173,17 +144,9 @@ addPricingError((error) => {
 					rules="required"
 				></H-Textarea>
 
-				<!-- -----------------Frequency and Lamp Sum Price---------------- -->
-				<BillingsPricingAddPrice
-					freq-label-name="Frequency"
-					price-label-name="Lump Sum Price"
-					:frequencies="frequencies"
-					v-model="lampPrices"
-				/>
 				<!-- --------------------Plan visibility---------------- -->
 			</div>
-			<!-- -----------------Pricing Items----------------
-			<BillingsPricingItem v-model="pricingItems" /> -->
+			<BillingsPricingItem v-model="pricingItems" />
 			<!-- -------------------------------Features---------------- -->
 			<BillingsPricingFeatures v-model="features" />
 		</div>

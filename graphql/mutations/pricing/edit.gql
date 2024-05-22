@@ -4,11 +4,6 @@ mutation (
 	$frequency_price: [BillingsPricingPlanFrequenciesInsertInput!]!
 	$pricing_plan: BillingsPricingPlansSetInput
 ) {
-	# deleteBillingsPricingPlanItems(
-	# 	where: { pricingPlanId: { _eq: $pricing_plan_id } }
-	# ) {
-	# 	affectedRows
-	# }
 	deleteBillingsPricingPlanFeatures(
 		where: { pricingPlanId: { _eq: $pricing_plan_id } }
 	) {
@@ -19,9 +14,6 @@ mutation (
 	) {
 		affectedRows
 	}
-	# insertBillingsPricingPlanItems(objects: $pricing_plan_items) {
-	# 	affectedRows
-	# }
 	insertBillingsPricingPlanFeatures(objects: $pricing_plan_feature) {
 		affectedRows
 	}

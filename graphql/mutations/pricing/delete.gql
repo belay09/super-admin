@@ -1,14 +1,14 @@
 mutation deletePricing($id: bigint!) {
-	deleteBillingsPricingPlanItems(where: { pricingPlanId: { _eq: $id } }) {
-		affectedRows
-	}
 	deleteBillingsPricingPlanFeatures(where: { pricingPlanId: { _eq: $id } }) {
 		affectedRows
+		__typename
 	}
 	deleteBillingsPricingPlanFrequencies(where: { pricingPlanId: { _eq: $id } }) {
 		affectedRows
+		__typename
 	}
 	deleteBillingsPricingPlansByPk(id: $id) {
 		id
+		__typename
 	}
 }
