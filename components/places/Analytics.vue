@@ -226,6 +226,9 @@ function gotoEditPage(event) {
 </script>
 
 <template>
+  <!-- <pre class="pl-96">
+    {{ place }}
+  </pre> -->
   <!-- -------------------Assign Badge Modal--------------- -->
   <Modals-Modal
     :autoClose="true"
@@ -310,9 +313,9 @@ function gotoEditPage(event) {
             <!--------------------Place Name and status------------------- -->
             <div class="flex gap-3">
               <h1 class="text-xl font-medium">{{ place.name }}</h1>
-              <div class="px-2 py-1" :class="placeStatus(place.status).class">
+              <div class="px-2 py-1" :class="placeStatus(place.status)?.class">
                 <p class="font-medium text-sheger-green-600">
-                  {{ placeStatus(place.status).name }}
+                  {{ placeStatus(place.status)?.name }}
                 </p>
               </div>
             </div>
@@ -324,7 +327,7 @@ function gotoEditPage(event) {
               :review="place?.placeReviewsAggregate?.aggregate?.count || 0"
             ></CommonReviewRatingLike>
 
-            <!-------------------- Menu update---------------------- -->
+            <!--------------------//TODO: Menu last updated at---------------------- -->
             <div class="flex items-center gap-3">
               <Icon name="carbon:calendar" class="w-5 h-5" />
               <p class="text-sheger-gray-100">Menu last updated: 2 days ago</p>
@@ -381,7 +384,7 @@ function gotoEditPage(event) {
     <!----------------- visits------------ -->
     <div class="flex w-full col-span-2">
       <!-- ------------------Visits---------------- -->
-      <PlacesVisitors :place-id="place.id" class="w-full"></PlacesVisitors>
+      <PlacesVisitors :place-id="place?.id" class="w-full"></PlacesVisitors>
 
       <div class="relative">
         <button @click="openMoreAction" class="hover:cursor-pointer">
@@ -394,10 +397,6 @@ function gotoEditPage(event) {
           v-if="showMoreAction"
           class="absolute right-0 flex flex-col p-5 bg-white z-[50] rounded-lg shadow-xl top-7 w-72 gap-y-4"
         >
-          <button class="flex items-center gap-3">
-            <Icon name="icon-park-outline:bill" class="text-2xl shrink-0" />
-            <p class="text-lg">Billing</p>
-          </button>
           <button @click="gotoEditPage" class="flex items-center gap-3">
             <Icon name="uil:edit-alt" class="text-2xl shrink-0" />
             <p class="text-lg">Update Place Info</p>

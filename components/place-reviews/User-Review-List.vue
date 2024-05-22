@@ -1,18 +1,13 @@
 <script setup>
+/**-------------------------Imports------------------------- */
 import getReviewReviewsQuery from "@/graphql/query/reviews/get-place-reviews.gql";
 import getReportReviewsQuery from "@/graphql/query/reviews/get-place-report-reviews.gql";
 import list from "@/composables/auth-list-query.js";
-
 import useNotify from "@/use/notify";
 import deleteMutation from "@/graphql/mutations/place-reviews/delete.gql";
-const { notify } = useNotify();
-// const props = defineProps({
-//   review: {
-//     type: Object,
-//     required: true,
-//   },
-// });
 
+const route = useRoute();
+const { notify } = useNotify();
 const tabs = [
   {
     name: "All",
@@ -24,7 +19,6 @@ const tabs = [
     value: "reported",
   },
 ];
-const route = useRoute();
 /*...................Review reviews data fetch.............*/
 const filter = ref({
   placeId: {
@@ -50,8 +44,6 @@ const { onResult, onError, loading, refetch, fetchMore } = list(
 onResult((result) => {
   if (result.data?.placeReviews) {
     reviewReviews.value = result.data?.placeReviews;
-    console.log("reviewReviews", reviewReviews.value);
-    // length.value = result.data?.reviewAggregate?.aggregate?.count;
   }
 });
 onError((error) => {

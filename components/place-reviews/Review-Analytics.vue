@@ -1,15 +1,19 @@
 <script setup>
-import list from "@/composables/auth-list-query";
+/**-----------------------Imports-------------------- */
 import getPlaceStarCount from "@/graphql/query/count/place.gql";
 import useNotify from "@/use/notify";
+
+/**---------------Global variables--------------- */
 const { notify } = useNotify();
+
+/**---------------------Place Star Count Data fetch------------------- */
 const starCount = ref([]);
 const route = useRoute();
 const filter = ref(route.params.id);
-const avg = ref(0);
-const { onResult, onError } = list(getPlaceStarCount, filter);
+const averageRating = ref(0);
+const { onResult, onError } = authListQuery(getPlaceStarCount, filter);
 onResult((result) => {
-  avg.value = result.data?.placeAggregateSummary[0].avgRating;
+  averageRating.value = result.data?.placeAggregateSummary[0].avgRating;
   if (result.data?.place_review_star_counter) {
     starCount.value = Array.from({ length: 5 }, (_, index) => {
       const existingItem = result.data?.place_review_star_counter.find(
@@ -38,25 +42,8 @@ onError((error) => {
     borderClass: "border-l-8 border-green-300",
   });
 });
-const dummyData = [
-  { rating: 1, barValue: 1, barTotal: 10 },
-  { rating: 2, barValue: 2, barTotal: 5 },
-  { rating: 3, barValue: 3, barTotal: 5 },
-  { rating: 4, barValue: 1, barTotal: 10 },
-  { rating: 5, barValue: 1, barTotal: 10 },
-
-  // Add more dummy data objects as needed
-];
-
-// const props = defineProps({
-//   review: {
-//     type: Object,
-//     required: true,
-//   },
-// });
 </script>
 <template>
-  <!-- {{ starCount }} -->
   <div>
     <div class="w-3/4 flex">
       <div
@@ -68,14 +55,14 @@ const dummyData = [
           <p
             class="font-poppins font-medium text-gray-700 text-8xl capitalize text-center"
           >
-            {{ avg }}
+            {{ averageRating?.toFixed(2) }}
           </p>
         </div>
         <div class="my-5">
-          <Nuxt-Rating
+          <NuxtRating
             class="w-full flex justify-center"
-            :rating-value="avg"
-          ></Nuxt-Rating>
+            :rating-value="averageRating"
+          ></NuxtRating>
         </div>
 
         <div class="mb-5">
@@ -85,7 +72,6 @@ const dummyData = [
         </div>
       </div>
       <div class="w-3/4 ml-5">
-        <!-- <HRatingBar :rate="1" /> -->
         <ShegerReviews-RatingBar :rate="starCount" />
       </div>
     </div>

@@ -22,7 +22,7 @@ const filter = computed(() => {
   query._and = [
     {
       placeId: {
-        _eq: props.place.id,
+        _eq: props.place?.id,
       },
     },
     {
@@ -215,24 +215,29 @@ const openUploadFilesModal = ref(false);
       class="flex flex-col h-screen col-span-3 pr-8 space-y-4 overflow-scroll scroll"
     >
       <div class="flex items-start justify-between">
-        <!-- Cuisines -->
-        <div v-if="place.cousins">
+        <!-- ------Cuisines ---------->
+        <div v-if="place.place_cousins" class="flex flex-col space-y-2">
           <p
             class="text-lg font-medium uppercase dark:text-white xl:capitalize"
           >
             Cuisines
           </p>
 
-          <p
-            class="xl:text-lg text-sheger_brown-200 dark:text-sheger_light_gray-400 xl:text-black"
-          >
-            {{ place.cousins }}
-          </p>
+          <div class="flex flex-wrap gap-3">
+            <p
+              v-for="placeCousin in place.place_cousins"
+              :key="placeCousin.id"
+              class="text-lg text-sheger_dark_gray-200 space-x-2 bg-gray-200 border px-3 rounded-full"
+            >
+              {{ placeCousin.cousin?.title }}
+            </p>
+          </div>
         </div>
 
-        <!-- -----------------------------Sheger recommendation, Takeout and House specail menu ---------------- -->
-        <div v-if="place.type == 'Hotels'">
-          <!----------------- Sheger gebeta recommendation -------------------------------->
+        <!-- -----------------------------Sheger recommendation, Takeout and House special menu ---------------- -->
+        <div>
+          <!-----------------  Sheger gebeta recommendation -------------------------------->
+          <!-- ----//TODO Replace  -->
           <div
             v-if="!place.shegerRecommendationId"
             class="items-center justify-between hidden py-4 pl-8 pr-4 space-x-6 border rounded-md lg:flex dark:border-sheger_brown-100"
@@ -340,8 +345,8 @@ const openUploadFilesModal = ref(false);
               <Places-ContactUs :place="place" />
             </div>
 
-            <!-- --------------------------Map for large screens---------------- -->
-            <div v-if="place.placeLocations?.length > 0" class="w-[60%]">
+            <!-- --------------------------Map---------------- -->
+            <div class="w-[60%]">
               <Places-Map
                 :place-locations="place.placeLocations"
                 :center="center"
@@ -352,6 +357,8 @@ const openUploadFilesModal = ref(false);
 
           <!-- -------------------Amenities and Open hours --------------------- -->
           <div class="flex pt-16 space-x-6">
+            <!-- ----------Amenities-------------- -->
+
             <div class="xl:pr-16 2xl:pr-20">
               <h3 class="text-lg font-medium dark:text-white xl:text-2xl">
                 Amenities & More
@@ -374,6 +381,8 @@ const openUploadFilesModal = ref(false);
                 </div>
               </div>
             </div>
+
+            <!-- --------------//TODO Place Open and Close hours------------ -->
 
             <div class="flex flex-col space-y-6 xl:pl-12 2xl:pl-24 xl:border-l">
               <h3 class="text-lg font-medium dark:text-white lg:text-2xl">

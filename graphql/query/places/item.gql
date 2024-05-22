@@ -2,23 +2,24 @@ query getPlace($id: bigint!) {
   place: placesByPk(id: $id) {
     id
     name
-    view_count
-
-    type
-
     # logo
-
     light_logo {
       url
     }
+    view_count
+    status
+    cousins
+    description
+    type
+    categoryId
 
-    # service rating
-    # review_average_rating_by_category
     # contact us
     contactEmail
     contactWebsite
     contactPhoneNumber
     contactAltPhoneNumber
+
+    youtubeVideoUrl
 
     # place aggregate
     place_aggregate_summary {
@@ -107,6 +108,7 @@ query getPlace($id: bigint!) {
       }
     }
 
+    # cousins
     place_cousins {
       id
       cousinId
@@ -154,6 +156,15 @@ query getPlace($id: bigint!) {
         name
         id
       }
+    }
+
+    # featured place
+    featured_places {
+      id
+      startDate
+      endDate
+      isActive
+      type
     }
 
     # place aggregate

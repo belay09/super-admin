@@ -57,7 +57,7 @@ const props = defineProps({
 
     <!-- -------------------------Place Social medias----------------- -->
     <div v-if="place.placeSocialMedias" class="flex flex-col space-y-6">
-      <p class="text-xl">Follow on Social Media</p>
+      <p class="dark:text-white text-xl">Follow on Social Media</p>
 
       <div class="flex md:justify-start space-x-6">
         <NuxtLink
@@ -65,9 +65,12 @@ const props = defineProps({
           :key="socialMedia.id"
           :to="socialMedia.socialMedia?.url"
           target="_blank"
-          class="w-7 h-7 border rounded-full bg-white flex flex-col items-center justify-center"
+          class="w-7 h-7 flex flex-col items-center justify-center"
         >
-          <Icon name="uil:youtube" class="text-primary-600" />
+          <img
+            :src="socialMedia?.socialMedia?.icon?.lightIconUrl"
+            alt=" social media icon"
+          />
         </NuxtLink>
       </div>
     </div>

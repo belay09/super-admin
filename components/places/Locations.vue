@@ -24,10 +24,12 @@ const flyTo = (coordinates, index) => {
     @click="flyTo(placeLocation.location?.coordinates, index)"
     class="flex items-center py-1 px-4 text-sheger_dark_gray-200 space-x-2 bg-sheger-gray-700 rounded-full cursor-pointer duration-300"
     :class="{
-      ' iphone5:bg-primary-600 ': index === currentShowedLocationIndex,
+      ' !bg-primary-600 !text-white ': index == currentShowedLocationIndex,
     }"
   >
     <Icon name="uil:location-point" color="" class="" />
-    <p class="whitespace-nowrap">{{ placeLocation.area?.name }}</p>
+    <p class="whitespace-nowrap">
+      {{ placeLocation.area?.name || "Area " + (index + 1) }}
+    </p>
   </div>
 </template>

@@ -61,11 +61,15 @@ const showRemoveReviewButton = ref(false);
           </div>
         </div>
         <div class="flex space-x-3">
-          <div class="flex px-2 py-1 border-[1px] rounded-3xl  space-x-2"> 
-            <Icon name="fontisto:flag" class="text-2xl text-red-600  rounded-full" />
+          <div class="flex px-2 py-1 border-[1px] rounded-3xl space-x-2">
+            <Icon
+              name="fontisto:flag"
+              class="text-2xl text-red-600 rounded-full"
+            />
             <p class="text-sheger_brown-200 dark:text-sheger_light_gray-400">
-            {{ userReview.type.replace(/_/g, " ")}}
-          </p></div>
+              {{ userReview.type.replace(/_/g, " ") }}
+            </p>
+          </div>
           <button
             @click="showRemoveReviewButton = !showRemoveReviewButton"
             class=""
@@ -89,7 +93,7 @@ const showRemoveReviewButton = ref(false);
         ref="buttonModal"
         v-if="showRemoveReviewButton"
         @click="showRemoveReviewModal = true"
-        class="absolute z-50 py-3 px-2 text-red-600 border rounded-md right-2 hover:bg-primary-100 bottom-5  flex items-center space-x-2"
+        class="absolute z-50 py-3 px-2 text-red-600 border rounded-md right-2 hover:bg-primary-100 bottom-5 flex items-center space-x-2"
       >
         <Icon name="uil:trash-alt" class="text-xl" />
         <p class="whitespace-nowrap">Remove Review</p>
