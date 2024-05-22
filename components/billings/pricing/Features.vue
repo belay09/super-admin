@@ -7,25 +7,6 @@ const props = defineProps({
 	singleFeature: Object,
 });
 
-const frequencies = ref([
-	{
-		name: "Monthly",
-		id: "Monthly",
-	},
-	{
-		name: "Yearly",
-		id: "Yearly",
-	},
-	{
-		name: "Quarterly",
-		id: "Quarterly",
-	},
-	{
-		name: "Bi-Annually",
-		id: "Bi-Annually",
-	},
-]);
-
 const emit = defineEmits(["update:modelValue"]);
 
 const features = computed({

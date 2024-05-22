@@ -11,24 +11,8 @@ const route = useRoute();
 
 const { handleSubmit } = useForm();
 
-const frequencies = ref([
-	{
-		name: "Monthly",
-		id: "MONTHLY",
-	},
-	{
-		name: "Annually",
-		id: "ANNUALLY",
-	},
-	{
-		name: "Quarterly",
-		id: "QUARTERLY",
-	},
-]);
-
 const formInput = ref({});
-const lampPrices = ref([]);
-// const pricingItems = ref([]);
+const pricingItems = ref([]);
 const features = ref([]);
 
 /**----------------Fetch Pricing plan data--------------------------- */
@@ -42,26 +26,30 @@ const {
 
 pricingOnResult((result) => {
 	formInput.value = { ...result.data?.billingsPricingPlansByPk };
-	lampPrices.value = formInput.value.pricing_plan_frequencies.map((item) => {
-		return {
-			price: item.price,
-			frequency: item.frequency,
-		};
-	});
+
 	features.value = formInput.value.pricing_plan_features.map(({ feature }) => {
 		return {
 			title: feature.title,
 			description: feature.description,
 		};
 	});
-	// pricingItems.value = formInput.value.pricing_plan_items.map(({ item }) => {
-	// 	return {
-	// 		title: item.title,
-	// 		description: item.description,
-	// 		itemType: item.itemType,
-	// 		limit: item.rules.limit,
-	// 	};
-	// });
+	pricingItems.value = formInput.value.pricing_plan_frequencies.map((item) => {
+		return {
+			price: item.price,
+			frequency: item.frequency,
+			pricing_plan_frequency_items: {
+				data: {
+					item: {
+						data: {
+							title: item.items[0].item.title,
+							name: item.items[0].item.name,
+							rules: item.items[0].item.rules,
+						},
+					},
+				},
+			},
+		};
+	});
 });
 
 /*---------------------Edit Pricing Plan--------------------- */
@@ -74,15 +62,15 @@ const {
 } = authMutation(updatePricingQuery);
 
 const onSubmit = handleSubmit(() => {
-	// if (!pricingItems.value.length) {
-	// 	notify({
-	// 		title: "Add pricing items",
-	// 		description: "At lease one pricing items is required",
-	// 		type: "error",
-	// 		borderClass: "border-l-8 border-red-300 bg-primary-200",
-	// 	});
-	// 	return;
-	// }
+	if (!pricingItems.value.length) {
+		notify({
+			title: "Add pricing items",
+			description: "At lease one pricing items is required",
+			type: "error",
+			borderClass: "border-l-8 border-red-300 bg-primary-200",
+		});
+		return;
+	}
 	if (!features.value.length) {
 		notify({
 			title: "Add features",
@@ -102,37 +90,18 @@ const onSubmit = handleSubmit(() => {
 
 	editMutation({
 		pricing_plan_id: route.params.id,
-		// pricing_plan_items: pricingItems.value.map((item) => {
-		// 	return {
-		// 		pricingPlanId: route.params.id,
-		// 		item: {
-		// 			data: {
-		// 				name: item.title,
-		// 				description: item.description,
-		// 				itemType: item.itemType,
-		// 				title: item.title,
-		// 				rules: {
-		// 					limit: parseInt(item.limit),
-		// 				},
-		// 			},
-		// 		},
-		// 	};
-		// }),
-
+		frequency_price: pricingItems.value.map((item) => {
+			return {
+				pricingPlanId: route.params.id,
+				...item,
+			};
+		}),
 		pricing_plan_feature: features.value.map((item) => {
 			return {
 				pricingPlanId: route.params.id,
 				feature: {
 					data: item,
 				},
-			};
-		}),
-
-		frequency_price: lampPrices.value.map((item) => {
-			return {
-				pricingPlanId: route.params.id,
-				price: item.price,
-				frequency: item.frequency,
 			};
 		}),
 
@@ -147,7 +116,7 @@ onEditDone(() => {
 		type: "success",
 		borderClass: "border-l-8 border-green-300 bg-primary-200",
 	});
-	router.push("/app/billings/pricing");
+	router.push("/app/pricing");
 });
 
 onEditError(() => {
@@ -190,7 +159,7 @@ definePageMeta({
 
 		<!-- -------------------Add pricing plan-------------------- -->
 
-		<div class="grid grid-cols-2 !h-[750px] overflow-hidden gap-8">
+		<div class="grid grid-cols-3 !h-[750px] overflow-hidden gap-8">
 			<!-- -----------------Basic info---------------- -->
 			<div>
 				<p class="py-4 text-lg font-medium text-sheger-gray-100">Basic Info</p>
@@ -226,17 +195,9 @@ definePageMeta({
 					rules="required"
 				></H-Textarea>
 
-				<!-- -----------------Frequency and Lamp Sum Price---------------- -->
-				<BillingsPricingAddPrice
-					freq-label-name="Frequency"
-					price-label-name="Lump Sum Price"
-					:frequencies="frequencies"
-					v-model="lampPrices"
-				/>
 				<!-- --------------------Plan visibility---------------- -->
 			</div>
-			<!-- -----------------Pricing Items----------------
-			<BillingsPricingItem v-model="pricingItems" /> -->
+			<BillingsPricingItem v-model="pricingItems" />
 			<!-- -------------------------------Features---------------- -->
 			<BillingsPricingFeatures v-model="features" />
 		</div>

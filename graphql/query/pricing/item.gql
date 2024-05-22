@@ -3,32 +3,30 @@ query pricingPlans($id: bigint!) {
 		id
 		isVisible
 		description
-		pricing_plan_features {
-			id
-		}
 		title
 		type
 		rank
-		pricing_plan_items {
-			id
-		}
 		pricing_plan_frequencies {
+			id
 			price
 			frequency
+			items: pricing_plan_frequency_items {
+				id
+				item {
+					title
+					rules
+					name
+					itemType
+					description
+				}
+			}
 		}
 		pricing_plan_features {
+			id
 			feature {
 				title
 				description
 				id
-			}
-		}
-		pricing_plan_items {
-			item {
-				title
-				description
-				rules
-				itemType
 			}
 		}
 	}
