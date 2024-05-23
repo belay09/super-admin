@@ -212,7 +212,11 @@ const showMoreAction = ref(false);
 				<div class="self-start w-20 h-20 mr-1 shrink-0">
 					<!-- Image -->
 					<img
-						:src="place.light_logo?.url"
+						:src="
+							place.light_logo && place.light_logo.url
+								? place.light_logo.url
+								: 'https://cdn.hahu.jobs/public/sheger-gebeta/6f1fedea-f5cf-4cea-afe8-1f0e807a4d3d.png'
+						"
 						alt=""
 						class="object-cover w-full h-full rounded-xl"
 					/>
