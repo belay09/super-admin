@@ -31,11 +31,11 @@ const navs = ref([
 		icon: "mingcute:service-fill",
 		to: "/app/support-contact",
 	},
-	{
-		name: "Broadcast",
-		icon: "ri:megaphone-line",
-		to: "/app/broadcast",
-	},
+	// {
+	// 	name: "Broadcast",
+	// 	icon: "ri:megaphone-line",
+	// 	to: "/app/broadcast",
+	// },
 ]);
 </script>
 

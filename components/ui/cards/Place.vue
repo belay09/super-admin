@@ -301,25 +301,8 @@ function openMoreAction(event) {
 							<div
 								ref="featureActionsContainer"
 								v-if="showMoreAction"
-								class="absolute left-0 flex flex-col p-5 bg-white rounded-lg shadow-xl top-7 w-72 gap-y-4"
+								class="absolute right-0 flex flex-col p-5 bg-white rounded-lg shadow-xl top-7 w-72 gap-y-4"
 							>
-								<button
-									@click.stop="
-										$router.push({
-											path: `/app/billings/${place.id}`,
-											query: {
-												name: place.name,
-											},
-										})
-									"
-									class="flex items-center gap-3"
-								>
-									<Icon
-										name="icon-park-outline:bill"
-										class="text-2xl shrink-0"
-									/>
-									<p class="text-lg">Billing</p>
-								</button>
 								<button @click="gotoEditPage" class="flex items-center gap-3">
 									<Icon name="uil:edit-alt" class="text-2xl shrink-0" />
 									<p class="text-lg">Update Place Info</p>

@@ -42,6 +42,13 @@ const goToPlaceCreation = () => {
 };
 
 addInviteDone(() => {
+	router.push({
+		path: route.path,
+		query: {
+			...route.query,
+			step: 3,
+		},
+	});
 	openSuccess.value = true;
 });
 addInviteError((error) => {
@@ -65,14 +72,14 @@ const prev = () => {
 const openSuccess = ref(false);
 </script>
 <template>
-	<Modals-Confirmation
+	<!-- <Modals-Confirmation
 		v-model="openSuccess"
 		title="Entity Creation Successful"
 		icon-class="self-center text-primary-600"
 		sureQuestion="Do you want to continue to Place Creation?"
 		confirm-button="Continue"
 		@confirm="goToPlaceCreation"
-	/>
+	/> -->
 	<div class="grid grid-cols-2 mt-12 gap-6">
 		<HTextfield
 			name="First Name"

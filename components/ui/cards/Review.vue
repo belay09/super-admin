@@ -126,7 +126,7 @@ const toggleRemoveModal = ref(false);
 
 	<div
 		@click="$router.push(`/app/sheger-reviews/${review.id}`)"
-		class="flex cursor-pointer hover:border-primary-600 hover:shadow-md flex-col border w-full max-w-[28rem] p-6 rounded-xl text-sm"
+		class="flex cursor-pointer hover:border-primary-600 hover:shadow-md flex-col border w-full p-6 rounded-xl text-sm"
 	>
 		<!-- --------------------Card Header -------------->
 		<div class="flex items-start justify-between">
@@ -147,7 +147,7 @@ const toggleRemoveModal = ref(false);
 				<div
 					ref="actionDropDown"
 					v-if="openActions"
-					class="absolute left-0 flex flex-col p-5 bg-white rounded-lg shadow-xl top-7 w-72 gap-y-4"
+					class="absolute right-0 flex flex-col p-5 bg-white rounded-lg shadow-xl top-7 w-72 gap-y-4"
 				>
 					<button
 						@click.stop="togglePublishModal = true"
