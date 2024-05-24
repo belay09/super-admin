@@ -210,7 +210,6 @@ function rowCheckedAll() {
 					<td :colspan="headers.length">
 						<HZeroResult
 							v-if="!loading && !items.length"
-							text="Entities not found"
 							class="flex items-center mt-8 justify-center py-8"
 						></HZeroResult>
 					</td>

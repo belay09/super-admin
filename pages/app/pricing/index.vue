@@ -130,6 +130,11 @@ definePageMeta({
 			<div class="grid grid-cols-3 gap-6" v-else>
 				<SkeletonLoader-PricingPlan v-for="i in 6" :key="i" />
 			</div>
+			<HZeroResult
+				v-if="!pricingLoading && pricingPlansDisplay.length == 0"
+				text="No plan found"
+				class="flex items-center mt-8 justify-center py-8"
+			></HZeroResult>
 		</div>
 
 		<!-- -------------------------Pricing lists-------------- -->
