@@ -108,13 +108,20 @@ definePageMeta({
 			</button>
 		</div>
 	</div>
-	<div v-if="!loading" class="mt-6 grid grid-cols-3 gap-4">
-		<UiCardsEntity
-			@editDone="refetch"
-			:entity="entity"
-			v-for="entity in entities"
-			:key="entity.id"
-		/>
+	<div v-if="!loading">
+		<div class="mt-6 grid h-full grid-cols-3 gap-4" v-if="entities.length">
+			<UiCardsEntity
+				@editDone="refetch"
+				:entity="entity"
+				v-for="entity in entities"
+				:key="entity.id"
+			/>
+		</div>
+		<HZeroResult
+			text="Entities not found"
+			class="flex items-center mt-8 justify-center py-8"
+			v-else
+		></HZeroResult>
 	</div>
 	<div v-else class="mt-6 grid grid-cols-3 gap-4">
 		<SkeletonLoaderEntity v-for="i in 6" :key="i" />

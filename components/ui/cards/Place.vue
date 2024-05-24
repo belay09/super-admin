@@ -355,14 +355,14 @@ function openMoreAction(event) {
 
 								<!-- ----------------Close  Place For the day---------- -->
 								<!-- <button
-                  @click="toggleCloseThePlaceForTheDayModal"
-                  class="flex items-center gap-3"
-                >
-                  <Icon name="bi:door-closed" class="text-2xl shrink-0" />
-                  <p class="text-lg text-primary-600 whitespace-nowrap">
-                    Close Place For Day
-                  </p>
-                </button> -->
+									@click="toggleCloseThePlaceForTheDayModal"
+									class="flex items-center gap-3"
+								>
+									<Icon name="bi:door-closed" class="text-2xl shrink-0" />
+									<p class="text-lg text-primary-600 whitespace-nowrap">
+										Close Place For Day
+									</p>
+								</button> -->
 								<!-- ----------------Close Place---------- -->
 								<button
 									@click="toggleClosePlaceModal"

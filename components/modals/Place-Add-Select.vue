@@ -87,6 +87,10 @@ const open = computed({
 				<div v-else class="mt-6 grid grid-cols-3 gap-4">
 					<SkeletonLoaderEntity v-for="i in 6" :key="i" />
 				</div>
+				<HZeroResult
+					v-if="!loading && !entities.length"
+					class="flex items-center mt-8 justify-center py-8"
+				></HZeroResult>
 			</div>
 		</template>
 	</ModalsModal>

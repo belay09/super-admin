@@ -33,7 +33,7 @@ const filter = computed(() => ({
 const { onResult, loading, refetch } = custom(Stats, filter);
 
 onResult(({ data }) => {
-	let singups = [...data.sheger_daily_user_signups];
+	let singups = [...data?.sheger_daily_user_signups];
 	singups.sort((a, b) => {
 		// Convert date strings to Date objects for comparison
 		const dateA = new Date(a.date);
@@ -45,7 +45,7 @@ onResult(({ data }) => {
 		return 0;
 	});
 
-	let adViews = [...data.sheger_daily_add_views];
+	let adViews = [...data?.sheger_daily_add_views];
 	adViews.sort((a, b) => {
 		// Convert date strings to Date objects for comparison
 		const dateA = new Date(a.date);
@@ -57,7 +57,7 @@ onResult(({ data }) => {
 		return 0;
 	});
 
-	let userEngagements = [...data.sheger_daily_user_engagment];
+	let userEngagements = [...data?.sheger_daily_user_engagment];
 	userEngagements.sort((a, b) => {
 		// Convert date strings to Date objects for comparison
 		const dateA = new Date(a.date);
@@ -69,7 +69,7 @@ onResult(({ data }) => {
 		return 0;
 	});
 
-	let placeViews = [...data.sheger_daily_visitor_by_categories];
+	let placeViews = [...data?.sheger_daily_visitor_by_categories];
 	placeViews.sort((a, b) => {
 		// Convert date strings to Date objects for comparison
 		const dateA = new Date(a.date);
@@ -167,8 +167,10 @@ function compressXAxisData(data) {
 	const compressedData = [];
 	const interval = Math.floor(data.length / 12); // Calculate interval size
 
-	for (let i = 0; i < data.length; i += interval) {
-		compressedData.push(data[i]);
+	if (data.length > 12) {
+		for (let i = 0; i < data.length; i += interval) {
+			compressedData.push(data[i]);
+		}
 	}
 
 	return compressedData;

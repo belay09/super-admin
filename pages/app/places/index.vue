@@ -232,6 +232,7 @@ definePageMeta({
 				class="w-full pt-16"
 			></HPaginate>
 			<HZeroResult
+				text="Places not found"
 				class="flex items-center justify-center py-8"
 				v-if="!loading && length == 0"
 			></HZeroResult>

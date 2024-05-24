@@ -152,12 +152,10 @@ const openAddAdSpace = ref(false);
 				>
 				</UiCardsReviewAdItem>
 			</div>
-			<p
-				class="py-4 text-2xl font-medium"
+			<HZeroResult
 				v-if="!loading && reviewAds.length == 0"
-			>
-				Zero Result
-			</p>
+				class="flex items-center mt-8 justify-center py-8"
+			></HZeroResult>
 		</div>
 	</div>
 </template>
