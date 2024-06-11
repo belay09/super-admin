@@ -26,6 +26,7 @@ const {
 uploadDone((result) => {
   if (result.data) {
     emit("update:modelValue", result.data?.uploadFiles.fileUrls[0]);
+    console.log(result.data?.uploadFiles.fileUrls[0]);
     emit("uploadDone", result.data?.uploadFiles.fileUrls[0]);
     showUploadImageModal.value = false;
     emit("close");

@@ -26,7 +26,7 @@ function fetchSvg() {
         svgContent.value = response.data;
         svgContent.value = response.data.replace(
           "<svg",
-          '<svg style="width: 20px; height: 20px;"'
+          '<svg style="width: 25px; height: 25px;"'
         );
       })
       .catch((error) => {});

@@ -7,6 +7,8 @@
     <NuxtLayout>
       <NuxtPage></NuxtPage>
     </NuxtLayout>
+    <HNotification />
+
     <!-- <NuxtPage /> -->
     <!-- <div id="loading">Loading...</div> -->
   </div>

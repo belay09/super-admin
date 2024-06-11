@@ -41,6 +41,7 @@ const props = defineProps({
   maxFileSize: {
     type: Number,
     required: false,
+    default: 10485760, // In byte
   },
   inputClass: {
     type: String,
@@ -75,18 +76,6 @@ const props = defineProps({
     default: "required",
     required: false,
   },
-
-  allowedTypes: {
-    type: Array,
-    default: [
-      "image/jpeg",
-      "image/png",
-      "image/svg+xml",
-      "image/gif",
-      "application/pdf",
-    ],
-  },
-
   text: { type: String },
   fileTypes: { type: String },
   wrapperClass: String,
@@ -132,12 +121,7 @@ const onFileSelect = async (event) => {
     fileInfo.value.name = file.name;
     fileInfo.value.size = getFileSize(file.size);
     fileInfo.value.type = file.type;
-
-    if (props.allowedTypes.includes(file.type) == false) {
-      errorMessage2.value = "Please upload a valid file type";
-      return;
-    }
-
+    console.log(file.type);
     if (props.fileType == "pdf") {
       if (file.type != "application/pdf") {
         errorMessage2.value = "Please upload a pdf file";
@@ -155,6 +139,14 @@ const onFileSelect = async (event) => {
         return;
       }
     }
+
+    if (file.size > props.maxFileSize) {
+      errorMessage2.value = "Please, upload a file less than 10 MB";
+      return;
+    }
+
+    errorMessage2.value = "";
+
     createImage(file);
     files.value[0] = file;
   }
@@ -164,9 +156,10 @@ const onFileSelect = async (event) => {
 function createImage(file) {
   var reader = new FileReader();
   reader.onload = (e) => {
-    base64String.value = reader.result; // This is the base64-encoded string
     base64Files.value[0] = e.target.result;
-    if (props.fileType != "image") {
+    // props.modelValue = base64Files.value[0];
+    console.log(base64Files.value[0]);
+    if (props.fileType = "image") {
       type.value = getMimeType(e.target.result, "image/jpeg");
       emit("upload", base64Files.value[0]);
     } else {
@@ -211,46 +204,57 @@ function getMimeType(file, fallback = null) {
       return fallback;
   }
 }
-const uploadFile = () => {
+function change({ coordinates, image, visibleArea, canvas }) {
+  canvas.toBlob((blob) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      base64String.value = reader.result; // This is the base64-encoded string
+
+      // You can now do something with the base64 string, like uploading it to a server or using it in your application.
+    };
+
+    reader.readAsDataURL(blob);
+    // Do something with blob: upload to a server, download and etc.
+  }, type.value);
+}
+const crop = () => {
   openModal.value = false;
   emit("upload", base64String.value);
 };
 </script>
 <template>
-  <Modals-Modal
-    wrapperClass="max-w-xl"
-    :model-value="openModal && fileType == 'image'"
-  >
+  <!-- <CommonModal :modelValue="openModal">
     <template #content>
-      <div class="border border-dashed p-6 rounded-lg">
-        <div class="flex justify-end">
-          <button @click="openModal = false">
-            <Icon name="uil:trash-alt" class="text-2xl text-gray-400" />
-          </button>
-        </div>
-        <div class="flex items-center justify-center flex-col">
-          <img
-            class="w-16 h-16 object-center"
-            :src="files[0].objectURL"
-            alt="My Image"
-          />
-
-          <p class="text-sm text-gray-600 py-4">{{ files[0].name }}</p>
-        </div>
-      </div>
-
-      <div class="flex justify-center space-x-10 py-5">
+      :maxWidth="cropMaxWidth"
+        :maxHeight="cropMaxHight"
+      <cropper
+        :class="['h-[600px] w-[600px] bg-slate-100', props.cropperClass]"
+        :src="files[0].objectURL"
+        :stencil-component="
+          stencilComponent == 'rectangle' ? RectangleStencil : CircleStencil
+        "
+        @change="change"
+      />
+      <div class="flex justify-center space-x-10 mt-2">
         <button
-          @click="uploadFile"
-          class="flex items-center justify-center space-x-2 py-2 px-5 w-full bg-primary-600 text-white rounded-md"
+          @click="crop"
+          class="flex items-center p-2 space-x-2 text-white rounded-md bg-primary-400"
         >
-          Add Icon
+          <Icon name="material-symbols:crop" class="text-2xl"></Icon>
+          <p>Crop</p>
+        </button>
+        <button
+          @click="openModal = false"
+          class="flex items-center p-2 space-x-1 text-white bg-red-400 rounded-md"
+        >
+          <Icon name="material-symbols:close" class="text-2xl"></Icon>
+          <p>Close</p>
         </button>
       </div>
     </template>
-  </Modals-Modal>
+  </CommonModal> -->
   <div
-    class="flex flex-col w-auto border border-gray-400 border-dashed shadow rounded-md pb-12"
+    class="flex flex-col w-24 h-24"
     @dragover="handleDragOver"
     @drop="onFileSelect"
   >
@@ -267,22 +271,22 @@ const uploadFile = () => {
     </div>
     <div
       v-if="uploaded && !loading"
-      class="flex items-center rounded-md w-full justify-center relative gap-3"
+      class="relative flex items-center justify-center w-auto gap-3 px-1 rounded-md"
     >
       <div
         v-if="fileType == 'image'"
-        class="overflow-hidden justify-center flex"
+        class="flex justify-center overflow-hidden w-5 h-5"
         :class="imageClass"
       >
         <img
           role="presentation"
           alt="logo"
           :src="uploaded"
-          class="object-contain bg-white"
+          class="object-cover bg-white w-24 h-24 rounded-full"
         />
       </div>
       <div v-else class="w-full">
-        <Icon name="uiw:file-pdf" class="text-8xl text-red-500"></Icon>
+        <Icon name="uiw:file-pdf" class="text-red-500 text-8xl"></Icon>
         <div>
           <p>{{ fileInfo.name }}</p>
           <p>{{ fileInfo.size }}</p>
@@ -290,59 +294,38 @@ const uploadFile = () => {
       </div>
       <div
         @click="open"
-        class="absolute cursor-pointer flex text-white justify-center items-center gap-x-2 -bottom-10 capitalize bg-primary px-4 py-1 rounded-md group"
+        class="absolute top-[75px] capitalize cursor-pointer right-1"
       >
-        <Icon
-          name="tdesign:refresh"
-          class="text-xl group-hover:rotate-45 duration-200"
-        ></Icon>
-        Change
+        <Icon name="tdesign:refresh" class="text-xl text-primary-600"></Icon>
       </div>
     </div>
     <div
       v-else-if="loading"
-      class="flex flex-col w-full justify-center items-center h-[200px]"
+      class="flex flex-col w-full justify-center items-center h-[500px]"
     >
-      <div role="status">
-        <svg
-          aria-hidden="true"
-          class="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-primary"
-          viewBox="0 0 100 101"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-            fill="currentColor"
-          />
-          <path
-            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-            fill="currentFill"
-          />
-        </svg>
-        <span class="sr-only">Loading...</span>
-      </div>
+      <Icon name="eos-icons:bubble-loading" class="text-6xl text-primary-600" />
     </div>
     <div
       v-else
-      class="flex flex-col w-full justify-center items-center space-y-4"
+      class="flex flex-col items-center justify-center w-full space-y-4 mt-2"
     >
-      <Icon name="iconoir:add-media-image" class="text-4xl" />
-      <p class="px-5 w-full text-center text-new-tale pt-3">
-        <span class="text-secondary-text ">
-          Drag and drop here or
-        </span>
-        <span @click="open" class="cursor-pointer text-primary-600"
-          >Browse
+      <p
+        class="w-auto px-4 py-4 text-center text-new-tale items-center border border-primary-600 border-dashed rounded-full shadow"
+      >
+        <span @click="open" class="text-primary-600 cursor-pointer"
+          ><Icon
+            name="ic:baseline-plus"
+            class="text-3xl text-primary-600 my-auto self-center"
+          />
         </span>
       </p>
-      <p class="font-poppins font-thin text-sm text-gray-800">
+      <!-- <p class="text-sm font-thin font-poppins text-secondary-text :text-white">
         {{ fileTypesMessage }}
-      </p>
+      </p> -->
     </div>
   </div>
   <p
-    class="col-span-5 mt-1 text-left font-body text-sm text-red-600 duration-300 transition-all"
+    class="col-span-5 mt-1 text-sm text-left text-red-600 transition-all duration-300 font-body"
     :class="errorMessage2 ? 'h-5' : 'h-0'"
     id="email-error"
     :visible="errorMessage2"
@@ -350,7 +333,7 @@ const uploadFile = () => {
     {{ errorMessage2 }} &nbsp;
   </p>
   <p
-    class="col-span-5 mt-1 text-left font-body text-sm text-red-600 duration-300 transition-all"
+    class="col-span-5 mt-1 text-sm text-left text-red-600 transition-all duration-300 font-body"
     :class="errorMessage ? 'h-5' : 'h-0'"
     id="email-error"
     :visible="errorMessage"

@@ -6,6 +6,11 @@ export default defineNuxtConfig({
       __NUXT_ASYNC_CONTEXT__: true,
     },
   },
+  runtimeConfig: {
+    public: {
+      REDIRECT_URI: process.env.REDIRECT_URI,
+    }
+  },
   app: {
     head: {
       title: "Sheger Gebeta",

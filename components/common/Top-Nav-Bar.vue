@@ -6,7 +6,8 @@ import notificationInApp from "@/composables/notification.js";
 
 const router = useRouter();
 const authStore = useAuthStore();
-
+const limit = ref(10)
+const offset = ref(0)
 /**-----------------------------Logout----------------------------- */
 
 const { onLogout } = useApollo();
@@ -21,8 +22,10 @@ function handleLogout() {
 /**-----------------------------Fetch Notification Counter----------------------------- */
 const notificationCounter = ref(0);
 const { onResult: result, refetch: counterRefetch } = notificationInApp(
-	counter,
-	"authClient"
+	counter,{
+  limit,
+  offset
+},
 );
 
 provide("counterRefetch", counterRefetch);
@@ -45,10 +48,11 @@ const currNav = computed(() => {
 
 const showLogoutConformationModal = ref(false);
 const openNotificationSideBar = ref(false);
+
 </script>
 
 <template>
-	<!-- <CommonNotification v-model="openNotificationSideBar" /> -->
+	<CommonNotification v-model="openNotificationSideBar" />
 	<ModalsConfirmation
 		v-model="showLogoutConformationModal"
 		title="Log out"
@@ -82,7 +86,7 @@ const openNotificationSideBar = ref(false);
 				></Icon>
 				<span
 					v-if="notificationCounter > 0"
-					class="counter bg-red-500 text-white text-center rounded-full w-[14px] h-[15px] text-xs absolute bottom-2 right-1"
+					class="counter bg-red-500 text-white text-center rounded-full w-[16px] h-[15px] text-xs absolute bottom-2 right-1"
 					>{{ notificationCounter }}</span
 				>
 			</button>

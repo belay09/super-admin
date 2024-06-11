@@ -64,16 +64,20 @@ const open = (event) => {
   event.stopPropagation();
   showUploadImageModal.value = !showUploadImageModal.value;
 };
-
-watchEffect(() => {
-  title.value = props.item?.title || "";
-  url.value = props.item?.icon?.lightIconUrl || "";
-  type.value = props.item?.type || "";
-
-  if (props.isAdd) {
-    resetForm();
-  }
-});
+watch(
+  () => props.item,
+  (newVal, oldVal) => {
+    if (newVal) {
+      console.log(newVal);
+      title.value = newVal.title;
+      url.value = newVal.icon?.lightIconUrl;
+      type.value = newVal.type;
+    } else if (props.isAdd) {
+      resetForm();
+    }
+  },
+  { deep: true }
+);
 </script>
 
 <template>
@@ -106,10 +110,10 @@ watchEffect(() => {
               class="text-2xl"
             />
             <div v-else>
-              <!-- <CommonSVG
+              <CommonSVG
                 defaultIcon="heroicons:cloud-arrow-up"
                 :url="url"
-              ></CommonSVG> -->
+              ></CommonSVG>
             </div>
           </button>
         </template>

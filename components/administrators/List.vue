@@ -10,6 +10,7 @@ import { useAuthStore } from "@/stores/auth.js";
 import revokeMutate from "@/graphql/mutations/admin/revoke.gql";
 import reactivateMutate from "@/graphql/mutations/admin/reactivate.gql";
 import deleteMutate from "@/graphql/mutations/admin/delete.gql";
+const config = useRuntimeConfig()
 
 const authStore = useAuthStore();
 const { notify } = useNotify();
@@ -18,6 +19,7 @@ const { handleSubmit, resetForm } = useForm({});
 const formattedCreatedAt = ref("");
 const count = ref(0);
 const revoke = ref(false);
+const img=ref()
 const reactivate = ref(false);
 const delet = ref(false);
 const add = ref(false);
@@ -140,10 +142,15 @@ const finish = handleSubmit(() => {
 			GivenName: item.value.name,
 			MiddleName: item.value.lastname,
 			family_name: item.value.family,
-			email: item.value.email,
+			email: item.value.email, 
+			invitation_uri:config.public.REDIRECT_URI+ "/password",
+			redirect_uri:config.public.REDIRECT_URI ,
 			phone_number: "+251" + item.value.phone,
 			role: updatedRoleName,
 			place_id: people.value[0].placeId,
+			profile_picture: img.value,
+			
+
 		});
 
 		// Log the updated array for verification
@@ -550,6 +557,8 @@ const headers = ref([
 						></Icon>
 					</button>
 				</div>
+				<UploadProfileUpload v-model="img" />
+
 
 				<div class="my-2 col-span-full">
 					<HTextfield

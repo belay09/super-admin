@@ -45,13 +45,19 @@ watch(url, (value) => {
   }
 });
 
-watchEffect(() => {
-  title.value = props.item?.title || "";
-  url.value = props.item?.url || "";
-  if (props.isAdd) {
+
+watch(
+  () => props.item,
+  (newVal, oldVal) => {
+    title.value = newVal?.title ;
+    url.value = newVal?.icon?.lightIconUrl ;
     resetForm();
-  }
-});
+    if (props.isAdd && !newVal) {
+      resetForm();
+    }
+  },
+  { deep: true }
+);
 </script>
 
 <template>
@@ -73,6 +79,7 @@ watchEffect(() => {
         icon-leading-class=" pl-28 lg:focus:border-sheger-gray-300"
       >
         <template #leading>
+
           <ConfigurationsUploadIcon v-model="url" />
         </template>
       </HTextfield>

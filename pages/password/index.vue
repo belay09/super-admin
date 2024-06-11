@@ -2,49 +2,45 @@
 import loginMutation from "@/graphql/mutations/admin/reset.gql";
 import { useAuthStore } from "@/stores/auth.js";
 import { useForm } from "vee-validate";
-import useNotify from "@/use/notify";
+import useNotify from '@/use/notify'
 import anonymousMutation from "@/composables/anonymous-mutation";
-
+const { notify } = useNotify()
 const emit = defineEmits(["close"]);
-const { handleSubmit, isSubmitting } = useForm({});
+const { handleSubmit } = useForm({});
 const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
-const { notify } = useNotify();
 const email = ref("");
 const password = ref("");
 const ConfirmPassword = ref("");
 const passwordError = ref("");
-
-console.log("token", authStore.place_hasura_access_token);
-
 /**                  Parse jwt token------------------------------------ */
 
 /**---------------------Email login---------------------- */
 const {
   mutate: emailLogin,
   onDone: emailLoginDone,
-  onError,
-  loading: emailLoginLoading,
-} = anonymousMutation(loginMutation);
+  onError: emailLoginError,
+  loading: emailLoginLoading
+} = anonymousMutation(loginMutation)
 emailLoginDone((result) => {
-  router.push("/");
+  router.push('/')
   notify({
-    title: "Nicely done we will redirect you to login page",
+    title: 'Nicely done we will redirect you to login page',
     description: result.data?.message,
-    type: "success",
-    cardClass: "bg-green-300 text-white",
-  });
-});
-onError((error) => {
+    type: 'success',
+    cardClass: "border-l-8 border-green-300 bg-white rounded-xl"
+  })
+})
+emailLoginError((error) => {
+  
   notify({
-    title: "Some thing went wrong",
+    title: 'error',
     description: error.message,
-    type: "error",
-    cardClass: "bg-red-200",
-  });
-});
-
+    type: 'error',
+    cardClass: "border-l-8 border-red-300 bg-white rounded-xl"
+  })
+})
 /* ----------------------Create custom token for thirdy part authentication and
   Verify
 */
@@ -53,6 +49,7 @@ onError((error) => {
 
 const handleLogin = handleSubmit(() => {
   // console.log("clicked");
+  passwordError.value = "";
 
   if (password.value !== ConfirmPassword.value) {
     passwordError.value = "Passwords do not match";
@@ -75,18 +72,18 @@ const handleLogin = handleSubmit(() => {
       >
         <img
           class="w-[200px] h-[200px]"
-          src="/public/images/static/admin_login.png"
+          src="/images/static/admin_login.png"
           alt="logo"
         />
       </div>
       <h1
-        class="text-white text-center text-3xl capitalize pb-2 w-[90%] mx-auto capitalize"
+        class="text-white text-center text-3xl  pb-2 w-[90%] mx-auto capitalize"
       >
-        place admin reset password page
+        admin panal reset password page
       </h1>
     </div>
     <div
-      class="w-3/4 bg-primary-50 h-full flex flex-col items-center justify-center p-5"
+      class="w-3/4 bg-white h-full flex flex-col items-center justify-center p-5"
     >
       <div
         class="flex flex-col justify-center w-[450px] mx-auto border-[] rounded-lg border-gray-200 p-5"
@@ -95,7 +92,7 @@ const handleLogin = handleSubmit(() => {
           <div class="justify-center">
             <img
               class="w-[60px] h-[60px]"
-              src="/public/images/static/logo.png"
+              src="/images/static/logo.png"
               alt="logo"
             />
           </div>
@@ -140,7 +137,7 @@ const handleLogin = handleSubmit(() => {
             </template>
           </HTextfield>
 
-          <span v-if="passwordError" class="error-message text-red-600 mx-2">{{
+          <span v-if="passwordError" class="error-message text-sm text-red-600 mx-2">{{
             passwordError
           }}</span>
           <div class="p-2">

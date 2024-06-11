@@ -331,17 +331,17 @@ const crop = () => {
       v-else
       class="flex flex-col items-center justify-center w-full space-y-4"
     >
-      <Icon name="iconoir:add-media-image" class="text-4xl  :text-white" />
+      <Icon name="iconoir:add-media-image" class="text-4xl " />
       <p class="w-full px-5 pt-3 text-center text-new-tale">
         <span @click="open" class="text-blue-600 cursor-pointer"
           >upload Image 
         </span>
-        <span class="text-secondary-text  :text-white">
+        <span class="text-secondary-text ">
           or Drag and Drop</span
         >
       </p>
       <p
-        class="text-sm font-thin font-poppins text-secondary-text  :text-white"
+        class="text-sm font-thin font-poppins text-secondary-text "
       >
         {{ fileTypesMessage }}
       </p>

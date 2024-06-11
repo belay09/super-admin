@@ -1,12 +1,14 @@
-query MyQuery {
-	notifications: notificationNotifications(
-		limit: 10
-		orderBy: { createdAt: DESC }
-	) {
-		createdAt
-		message
-		title
-		type
-		isSeen
-	}
+
+query MyQuery($limit: Int!, $offset: Int!) {
+  notifications:notificationNotifications(
+    limit: $limit
+    orderBy: { createdAt: DESC }
+    offset: $offset
+  ) {
+    createdAt
+    message
+    title
+    type
+    isSeen
+  }
 }

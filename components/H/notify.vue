@@ -65,7 +65,7 @@ emit('refresh');
 
 
 <template>
-<div :class="{ 'bg-[#F0E4E5]': !message.isSeen }" class="flex-col w-full p-2 mb-2">    <div class="flex justify-between items-center  overflow-y-auto  w-full">
+<div :class="{ 'bg-[#F0E4E5]': !message.isSeen }" class="flex-col w-full p-2 ">    <div class="flex justify-between items-center  overflow-y-auto  w-full">
         <div class="flex w-full gap-2 items-center">
             <Icon name="dashicons:food" width="30" height="30" color="gray-900"/>
             <h1 class="text-md font-poppins font-normal  capitalize  pl-2"> {{message.title}}</h1>

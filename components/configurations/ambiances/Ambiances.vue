@@ -15,6 +15,7 @@ const ambiance = ref(null);
 function editAmbiance(item) {
   isAdd.value = false;
   ambiance.value = item;
+  console.log(ambiance.value);
 }
 function addAmbiance() {
   isAdd.value = true;
@@ -227,6 +228,7 @@ getError((error) => {
         @deleteItem="handleDelete"
         @editItem="editAmbiance"
       ></Configurations-List>
+
     </div>
   </div>
 </template>
