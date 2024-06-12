@@ -1,0 +1,12 @@
+mutation MyMutation2($frequency_price: [BillingsPricingPlanFrequenciesInsertInput!]!) {
+  insertBillingsPricingPlanFrequencies(objects: $frequency_price) {
+    returning {
+      pricing_plan_frequency_items {
+        itemId
+      }
+      id
+      price
+      frequency
+    }
+  }
+}

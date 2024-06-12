@@ -49,9 +49,7 @@ const editFeature = handleSubmit(() => {
 			v-model="singleFeature.title"
 			rules="required"
 		></H-Textfield>
-
 		<!-- ---------------------Description---------------- -->
-
 		<H-Textarea
 			id="description"
 			name="feature description"
@@ -60,7 +58,6 @@ const editFeature = handleSubmit(() => {
 			v-model="singleFeature.description"
 			rules="required"
 		></H-Textarea>
-
 		<!-- ----------------------Submit------------------- -->
 		<button
 			form="features"
@@ -72,7 +69,6 @@ const editFeature = handleSubmit(() => {
 				:name="isEdit ? 'tabler:edit' : 'heroicons:plus-small-solid'"
 				class="text-2 xl"
 			></Icon>
-
 			<span>{{ isEdit ? "Edit" : "Add" }}</span>
 		</button>
 		<div class="flex flex-wrap mt-2 gap-x-4 gap-y-3">

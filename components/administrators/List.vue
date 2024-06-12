@@ -98,7 +98,7 @@ inviteDone((result) => {
 	notify({
 		title: "Invite Successfully Sent",
 		description: "check your email",
-		borderClass: "border-l-8 border-green-800",
+		borderClass: "border-l-8 border-green-300",
 	});
 
 	add.value = false;
@@ -171,7 +171,7 @@ revokeDone((result) => {
 		description:
 			result.data.updateUsersUsers.returning[0].fullName +
 			" Can not Login Again",
-		borderClass: "border-l-8 border-green-800",
+		borderClass: "border-l-8 border-yellow-300",
 	});
 	refetch();
 	revoke.value = false;
@@ -201,7 +201,7 @@ reactivateDone((result) => {
 		description:
 			result.data.updateUsersUsers.returning[0].fullName + " Can Login Again",
 
-		borderClass: "border-l-8 border-green-800",
+		borderClass: "border-l-8 border-green-300",
 	});
 	refetch();
 	reactivate.value = false;
@@ -230,7 +230,7 @@ DeleteDone((result) => {
 		description:
 			result.data.updateUsersUsers.returning[0].fullName + " IS Deleted ",
 
-		borderClass: "border-l-8 border-green-800",
+		borderClass: "border-l-8 border-green-300",
 	});
 	refetch();
 	delet.value = false;

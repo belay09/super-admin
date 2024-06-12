@@ -1,0 +1,20 @@
+mutation updateBillingsItems($_set: BillingsItemsSetInput!, $id: bigint!, $freqId: bigint!, $_setFreq: BillingsPricingPlanFrequenciesSetInput!) {
+  updateBillingsItems(_set: $_set, where: {id: {_eq: $id}}) {
+    returning {
+      rules
+      name
+      title
+      __typename
+    }
+    __typename
+  }
+  updateBillingsPricingPlanFrequencies(
+    where: {id: {_eq: $freqId}}
+    _set: $_setFreq
+  ) {
+    returning {
+      price
+      frequency
+    }
+  }
+}

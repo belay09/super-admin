@@ -11,6 +11,7 @@ query pricingPlans($id: bigint!) {
 			price
 			frequency
 			items: pricing_plan_frequency_items {
+				itemId
 				id
 				item {
 					title

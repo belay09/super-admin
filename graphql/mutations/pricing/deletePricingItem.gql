@@ -1,0 +1,7 @@
+mutation deleteBillingsPricingPlanFrequencies($id: bigint!) {
+  deleteBillingsPricingPlanFrequencies(where: {id: {_eq: $id}}) {
+    returning {
+      frequency
+    }
+  }
+}

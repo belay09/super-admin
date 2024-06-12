@@ -5,6 +5,7 @@ query MyQuery($limit: Int!, $offset: Int!) {
     orderBy: { createdAt: DESC }
     offset: $offset
   ) {
+    payload
     createdAt
     message
     title

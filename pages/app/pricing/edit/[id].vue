@@ -33,14 +33,18 @@ pricingOnResult((result) => {
 			description: feature.description,
 		};
 	});
+	console.log("hello",formInput.value);
 	pricingItems.value = formInput.value.pricing_plan_frequencies.map((item) => {
 		return {
 			price: item.price,
 			frequency: item.frequency,
+			item_id: item.items[0].itemId,
+			id:item.id,
 			pricing_plan_frequency_items: {
 				data: {
 					item: {
 						data: {
+							
 							title: item.items[0].item.title,
 							name: item.items[0].item.name,
 							rules: item.items[0].item.rules,
@@ -90,12 +94,12 @@ const onSubmit = handleSubmit(() => {
 
 	editMutation({
 		pricing_plan_id: route.params.id,
-		frequency_price: pricingItems.value.map((item) => {
-			return {
-				pricingPlanId: route.params.id,
-				...item,
-			};
-		}),
+		// frequency_price: pricingItems.value.map((item) => {
+		// 	return {
+		// 		pricingPlanId: route.params.id,
+		// 		...item,
+		// 	};
+		// }),
 		pricing_plan_feature: features.value.map((item) => {
 			return {
 				pricingPlanId: route.params.id,
@@ -183,7 +187,7 @@ definePageMeta({
 						></HSwitch>
 					</div>
 				</div>
-
+ 
 				<!-- ---------------------Description---------------- -->
 
 				<H-Textarea
@@ -197,7 +201,7 @@ definePageMeta({
 
 				<!-- --------------------Plan visibility---------------- -->
 			</div>
-			<BillingsPricingItem v-model="pricingItems" />
+			<BillingsPricingItemEdit v-model="pricingItems" />
 			<!-- -------------------------------Features---------------- -->
 			<BillingsPricingFeatures v-model="features" />
 		</div>

@@ -41,36 +41,58 @@ const features = computed({
 });
 
 /*---------------------------------Return single feature------------------------------*/
-
 const singleFeature = computed(() => {
-	return {
-		...freqPrice.value,
-		pricing_plan_frequency_items: {
-			data: {
-				item: {
-					data: {
-						title: title.value,
-						name: title.value,
-						rules: {
-							...rules.value,
-							place_add: {
-								...placeAddLimit.value,
-							},
-							review_add: {
-								...reviewAddLimit.value,
-							},
-							place_badge: {
-								...placeBadge.value,
-							},
-							featured_place: {
-								...featuredPlace.value,
-							},
-						},
-					},
-				},
-			},
-		},
-	};
+  return {
+    ...freqPrice.value,
+    pricing_plan_frequency_items: {
+      data: {
+        item: {
+          data: {
+            title: title.value,
+            name: title.value,
+            rules: {
+              menu_limit: Number(rules.value.menu_limit),
+              place_profile_limit: Number(rules.value.place_profile_limit),
+              branch_address_limit: Number(rules.value.branch_address_limit),
+              review_limit: Number(rules.value.review_limit),
+              place_add: {
+                ...Object.fromEntries(
+                  Object.entries(placeAddLimit.value).map(([key, val]) => [
+                    key,
+                    Number(val),
+                  ])
+                ),
+              },
+              review_add: {
+                ...Object.fromEntries(
+                  Object.entries(reviewAddLimit.value).map(([key, val]) => [
+                    key,
+                    Number(val),
+                  ])
+                ),
+              },
+              place_badge: {
+                ...Object.fromEntries(
+                  Object.entries(placeBadge.value).map(([key, val]) => [
+                    key,
+                    Number(val),
+                  ])
+                ),
+              },
+              featured_place: {
+                ...Object.fromEntries(
+                  Object.entries(featuredPlace.value).map(([key, val]) => [
+                    key,
+                    Number(val),
+                  ])
+                ),
+              },
+            },
+          },
+        },
+      },
+    },
+  };
 });
 
 const isEdit = ref(false);

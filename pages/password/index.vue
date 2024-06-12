@@ -5,6 +5,8 @@ import { useForm } from "vee-validate";
 import useNotify from '@/use/notify'
 import anonymousMutation from "@/composables/anonymous-mutation";
 const { notify } = useNotify()
+
+
 const emit = defineEmits(["close"]);
 const { handleSubmit } = useForm({});
 const router = useRouter();
@@ -14,6 +16,8 @@ const email = ref("");
 const password = ref("");
 const ConfirmPassword = ref("");
 const passwordError = ref("");
+
+
 /**                  Parse jwt token------------------------------------ */
 
 /**---------------------Email login---------------------- */

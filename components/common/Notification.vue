@@ -11,6 +11,7 @@ import updateNotification from "@/graphql/mutations/notification/updateNotificat
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import mutator from "@/composables/auth-mutation";
+import { format, parseISO } from 'date-fns'
 
 import notification_subscription from "@/graphql/mutations/notification/rigisterDevice.gql";
 import notification from "@/graphql/query/notification/inApp.gql";
@@ -172,6 +173,75 @@ const fetchMoreAndMore = async () => {
     },
   });
 };
+const router = useRouter();
+
+const routeBasedOnNotificationType = (notificationValue) => {
+  switch (notificationValue.type) {
+    case 'LIST_MY_BUSINESS':
+    case 'NEW_PLACE':
+      router.push('/app/places/' + notificationValue?.payload?.places?.id);
+      open.value = false;
+      break;
+    case 'SEASONAL_PLACE':
+    case 'WEEKLY_RECOMMENDED_PLACE':
+    case 'RECENTLY_OPENED_PLACE':
+    case 'NEW_PLACE_REVIEWED':
+    case 'NEW_PLACE_REGISTERED':
+    case 'NEW_FEATURED_PLACE':
+      router.push('/app/places');
+      open.value = false;
+      break;
+    
+    case 'MENU_LAST_UPDATE_NOTIFICATION':
+      // Assuming there's a route related to menu updates
+      router.push('/app/places/' + notificationValue?.payload?.menus?.Places[0]?.id + '?tab=menu');      open.value = false;
+      break;
+    
+    case 'NEW_REVIEW':
+    case 'SUBSCRIPTION_PLAN_NOTICE':
+    case 'SUBSCRIPTION_PLAN_WARNING':
+    case 'SUBSCRIPTION_PLAN_CLOSE':
+    case 'PAYMENT_VERIFIED':
+    case 'NEW_PAYMENT_REQUEST':
+      router.push('/app/billings');
+      open.value = false;
+      break;
+    
+    case 'CONTACT_US':
+    case 'NEW_SUPPORT_REQUEST':
+      router.push('/app/support-contact');
+      open.value = false;
+      break;
+    
+    default:
+      console.log('Unknown notification type');
+      open.value = false;
+      break;
+  }
+};
+
+const notificationIcons = {
+  LIST_MY_BUSINESS: 'fa-briefcase',
+  NEW_PLACE: 'ep:place',
+  CONTACT_US: 'fa-envelope',
+  MENU_LAST_UPDATE_NOTIFICATION: 'dashicons:food',
+  SUBSCRIPTION_PLAN_NOTICE: 'fa-bell',
+  SUBSCRIPTION_PLAN_WARNING: 'fa-exclamation-triangle',
+  SUBSCRIPTION_PLAN_CLOSE: 'fa-times-circle',
+  PAYMENT_VERIFIED: 'fa-check-circle',
+  SEASONAL_PLACE: 'carbon:review',
+  WEEKLY_RECOMMENDED_PLACE: 'fa-star',
+  RECENTLY_OPENED_PLACE: 'carbon:review',
+  NEW_PLACE_REVIEWED: 'carbon:review',
+  NEW_SUPPORT_REQUEST: 'fa-comments',
+  NEW_PAYMENT_REQUEST: 'streamline:payment-10',
+  NEW_PLACE_REGISTERED: 'ep:place',
+  NEW_REVIEW: 'fa-comments',
+  NEW_FEATURED_PLACE: 'ep:place',
+}
+const getIcon = (notificationType) => {
+  return notificationIcons[notificationType] || 'fa-check-circle'
+}
 </script>
 <template>
   <TransitionRoot as="template" :show="open">
@@ -248,7 +318,7 @@ const fetchMoreAndMore = async () => {
                       mark as read
                     </button>
                   </div>
-                  <div
+                  <!-- <div
                     v-if="notificationValue.length > 0"
                     class="divide-y-4 rounded divide-gray-100"
                   >
@@ -257,7 +327,39 @@ const fetchMoreAndMore = async () => {
                       :message="message"
                       :key="index"
                     ></HNotify>
-                  </div>
+                  </div> -->
+                  <div
+                      v-for="message in notificationValue"
+                      :class="{ 'bg-[#F0E4E5] ': !message.isSeen }"
+                      class="flex-col w-full p-2 mb-2 border-b cursor-pointer hover:bg-gray-100"
+                      @click="routeBasedOnNotificationType(message)"
+                    >
+                      <div
+                        class="flex justify-between items-center overflow-y-auto w-full"
+                      >
+                        <div class="flex w-full gap-2 items-center">
+                          <Icon
+                            :name="getIcon(message.type)"
+                            width="30"
+                            height="30"
+                            color="gray-900"
+                          />
+                          <h1
+                            class="text-md font-poppins font-normal capitalize pl-2"
+                          >
+                            {{ message.title }}
+                          </h1>
+                        </div>
+                        <div class="flex">
+                          {{ format(parseISO(message.createdAt), 'dd,MMM') }}
+                        </div>
+                      </div>
+                      <p
+                        class="text-sm font-poppins font-light text-gray-700 capitalize p-5"
+                      >
+                        {{ message.message }}
+                      </p>
+                    </div>
                   <div
                     v-if="notificationValue.length < 4"
                     class="flex-col justify-center w-full pt-64 my-auto"
