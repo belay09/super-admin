@@ -331,11 +331,12 @@ const getIcon = (notificationType) => {
                   <div
                       v-for="message in notificationValue"
                       :class="{ 'bg-[#F0E4E5] ': !message.isSeen }"
-                      class="flex-col w-full p-2 mb-2 border-b cursor-pointer hover:bg-gray-100"
+                      class="flex-col w-full p-2 mb-2 border-b  cursor-pointer hover:bg-gray-100  rounded-t"
                       @click="routeBasedOnNotificationType(message)"
                     >
+
                       <div
-                        class="flex justify-between items-center overflow-y-auto w-full"
+                        class="flex justify-between items-center overflow-y-auto w-full  rounded"
                       >
                         <div class="flex w-full gap-2 items-center">
                           <Icon

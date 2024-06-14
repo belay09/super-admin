@@ -1,5 +1,8 @@
 mutation MyMutation($deviceToken: String!) {
-  insertNotificationDeviceTokens(objects: {deviceToken: $deviceToken}) {
+  insertNotificationDeviceTokens(
+    objects: {deviceToken: $deviceToken}
+    onConflict: {constraint: device_tokens_device_token_key}
+  ) {
     affectedRows
   }
 }
