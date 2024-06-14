@@ -59,15 +59,27 @@ addPlaceDone((result) => {
 			},
 		});
 	}
+	notify({
+		title: "Success",
+		description: "Place added successfully",
+		type: "success",
+		cardClass: "border-l-8 border-green-300 bg-white rounded",
+	});
 });
 
 addPlaceError((error) => {
-	notify({
-		title: "Some thing went wrong",
-		description: error.message,
-		type: "error",
-		borderClass: "border-l-8 border-red-300",
-	});
+	let message
+  if (error.message.includes('database query error')) {
+    message = "this entity can't add place "
+  } else {
+    message = error.message
+  }
+  notify({
+    title: 'error',
+    description: message,
+    type: 'error',
+    cardClass: 'border-l-8 border-yellow-300 bg-white rounded'
+  })
 });
 
 const handleAddPlace = handleSubmit(() => {

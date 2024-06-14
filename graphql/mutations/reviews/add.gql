@@ -9,9 +9,10 @@ mutation postReview($input: [ReviewsInsertInput!]!) {
         id
       }
       review_medias {
+        isImage
         media {
           url
-          isImage
+          
         }
       }
       __typename

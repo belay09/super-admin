@@ -33,11 +33,15 @@ onDone((result) => {
 });
 
 onError((error) => {
-  z;
+  let Message = error.message;
+  if (error.message.includes("Foreign key violation. update or delete on table \"drinks\" violates foreign key constraint \"review_drinks_drink_id_fkey\" on table \"review_drinks\"")) {
+    Message = "This drink is associated with some reviews. Please delete the review first.";
+  }
+  
   showConfirmationModal.value = false;
   notify({
     title: "Error",
-    description: error.message,
+    description: Message,
     type: "error",
     borderClass: "border-l-8 border-red-300",
   });

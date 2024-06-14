@@ -1,0 +1,18 @@
+mutation MyMutation($objects: [OpenHoursInsertInput!]!) {
+  insertOpenHours(
+    objects: $objects
+    onConflict: {
+      constraint: open_hours_place_id_day_key
+      updateColumns: [day, from, status, to, reason]
+    }
+  ) {
+    returning {
+      id
+      place {
+        name
+      }
+      __typename
+    }
+    __typename
+  }
+}

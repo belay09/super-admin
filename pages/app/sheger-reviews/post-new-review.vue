@@ -4,6 +4,7 @@ import getPlaceQuery from "@/graphql/query/places/item.gql";
 
 import { useForm } from "vee-validate";
 import useNotify from "@/use/notify";
+const openFinishModal = ref(false);
 
 const { notify } = useNotify();
 const { handleSubmit } = useForm();
@@ -28,7 +29,6 @@ const serviceRatings = ref([]);
 const averageRating = ref(0);
 const serviceComment = ref("");
 
-const review = ref(null);
 const {
   mutate: addReview,
   onError: addReviewError,
@@ -78,7 +78,80 @@ placeOnResult((result) => {
 
 placeOnError((error) => {});
 
+import { computed, ref, watch } from 'vue';
+
+
+let imagesWithOutThumbnails = ref([]);
+
+watch(images, () => {
+  imagesWithOutThumbnails.value = images.value.filter(
+    (image) => image !== selectedThumbnail.value
+  );
+});
+
+const review = computed(() => ({
+  title: title.value,
+  description: description.value,
+  youtubeVideoUrl: youtubeVideoUrl.value,
+  tiktokUrl: tiktokVideoUrl.value,
+  instagramUrl: instagramVideoUrl.value,
+  placeId: selectedPlaceID.value,
+  placeLocationId: selectedPlaceLocation.value,
+  reviewedAt: new Date().toISOString(),
+  status: "DRAFT",
+  reviewedBy: reviewedBy.value,
+  review_drink: {
+    data: {
+      drinkId: selectedDrinkId.value,
+    },
+  },
+  menu_reviews: {
+    data: selectedMenusId.value.map((dish) => {
+      return {
+        menuId: dish,
+      };
+    }),
+  },
+  review_tags: {
+    data: tags.value.map((tag) => {
+      return {
+        tagId: tag,
+      };
+    }),
+  },
+  featured_image: {
+    data: {
+      url: selectedThumbnail.value,
+    },
+  },
+  review_medias: {
+    data: imagesWithOutThumbnails.value.map((image) => {
+      return {
+        isImage: isImage(image),
+        media: {
+          data: {
+            url: image,
+          },
+        },
+      };
+    }),
+  },
+  place_sheger_review: {
+    data: {
+      comment: serviceComment.value,
+      place_sheger_review_by_services: {
+        data: serviceRatings.value.map((serviceRating) => {
+          return {
+            reviewCategoryId: serviceRating.id,
+            rate: serviceRating.value,
+          };
+        }),
+      },
+    },
+  },
+}));
 const onSubmit = handleSubmit(() => {
+
   if (images.value.length < 4) {
     notify({
       type: "error",
@@ -89,76 +162,19 @@ const onSubmit = handleSubmit(() => {
 
     return;
   }
-
-  const review = ref({
-    id: 1,
-    title: title.value,
-    description: description.value,
-    youtubeVideoUrl: youtubeVideoUrl.value,
-    tiktokUrl: tiktokVideoUrl.value,
-    instagramUrl: instagramVideoUrl.value,
-    placeId: selectedPlaceID.value,
-    placeLocationId: selectedPlaceLocation.value,
-    reviewedAt: new Date().toISOString(),
-    status: "DRAFT",
-    reviewedBy: reviewedBy.value,
-    review_drink: {
-      data: {
-        drinkId: selectedDrinkId.value,
-      },
-    },
-    menu_reviews: {
-      data: selectedMenusId.value.map((dish) => {
-        return {
-          menuId: dish,
-        };
-      }),
-    },
-    review_tags: {
-      data: tags.value.map((tag) => {
-        return {
-          tagId: tag,
-        };
-      }),
-    },
-    featured_image: {
-      data: {
-        url: selectedThumbnail.value,
-      },
-    },
-
-    review_medias: {
-      data: imagesWithOutThumbnails.map((image) => {
-        return {
-          isImage: isImage(image),
-          media: {
-            data: {
-              url: image,
-            },
-          },
-        };
-      }),
-    },
-
-    place_sheger_review: {
-      data: {
-        comment: serviceComment.value,
-        place_sheger_review_by_services: {
-          data: serviceRatings.value.map((serviceRating) => {
-            return {
-              reviewCategoryId: serviceRating.id,
-              rate: serviceRating.value,
-            };
-          }),
-        },
-      },
-    },
-  });
   addReview({ input: review.value });
 
   /**-------------------//TODO This used for preview the review data */
+  // openFinishModal.value = true;
+});
+
+const confirmAddReview = () => {
+  // remove thumbnail from images
+  // let imagesWithOutThumbnails = images.value.filter(
+  //   (image) => image !== selectedThumbnail.value
+  // );
+
   // const review = ref({
-  //   id: -2,
   //   title: title.value,
   //   description: description.value,
   //   youtubeVideoUrl: youtubeVideoUrl.value,
@@ -170,116 +186,59 @@ const onSubmit = handleSubmit(() => {
   //   status: "DRAFT",
   //   reviewedBy: reviewedBy.value,
   //   review_drink: {
-  //     drinkId: selectedDrinkId.value,
+  //     data: {
+  //       drinkId: selectedDrinkId.value,
+  //     },
   //   },
-  //   menu_reviews: selectedMenusId.value,
-  //   review_tags: tags.value,
-
+  //   menu_reviews: {
+  //     data: selectedMenusId.value.map((dish) => {
+  //       return {
+  //         menuId: dish,
+  //       };
+  //     }),
+  //   },
+  //   review_tags: {
+  //     data: tags.value.map((tag) => {
+  //       return {
+  //         tagId: tag,
+  //       };
+  //     }),
+  //   },
   //   featured_image: {
-  //     media: {
+  //     data: {
   //       url: selectedThumbnail.value,
   //     },
   //   },
 
-  //   review_medias: imagesWithOutThumbnails.map((image) => {
-  //     return {
-  //       isImage: isImage(image),
-  //       media: {
-  //         data: {
-  //           url: image,
+  //   review_medias: {
+  //     data: imagesWithOutThumbnails.map((image) => {
+  //       return {
+  //         isImage: isImage(image),
+  //         media: {
+  //           data: {
+  //             url: image,
+  //           },
   //         },
+  //       };
+  //     }),
+  //   },
+
+  //   place_sheger_review: {
+  //     data: {
+  //       comment: serviceComment.value,
+  //       place_sheger_review_by_services: {
+  //         data: serviceRatings.value.map((serviceRating) => {
+  //           return {
+  //             reviewCategoryId: serviceRating.id,
+  //             rate: serviceRating.value,
+  //           };
+  //         }),
   //       },
-  //     };
-  //   }),
-
-  //   // place_sheger_review: {
-  //   //   comment: serviceComment.value,
-  //   //   place_sheger_review_by_services: serviceRatings.value.map(
-  //   //     (serviceRating) => {
-  //   //       return {
-  //   //         reviewCategoryId: serviceRating.id,
-  //   //         rate: serviceRating.value,
-  //   //       };
-  //   //     }
-  //   //   ),
-  //   // },
+  //     },
+  //   },
   // });
-
-  openFinishModal.value = true;
-});
-
-// const confirmAddReview = () => {
-//   // remove thumbnail from images
-//   let imagesWithOutThumbnails = images.value.filter(
-//     (image) => image !== selectedThumbnail.value
-//   );
-
-//   const review = ref({
-//     id: 1,
-//     title: title.value,
-//     description: description.value,
-//     youtubeVideoUrl: youtubeVideoUrl.value,
-//     tiktokUrl: tiktokVideoUrl.value,
-//     instagramUrl: instagramVideoUrl.value,
-//     placeId: selectedPlaceID.value,
-//     placeLocationId: selectedPlaceLocation.value,
-//     reviewedAt: new Date().toISOString(),
-//     status: "DRAFT",
-//     reviewedBy: reviewedBy.value,
-//     review_drink: {
-//       data: {
-//         drinkId: selectedDrinkId.value,
-//       },
-//     },
-//     menu_reviews: {
-//       data: selectedMenusId.value.map((dish) => {
-//         return {
-//           menuId: dish,
-//         };
-//       }),
-//     },
-//     review_tags: {
-//       data: tags.value.map((tag) => {
-//         return {
-//           tagId: tag,
-//         };
-//       }),
-//     },
-//     featured_image: {
-//       data: {
-//         url: selectedThumbnail.value,
-//       },
-//     },
-
-//     review_medias: {
-//       data: imagesWithOutThumbnails.map((image) => {
-//         return {
-//           isImage: isImage(image),
-//           media: {
-//             data: {
-//               url: image,
-//             },
-//           },
-//         };
-//       }),
-//     },
-
-//     place_sheger_review: {
-//       data: {
-//         comment: serviceComment.value,
-//         place_sheger_review_by_services: {
-//           data: serviceRatings.value.map((serviceRating) => {
-//             return {
-//               reviewCategoryId: serviceRating.id,
-//               rate: serviceRating.value,
-//             };
-//           }),
-//         },
-//       },
-//     },
-//   });
-//   addReview({ input: review.value });
-// };
+  addReview({ input: review.value });
+};
 
 addReviewDone((result) => {
   notify({
@@ -302,7 +261,6 @@ addReviewError((error) => {
   });
 });
 
-const openFinishModal = ref(false);
 
 definePageMeta({
   layout: "engagement",
@@ -314,18 +272,18 @@ definePageMeta({
     v-if="openFinishModal"
     :review="review"
     v-model="openFinishModal"
+    :place="place"
     @confirm="confirmAddReview"
   /> -->
   <div class="px-20 pb-20">
     <!-- --------------------------------Top-------------------------------- -->
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-medium">Post New Review</h1>
-      <div class="font-medium text-white border primary-button bg-primary-600">
         <button
           :disabled="addReviewLoading"
           type="submit"
           form="addReview"
-          class="mx-6"
+          class="mx-6 font-medium text-white border primary-button bg-primary-600"
         >
           <span>Post Now</span>
           <Icon
@@ -334,7 +292,6 @@ definePageMeta({
             class="text-2xl"
           />
         </button>
-      </div>
     </div>
 
     <!-- --------------------------------Form-------------------------------- -->
@@ -360,10 +317,10 @@ definePageMeta({
 
         <LazySelectorsPlace :type="placeType" v-model="selectedPlaceID" />
         <!-- ------------------------------Place Location----------------------------->
-        <!-- <LazySelectorsPlaceLocation
+        <LazySelectorsPlaceLocation
           :place_Id="selectedPlaceID"
           v-model="selectedPlaceLocation"
-        /> -->
+        />
 
         <!-- ------------------------------Dish Title----------------------------->
         <LazySelectorsDish

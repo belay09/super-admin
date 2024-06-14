@@ -13,6 +13,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  lastDate: {
+    type: String,
+    default: null,
+  },
 });
 
 const refetchAds = inject("refetchAds");
@@ -24,7 +28,10 @@ const open = computed({
     emits("update:modelValue", newVal);
   },
 });
-
+const latestStartDate= ref(props.lastDate)
+watchEffect(() => {
+  latestStartDate.value = props.lastDate;
+});
 const { handleSubmit, isSubmitting } = useForm({});
 const place = ref("");
 const slogan = ref("");
@@ -43,7 +50,21 @@ const handleAdd = handleSubmit(() => {
       type: "error",
       borderClass: "border-l-8 border-red-300",
     });
+    return;
+  }
+  // New validation for start and end date gap
+  const startDateObj = new Date(startDate.value);
+  const endDateObj = new Date(endDate.value);
+  const timeDiff = endDateObj - startDateObj;
+  const dayDiff = timeDiff / (1000 * 3600 * 24);
 
+  if (dayDiff !== 7) {
+    notify({
+      title: "Date Gap Error",
+      description: "The gap between start date and end date must be exactly 7 days.",
+      type: "error",
+      borderClass: "border-l-8 border-yellow-300",
+    });
     return;
   }
 
@@ -87,11 +108,20 @@ onDone(() => {
 });
 
 onError((error) => {
+  let Message="Some thing went wrong"
+  let title= "Some thing went wrong"
+  let borderClass= "border-l-8 border-red-300"
+
+  if (error.message.includes("database query error")) {
+    Message = "Can't add please check the last date of previous add date and  the date gap must be 7 days";
+    title="Date gap error"
+    borderClass= "border-l-8 border-yellow-300"
+  }
   notify({
-    title: "Some thing went wrong",
-    description: error.message,
+    title: title,
+    description: Message,
     type: "error",
-    borderClass: "border-l-8 border-red-300",
+    borderClass: borderClass,
   });
 });
 </script>
@@ -114,15 +144,16 @@ onError((error) => {
             label="Start Date"
             class="w-full"
             label-class="!text-sheger-gray-100"
-            rules="required"
+            :rules="`required|date_greater_than_latest:${latestStartDate}`"
             trailing-icon="uil:calender"
             trailing-icon-class="lg:text-sheger-gray-100"
             v-model="startDate"
           ></HDatePicker>
+          
           <HDatePicker
             id="end_date"
             name="end_date"
-            rules="required"
+            :rules="`required|date_greater_than_latest_plus_seven:${startDate}`"
             label="End Date"
             trailing-icon="uil:calender"
             trailing-icon-class="lg:text-sheger-gray-100"

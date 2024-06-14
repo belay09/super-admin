@@ -1,0 +1,15 @@
+mutation insertCloseHours($objects: [CloseHoursInsertInput!]!) {
+  insertCloseHours(
+    objects: $objects
+    onConflict: {
+      constraint: close_hours_date_place_id_key
+      updateColumns: [date, to, from, reason]
+    }
+  ) {
+    returning {
+      place {
+        name
+      }
+    }
+  }
+}

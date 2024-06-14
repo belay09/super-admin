@@ -1,0 +1,16 @@
+query hours($id: bigint!) {
+  openHours(where: { placeId: { _eq: $id } }) {
+    day
+    from
+    to
+    reason
+    status
+    placeId
+  }
+  closeHours(where: { placeId: { _eq: $id } }) {
+    date
+    from
+    to
+    reason
+  }
+}

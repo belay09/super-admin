@@ -59,6 +59,11 @@ onResult((result) => {
 });
 
 onError((error) => {
+  let Message = error.message
+  let borderClass = "border-l-8 border-red-300";
+  if (error.message.includes("database query error")) {
+    Message = "";
+  }
   notify({
     title: "Some thing went wrong",
     description: error.message,
@@ -125,11 +130,19 @@ addDone(() => {
 });
 
 addError((error) => {
+  let Message = error.message;
+  let type = "error";
+  let borderClass = "border-l-8 border-red-300";
+  if (error.message.includes("database query error")) {
+    Message = "in this week already featured enough places try other week ";
+    borderClass = "border-l-8 border-yellow-300";
+    type = "warning";
+  }
   notify({
     title: "Some thing went wrong",
-    description: error.message,
-    type: "error",
-    borderClass: "border-l-8 border-red-300",
+    description: Message,
+    type: type,
+    borderClass: borderClass,
   });
 });
 </script>
@@ -163,7 +176,7 @@ addError((error) => {
           <HDatePicker
             id="end_date"
             name="end_date"
-            rules="required"
+            :rules="`required|date_greater_than_latest_plus_seven:${startDate}`"
             label="End Date"
             trailing-icon="uil:calender"
             trailing-icon-class="lg:text-sheger-gray-100"

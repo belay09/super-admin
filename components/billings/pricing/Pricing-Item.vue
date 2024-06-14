@@ -39,7 +39,6 @@ const features = computed({
 		emit("update:modelValue", value);
 	},
 });
-
 /*---------------------------------Return single feature------------------------------*/
 const singleFeature = computed(() => {
   return {

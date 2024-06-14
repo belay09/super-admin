@@ -10,10 +10,58 @@ export default defineNuxtPlugin((vueApp) => {
     defineRule("boolReq", (value, [], ctx) => {
       return typeof value == "boolean" || "Field Required";
     });
-
-  defineRule("array_object_required", (value, [], ctx) => {
-    return value?.length || "Field Required";
+    defineRule("date_greater_than_latest", (value, [latestDate], ctx) => {
+      console.log("value", value, "latestDate", latestDate);
+    
+      // Check if latestDate is null, undefined, or an empty string
+      if (!latestDate || latestDate === "") {
+        console.log("latestDate is null or empty, validation passed.");
+        return true; // Validation passed because there's no latestDate to compare against
+      }
+    
+      // Convert both value and latestDate to Date objects
+      const selectedDate = new Date(value);
+      const comparisonDate = new Date(latestDate);
+    
+      // Check if comparisonDate is an Invalid Date
+      if (isNaN(comparisonDate.getTime())) {
+        console.log("latestDate is invalid, validation passed.");
+        return true; // Validation passed because latestDate is invalid
+      }
+    
+      console.log("selectedDate", selectedDate, "comparisonDate", comparisonDate);
+    
+      // Check if selectedDate is greater than or equal to comparisonDate
+      if (selectedDate > comparisonDate) {
+        console.log("Validation passed, selectedDate is greater.");
+        return true; // Validation passed
+      } else {
+        console.log("Validation failed, selectedDate is not greater.");
+        return "Selected date must be greater than the latest allowed date."; // Validation failed
+      }
+    });
+  defineRule("date_greater_than_latest_plus_seven", (value, [startDate], ctx) => {
+    console.log("hello", value, "abu", startDate,"context",ctx.form.start_date);
+    if (!ctx.form.start_date) {
+      return true;
+    }
+    // Convert latestDate to Date object and add 7 days
+    const comparisonDate = new Date(ctx.form.start_date);
+    comparisonDate.setDate(comparisonDate.getDate() + 7);
+  
+    // Convert value to Date object
+    const selectedDate = new Date(value);
+  
+    // Check if selectedDate is exactly 7 days greater than latestDate
+    if (selectedDate.getTime() === comparisonDate.getTime()) {
+      return true; // Validation passed
+    } else {
+      return "the date gap from start date must be 7"; // Validation failed
+    }
   }),
+    defineRule("array_object_required", (value, [], ctx) => {
+      return value?.length || "Field Required";
+    }),
     defineRule("number", (value) => {
       return !value || /^[0-9]+$/.test(value) || "Number only";
     }),

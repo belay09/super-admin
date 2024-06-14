@@ -47,9 +47,9 @@ const openFinishModal = ref(false);
 const goNext = () => {
 	if (
 		((placeType.value == "RESTAURANTS" || placeType.value == "CAFES") &&
-			currentStep.value == 3) ||
+			currentStep.value == 4) ||
 		((placeType.value == "HOTELS" || placeType.value == "CATERINGS") &&
-			currentStep.value == 4)
+			currentStep.value == 5)
 	) {
 		openFinishModal.value = true;
 		return;
@@ -132,6 +132,18 @@ definePageMeta({
 			>
 				Pictures
 			</div>
+			<div
+				class="stepper-button"
+				:class="
+					currentStep == 4
+						? '!bg-primary-300'
+						: currentStep > 4
+						? '!bg-primary-600 text-white'
+						: ''
+				"
+			>
+				open and close hour
+			</div>
 
 			<!-- ------------------------If place type is Hotels---------------- -->
 
@@ -139,9 +151,9 @@ definePageMeta({
 				v-if="placeType == 'HOTELS'"
 				class="stepper-button"
 				:class="
-					currentStep == 4
+					currentStep == 5
 						? '!bg-primary-300'
-						: currentStep > 4
+						: currentStep > 5
 						? '!bg-primary-600 text-white'
 						: ''
 				"
@@ -154,15 +166,16 @@ definePageMeta({
 				v-if="placeType == 'CATERINGS'"
 				class="stepper-button"
 				:class="
-					currentStep == 4
+					currentStep == 5
 						? '!bg-primary-300'
-						: currentStep > 4
+						: currentStep > 5
 						? '!bg-primary-600 text-white'
 						: ''
 				"
 			>
 				Portfolio
 			</div>
+			
 		</div>
 
 		<div class="min-h-[70%] border flex flex-col justify-between px-5 py-2">
@@ -197,13 +210,19 @@ definePageMeta({
 				<PlacesFormAmenities
 					@next="goNext"
 					@prev="goPrev"
-					v-if="currentStep == 4 && placeType == 'HOTELS'"
+					v-if="currentStep == 5 && placeType == 'HOTELS'"
 					:placeId="placeId"
 				/>
 				<PlacesFormPortfolio
 					@next="goNext"
 					@prev="goPrev"
-					v-if="currentStep == 4 && placeType == 'CATERINGS'"
+					v-if="currentStep == 5 && placeType == 'CATERINGS'"
+					:placeId="placeId"
+				/>
+				<PlacesFormOpenHour
+					@next="goNext"
+					@prev="goPrev"
+					v-if="currentStep == 4"
 					:placeId="placeId"
 				/>
 			</div>
