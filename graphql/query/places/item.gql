@@ -1,215 +1,188 @@
 query getPlace($id: bigint!) {
-	place: placesByPk(id: $id) {
-		id
-		name
-		entitiyId
-		# logo
-		light_logo {
-			url
-		}
-		view_count
-		status
-		cousins
-		description
-		type
-		categoryId
-
-		# contact us
-		contactEmail
-		contactWebsite
-		contactPhoneNumber
-		contactAltPhoneNumber
-
-		youtubeVideoUrl
-
-		# place aggregate
-		place_aggregate_summary {
-			minDishPrice
-			maxDishPrice
-		}
-
-		# takeout
-		offerTakeouts
-		orderPhoneNumber1
-		orderPhoneNumber2
-
-		# featured place
-
-		featured_medias {
-			id
-			url
-		}
-
-		# place medias
-		placeMedias {
-			id
-			isImage
-			media {
-				url
-			}
-		}
-		# place social media
-		placeSocialMedias {
-			id
-			url
-			socialMedia {
-				name
-				order
-			}
-		}
-
-		#   media
-		featuredReviewMediaUrl {
-			url
-		}
-
-		# sheger recommendations
-
-		shegerRecommendationId
-		shegerRecommendation {
-			id
-			title
-			shegerRecommendationBadge {
-				url
-			}
-			badge
-			description
-		}
-
-		# place reviews
-		reviews {
-			id
-			title
-			youtubeVideoUrl
-		}
-
-		# place ambiance
-		placeAmbiances {
-			id
-			ambiance {
-				icon {
-					lightIconUrl
-					darkIconUrl
-				}
-				id
-				title
-			}
-		}
-
-		# tags
-		placeTags {
-			tagId
-			tag {
-				id
-				title
-				icon {
-					lightIconUrl
-					darkIconUrl
-				}
-			}
-		}
-
-		# cousins
-		place_cousins {
-			id
-			cousinId
-			cousin {
-				id
-				title
-			}
-		}
-
-		# locations
-		placeLocations {
-			id
-			location
-			isMainLocation
-			area {
-				name
-			}
-			city {
-				name
-			}
-		}
-
-		# amenities
-		placeAmenities {
-			id
-			amenity {
-				id
-				icon {
-					lightIconUrl
-					darkIconUrl
-				}
-				title
-			}
-		}
-
-		# social media
-		placeSocialMedias {
-			url
-			socialMedia {
-				icon {
-					lightIconUrl
-				}
-				url
-				order
-				name
-				id
-			}
-		}
-
-		# featured place
-		featured_places {
-			id
-			startDate
-			endDate
-			isActive
-			type
-		}
-
-		# place aggregate
-		place_aggregate_summary {
-			avgDishPrice
-			avgRating
-			sumLikes
-			minDishPrice
-			maxDishPrice
-		}
-
-		# review aggregate
-		placeReviewsAggregate {
-			aggregate {
-				count
-			}
-		}
-
-		# special menu
-		menus(
-			where: { isHouseSpecial: { _eq: true } }
-			orderBy: [{ createdAt: DESC }]
-			limit: 1
-			offset: 0
-		) {
-			id
-			title
-			updatedAt
-			isHouseSpecial
-			timeToPrepare
-			media {
-				url
-			}
-			menuTags {
-				tag {
-					title
-					icon {
-						lightIconUrl
-						darkIconUrl
-					}
-				}
-			}
-		}
-
-		cousins
-	}
+  place: placesByPk(id: $id) {
+    open_hours {
+      day
+      from
+      to
+      reason
+      status
+      placeId
+      __typename
+    }
+    close_hours{
+    date
+    from
+    to
+    reason
+    }
+    id
+    name
+    entitiyId
+    light_logo {
+      url
+    }
+    view_count
+    status
+    cousins
+    description
+    type
+    categoryId
+    contactEmail
+    contactWebsite
+    contactPhoneNumber
+    contactAltPhoneNumber
+    youtubeVideoUrl
+    place_aggregate_summary {
+      minDishPrice
+      maxDishPrice
+    }
+    offerTakeouts
+    orderPhoneNumber1
+    orderPhoneNumber2
+    featured_medias {
+      id
+      url
+    }
+    placeMedias {
+      id
+      isImage
+      media {
+        url
+      }
+    }
+    placeSocialMedias {
+      id
+      url
+      socialMedia {
+        name
+        order
+      }
+    }
+    featuredReviewMediaUrl {
+      url
+    }
+    shegerRecommendationId
+    shegerRecommendation {
+      id
+      title
+      shegerRecommendationBadge {
+        url
+      }
+      badge
+      description
+    }
+    reviews {
+      id
+      title
+      youtubeVideoUrl
+    }
+    placeAmbiances {
+      id
+      ambiance {
+        icon {
+          lightIconUrl
+          darkIconUrl
+        }
+        id
+        title
+      }
+    }
+    placeTags {
+      tagId
+      tag {
+        id
+        title
+        icon {
+          lightIconUrl
+          darkIconUrl
+        }
+      }
+    }
+    place_cousins {
+      id
+      cousinId
+      cousin {
+        id
+        title
+      }
+    }
+    placeLocations {
+      id
+      location
+      isMainLocation
+      area {
+        name
+      }
+      city {
+        name
+      }
+    }
+    placeAmenities {
+      id
+      amenity {
+        id
+        icon {
+          lightIconUrl
+          darkIconUrl
+        }
+        title
+      }
+    }
+    placeSocialMedias {
+      url
+      socialMedia {
+        icon {
+          lightIconUrl
+        }
+        url
+        order
+        name
+        id
+      }
+    }
+    featured_places {
+      id
+      startDate
+      endDate
+      isActive
+      type
+    }
+    place_aggregate_summary {
+      avgDishPrice
+      avgRating
+      sumLikes
+      minDishPrice
+      maxDishPrice
+    }
+    placeReviewsAggregate {
+      aggregate {
+        count
+      }
+    }
+    menus(
+      where: {isHouseSpecial: {_eq: true}}
+      orderBy: [{createdAt: DESC}]
+      limit: 1
+      offset: 0
+    ) {
+      id
+      title
+      updatedAt
+      isHouseSpecial
+      timeToPrepare
+      media {
+        url
+      }
+      menuTags {
+        tag {
+          title
+          icon {
+            lightIconUrl
+            darkIconUrl
+          }
+        }
+      }
+    }
+    cousins
+  }
 }

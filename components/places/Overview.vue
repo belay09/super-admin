@@ -384,26 +384,72 @@ const openUploadFilesModal = ref(false);
 
             <!-- --------------//TODO Place Open and Close hours------------ -->
 
-            <div class="flex flex-col space-y-6 xl:pl-12 2xl:pl-24 xl:border-l">
-              <h3 class="text-lg font-medium dark:text-white lg:text-2xl">
-                Open Hours
-              </h3>
-
-              <div>
-                <p class="dark:text-white">Monday - Saturday</p>
-                <p
-                  class="px-2 text-sheger_brown-200 dark:text-sheger_light_gray-400"
+            <div class="flex flex-col space-y-6 xl:pl-12 2xl:pl-24 xl:border-l lg:w-[60%]">
+              <h1
+                class="mb-5 text-2xl font-medium capitalize font-poppins justify-center-center"
+              >
+                open hours
+              </h1>
+              <div
+                class="flex flex-wrap"
+                v-if="place.open_hours && place.open_hours.length"
+              >
+                <div
+                  class="w-1/2"
+                  v-for="hour in place.open_hours.slice(0, 4)"
+                  :key="hour.day"
                 >
-                  08:00 AM - 10 PM
-                </p>
-              </div>
-              <div>
-                <p class="dark:text-white">Sunday</p>
-                <p
-                  class="px-2 text-sheger_brown-200 dark:text-sheger_light_gray-400"
+                  <h1
+                    class="mb-2 text-lg font-normal capitalize font-poppins justify-center-center"
+                  >
+                    {{ hour.day }}
+                  </h1>
+                  <div class="flex items-center">
+                    <h1
+                      class="mb-2 ml-4 text-sm font-normal text-gray-500 capitalize font-poppins justify-center-center"
+                    >
+                      {{ hour.from }} - {{ hour.to }}
+                    </h1>
+                    <h1
+                      class="mb-2 ml-4 text-sm font-normal text-gray-500 capitalize font-poppins justify-center-center"
+                      :class="
+                        hour.status === 'OPEN'
+                          ? 'text-green-500'
+                          : 'text-red-500'
+                      "
+                    >
+                      {{ hour.status }}
+                    </h1>
+                  </div>
+                </div>
+                <div
+                  class="w-1/2"
+                  v-for="hour in place.open_hours.slice(4)"
+                  :key="hour.day"
                 >
-                  07:00 AM - 12 PM
-                </p>
+                  <h1
+                    class="mb-2 text-lg font-normal capitalize font-poppins justify-center-center"
+                  >
+                    {{ hour.day }}
+                  </h1>
+                  <div class="flex items-center">
+                    <h1
+                      class="mb-2 ml-4 text-sm font-normal text-gray-500 capitalize font-poppins justify-center-center"
+                    >
+                      {{ hour.from }} - {{ hour.to }}
+                    </h1>
+                    <h1
+                      class="mb-2 ml-4 text-sm font-normal text-gray-500 capitalize font-poppins justify-center-center"
+                      :class="
+                        hour.status === 'OPEN'
+                          ? 'text-green-500'
+                          : 'text-red-500'
+                      "
+                    >
+                      {{ hour.status }}
+                    </h1>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

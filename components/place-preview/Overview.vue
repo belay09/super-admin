@@ -1,6 +1,7 @@
 <script setup>
 import getPlacesMenuQuery from "@/graphql/query/menu/list.gql";
-
+import get_one from "@/composables/get_one";
+import hour from "@/graphql/query/places/hour.gql";
 /*----------------------------Globals-----------------------------*/
 
 const emit = defineEmits(["setCurrentTab"]);
@@ -10,6 +11,8 @@ const props = defineProps({
     required: true,
   },
 });
+const openHour = computed(() => props.place.open_hours);
+openHour.value = props.place.open_hours
 
 /*...................Place menus which are attached to review data fetch.............*/
 const filter = computed(() => {
@@ -69,7 +72,6 @@ onResult((result) => {
 });
 
 /*------------------------------Map-----------------------------*/
-
 const center = ref([9.010631945576197, 38.76055205651439]);
 const zoom = ref(15);
 
@@ -103,7 +105,6 @@ const flyTo = async (coordinates, index) => {
 };
 
 /*------------------------View menu---------------------------*/
-
 function viewMenu() {
   emit("setCurrentTab", "menu");
 }
@@ -116,12 +117,21 @@ onMounted(() => {
     windowSize.value = window.innerWidth;
   };
 });
+const id = computed(() => props.place.id);
+;
+
+const { onResult: onGetPlaceResult } = get_one(hour);
+onGetPlaceResult((result) => {
+  console.log("data", data);
+  if (result.data?.places_hour) {
+    openHour.value = result.data;
+  }
+});
 </script>
 
 <template>
   <div class="flex justify-between space-x-6">
     <!-- --------------Overview  header---------------- -->
-
     <div class="flex flex-col space-y-4 pt-6">
       <div v-if="place.place_cousins.length > 0">
         <p class="text-lg font-medium dark:text-white uppercase xl:capitalize">
@@ -295,21 +305,65 @@ onMounted(() => {
     </div>
 
     <div class="flex flex-col space-y-6 xl:pl-12 2xl:pl-24 xl:border-l">
-      <h3 class="text-lg font-medium dark:text-white lg:text-2xl">
-        Open Hours
-      </h3>
-
-      <div>
-        <p class="dark:text-white">Monday - Saturday</p>
-        <p class="text-sheger_brown-200 dark:text-sheger_light_gray-400 px-2">
-          08:00 AM - 10 PM
-        </p>
-      </div>
-      <div>
-        <p class="dark:text-white">Sunday</p>
-        <p class="text-sheger_brown-200 dark:text-sheger_light_gray-400 px-2">
-          07:00 AM - 12 PM
-        </p>
+      <div class="flex-col w-full">
+        <h1
+          class="mb-5 text-2xl font-medium capitalize font-poppins justify-center-center"
+        >
+          open hours
+        </h1>
+        <div class="flex flex-wrap" v-if="place.open_hours && place.open_hours.length">
+          <div
+            class="w-1/2"
+            v-for="hour in place.open_hours.slice(0, 4)"
+            :key="hour.day"
+          >
+            <h1
+              class="mb-2 text-lg font-normal capitalize font-poppins justify-center-center"
+            >
+              {{ hour.day }}
+            </h1>
+            <div class="flex items-center">
+              <h1
+                class="mb-2 ml-4 text-sm font-normal text-gray-500 capitalize font-poppins justify-center-center"
+              >
+                {{ hour.from }} - {{ hour.to }}
+              </h1>
+              <h1
+                class="mb-2 ml-4 text-sm font-normal text-gray-500 capitalize font-poppins justify-center-center"
+                :class="
+                  hour.status === 'OPEN' ? 'text-green-500' : 'text-red-500'
+                "
+              >
+                {{ hour.status }}
+              </h1>
+            </div>
+          </div>
+          <div class="w-1/2" v-for="hour in place.open_hours.slice(4)" :key="hour.day">
+            <h1
+              class="mb-2 text-lg font-normal capitalize font-poppins justify-center-center"
+            >
+              {{ hour.day }}
+            </h1>
+            <div class="flex items-center">
+              <h1
+                class="mb-2 ml-4 text-sm font-normal text-gray-500 capitalize font-poppins justify-center-center"
+              >
+                {{ hour.from }} - {{ hour.to }}
+              </h1>
+              <h1
+                class="mb-2 ml-4 text-sm font-normal text-gray-500 capitalize font-poppins justify-center-center"
+                :class="
+                  hour.status === 'OPEN' ? 'text-green-500' : 'text-red-500'
+                "
+              >
+                {{ hour.status }}
+              </h1>
+            </div>
+          </div>
+        </div>
+        <div v-else class="w-full flex mt-4 items-center">
+          <p class="text-lg text-gray-500 capitalize">open hour not found</p>
+        </div>
       </div>
     </div>
   </div>

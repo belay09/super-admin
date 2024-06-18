@@ -75,7 +75,7 @@ definePageMeta({
 	layout: "engagement",
 });
 </script>
-<template>
+<template> 
 	<ModalsPlacePreview
 		v-if="openFinishModal"
 		:type="placeType"

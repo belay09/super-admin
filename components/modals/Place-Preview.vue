@@ -142,6 +142,7 @@ const open = computed({
 <template>
   <ModalsModal body-class="h-screen w-screen !p-2 " v-model="open">
     <template #content>
+      
       <div
         class="w-full h-[900px] overflow-y-auto relative first-letter:bg-white"
       >

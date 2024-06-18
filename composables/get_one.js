@@ -1,8 +1,7 @@
 // import { useQuery } from "@vue/apollo-composable";
 
 
-const defaultClientId = ref('shegeradmin')
-const defaultEnabled = ref(true)
+
 
 export default function (
   query,
@@ -15,7 +14,7 @@ export default function (
     }),
     () => ({
       fetchPolicy: 'network-only',
-      clientId: clientId?.value,
+      clientId: "authClient",
       context: {
         headers: {
           'x-hasura-role':'shegeradmin'
