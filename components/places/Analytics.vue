@@ -7,6 +7,7 @@ import useNotify from "@/use/notify";
 const router = useRouter();
 
 const { notify } = useNotify();
+const refetchPlaces = inject("refetch");
 
 const props = defineProps({
   place: {
@@ -58,6 +59,8 @@ editDone(() => {
     type: "success",
     borderClass: "border-l-8 border-green-300",
   });
+  refetchPlaces();
+
   showRevokeBadgeModal.value = false;
   showActivatePlaceModal.value = false;
   showPendPlaceModal.value = false;
@@ -66,6 +69,7 @@ editDone(() => {
 });
 
 editError((error) => {
+  
   showRevokeBadgeModal.value = false;
   showActivatePlaceModal.value = false;
   showPendPlaceModal.value = false;

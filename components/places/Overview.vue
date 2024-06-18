@@ -235,13 +235,14 @@ const openUploadFilesModal = ref(false);
         </div>
 
         <!-- -----------------------------Sheger recommendation, Takeout and House special menu ---------------- -->
-        <div>
-          <!-----------------  Sheger gebeta recommendation -------------------------------->
+        <div class="w-[50%]">
+          <!-- ---------------  Sheger gebeta recommendation -------------------------------->
           <!-- ----//TODO Replace  -->
           <div
-            v-if="!place.shegerRecommendationId"
+            v-if="place.shegerRecommendationId"
             class="items-center justify-between hidden py-4 pl-8 pr-4 space-x-6 border rounded-md lg:flex dark:border-sheger_brown-100"
           >
+
             <div class="flex flex-col items-center space-y-2">
               <p class="text-lg font-medium dark:text-white">
                 {{ place.shegerRecommendation?.title }}
@@ -299,14 +300,14 @@ const openUploadFilesModal = ref(false);
               </p>
 
               <div class="flex flex-wrap items-center space-x-6">
-                <div class="flex flex-wrap items-center space-x-4">
+                <div v-if="place.orderPhoneNumber1" class="flex flex-wrap items-center space-x-4">
                   <Icon
                     name="uil:phone-volume"
                     class="text-2xl dark:text-white"
                   />
                   <p>{{ place.orderPhoneNumber1 }}</p>
                 </div>
-                <div class="flex flex-wrap items-center space-x-4">
+                <div v-if="place.orderPhoneNumber2" class="flex flex-wrap items-center space-x-4">
                   <Icon
                     name="uil:phone-volume"
                     class="text-2xl dark:text-white"
@@ -317,7 +318,7 @@ const openUploadFilesModal = ref(false);
             </div>
           </div>
           <!-- ------------------------------House Special if there is no sheger recommendation and takeout---------------- -->
-          <div v-else-if="place.menus.length > 0">
+          <div v-else-if="place.menus.length > 0" class="w-full">
             <UiCardsMenu :menu="place.menus[0]"></UiCardsMenu>
           </div>
         </div>
@@ -453,7 +454,7 @@ const openUploadFilesModal = ref(false);
               </div>
             </div>
           </div>
-        </div>
+        </div> 
       </div>
     </div>
 

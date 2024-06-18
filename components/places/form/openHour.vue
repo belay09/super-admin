@@ -15,7 +15,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
-});
+}); 
 const emit = defineEmits(["next", "prev", "finish"]);
 const next = () => {
   emit("next");
@@ -127,6 +127,9 @@ const submitClosing = () => {
         placeId: placeId.value,
         reason: closingHour.reason,
       })),
+      placeId:{
+        _eq: placeId.value
+      }
     });
   }
   // Do something with days.value
@@ -467,4 +470,5 @@ const removeClosingHour = (index) => {
 .vue__time-picker .dropdown ul li[disabled="false"] {
   cursor: pointer;
 }
+.vue__time-picker .dropdown ul li[disabled]:hover{background:transparent;opacity:.3;cursor:pointer}
 </style>

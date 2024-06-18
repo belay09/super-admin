@@ -1,0 +1,42 @@
+query MyQuery($filter: [UsersRolesEnum!]!, $limit: Int, $offset: Int) {
+  broadcastGroups: notificationBroadcastGroups(
+    where: {group_members: {user: {userRoles: {role: {_in: $filter}}}}}
+    limit: $limit
+    offset: $offset
+  ) {
+    title
+    type
+    group_members {
+      group {
+        title
+        type
+        __typename
+      }
+      user {
+        status
+        photoUrl
+        fullName
+        id
+        phoneNumber
+        __typename
+      }
+      __typename
+    }
+    __typename
+  }
+  total:notificationBroadcastGroupsAggregate(where: {group_members: {user: {userRoles: {role: {_in: $filter}}}}}) {
+    aggregate {
+      count(columns: id)
+    }
+  }
+    user:notificationBroadcastGroupsAggregate(where: {group_members: {user: {userRoles: {role: {_eq:USER}}}}}) {
+    aggregate {
+      count(columns: id)
+    }
+  }
+     owner:notificationBroadcastGroupsAggregate(where: {group_members: {user: {userRoles: {role: {_in:[PLACE_ADMIN,PLACE_DATA_ENCODER,PLACE_OWNER]}}}}}) {
+    aggregate {
+      count(columns: id)
+    }
+  }
+}

@@ -1,15 +1,22 @@
-mutation insertCloseHours($objects: [CloseHoursInsertInput!]!) {
+mutation insertCloseHours($objects: [CloseHoursInsertInput!]!, $placeId: BigintComparisonExp!) {
+  deleteCloseHours(where: {placeId: $placeId}) {
+    affectedRows
+    returning {
+      id
+    }
+  }
   insertCloseHours(
     objects: $objects
-    onConflict: {
-      constraint: close_hours_date_place_id_key
-      updateColumns: [date, to, from, reason]
-    }
+    onConflict: {constraint: close_hours_date_place_id_key, updateColumns: [date, to, from, reason]}
   ) {
     returning {
+      id
       place {
         name
+        __typename
       }
+      __typename
     }
+    __typename
   }
 }

@@ -77,7 +77,7 @@ placeOnError((error) => {
   });
 });
 
-provide("refetchPlace", refetch);
+provide("refetch", refetch);
 /*.................... page meta data.............*/
 
 definePageMeta({
