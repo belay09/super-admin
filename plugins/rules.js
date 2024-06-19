@@ -37,7 +37,7 @@ export default defineNuxtPlugin((vueApp) => {
         return true; // Validation passed
       } else {
         console.log("Validation failed, selectedDate is not greater.");
-        return "Selected date must be greater than the latest allowed date."; // Validation failed
+        return `Selected date must be greater than this ${{latestDate}} date.`; // Validation failed
       }
     });
     defineRule("date_greater_than_latest_plus_seven", (value, [startDate], ctx) => {

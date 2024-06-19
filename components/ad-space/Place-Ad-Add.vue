@@ -113,7 +113,7 @@ onError((error) => {
   let borderClass= "border-l-8 border-red-300"
 
   if (error.message.includes("database query error")) {
-    Message = "Can't add please check the last date of previous add date and  the date gap must be 7 days";
+    Message = "Can't add please check the last date of previous add date and  the date gap must be 7 days or check subscription plan for more ad space";
     title="Date gap error"
     borderClass= "border-l-8 border-yellow-300"
   }
@@ -137,7 +137,7 @@ onError((error) => {
         <Selectors-Place :type="placeType" v-model="place"> </Selectors-Place>
 
         <!-- -----------------Start and End Date  -->
-        <div class="flex items-center justify-between pt-6 gap-x-6">
+        <div class="flex justify-between pt-6 gap-x-6">
           <HDatePicker
             id="start_date"
             name="start_date"

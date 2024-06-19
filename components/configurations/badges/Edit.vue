@@ -62,8 +62,8 @@ addMediaOnDone((result) => {
   let input = {
     description: description.value,
     title: title.value,
-    price: price.value,
-    mediaId: result.data?.insertBasicsMediaOne?.id,
+    // price: price.value,
+    badge: result.data?.insertBasicsMediaOne?.id, //this refers to the id of the media i don't know why the backend name it badge
   };
   mutate({ input, id: props.id });
 });

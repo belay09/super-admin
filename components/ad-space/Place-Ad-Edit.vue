@@ -67,9 +67,9 @@ placeAdOnError((error) => {
   let message = error.message;
   let title = "Some thing went wrong";
   let borderClass = "border-l-8 border-red-300";
-  if(error.message == "database ") {
+  if(error.message == "database query error") {
     title = "warning";
-    message = "database query error";
+    message = "you can't update in this gap time because there is ad already in this time or check subscription plan";
     borderClass = "border-l-8 border-yellow-300";
   }
   notify({
