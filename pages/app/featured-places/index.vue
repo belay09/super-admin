@@ -4,6 +4,7 @@ import placeFeaturedAggregateQuery from "@/graphql/query/aggregate/place-feature
 import placesQuery from "@/graphql/query/places/list.gql";
 
 import useNotify from "@/use/notify";
+import { is } from "@vee-validate/rules";
 
 /*----------------------------Global Variables---------------------------*/
 const { notify } = useNotify();
@@ -114,11 +115,11 @@ const filter = computed(() => {
 		{
 			featured_places: {
 				_and: [
-					// {
-					//   isActive: {
-					//     _eq: true,
-					//   },
-					// },
+					{
+						isActive: {
+					    _eq: true,
+					  },
+					},
 					{
 						featured_place_type: {
 							value: {
@@ -133,7 +134,15 @@ const filter = computed(() => {
 			name: {
 				_ilike: `%${search.value}%`,
 			},
-		},
+		
+		_not: {
+			featured_places:{
+				isActive: {
+					_eq: false,
+				},
+			}
+		}
+	},
 	];
 	return query;
 });

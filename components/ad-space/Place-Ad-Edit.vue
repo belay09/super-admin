@@ -64,11 +64,19 @@ placeAdOnResult((result) => {
 });
 
 placeAdOnError((error) => {
+  let message = error.message;
+  let title = "Some thing went wrong";
+  let borderClass = "border-l-8 border-red-300";
+  if(error.message == "database ") {
+    title = "warning";
+    message = "database query error";
+    borderClass = "border-l-8 border-yellow-300";
+  }
   notify({
     title: "Some thing went wrong",
     description: error.message,
     type: "error",
-    borderClass: "border-l-8 border-green-300",
+    borderClass: borderClass,
   });
 });
 
@@ -120,11 +128,19 @@ onDone(() => {
 });
 
 onError((error) => {
+  let message = error.message;
+  let title = "Some thing went wrong";
+  let borderClass = "border-l-8 border-red-300";
+  if(error.message == "database query error") {
+    title = "warning";
+    message = "you can't update in this gap time because there is ad already in this time";
+    borderClass = "border-l-8 border-yellow-300";
+  }
   notify({
     title: "Some thing went wrong",
-    description: error.message,
+    description: message,
     type: "error",
-    borderClass: "border-l-8 border-red-300",
+    borderClass: borderClass,
   });
 });
 </script>
@@ -171,7 +187,7 @@ onError((error) => {
         <SelectorsPlace :type="placeType" v-model="place"> </SelectorsPlace>
 
         <!-- -----------------Start and End Date -->
-        <div class="flex items-center justify-between pt-6 gap-x-6">
+        <div class="flex  justify-between pt-6 gap-x-6">
           <HDatePicker
             id="start_date"
             name="start_date"
@@ -185,7 +201,7 @@ onError((error) => {
           <HDatePicker
             id="end_date"
             name="end_date"
-            rules="required"
+            :rules="`required|date_greater_than_latest_plus_seven:${startDate}`"
             label="End Date"
             trailing-icon="uil:calender"
             trailing-icon-class="lg:text-sheger-gray-100"

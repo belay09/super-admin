@@ -40,25 +40,39 @@ export default defineNuxtPlugin((vueApp) => {
         return "Selected date must be greater than the latest allowed date."; // Validation failed
       }
     });
-  defineRule("date_greater_than_latest_plus_seven", (value, [startDate], ctx) => {
-    console.log("hello", value, "abu", startDate,"context",ctx.form.start_date);
-    if (!ctx.form.start_date) {
-      return true;
-    }
-    // Convert latestDate to Date object and add 7 days
-    const comparisonDate = new Date(ctx.form.start_date);
-    comparisonDate.setDate(comparisonDate.getDate() + 7);
-  
-    // Convert value to Date object
-    const selectedDate = new Date(value);
-  
-    // Check if selectedDate is exactly 7 days greater than latestDate
-    if (selectedDate.getTime() === comparisonDate.getTime()) {
-      return true; // Validation passed
-    } else {
-      return "the date gap from start date must be 7"; // Validation failed
-    }
-  }),
+    defineRule("date_greater_than_latest_plus_seven", (value, [startDate], ctx) => {
+      console.log("hello", value, "abu", startDate, "context", ctx.form.start_date);
+      if (!ctx.form.start_date) {
+        return true;
+      }
+      // Convert start_date to Date object
+      const comparisonDate = new Date(ctx.form.start_date);
+    
+      // Convert value to Date object
+      const selectedDate = new Date(value);
+    
+      // Calculate the difference in days
+      const diffTime = Math.abs(selectedDate - comparisonDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+      // Function to generate recommended dates
+      const generateRecommendedDates = (baseDate) => {
+        const recommendedDates = [];
+        for (let i = 1; i <= 3; i++) { // Generate 3 recommended dates
+          const nextDate = new Date(baseDate.getTime() + (7 * i * 24 * 60 * 60 * 1000));
+          recommendedDates.push(nextDate.toISOString().split('T')[0]); // Format as YYYY-MM-DD
+        }
+        return recommendedDates;
+      };
+    
+      // Check if diffDays is a multiple of 7
+      if (diffDays % 7 === 0 && diffDays !== 0) {
+        return true; // Validation passed
+      } else {
+        const recommendedDates = generateRecommendedDates(comparisonDate);
+        return `The date gap from the start date must be a multiple of 7. Recommended dates: ${recommendedDates.join(', ')}`; // Validation failed with recommendations
+      }
+    });
     defineRule("array_object_required", (value, [], ctx) => {
       return value?.length || "Field Required";
     }),
